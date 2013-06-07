@@ -48,21 +48,21 @@ toolbox in MATLAB, and development of a custom MEX function.</p>
 
 <div class="highlight"><pre><span class="c">% Load the classifier file</span>
 <span class="n">xmlfile</span> <span class="p">=</span> <span class="n">fullfile</span><span class="p">(</span><span class="n">mexopencv</span><span class="p">.</span><span class="n">root</span><span class="p">(),</span><span class="s">'test'</span><span class="p">,</span><span class="s">'haarcascade_frontalface_alt2.xml'</span><span class="p">);</span>
-<span class="n">cascade</span> <span class="p">=</span> <span class="n">cv</span><span class="p">.</span><span class="n">CascadeClassifier</span><span class="p">(</span><span class="n">xmlfile</span><span class="p">);</span>
+<span class="n">cascade</span> <span class="p">=</span> <a href="./matlab/CascadeClassifier.html"><span class="n">cv</span><span class="p">.</span><span class="n">CascadeClassifier</span></a><span class="p">(</span><span class="n">xmlfile</span><span class="p">);</span>
 
 <span class="c">% Load the source image</span>
-<span class="n">src</span> <span class="p">=</span> <span class="n">imread</span><span class="p">(</span><span class="s">'people.jpg'</span><span class="p">);</span>
+<span class="n">src</span> <span class="p">=</span> <a href="http://www.mathworks.com/help/matlab/ref/imread.html"><span class="n">imread</span></a><span class="p">(</span><span class="s">'people.jpg'</span><span class="p">);</span>
 
 <span class="c">% Convert to grayscale</span>
-<span class="n">gray</span> <span class="p">=</span> <span class="n">cv</span><span class="p">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="s">'RGB2GRAY'</span><span class="p">);</span>
-<span class="n">gray</span> <span class="p">=</span> <span class="n">cv</span><span class="p">.</span><span class="n">equalizeHist</span><span class="p">(</span><span class="n">gray</span><span class="p">);</span>
+<span class="n">gray</span> <span class="p">=</span> <a href="./matlab/cvtColor.html"><span class="n">cv</span><span class="p">.</span><span class="n">cvtColor</span></a><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="s">'RGB2GRAY'</span><span class="p">);</span>
+<span class="n">gray</span> <span class="p">=</span> <a href="./matlab/equalizeHist.html"><span class="n">cv</span><span class="p">.</span><span class="n">equalizeHist</span></a><span class="p">(</span><span class="n">gray</span><span class="p">);</span>
 
 <span class="c">% Perform the detection and draw the detected faces</span>
-<span class="n">faces</span> <span class="p">=</span> <span class="n">cascade</span><span class="p">.</span><span class="n">detect</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="s">'ScaleFactor'</span><span class="p">,</span><span class="mf">1.1</span><span class="p">,</span> <span class="s">'MinNeighbors'</span><span class="p">,</span><span class="mi">4</span><span class="p">);</span>
+<span class="n">faces</span> <span class="p">=</span> <span class="n">cascade</span><span class="p">.</span><a href="./matlab/CascadeClassifier.detect.html"><span class="n">detect</span></a><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="s">'ScaleFactor'</span><span class="p">,</span><span class="mf">1.1</span><span class="p">,</span> <span class="s">'MinNeighbors'</span><span class="p">,</span><span class="mi">4</span><span class="p">);</span>
 <span class="k">for</span> <span class="nb">i</span><span class="p">=</span><span class="mi">1</span><span class="p">:</span><span class="nb">length</span><span class="p">(</span><span class="n">faces</span><span class="p">)</span>
-    <span class="n">src</span> <span class="p">=</span> <span class="n">cv</span><span class="p">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">faces</span><span class="p">{</span><span class="nb">i</span><span class="p">},</span> <span class="s">'Color'</span><span class="p">,[</span><span class="mi">0</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="s">'Thickness'</span><span class="p">,</span><span class="mi">2</span><span class="p">);</span>
+    <span class="n">src</span> <span class="p">=</span> <a href="./matlab/rectangle.html"><span class="n">cv</span><span class="p">.</span><span class="n">rectangle</span></a><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">faces</span><span class="p">{</span><span class="nb">i</span><span class="p">},</span> <span class="s">'Color'</span><span class="p">,[</span><span class="mi">0</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="s">'Thickness'</span><span class="p">,</span><span class="mi">2</span><span class="p">);</span>
 <span class="k">end</span>
-<span class="n">imshow</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+<a href="http://www.mathworks.com/help/images/ref/imshow.html"><span class="n">imshow</span></a><span class="p">(</span><span class="n">src</span><span class="p">)</span>
 </pre></div>
 
 <h1>License</h1>
