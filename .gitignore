@@ -1,0 +1,15 @@
+*~
+.DS_Store
+
+# npm
+node_modules/
+npm-debug.log*
+
+# generated files
+#/cpp/
+#/matlab/
+#/opencv/
+#/opencv_contrib/
+#/vendor/
+#/css/*.min.css
+#/js/*.min.js

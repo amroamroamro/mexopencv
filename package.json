@@ -1,0 +1,47 @@
+{
+  "name": "mexopencv",
+  "version": "3.3.1",
+  "description": "Published mexopencv documentation and examples",
+  "keywords": [
+    "matlab",
+    "mex",
+    "opencv",
+    "octave",
+    "computer-vision",
+    "image-processing"
+  ],
+  "homepage": "http://kyamagu.github.io/mexopencv/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kyamagu/mexopencv.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kyamagu/mexopencv/issues"
+  },
+  "license": "BSD-3-Clause",
+  "author": "Amro",
+  "maintainers": [
+    "Amro <amroamroamro@gmail.com>",
+    "Kota Yamaguchi <KotaYamaguchi1984@gmail.com>"
+  ],
+  "scripts": {
+    "gulp": "gulp",
+    "start": "gulp serve"
+  },
+  "dependencies": {
+    "bootstrap": "^4.0.0-beta.2",
+    "font-awesome": "^4.7.0",
+    "jquery": "^3.2.1"
+  },
+  "devDependencies": {
+    "browser-sync": "2.18.13",
+    "code-prettify": "github:google/code-prettify",
+    "del": "^3.0.0",
+    "gulp": "^3.9.1",
+    "gulp-clean-css": "^3.9.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^3.0.0",
+    "merge-stream": "^1.0.1",
+    "prettify-matlab": "github:amroamroamro/prettify-matlab"
+  }
+}

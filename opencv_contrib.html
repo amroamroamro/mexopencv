@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="mexopencv examples and demos">
+  <title>mexopencv Examples</title>
+  <link rel="icon" href="favicon.ico">
+  <!-- CSS -->
+  <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="vendor/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/style.min.css">
+</head>
+
+<body id="page-top">
+
+  <!-- Navigation -->
+  <header>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top d-print-none" id="mainNav">
+      <div class="container">
+        <!-- brand -->
+        <a class="navbar-brand" href="/">mexopencv</a>
+        <!-- collapse button -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- collapsible content -->
+        <div class="navbar-collapse collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Home</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="opencv.html" id="navbarDropdownMain" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">opencv</a>
+              <div class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="navbarDropdownMain">
+                <a class="dropdown-item" href="opencv.html#page-top">opencv</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="opencv.html#core">core</a>
+                <a class="dropdown-item" href="opencv.html#imgproc">imgproc</a>
+                <a class="dropdown-item" href="opencv.html#imgcodecs">imgcodecs</a>
+                <a class="dropdown-item" href="opencv.html#videoio">videoio</a>
+                <a class="dropdown-item" href="opencv.html#video">video</a>
+                <a class="dropdown-item" href="opencv.html#calib3d">calib3d</a>
+                <a class="dropdown-item" href="opencv.html#feature2d">feature2d</a>
+                <a class="dropdown-item" href="opencv.html#objdetect">objdetect</a>
+                <a class="dropdown-item" href="opencv.html#dnn">dnn</a>
+                <a class="dropdown-item" href="opencv.html#ml">ml</a>
+                <a class="dropdown-item" href="opencv.html#photo">photo</a>
+                <a class="dropdown-item" href="opencv.html#stitching">stitching</a>
+                <a class="dropdown-item" href="opencv.html#shape">shape</a>
+                <a class="dropdown-item" href="opencv.html#superres">superres</a>
+                <a class="dropdown-item" href="opencv.html#videostab">videostab</a>
+              </div>
+            </li>
+            <li class="nav-item dropdown active">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownContrib" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">opencv_contrib</a>
+              <div class="dropdown-menu dropdown-menu-right" id="dropdownModules" role="menu" aria-labelledby="navbarDropdownContrib">
+                <a class="dropdown-item js-scroll-trigger" href="#page-top">opencv_contrib</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item js-scroll-trigger" href="#aruco">aruco</a>
+                <a class="dropdown-item js-scroll-trigger" href="#bgsegm">bgsegm</a>
+                <a class="dropdown-item js-scroll-trigger" href="#bioinspired">bioinspired</a>
+                <a class="dropdown-item js-scroll-trigger" href="#datasets">datasets</a>
+                <a class="dropdown-item js-scroll-trigger" href="#face">face</a>
+                <a class="dropdown-item js-scroll-trigger" href="#line_descriptor">line_descriptor</a>
+                <a class="dropdown-item js-scroll-trigger" href="#optflow">optflow</a>
+                <a class="dropdown-item js-scroll-trigger" href="#plot">plot</a>
+                <a class="dropdown-item js-scroll-trigger" href="#saliency">saliency</a>
+                <a class="dropdown-item js-scroll-trigger" href="#xfeatures2d">xfeatures2d</a>
+                <a class="dropdown-item js-scroll-trigger" href="#ximgproc">ximgproc</a>
+                <a class="dropdown-item js-scroll-trigger" href="#xphoto">xphoto</a>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <!-- /collapsible content -->
+      </div>
+    </nav>
+  </header>
+  <!-- /Navigation -->
+
+  <!-- Main Layout -->
+  <main>
+
+    <div class="container">
+
+      <section class="section mb-5" id="aruco">
+        <h1 class="my-4">
+          <i class="fa fa-book" aria-hidden="true"></i>
+          aruco: <small class="text-muted">ArUco Marker Detection</small>
+        </h1>
+        <table class="table table-striped table-bordered">
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/aruco_create_marker_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/aruco_create_marker_demo.html">ArUco Marker Image</a></h5>
+              <p>This example shows how to create an ArUco marker image.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/aruco_detect_markers_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/aruco_detect_markers_demo.html">Detection of ArUco Markers</a></h5>
+              <p>Basic marker detection and pose estimation from single ArUco markers.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/aruco_create_board_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/aruco_create_board_demo.html">ArUco Grid Board Image</a></h5>
+              <p>This example shows how to create an ArUco grid board image.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/aruco_detect_board_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/aruco_detect_board_demo.html">Detection of ArUco Board</a></h5>
+              <p>Detection and pose estimation using a Board of markers (an ArUco Planar Grid board).</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/aruco_create_board_charuco_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/aruco_create_board_charuco_demo.html">ChArUco Board Image</a></h5>
+              <p>This example shows how to create a ChArUco board image.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/aruco_detect_board_charuco_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/aruco_detect_board_charuco_demo.html">Detection of ChArUco Corners</a></h5>
+              <p>The example shows how to do pose estimation using a ChArUco board.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/aruco_create_diamond_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/aruco_create_diamond_demo.html">ChArUco Diamond Image</a></h5>
+              <p>This example shows how to create a ChArUco marker image.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/aruco_detect_diamonds_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/aruco_detect_diamonds_demo.html">Detection of Diamond Markers</a></h5>
+              <p>Detection and pose estimation using ChArUco markers.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/aruco_calibrate_camera_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/aruco_calibrate_camera_demo.html">Camera Calibration using ArUco Board</a></h5>
+              <p>Calibration using a ArUco Planar Grid board.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/aruco_calibrate_camera_charuco_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/aruco_calibrate_camera_charuco_demo.html">Camera Calibration using ChArUco Board</a></h5>
+              <p>Calibration using a ChArUco board.</p>
+            </td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="section mb-5" id="bgsegm">
+        <h1 class="my-4">
+          <i class="fa fa-book" aria-hidden="true"></i>
+          bgsegm: <small class="text-muted">Improved Background-Foreground Segmentation Methods</small>
+        </h1>
+        <table class="table table-striped table-bordered">
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/BackgroundSubtractorDemo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/BackgroundSubtractorDemo.html">Background Subtractor</a></h5>
+              <p>This demos shows how to use background subtraction methods provided by OpenCV.</p>
+            </td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="section mb-5" id="bioinspired">
+        <h1 class="my-4">
+          <i class="fa fa-book" aria-hidden="true"></i>
+          bioinspired: <small class="text-muted">Biologically Inspired Vision Models and Derivated Tools</small>
+        </h1>
+        <table class="table table-striped table-bordered">
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/retina_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/retina_demo.html">Retina demonstration</a></h5>
+              <p>Demonstrates the use of wrapper class of the Gipsa/Listic Labs retina model.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/retina_hdr_tonemapping_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/retina_hdr_tonemapping_demo_gui.html">OpenEXR images HDR Retina tone mapping</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>High Dynamic Range retina tone mapping with the help of the Gipsa/Listic's retina.</p>
+            </td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="section mb-5" id="datasets">
+        <h1 class="my-4">
+          <i class="fa fa-book" aria-hidden="true"></i>
+          datasets: <small class="text-muted">Framework for Working with Different Datasets</small>
+        </h1>
+        <table class="table table-striped table-bordered">
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/dataset_mnist_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/dataset_mnist_demo.html">The MNIST dataset of handwritten digits</a></h5>
+              <p>Demonstrates loading the MNIST dataset.</p>
+            </td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="section mb-5" id="face">
+        <h1 class="my-4">
+          <i class="fa fa-book" aria-hidden="true"></i>
+          face: <small class="text-muted">Face Recognition</small>
+        </h1>
+        <table class="table table-striped table-bordered">
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/facerec_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/facerec_demo.html">Face recognition</a></h5>
+              <p>Demonstration of face recognition with OpenCV.</p>
+            </td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="section mb-5" id="line_descriptor">
+        <h1 class="my-4">
+          <i class="fa fa-book" aria-hidden="true"></i>
+          line_descriptor: <small class="text-muted">Binary Descriptors for Lines Extracted from an Image</small>
+        </h1>
+        <table class="table table-striped table-bordered">
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/line_extraction_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/line_extraction_demo.html">Lines features</a></h5>
+              <p>This example shows the functionalities of lines extraction and descriptors computation furnished by <code>cv.LSDDetector</code> and <code>cv.BinaryDescriptor</code> classes.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/line_matching_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/line_matching_demo.html">Line descriptors matching</a></h5>
+              <p>This example shows the functionalities of line descriptors matching furnished by <code>cv.BinaryDescriptorMatcher</code> class.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="img/demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/line_radius_matching_demo.html">Line descriptors radius matching</a></h5>
+              <p>This example shows the functionalities of radius matching.</p>
+            </td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="section mb-5" id="optflow">
+        <h1 class="my-4">
+          <i class="fa fa-book" aria-hidden="true"></i>
+          optflow: <small class="text-muted">Optical Flow Algorithms</small>
+        </h1>
+        <table class="table table-striped table-bordered">
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/optical_flow_evaluation_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/optical_flow_evaluation_demo.html">Optical Flow Evaluation</a></h5>
+              <p>Computes flow field between two images using various methods and display it (deepflow, simpleflow, sparsetodenseflow, Farneback, TV-L1).</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/gpc_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/gpc_demo.html">Global Patch Collider</a></h5>
+              <p>This sample trains the forest for the Global Patch Collider. It then finds correspondences between two images and calculates error using provided ground truth flow.</p>
+            </td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="section mb-5" id="plot">
+        <h1 class="my-4">
+          <i class="fa fa-book" aria-hidden="true"></i>
+          plot: <small class="text-muted">Plot function for Mat data</small>
+        </h1>
+        <table class="table table-striped table-bordered">
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/plotting_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/plotting_demo.html">Plotting demo</a></h5>
+              <p>Demonstrates OpenCV and MATLAB plotting.</p>
+            </td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="section mb-5" id="saliency">
+        <h1 class="my-4">
+          <i class="fa fa-book" aria-hidden="true"></i>
+          saliency: <small class="text-muted">Saliency API</small>
+        </h1>
+        <table class="table table-striped table-bordered">
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/computeSaliency_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/computeSaliency_demo.html">Saliency Algorithms</a></h5>
+              <p>This example shows the functionality of "Saliency".</p>
+            </td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="section mb-5" id="xfeatures2d">
+        <h1 class="my-4">
+          <i class="fa fa-book" aria-hidden="true"></i>
+          xfeatures2d: <small class="text-muted">Extra 2D Features Framework</small>
+        </h1>
+        <table class="table table-striped table-bordered">
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/SIFT_detector.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/SIFT_detector.html">Introduction to SIFT (Scale-Invariant Feature Transform)</a></h5>
+              <p>In this sample, we we show how to find SIFT Keypoints and Descriptors.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/SURF_detector.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/SURF_detector.html">Introduction to SURF (Speeded-Up Robust Features)</a></h5>
+              <p>SURF keypoint detection + keypoint drawing with OpenCV functions.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="img/demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/descriptor_extractor_brief_demo.html">BRIEF (Binary Robust Independent Elementary Features)</a></h5>
+              <p>In this demo, we will see the basics of BRIEF algorithm.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/SURF_descriptor.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/SURF_descriptor.html">Feature Matching</a></h5>
+              <p>SURF detector + descriptor + BruteForce/FLANN Matcher + drawing matches with OpenCV functions.</p>
+            </td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="section mb-5" id="ximgproc">
+        <h1 class="my-4">
+          <i class="fa fa-book" aria-hidden="true"></i>
+          ximgproc: <small class="text-muted">Extended Image Processing</small>
+        </h1>
+        <table class="table table-striped table-bordered">
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/superpixels_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/superpixels_demo.html">Superpixels Segmentation</a></h5>
+              <p>This program demonstrates superpixels segmentation using OpenCV classes <code>cv.SuperpixelSEEDS</code>, <code>cv.SuperpixelSLIC</code>, and <code>cv.SuperpixelLSC</code>.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/fast_hough_transform_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/fast_hough_transform_demo.html">Line Finding with the Fast Hough transform</a></h5>
+              <p>This program demonstrates line finding with the Fast Hough transform.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/structured_edge_detection_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/structured_edge_detection_demo.html">Structured Forests for Fast Edge Detection</a></h5>
+              <p>This sample demonstrates structured forests for fast edge detection.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/graphsegmentation_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/graphsegmentation_demo.html">Graph-Based Image Segmentation</a></h5>
+              <p>A program demonstrating the use and capabilities of a particular graph based image segmentation algorithm.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/niblack_thresholding_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/niblack_thresholding_demo.html">Niblack Thresholding</a></h5>
+              <p>Sample to compare Niblack thresholding against other algorithms (global thresholding and adaptive thresholding) for an image with varying illumination.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/dtFilter_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/dtFilter_demo_gui.html">Domain Transform Filter</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>This program demonstrates Domain Transform filtering using <code>cv.DTFilter</code>.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/disparity_filtering_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/disparity_filtering_demo.html">Disparity Map Filtering</a></h5>
+              <p>In this tutorial you will learn how to use the disparity map post-filtering to improve the results of <code>cv.StereoBM</code> and <code>cv.StereoSGBM</code> algorithms.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/fld_lines_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/fld_lines_demo.html">Fast Line Detector</a></h5>
+              <p>Compares <code>cv.FastLineDetector</code> against <code>cv.LineSegmentDetector</code>.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/anisodiff_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/anisodiff_demo_gui.html">Perona-Malik Anisotropic Diffusion</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>This sample demonstrates Perona-Malik anisotropic diffusion.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/peilin_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/peilin_demo.html">Pei&amp;Lin Normalization</a></h5>
+              <p>This program demonstrates Pei&amp;Lin Normalization.</p>
+            </td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="section mb-5" id="xphoto">
+        <h1 class="my-4">
+          <i class="fa fa-book" aria-hidden="true"></i>
+          xphoto: <small class="text-muted">Additional Photo Processing Algorithms</small>
+        </h1>
+        <table class="table table-striped table-bordered">
+          <tr>
+            <td class="thumb">
+              <img src="opencv_contrib/color_balance_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv_contrib/color_balance_demo.html">White Balancing</a></h5>
+              <p>OpenCV color balance demonstration sample.</p>
+            </td>
+          </tr>
+        </table>
+      </section>
+
+    </div>
+
+  </main>
+  <!-- /Main Layout -->
+
+  <!-- Footer -->
+  <footer class="bg-dark text-light pt-3">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3 col-sm-6">
+          <ul class="list-unstyled">
+            <li class="text-uppercase"><strong>mexopencv</strong></li>
+            <li><a href="/">Home</a></li>
+            <li><a href="https://github.com/kyamagu/mexopencv">GitHub</a></li>
+          </ul>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <ul class="list-unstyled">
+            <li class="text-uppercase"><strong>Documentation</strong></li>
+            <li><a href="https://github.com/kyamagu/mexopencv/wiki">Wiki</a></li>
+            <li><a href="matlab/">User Docs</a></li>
+            <li><a href="cpp/">Dev Docs</a></li>
+          </ul>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <ul class="list-unstyled">
+            <li class="text-uppercase"><strong>External Docs</strong></li>
+            <li><a href="http://docs.opencv.org/3.3.1/">OpenCV</a></li>
+            <li><a href="https://www.mathworks.com/help/matlab/index.html">MATLAB</a></li>
+            <li><a href="https://www.gnu.org/software/octave/doc/interpreter/">Octave</a></li>
+          </ul>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <ul class="list-unstyled">
+            <li class="text-uppercase"><strong>Examples</strong></li>
+            <li><a href="opencv.html">opencv</a></li>
+            <li><a href="opencv_contrib.html">opencv_contrib</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-copyright text-muted">
+      <ul class="list-unstyled mb-0">
+        <li>mexopencv is free software under the <a rel="license" href="https://github.com/kyamagu/mexopencv/blob/master/LICENSE" rel="license">BSD-3 Licence</a></li>
+        <li>Copyright &copy; 2011-2017 mexopencv team</li>
+      </ul>
+    </div>
+  </footer>
+  <!-- /Footer -->
+
+  <!-- "scroll to top" button (only visible on small screen sizes) -->
+  <div class="scroll-top d-md-none d-print-none">
+    <a class="btn btn-primary js-scroll-trigger" href="#page-top">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="vendor/jquery/jquery.slim.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="js/script.min.js"></script>
+
+  <!-- MathJax -->
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ]
+    }
+  });
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML"></script>
+
+</body>
+
+</html>

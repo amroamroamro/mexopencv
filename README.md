@@ -1,47 +1,40 @@
-mexopencv
-=========
+# mexopencv
 
-A collection and a development kit of MATLAB MEX-functions for OpenCV library.
-
-The package provides MATLAB MEX functions that interface a hundred of
-OpenCV APIs. Also the package contains C++ class that converts between
-MATLAB's native data type and OpenCV data types. The package is suitable for
-fast prototyping of OpenCV application in MATLAB, use of OpenCV as an external
-toolbox in MATLAB, and development of a custom MEX function.
-
-Documentation
-=============
+This branch contains published mexopencv documentation and examples.
 
 * [User documentation](./matlab/index.html)
 * [Developer documentation](./cpp/index.html)
+* Demos: [opencv](./opencv.html), [opencv_contrib](./opencv_contrib.html)
 
-Getting Started
-===============
+## Build
 
-Here is an example to detect faces in an image using the Haar Feature-based Cascade Classifier:
+1. Generate [mexopencv documentation][1] in MATLAB, and move output dir to `./matlab/`:
 
-```matlab
-% Load the classifier file
-xmlfile = fullfile(mexopencv.root(),'test','haarcascade_frontalface_alt2.xml');
-cascade = cv.CascadeClassifier(xmlfile);
+       >> MDoc
 
-% Load the source image
-src = imread('people.jpg');
+2. Generate C++ docs (using [Doxygen][2]), and move the output dir to `./cpp/`:
 
-% Convert to grayscale
-gray = cv.cvtColor(src, 'RGB2GRAY');
-gray = cv.equalizeHist(gray);
+       $ doxygen
 
-% Perform the detection and draw the detected faces
-faces = cascade.detect(gray, 'ScaleFactor',1.1, 'MinNeighbors',4);
-for i=1:length(faces)
-    src = cv.rectangle(src, faces{i}, 'Color',[0,255,0], 'Thickness',2);
-end
-imshow(src)
-```
+3. Run and [publish][3] mexopencv samples in MATLAB, and move the output dirs to `./opencv/` and `./opencv_contrib/`.
 
-License
-=======
+       % do this for all samples
+       >> publish('some_demo_file.m', 'html')
 
-The code may be redistributed under the
-[BSD 3-Clause license](http://www.opensource.org/licenses/BSD-3-Clause).
+4. Build website (using [Node.js][4] and [npm][5] package manager):
+
+       # download dependencies (Bootstrap, Gulp, etc.)
+       $ npm install
+
+       # build website
+       $ npm run gulp
+
+       # test site locally
+       $ npm start
+
+
+[1]: https://github.com/kyamagu/mexopencv/blob/master/utils/MDoc.m
+[2]: http://www.stack.nl/~dimitri/doxygen/
+[3]: https://www.mathworks.com/help/matlab/ref/publish.html
+[4]: https://nodejs.org/
+[5]: https://www.npmjs.com/

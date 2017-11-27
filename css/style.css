@@ -1,0 +1,93 @@
+/* overall font size, default is 16  */
+html {
+  font-size: 16px;
+}
+
+/* fixed-top navbar: pad top of body */
+body {
+  padding-top: 3.5rem;
+  background-color: #f2f2f2;
+}
+
+/* fixed-top navbar: adjust anchor targets */
+/* https://www.servermule.com.au/help/bootstrap-anchors-fixed-nav/ */
+.section {
+  padding-top: 3.5rem;
+  margin-top: -3.5rem;
+}
+
+/* copyright line in footer */
+.footer-copyright {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  text-align: center;
+  font-size: smaller;
+  background-color: rgba(0,0,0,.2);
+}
+
+/* ------------------- opencv.html/opencv_contrib.html ------------------- */
+
+/* "scroll to top" button */
+.scroll-top {
+  position: fixed;
+  z-index: 1000;
+  right: 2%;
+  bottom: 2%;
+  width: 50px;
+  height: 50px;
+}
+.scroll-top .btn {
+  font-size: 16px;
+  line-height: 28px;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  border-radius: 100%;
+}
+.scroll-top .btn:focus {
+  outline: none;
+}
+
+/* image thumbnails column */
+.thumb {
+  /* 85x64 (img size) + 2*0.75rem*14px (padding) = 106px */
+  /* 85x64 (img size) + 2*0.75rem*16px (padding) = 109px */
+  width: 109px;
+  text-align: center;
+}
+
+/* table borders color */
+.table-bordered td, .table-bordered th {
+  border-color: #ccc;
+}
+
+/* ------------------- index.html ------------------- */
+
+/* intro (responsive breakpoint on md) */
+.intro-divider {
+  border-top: 1px solid #F8F8F8;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+.intro-title {
+  font-size: 3rem;
+  font-weight: 700;
+  text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.6);
+}
+.intro-subtitle {
+  font-size: 1.5rem;
+  font-weight: 300;
+}
+@media (min-width: 768px) {
+  .intro-title {
+    font-size: 5rem;
+  }
+  .intro-subtitle {
+    font-size: 2rem;
+  }
+}
+
+/* authors */
+.team-member {
+  max-width: 200px;
+  margin-top: 15px;
+}

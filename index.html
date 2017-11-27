@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="mexopencv examples and demos">
+  <title>mexopencv Examples</title>
+  <link rel="icon" href="favicon.ico">
+  <!-- CSS -->
+  <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="vendor/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/style.min.css">
+  <link rel="stylesheet" href="vendor/code-prettify/prettify.css">
+  <link rel="stylesheet" href="vendor/code-prettify/matlab.min.css">
+</head>
+
+<body id="page-top">
+
+  <!-- Navigation -->
+  <header>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top d-print-none" id="mainNav">
+      <div class="container">
+        <!-- brand -->
+        <a class="navbar-brand" href="/">mexopencv</a>
+        <!-- collapse button -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- collapsible content -->
+        <div class="navbar-collapse collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="index.html">Home</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="opencv.html" id="navbarDropdownMain" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">opencv</a>
+              <div class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="navbarDropdownMain">
+                <a class="dropdown-item" href="opencv.html#page-top">opencv</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="opencv.html#core">core</a>
+                <a class="dropdown-item" href="opencv.html#imgproc">imgproc</a>
+                <a class="dropdown-item" href="opencv.html#imgcodecs">imgcodecs</a>
+                <a class="dropdown-item" href="opencv.html#videoio">videoio</a>
+                <a class="dropdown-item" href="opencv.html#video">video</a>
+                <a class="dropdown-item" href="opencv.html#calib3d">calib3d</a>
+                <a class="dropdown-item" href="opencv.html#feature2d">feature2d</a>
+                <a class="dropdown-item" href="opencv.html#objdetect">objdetect</a>
+                <a class="dropdown-item" href="opencv.html#dnn">dnn</a>
+                <a class="dropdown-item" href="opencv.html#ml">ml</a>
+                <a class="dropdown-item" href="opencv.html#photo">photo</a>
+                <a class="dropdown-item" href="opencv.html#stitching">stitching</a>
+                <a class="dropdown-item" href="opencv.html#shape">shape</a>
+                <a class="dropdown-item" href="opencv.html#superres">superres</a>
+                <a class="dropdown-item" href="opencv.html#videostab">videostab</a>
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="opencv_contrib.html" id="navbarDropdownContrib" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">opencv_contrib</a>
+              <div class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="navbarDropdownContrib">
+                <a class="dropdown-item" href="opencv_contrib.html#page-top">opencv_contrib</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="opencv_contrib.html#aruco">aruco</a>
+                <a class="dropdown-item" href="opencv_contrib.html#bgsegm">bgsegm</a>
+                <a class="dropdown-item" href="opencv_contrib.html#bioinspired">bioinspired</a>
+                <a class="dropdown-item" href="opencv_contrib.html#datasets">datasets</a>
+                <a class="dropdown-item" href="opencv_contrib.html#face">face</a>
+                <a class="dropdown-item" href="opencv_contrib.html#line_descriptor">line_descriptor</a>
+                <a class="dropdown-item" href="opencv_contrib.html#optflow">optflow</a>
+                <a class="dropdown-item" href="opencv_contrib.html#plot">plot</a>
+                <a class="dropdown-item" href="opencv_contrib.html#saliency">saliency</a>
+                <a class="dropdown-item" href="opencv_contrib.html#xfeatures2d">xfeatures2d</a>
+                <a class="dropdown-item" href="opencv_contrib.html#ximgproc">ximgproc</a>
+                <a class="dropdown-item" href="opencv_contrib.html#xphoto">xphoto</a>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <!-- /collapsible content -->
+      </div>
+    </nav>
+  </header>
+  <!-- /Navigation -->
+
+  <!-- Main Layout -->
+  <main>
+
+    <!-- Intro -->
+    <div class="jumbotron">
+      <div class="container">
+        <h1 class="intro-title">mexopencv</h1>
+        <hr class="intro-divider">
+        <p class="intro-subtitle">A collection and a development kit of <a href="https://www.mathworks.com/products/matlab.html">MATLAB</a> MEX functions for <a href="http://opencv.org/">OpenCV</a> library.</p>
+        <ul class="list-inline">
+          <li class="list-inline-item mt-2">
+            <a class="btn btn-outline-primary" href="https://github.com/kyamagu/mexopencv">
+              <i class="fa fa-github" aria-hidden="true"></i> View on GitHub
+            </a>
+          </li>
+          <li class="list-inline-item mt-2">
+            <a class="btn btn-outline-primary" href="https://github.com/kyamagu/mexopencv/zipball/master">
+              <i class="fa fa-download" aria-hidden="true"></i> Download
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <!-- /Intro -->
+
+    <div class="container">
+
+      <!-- About -->
+      <div class="section mb-5" id="about">
+        <h3 class="text-uppercase">
+          <strong><i class="fa fa-info-circle" aria-hidden="true"></i> About</strong>
+        </h3>
+        <hr>
+        <p class="lead text-justify">This package provides MATLAB<sup>&reg;</sup> MEX functions that interface with hundreds of OpenCV APIs. The library also contains a C++ class <code>MxArray</code> that converts between MATLAB's native data type and OpenCV data types. It is suitable for fast prototyping of OpenCV application in MATLAB, use of OpenCV as an external toolbox in MATLAB, and development of custom MEX functions.</p>
+        <img class="d-print-none d-none d-md-block mx-auto my-5" src="img/logos.png" alt="Logos: MATLAB, OpenCV, Octave">
+      </div>
+      <!-- /About -->
+
+      <div class="row">
+        <!-- Documentation -->
+        <div class="col-12 col-md-6 section mb-5" id="docs">
+          <h3 class="text-uppercase">
+            <strong><i class="fa fa-university" aria-hidden="true"></i> Documentation</strong>
+          </h3>
+          <hr>
+          <ul>
+            <li><a href="matlab/">User documentation</a></li>
+            <li><a href="cpp/">Developer documentation</a></li>
+          </ul>
+        </div>
+        <!-- /Documentation -->
+
+        <!-- Examples -->
+        <div class="col-12 col-md-6 section mb-5" id="demos">
+          <h3 class="text-uppercase">
+            <strong><i class="fa fa-graduation-cap" aria-hidden="true"></i> Examples</strong>
+          </h3>
+          <hr>
+          <ul>
+            <li><a href="opencv.html">opencv:</a> Main Modules</li>
+            <li><a href="opencv_contrib.html">opencv_contrib:</a> Extra Modules</li>
+          </ul>
+        </div>
+        <!-- /Examples -->
+      </div>
+
+      <!-- Usage -->
+      <div class="section mb-5" id="usage">
+        <h3 class="text-uppercase">
+          <strong><i class="fa fa-code" aria-hidden="true"></i> Usage</strong>
+        </h3>
+        <hr>
+        <p>Here is an example to detect faces in an image using the Haar Feature-based Cascade Classifier:</p>
+        <div class="row">
+          <div class="col col-md-12 col-lg-10 col-xl-8">
+            <pre class="prettyprint bg-light border rounded p-3"><code class="language-matlab">% Load the classifier file
+cascade = <a href="matlab/cv.CascadeClassifier.html">cv.CascadeClassifier</a>('haarcascade_frontalface_alt2.xml');
+
+% Load the source image
+src = <a href="http://www.mathworks.com/help/matlab/ref/imread.html">imread</a>('people.jpg');
+
+% Convert to grayscale
+gr = <a href="matlab/cv.cvtColor.html">cv.cvtColor</a>(src, 'RGB2GRAY');
+gr = <a href="matlab/cv.equalizeHist.html">cv.equalizeHist</a>(gr);
+
+% Perform the detection and draw the detected faces
+faces = cascade.<a href="matlab/cv.CascadeClassifier.detect.html">detect</a>(gr, 'ScaleFactor',1.1, 'MinNeighbors',4);
+for i=1:length(faces)
+    src = <a href="matlab/cv.rectangle.html">cv.rectangle</a>(src, faces{i}, 'Color',[0,255,0], 'Thickness',2);
+end
+<a href="http://www.mathworks.com/help/matlab/ref/imshow.html">imshow</a>(src)</code></pre>
+          </div>
+        </div>
+      </div>
+      <!-- /Usage -->
+
+      <!-- Team -->
+      <div class="section mb-5" id="team">
+        <h3 class="text-uppercase">
+          <strong><i class="fa fa-user" aria-hidden="true"></i> Authors</strong>
+        </h3>
+        <hr>
+        <div class="card-deck">
+          <div class="card team-member">
+            <a href="https://github.com/kyamagu"><img class="card-img-top" src="img/kyamagu.jpg" alt="kyamagu"></a>
+            <div class="card-body">
+              <h4 class="card-title">Kota Yamaguchi</h4>
+              <h6 class="card-subtitle text-muted">@kyamagu</h6>
+            </div>
+          </div>
+          <div class="card team-member">
+            <a href="https://github.com/amroamroamro"><img class="card-img-top" src="img/amroamroamro.jpg" alt="amroamroamro"></a>
+            <div class="card-body">
+              <h4 class="card-title">Amro</h4>
+              <h6 class="card-subtitle text-muted">@amroamroamro</h6>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /Team -->
+
+    </div>
+
+  </main>
+  <!-- /Main Layout -->
+
+  <!-- Footer -->
+  <footer class="bg-dark text-light pt-3">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3 col-sm-6">
+          <ul class="list-unstyled">
+            <li class="text-uppercase"><strong>mexopencv</strong></li>
+            <li><a href="/">Home</a></li>
+            <li><a href="https://github.com/kyamagu/mexopencv">GitHub</a></li>
+          </ul>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <ul class="list-unstyled">
+            <li class="text-uppercase"><strong>Documentation</strong></li>
+            <li><a href="https://github.com/kyamagu/mexopencv/wiki">Wiki</a></li>
+            <li><a href="matlab/">User Docs</a></li>
+            <li><a href="cpp/">Dev Docs</a></li>
+          </ul>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <ul class="list-unstyled">
+            <li class="text-uppercase"><strong>External Docs</strong></li>
+            <li><a href="http://docs.opencv.org/3.3.1/">OpenCV</a></li>
+            <li><a href="https://www.mathworks.com/help/matlab/index.html">MATLAB</a></li>
+            <li><a href="https://www.gnu.org/software/octave/doc/interpreter/">Octave</a></li>
+          </ul>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <ul class="list-unstyled">
+            <li class="text-uppercase"><strong>Examples</strong></li>
+            <li><a href="opencv.html">opencv</a></li>
+            <li><a href="opencv_contrib.html">opencv_contrib</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-copyright text-muted">
+      <ul class="list-unstyled mb-0">
+        <li>mexopencv is free software under the <a rel="license" href="https://github.com/kyamagu/mexopencv/blob/master/LICENSE" rel="license">BSD-3 Licence</a></li>
+        <li>Copyright &copy; 2011-2017 mexopencv team</li>
+      </ul>
+    </div>
+  </footer>
+  <!-- /Footer -->
+
+  <!-- JavaScript -->
+  <script src="vendor/jquery/jquery.slim.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="js/script.min.js"></script>
+
+  <!-- Google Code Prettify -->
+  <script src="vendor/code-prettify/prettify.js"></script>
+  <script src="vendor/code-prettify/lang-matlab.min.js"></script>
+  <script>PR.prettyPrint();</script>
+
+</body>
+
+</html>

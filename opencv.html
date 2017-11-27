@@ -1,0 +1,1753 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="mexopencv examples and demos">
+  <title>mexopencv Examples</title>
+  <link rel="icon" href="favicon.ico">
+  <!-- CSS -->
+  <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="vendor/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/style.min.css">
+</head>
+
+<body id="page-top">
+
+  <!-- Navigation -->
+  <header>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top d-print-none" id="mainNav">
+      <div class="container">
+        <!-- brand -->
+        <a class="navbar-brand" href="/">mexopencv</a>
+        <!-- collapse button -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- collapsible content -->
+        <div class="navbar-collapse collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Home</a>
+            </li>
+            <li class="nav-item dropdown active">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMain" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">opencv</a>
+              <div class="dropdown-menu dropdown-menu-right" id="dropdownModules" role="menu" aria-labelledby="navbarDropdownMain">
+                <a class="dropdown-item js-scroll-trigger" href="#page-top">opencv</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item js-scroll-trigger" href="#core">core</a>
+                <a class="dropdown-item js-scroll-trigger" href="#imgproc">imgproc</a>
+                <a class="dropdown-item js-scroll-trigger" href="#imgcodecs">imgcodecs</a>
+                <a class="dropdown-item js-scroll-trigger" href="#videoio">videoio</a>
+                <a class="dropdown-item js-scroll-trigger" href="#video">video</a>
+                <a class="dropdown-item js-scroll-trigger" href="#calib3d">calib3d</a>
+                <a class="dropdown-item js-scroll-trigger" href="#feature2d">feature2d</a>
+                <a class="dropdown-item js-scroll-trigger" href="#objdetect">objdetect</a>
+                <a class="dropdown-item js-scroll-trigger" href="#dnn">dnn</a>
+                <a class="dropdown-item js-scroll-trigger" href="#ml">ml</a>
+                <a class="dropdown-item js-scroll-trigger" href="#photo">photo</a>
+                <a class="dropdown-item js-scroll-trigger" href="#stitching">stitching</a>
+                <a class="dropdown-item js-scroll-trigger" href="#shape">shape</a>
+                <a class="dropdown-item js-scroll-trigger" href="#superres">superres</a>
+                <a class="dropdown-item js-scroll-trigger" href="#videostab">videostab</a>
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="opencv_contrib.html" id="navbarDropdownContrib" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">opencv_contrib</a>
+              <div class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="navbarDropdownContrib">
+                <a class="dropdown-item" href="opencv_contrib.html#page-top">opencv_contrib</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="opencv_contrib.html#aruco">aruco</a>
+                <a class="dropdown-item" href="opencv_contrib.html#bgsegm">bgsegm</a>
+                <a class="dropdown-item" href="opencv_contrib.html#bioinspired">bioinspired</a>
+                <a class="dropdown-item" href="opencv_contrib.html#datasets">datasets</a>
+                <a class="dropdown-item" href="opencv_contrib.html#face">face</a>
+                <a class="dropdown-item" href="opencv_contrib.html#line_descriptor">line_descriptor</a>
+                <a class="dropdown-item" href="opencv_contrib.html#optflow">optflow</a>
+                <a class="dropdown-item" href="opencv_contrib.html#plot">plot</a>
+                <a class="dropdown-item" href="opencv_contrib.html#saliency">saliency</a>
+                <a class="dropdown-item" href="opencv_contrib.html#xfeatures2d">xfeatures2d</a>
+                <a class="dropdown-item" href="opencv_contrib.html#ximgproc">ximgproc</a>
+                <a class="dropdown-item" href="opencv_contrib.html#xphoto">xphoto</a>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <!-- /collapsible content -->
+      </div>
+    </nav>
+  </header>
+  <!-- /Navigation -->
+
+  <!-- Main Layout -->
+  <main>
+
+    <div class="container">
+
+      <section class="section mb-5" id="tuts">
+        <h1 class="my-4">
+          <i class="fa fa-book" aria-hidden="true"></i>
+          Video Tutorials <small class="text-muted">(OpenCV 2.4)</small>
+        </h1>
+        <p class="lead">
+          A tutorial
+          <a href="https://www.youtube.com/playlist?list=PLmcMMZCV897pofUfG1yH-8fcjpUTFUSaJ">series</a>
+          contributed by <em>Surya Penmetsa</em>.
+          You can find the codes used in the videos
+          <a href="https://github.com/psurya1994/mexopencv-tutorial">here</a>.
+        </p>
+        <table class="table table-striped table-bordered">
+          <tr>
+            <td class="thumb">
+              <img width="85" src="https://img.youtube.com/vi/RQHQQWTqT8g/mqdefault.jpg" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="https://www.youtube.com/watch?v=RQHQQWTqT8g&amp;index=1&amp;list=PLmcMMZCV897pofUfG1yH-8fcjpUTFUSaJ">Tutorial 1: Setup</a> <small class="badge badge-secondary">Video</small></h5>
+              <p>This is the first tutorial, where I explain how to install the softwares and get things working to use the OpenCV functions.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img width="85" src="https://img.youtube.com/vi/kRu1dLrJoMo/mqdefault.jpg" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="https://www.youtube.com/watch?v=kRu1dLrJoMo&amp;index=2&amp;list=PLmcMMZCV897pofUfG1yH-8fcjpUTFUSaJ">Tutorial 2: Face Detection</a> <small class="badge badge-secondary">Video</small></h5>
+              <p>This is the second tutorial, where I explain how to use OpenCV functions to detect faces on MATLAB.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img width="85" src="https://img.youtube.com/vi/9VLZ3FpmdjM/mqdefault.jpg" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="https://www.youtube.com/watch?v=9VLZ3FpmdjM&amp;index=3&amp;list=PLmcMMZCV897pofUfG1yH-8fcjpUTFUSaJ">Tutorial 3: Webcam Input</a> <small class="badge badge-secondary">Video</small></h5>
+              <p>This is the third tutorial, where I explain how to use OpenCV functions to record video input on MATLAB.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img width="85" src="https://img.youtube.com/vi/IWNcFuAHHyY/mqdefault.jpg" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="https://www.youtube.com/watch?v=IWNcFuAHHyY&amp;index=4&amp;list=PLmcMMZCV897pofUfG1yH-8fcjpUTFUSaJ">Tutorial 4: Feature Extraction and Matching</a> <small class="badge badge-secondary">Video</small></h5>
+              <p>This is the fourth tutorial, where I explain how to use OpenCV functions to extract features to match objects on MATLAB.</p>
+            </td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="section mb-5" id="core">
+        <h1 class="my-4">
+          <i class="fa fa-book" aria-hidden="true"></i>
+          core: <small class="text-muted">Core Functionality</small>
+        </h1>
+        <table class="table table-striped table-bordered">
+          <tr>
+            <td class="thumb">
+              <img src="opencv/RotatedRect_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/RotatedRect_demo.html">Rotated Rectangle</a></h5>
+              <p>The sample demonstrates how to use <code>cv.RotatedRect</code>.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="img/demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/FileStorage_demo.html">Reading/Writing XML and YAML files</a></h5>
+              <p>Demonstration of reading/writing from/to XML and YAML file storages.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="img/demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/file_storage_demo.html">Serialization Functionality</a></h5>
+              <p>Demonstrate the usage of OpenCV serialization functionality.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/linear_blending_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/linear_blending_demo_gui.html">Image Blending</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>In this demo, we add two images using <code>cv.addWeighted</code> which defines a linear blend operator: $g(x) = (1 - \alpha)f_{0}(x) + \alpha f_{1}(x)$.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/image_bitwise_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/image_bitwise_demo.html">Bitwise Operations on Images</a></h5>
+              <p>In this demo, we show how to perform arithmetic operations on images like addition, subtraction, bitwise operations, etc.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/linear_transform_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/linear_transform_demo_gui.html">Brightness and contrast adjustments</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>In this demo we show how to perform the operation: $g(i,j) = \alpha \cdot f(i,j) + \beta$.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/padding_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/padding_demo_gui.html">Image padding</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>In this demo, we show how to use the OpenCV function <code>cv.copyMakeBorder</code> to set the borders (extra image padding).</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/threshold_inrange_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/threshold_inrange_demo_gui.html">inRange Thresholding Operations</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>In this demo we show how to perform basic thresholding operations using OpenCV function <code>cv.inRange</code>, and detect an object based on the range of pixel values it has.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/dft_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/dft_demo.html">Discrete Fourier Transform</a></h5>
+              <p>This program demonstrated the use of the discrete Fourier transform (DFT). The DFT of an image is taken and it's power spectrum is displayed.</p>
+            </td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="section mb-5" id="imgproc">
+        <h1 class="my-4">
+          <i class="fa fa-book" aria-hidden="true"></i>
+          imgproc: <small class="text-muted">Image Processing</small>
+        </h1>
+        <table class="table table-striped table-bordered">
+          <tr>
+            <td class="thumb">
+              <img src="opencv/drawing_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/drawing_demo.html">Demonstration of drawing functions</a></h5>
+              <p>This program demonstrates OpenCV drawing and text output functions.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/drawing_basic_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/drawing_basic_demo.html">Basic Geometric Drawing</a></h5>
+              <p>In this demo, we show how to use basic drawing functions (line, ellipse, rectangle, circle, etc.).</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/draw_text_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/draw_text_demo.html">Demonstration of text drawing functions</a></h5>
+              <p>Demonstration of text drawing functions.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/falsecolor_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/falsecolor_demo_gui.html">Colormaps</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>Sample shows how to apply false color on a grayscale image.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/delaunay2_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/delaunay2_demo.html">Delaunay triangulation</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>This program demostrates iterative construction of Delaunay triangulation and Voronoi tesselation.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/hull_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/hull_demo_gui.html">Convex Hull demo</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>We learn how to get hull contours and draw them.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/contours_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/contours_demo.html">Retrieve and label connected components from a binary image.</a></h5>
+              <p>The example below shows how to retrieve connected components from a binary image and label them.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/contours2_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/contours2_demo.html">Contours Demo</a></h5>
+              <p>This program illustrates the use of <code>cv.findContours</code> and <code>cv.drawContours</code>.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/watershed_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/watershed_demo_gui.html">Watershed Demo</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>This program demonstrates the famous watershed segmentation algorithm in OpenCV.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/contours_hierarchy_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/contours_hierarchy_demo.html">Contours in OpenCV</a></h5>
+              <p>In the sample, we will understand what contours are, and learn about the hierarchy of contours, and how to find and draw contours.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/findContours_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/findContours_demo_gui.html">Finding contours in an image</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>We learn how to find contours of objects in our image.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/ffilldemo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/ffilldemo_gui.html">Flood-filling in an image</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>An example using the Flood-Fill technique.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/floodfill_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/floodfill_demo.html">Flood-Fill demo</a></h5>
+              <p>Demonstrates how to use <code>cv.floodFill</code>.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/thresholding_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/thresholding_demo.html">Image Thresholding</a></h5>
+              <p>In this demo, we will learn about simple thresholding, adaptive thresholding, and Otsu's thresholding.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/threshold_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/threshold_demo_gui.html">Threshold demo</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>Sample code that shows how to use the diverse threshold options offered by OpenCV.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/smoothing_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/smoothing_demo.html">Smoothing Demo</a></h5>
+              <p>Sample code for simple filters.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/gausian_median_blur_bilateral_filter.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/gausian_median_blur_bilateral_filter.html">Smoothing Images</a></h5>
+              <p>In this tutorial you will learn how to apply diverse linear filters to smooth images.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/polar_transforms_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/polar_transforms_demo.html">Polar Transforms demo</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>This program illustrates Linear-Polar and Log-Polar image transforms.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/morphology_demo_gui1.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/morphology_demo_gui1.html">Erosion and Dilation</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>In this sample, you will learn how to apply two very common morphological operators: Erosion and Dilation.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/morphology_demo_gui2.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/morphology_demo_gui2.html">Advanced Morphology Transformations Demo</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>In this sample you will learn how to use the OpenCV function <code>cv.morphologyEx</code> to apply Advanced Morphological Transformation.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/morphology_demo_3.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/morphology_demo_3.html">Extracting horizontal and vertical lines using morphology</a></h5>
+              <p>Example that uses morphology transformations for extracting horizontal and vertical lines.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/hitmiss_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/hitmiss_demo.html">Hit-or-Miss Morphological Operation</a></h5>
+              <p>In this tutorial you will learn how to find a given configuration or pattern in a binary image by using the Hit-or-Miss transform.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/generalContours_demo1.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/generalContours_demo1.html">Creating Bounding boxes and circles for contours</a></h5>
+              <p>Demo code to find contours in an image, and create bounding boxes and circles.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/generalContours_demo2.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/generalContours_demo2.html">Creating Bounding rotated boxes and ellipses for contours</a></h5>
+              <p>Demo code to obtain ellipses and rotated rectangles that contain detected contours.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/fitellipse_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/fitellipse_demo_gui.html">Fit ellipses</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>This program is demonstration for ellipse fitting. The program finds contours and approximate them by ellipses.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/fitline_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/fitline_demo_gui.html">Robust Line Fitting</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>Example of using <code>cv.fitLine</code> function for fitting 2D line to points in presence of outliers.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/moments_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/moments_demo_gui.html">Image Moments</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>We learn to calculate the moments of an image.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/gabor_filter_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/gabor_filter_gui.html">Gabor Filter demo</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>A GUI to interact with the 5 different Gabor filter parameters, while visualizing the resulting filter.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/gabor_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/gabor_demo.html">Fractalius-like image effect using Gabor filters</a></h5>
+              <p>This sample demonstrates the use of multiple Gabor filter convolutions to get Fractalius-like image effect.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/lsd_lines_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/lsd_lines_demo.html">Line Segment Detector demo</a></h5>
+              <p>An example using the <code>cv.LineSegmentDetector</code> class.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/hough_lines_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/hough_lines_demo.html">Hough line detector</a></h5>
+              <p>An example using the Hough line detector.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/hough_circles_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/hough_circles_demo.html">Hough circle detector</a></h5>
+              <p>An example using the Hough circle detector.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/generalized_hough_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/generalized_hough_demo.html">Generalized Hough transform</a></h5>
+              <p>This program demonstrates arbitrary object finding with the Generalized Hough transform.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/grabcut_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/grabcut_demo_gui.html">Interactive foreground extraction using GrabCut</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>Interactive foreground extraction using the GrabCut algorithm.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/pyramids_blending.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/pyramids_blending.html">Image pyramids for image blending</a></h5>
+              <p>Learn about image pyramids and how to use them for image blending.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/lap_pyr_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/lap_pyr_demo_gui.html">Laplacian Pyramid Construction and Merging</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>The Laplacian Pyramid as a Compact Image Code.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/warp_perspective_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/warp_perspective_demo_gui.html">Image Warping</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>This program shows perspective transformation applied on an image.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/perspective_transform_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/perspective_transform_gui.html">Interactive Perspective Transformation</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>This program demonstrates Perspective Transformation.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/image_alignment_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/image_alignment_demo.html">Image Alignment using ECC algorithm</a></h5>
+              <p>This sample demostrates the use of the ECC image alignment algorithm.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/generic_corner_detector_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/generic_corner_detector_demo.html">Corner Detection</a></h5>
+              <p>In this demo we will understand concepts behind Harris Corner Detection. We also learn about another corner detector, the Shi-Tomasi Corner Detector.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/corner_subpixels_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/corner_subpixels_demo_gui.html">Refining Corner Locations</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>Demo code for detecting corners using Shi-Tomasi method and refining corner locations.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/mask_tmpl_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/mask_tmpl_demo.html">Template Matching</a></h5>
+              <p>This program demonstrates template match with mask.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/phase_corr_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/phase_corr_demo.html">Phase Correlation</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>Demonstrates estimating translational shift between two successive frames using Phase Correlation.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/convexhull_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/convexhull_demo.html">Convex Hull</a></h5>
+              <p>This sample program demonstrates the use of the <code>cv.convexHull</code> function.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/minarea_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/minarea_demo.html">Minimum Area Enclosing</a></h5>
+              <p>This program demonstrates finding the minimum enclosing box, triangle or circle of a set of points.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/connected_components_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/connected_components_demo_gui.html">Connected Components</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>This sample demonstrates connected components labeling.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/edge_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/edge_demo_gui.html">Canny Edge Detection</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>This sample demonstrates Canny edge detection.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/laplace_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/laplace_demo_gui.html">Laplacian Edge Detection</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>This program demonstrates Laplace point/edge detection using OpenCV function <code>cv.Laplacian</code>.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/create_mask_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/create_mask_demo_gui.html">Create Binary Mask Interactively</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>Interactively create a polygon mask.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/create_mask_ipt_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/create_mask_ipt_demo.html">Create Binary Mask Interactively (IPT)</a></h5>
+              <p>Interactively create a polygon mask.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/mouse_and_match_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/mouse_and_match_demo.html">Interactive Rectangle Selection</a></h5>
+              <p>Select a rectangle by drawing a box using the mouse, using <code>RectSelector</code> helper class.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/distrans_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/distrans_demo_gui.html">Distance Transform</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>Program to demonstrate the use of the distance transform function between edge images.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/hist_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/hist_demo_gui.html">Intensity Image Histogram</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>This program demonstrates the use of <code>cv.calcHist</code> for histogram creation.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/histogram_calculation_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/histogram_calculation_demo.html">Histogram Calculation</a></h5>
+              <p>In this demo, we show how to divide an image into its correspondent planes and calculate histograms of arrays of images.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/histogram_equalization_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/histogram_equalization_demo.html">Histogram Equalization</a></h5>
+              <p>In this demo, we show what an image histogram is and why it is useful.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/histogram_comparison_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/histogram_comparison_demo.html">Histogram Comparison</a></h5>
+              <p>In this demo, we show how to use the function <code>cv.compareHist</code> to get a numerical parameter that express how well two histograms match with each other.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/histogram_2d_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/histogram_2d_demo.html">2D Histogram</a></h5>
+              <p>We explain how to create a 2D color histogram.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/color_histogram_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/color_histogram_demo_gui.html">Video Histogram</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>Demo to show live histogram of video, both 1D histograms of RGB channels and 2D histogram of Hue-Saturation.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/backproject_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/backproject_demo_gui.html">Back Projection</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>In this demo, we will learn what is Back Projection and why it is useful.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/camshift_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/camshift_demo_gui.html">CAMShift</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>In this demo, we learn about Meanshift and Camshift algorithms to find and track objects in videos.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/camshift_track_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/camshift_track_demo.html">Histogram-based face tracker with CAMShift</a></h5>
+              <p>In this demo, we implement a simple face tracker applied on an input video.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/clahe_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/clahe_demo_gui.html">CLAHE (Contrast Limited Adaptive Histogram Equalization)</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>In this demo, we will learn the concepts of histogram equalization and use it to improve the contrast of our images.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/remap_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/remap_demo.html">Image Remapping</a></h5>
+              <p>In this demo, we show how to use the OpenCV function <code>cv.remap</code> to implement simple remapping routines.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/remap_fun_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/remap_fun_demo.html">Fun with remap</a></h5>
+              <p>Maps a rectangular image into a circle.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/warp_affine_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/warp_affine_demo.html">Image Affine Transformation</a></h5>
+              <p>In this demo, we show how to implement simple affine remapping routines.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/pyramids_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/pyramids_demo_gui.html">Image Pyramids</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>In this demo, we show how to use the functions <code>cv.pyrUp</code> and <code>cv.pyrDown</code> to downsample or upsample a given image.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/sobel_derivatives_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/sobel_derivatives_demo.html">Sobel Derivatives</a></h5>
+              <p>In this demo, we show how to calculate the derivatives of an image using the OpenCV functions <code>cv.Sobel</code> and <code>cv.Scharr</code>.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/laplace_operator_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/laplace_operator_demo.html">Laplace Operator</a></h5>
+              <p>In this demo, we show how to use the OpenCV function <code>cv.Laplacian</code> to implement a discrete analog of the Laplacian operator.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/pointPolygonTest_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/pointPolygonTest_demo.html">Point Polygon Test</a></h5>
+              <p>In this sample you will learn how to use the OpenCV function <code>cv.pointPolygonTest</code>.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/points_polygon_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/points_polygon_demo.html">Points Inside Convex Polygon</a></h5>
+              <p>We define a pentagon and a set of points. Then, determine which points lie inside, outside, or on the edge of the pentagon.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/watershed_segmentation_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/watershed_segmentation_demo.html">Image Segmentation with Distance Transform and Watershed Algorithm</a></h5>
+              <p>Sample code showing how to segment overlapping objects using Laplacian filtering, in addition to Watershed and Distance Transformation.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/weiner_deconvolution_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/weiner_deconvolution_demo_gui.html">Wiener Deconvolution for Image Deblurring</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>Sample shows how DFT can be used to perform Weiner deconvolution of an image with user-defined point spread function (PSF).</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/texture_flow_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/texture_flow_demo.html">Texture flow direction estimation</a></h5>
+              <p>Sample shows how <code>cv.cornerEigenValsAndVecs</code> function can be used to estimate image texture flow direction.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/coherence_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/coherence_demo_gui.html">Coherence-Enhancing Filtering</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>Coherence-Enhancing Shock Filters.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/turing_patterns_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/turing_patterns_demo.html">Multi-Scale Turing Patterns Generator</a></h5>
+              <p>Generate mathematical artwork.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/hi_res_browse_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/hi_res_browse_demo.html">Hi-Resolution Image Navigation</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>Sample shows how to implement a simple hi-resolution image navigation.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/squares_detector_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/squares_detector_demo.html">Squares Detector</a></h5>
+              <p>It loads several images sequentially and tries to find squares in each image.</p>
+            </td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="section mb-5" id="imgcodecs">
+        <h1 class="my-4">
+          <i class="fa fa-book" aria-hidden="true"></i>
+          imgcodecs: <small class="text-muted">Image File Reading and Writing</small>
+        </h1>
+        <table class="table table-striped table-bordered">
+          <tr>
+            <td class="thumb">
+              <img src="opencv/image_similarity_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/image_similarity_demo.html">Image similarity under lossy compression</a></h5>
+              <p>Similarity measurements (PSNR and SSIM).</p>
+            </td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="section mb-5" id="videoio">
+        <h1 class="my-4">
+          <i class="fa fa-book" aria-hidden="true"></i>
+          videoio: <small class="text-muted">Media I/O</small>
+        </h1>
+        <table class="table table-striped table-bordered">
+          <tr>
+            <td class="thumb">
+              <img src="opencv/capture_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/capture_demo_gui.html">Video Capture</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>We learn how to capture live stream from camera and display it, while adjusting basic video color properties.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/video_write_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/video_write_demo.html">Creating a video</a></h5>
+              <p>This demo shows how to write video files.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/synth_video_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/synth_video_demo.html">Synthetic video</a></h5>
+              <p>Demonstrates using <code>VideoSynth</code> classes as stub for <code>cv.VideoCapture</code>.</p>
+            </td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="section mb-5" id="video">
+        <h1 class="my-4">
+          <i class="fa fa-book" aria-hidden="true"></i>
+          video: <small class="text-muted">Video Analysis</small>
+        </h1>
+        <table class="table table-striped table-bordered">
+          <tr>
+            <td class="thumb">
+              <img src="opencv/segment_objects_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/segment_objects_demo.html">Segment objects in Background Subtractor</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>An example using drawContours to clean up a background segmentation result.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/kalman_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/kalman_demo.html">Tracking of rotating point using Kalman filter</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>Tracking of rotating point.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/tvl1_optical_flow_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/tvl1_optical_flow_demo.html">Dual TV-L1 Optical Flow</a></h5>
+              <p>Optical Flow Estimation using Dual TV-L1 method.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/fback_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/fback_demo.html">Farneback Optical Flow</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>This program demonstrates dense optical flow algorithm by Gunnar Farneback.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/opt_flow_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/opt_flow_demo.html">Dense Optical Flow</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>Demo shows how to compute the optical flow for all the points in the frame using <code>cv.calcOpticalFlowFarneback</code>.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/lucas_kanade_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/lucas_kanade_demo.html">Sparse Optical Flow</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>In this demo, we will understand the concepts of optical flow and its estimation using Lucas-Kanade method.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/pyrlk_optical_flow_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/pyrlk_optical_flow_demo.html">Lucas-Kanade Sparse Optical Flow</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>Sparse optical flow to track points.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/lk_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/lk_demo_gui.html">Lucas-Kanade Optical Flow</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>A demo of Lukas-Kanade optical flow.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/lk_track_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/lk_track_demo.html">Lucas-Kanade Tracker</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>Lucas-Kanade sparse optical flow demo. Uses <code>cv.goodFeaturesToTrack</code> for track initialization and back-tracking for match verification between frames.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/lk_homography_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/lk_homography_demo.html">Lucas-Kanade Homography Tracker</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>Lucas-Kanade sparse optical flow demo. Uses <code>cv.goodFeaturesToTrack</code> for track initialization and back-tracking for match verification between frames. Finds homography between reference and current views.</p>
+            </td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="section mb-5" id="calib3d">
+        <h1 class="my-4">
+          <i class="fa fa-book" aria-hidden="true"></i>
+          calib3d: <small class="text-muted">Camera Calibration and 3D Reconstruction</small>
+        </h1>
+        <table class="table table-striped table-bordered">
+          <tr>
+            <td class="thumb">
+              <img src="opencv/calibration_capture_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/calibration_capture_demo.html">Collect Calibration Pattern Images</a></h5>
+              <p>This sample is used to take snapshots of a calibration pattern from live webcam. These images can be later used for camera calibration.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/calibration_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/calibration_demo.html">Camera Calibration</a></h5>
+              <p>This example demonstrates camera calibration in OpenCV.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/calibration_pose_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/calibration_pose_demo.html">Pose Estimation</a></h5>
+              <p>In this sample, we learn to exploit calib3d module to create some 3D effects in images from a calibrated camera.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/stereo_calibration_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/stereo_calibration_demo.html">Stereo Calibration with square chessboard</a></h5>
+              <p>Demonstration of stereo calibration, rectification, and correspondence.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/stereo_match_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/stereo_match_demo.html">Stereo Image Matching</a></h5>
+              <p>Example of stereo image matching to produce a disparity map and point cloud generation.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/epipolar_geometry_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/epipolar_geometry_demo.html">Epipolar Geometry</a></h5>
+              <p>In this sample we will learn about the basics of multiview geometry, and we see what is epipole, epipolar lines, epipolar constraint etc.</p>
+            </td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="section mb-5" id="feature2d">
+        <h1 class="my-4">
+          <i class="fa fa-book" aria-hidden="true"></i>
+          feature2d: <small class="text-muted">2D Features Framework</small>
+        </h1>
+        <table class="table table-striped table-bordered">
+          <tr>
+            <td class="thumb">
+              <img src="opencv/feature_detector_fast_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/feature_detector_fast_demo.html">FAST Algorithm for Corner Detection</a></h5>
+              <p>In this demo, we will understand the basics of FAST algorithm to find corners.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/orb_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/orb_demo.html">ORB (Oriented FAST and Rotated BRIEF)</a></h5>
+              <p>In this demo, we will see the basics of ORB.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/feature_homography_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/feature_homography_demo.html">Feature Matching + Homography to find a known object</a></h5>
+              <p>In this sample, you will use features2d and calib3d to detect an object in a scene.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/asift_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/asift_demo.html">Affine invariant feature-based image matching</a></h5>
+              <p>This sample uses the affine transformation space sampling technique, called ASIFT.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/akaze_match_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/akaze_match_demo.html">AKAZE local features matching</a></h5>
+              <p>In this demo, we will learn how to use AKAZE local features to detect and match keypoints on two images. We will find keypoints on a pair of images with given homography matrix, match them and count the number of inliers.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/planar_tracker_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/planar_tracker_demo.html">AKAZE and ORB planar tracking</a></h5>
+              <p>In this demo, we will compare AKAZE and ORB local features by using them to find matches between video frames and track object movements.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/descriptors_compute_match_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/descriptors_compute_match_demo.html">Detect, Compute, and Match Descriptors</a></h5>
+              <p>This program demonstrates how to detect, compute, and match descriptors using various algorithms: ORB, BRISK, and AKAZE.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/detect_blob_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/detect_blob_demo.html">Blob Detection</a></h5>
+              <p>This program demonstrates how to use BLOB to detect and filter region.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/mser_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/mser_demo.html">Maximally Stable Extremal Regions (MSER)</a></h5>
+              <p>This program demonstrates how to use MSER to detect extremal regions.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/plane_tracker_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/plane_tracker_demo.html">Multi-target planar tracking</a></h5>
+              <p>Example of using features2d framework for multiple planar targets tracking in a video using homography matching.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/feature_homography_track_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/feature_homography_track_demo.html">Feature homography based planar tracking</a></h5>
+              <p>Example of using features2d framework with homography matching for tracking planar objects in a video.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/plane_ar_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/plane_ar_demo.html">Planar augmented reality</a></h5>
+              <p>This sample shows an example of augmented reality overlay over a tracked planar object to show its pose in 3D space.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/mosse_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/mosse_demo.html">Correlation-based Tracking using MOSSE Filters</a></h5>
+              <p>Correlation filter based tracking using MOSSE filters (Minimum Output Sum of Squared Error).</p>
+            </td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="section mb-5" id="objdetect">
+        <h1 class="my-4">
+          <i class="fa fa-book" aria-hidden="true"></i>
+          objdetect: <small class="text-muted">Object Detection</small>
+        </h1>
+        <table class="table table-striped table-bordered">
+          <tr>
+            <td class="thumb">
+              <img src="opencv/facedetect.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/facedetect.html">Face Detection</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>Here is an example that illustrates how to detect faces in a live video stream.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/face_eyes_detect_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/face_eyes_detect_demo.html">Face and Eyes Detection</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>In this demo, we will learn the basics of face detection using Haar Feature-based Cascade Classifiers, and how the same extends for eye detection, etc.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/facial_features_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/facial_features_demo.html">Facial Features Detection</a></h5>
+              <p>A program to detect facial feature points using Haarcascade classifiers for face, eyes, nose and mouth.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/smiledetect_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/smiledetect_demo.html">Smile Detection</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>This program demonstrates the smile detector.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/dbt_face_detection_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/dbt_face_detection_demo.html">DBT Face Detection</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>Detection-Based Tracker Face Detector.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/peopledetect_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/peopledetect_demo.html">People Detection using HoG</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>This program demonstrates the use of the HoG descriptor using the pre-trained SVM model for people detection.</p>
+            </td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="section mb-5" id="dnn">
+        <h1 class="my-4">
+          <i class="fa fa-book" aria-hidden="true"></i>
+          dnn: <small class="text-muted">Deep Neural Network module</small>
+        </h1>
+        <table class="table table-striped table-bordered">
+          <tr>
+            <td class="thumb">
+              <img src="opencv/caffe_googlenet_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/caffe_googlenet_demo.html">Deep Neural Network with Caffe models</a></h5>
+              <p>In this tutorial you will learn how to use DNN module for image classification by using GoogLeNet trained network from Caffe model zoo.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/fcn_semsegm_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/fcn_semsegm_demo.html">Fully-Convolutional Networks for Semantic Segmentation</a></h5>
+              <p>Fully Convolutional Models for Semantic Segmentation.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/dnn_image_classification_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/dnn_image_classification_demo.html">DNN Image Classification</a></h5>
+              <p>Image Classification task using DNN.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/dnn_semantic_segmentation_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/dnn_semantic_segmentation_demo.html">DNN Semantic Segmentation</a></h5>
+              <p>This sample demonstrates semantic segmentation, where we label each pixel in the image with a category label.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/dnn_object_detection_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/dnn_object_detection_demo.html">DNN Object Detection</a></h5>
+              <p>This sample uses Single-Shot Detector to detect objects on image (produces bounding boxes and corresponding labels).</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/dnn_face_detector.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/dnn_face_detector.html">DNN Face Detection</a></h5>
+              <p>Face detector based on SSD framework (Single Shot MultiBox Detector).</p>
+            </td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="section mb-5" id="ml">
+        <h1 class="my-4">
+          <i class="fa fa-book" aria-hidden="true"></i>
+          ml: <small class="text-muted">Machine Learning</small>
+        </h1>
+        <table class="table table-striped table-bordered">
+          <tr>
+            <td class="thumb">
+              <img src="opencv/kmeans_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/kmeans_demo.html">K-Means Clustering</a></h5>
+              <p>This program demonstrates kmeans clustering. It generates an image with random points, then assigns a random number of cluster centers and uses kmeans to move those cluster centers to their representitive location.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/em_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/em_demo.html">EM Clustering</a></h5>
+              <p>Demonstrates EM clustering.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/gaussian_mix_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/gaussian_mix_demo.html">Gaussian Mixture Model (GMM)</a></h5>
+              <p>Demonstrates EM clustering, and also compares againt K-means clustering.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/kmeans_color_quantize_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/kmeans_color_quantize_demo.html">K-Means Color Quantization</a></h5>
+              <p>We will learn how to use <code>cv.kmeans</code> for data clustering of pixels to perform color quantization.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="img/demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/classification_demo.html">Comparison of different classifiers on the same dataset</a></h5>
+              <p>This demonstrates an example of machine learning algorithms in a simple classification problem. It compares different classifiers using the same data samples.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/ml_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/ml_demo.html">Showcase different classifiers</a></h5>
+              <p>Example using different classifiers.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/logistic_regression_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/logistic_regression_demo.html">Logistic Regression</a></h5>
+              <p>Logistic Regression to classify hand-written digits.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/svm_intro_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/svm_intro_demo.html">Support Vector Machines (SVM)</a></h5>
+              <p>In this sample, you will learn how to use the OpenCV function <code>cv.SVM</code> to build a classifier based on SVMs and to test its performance.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/knn_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/knn_demo.html">K-Nearest Neighbors (KNN)</a></h5>
+              <p>In this demo, we will understand the concepts of k-Nearest Neighbour (kNN) algorithm, then demonstrate how to use kNN classifier for 2D point classification.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/pca_intro_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/pca_intro_demo.html">Principal Component Analysis (PCA)</a></h5>
+              <p>In this demo, you will learn how to use the OpenCV class <code>cv.PCA</code> to calculate the orientation of an object.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/pca_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/pca_demo.html">PCA for dimensionality reduction</a></h5>
+              <p>This program demonstrates how to use OpenCV PCA with a specified amount of variance to retain.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/train_svmsgd_demo_gui.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/train_svmsgd_demo_gui.html">SVMSGD Interactive Classification</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>Train a classifier with SVMSGD algorithm that can handle linearly separable 2-class dataset.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/knn_ocr_digits_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/knn_ocr_digits_demo.html">OCR of hand-written digits using KNN</a></h5>
+              <p>We will use kNN to build a basic OCR application.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="img/demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/knn_ocr_letters_demo.html">OCR of English letters using KNN</a></h5>
+              <p>We will use kNN to build a basic OCR application.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/svm_hog_ocr_digits_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/svm_hog_ocr_digits_demo.html">OCR of hand-written digits using HoG and SVM</a></h5>
+              <p>In this tutorial, we will build an SVM classifer to recognize hand-written digits (0 to 9), using Histogram of Oriented Gradients (HOG) as feature vectors.</p>
+            </td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="section mb-5" id="photo">
+        <h1 class="my-4">
+          <i class="fa fa-book" aria-hidden="true"></i>
+          photo: <small class="text-muted">Computational Photography</small>
+        </h1>
+        <table class="table table-striped table-bordered">
+          <tr>
+            <td class="thumb">
+              <img src="opencv/hdr_imaging_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/hdr_imaging_demo.html">High Dynamic Range Imaging</a></h5>
+              <p>In this tutorial we show how to generate and display HDR image from an exposure sequence.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/inpaint_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/inpaint_demo.html">Inpainting</a> <small class="badge badge-secondary">GUI</small></h5>
+              <p>We will learn how to remove small noises, strokes, etc. in old photographs by a method called inpainting.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/npr_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/npr_demo.html">Non-Photorealistic Rendering</a></h5>
+              <p>This tutorial demonstrates how to use OpenCV Non-Photorealistic Rendering Module.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/cloning_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/cloning_demo.html">Seamless Cloning</a></h5>
+              <p>This tutorial demonstrates how to use OpenCV seamless cloning module.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/non_local_means_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/non_local_means_demo.html">Non-Local Means Image Denoising</a></h5>
+              <p>In this demo, we will learn about Non-local Means Denoising algorithm to remove noise in an image.</p>
+            </td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="section mb-5" id="stitching">
+        <h1 class="my-4">
+          <i class="fa fa-book" aria-hidden="true"></i>
+          stitching: <small class="text-muted">Images Stitching</small>
+        </h1>
+        <table class="table table-striped table-bordered">
+          <tr>
+            <td class="thumb">
+              <img src="opencv/stitching_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/stitching_demo.html">Simple rotation model images stitcher</a></h5>
+              <p>A basic example on image stitching.</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="thumb">
+              <img src="opencv/stitching_detailed_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/stitching_detailed_demo.html">Rotation model images stitcher</a></h5>
+              <p>A detailed example on image stitching.</p>
+            </td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="section mb-5" id="shape">
+        <h1 class="my-4">
+          <i class="fa fa-book" aria-hidden="true"></i>
+          shape: <small class="text-muted">Shape Distance and Matching</small>
+        </h1>
+        <table class="table table-striped table-bordered">
+          <tr>
+            <td class="thumb">
+              <img src="opencv/shape_context_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/shape_context_demo.html">Shape context for shape matching</a></h5>
+              <p>This program demonstrates a method for shape comparison based on Shape Context.</p>
+            </td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="section mb-5" id="superres">
+        <h1 class="my-4">
+          <i class="fa fa-book" aria-hidden="true"></i>
+          superres: <small class="text-muted">Super Resolution</small>
+        </h1>
+        <table class="table table-striped table-bordered">
+          <tr>
+            <td class="thumb">
+              <img src="opencv/super_resolution_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/super_resolution_demo.html">Super Resolution algorithms for video sequence</a></h5>
+              <p>This sample demonstrates Super Resolution algorithms for video sequence.</p>
+            </td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="section mb-5" id="videostab">
+        <h1 class="my-4">
+          <i class="fa fa-book" aria-hidden="true"></i>
+          videostab: <small class="text-muted">Video Stabilization</small>
+        </h1>
+        <table class="table table-striped table-bordered">
+          <tr>
+            <td class="thumb">
+              <img src="opencv/videostab_demo.png" alt="thumbnail">
+            </td>
+            <td>
+              <h5><a href="opencv/videostab_demo.html">Video Stabilizer</a></h5>
+              <p>This sample demonstrates video stabilization algorithms for video sequence.</p>
+            </td>
+          </tr>
+        </table>
+      </section>
+
+    </div>
+
+  </main>
+  <!-- /Main Layout -->
+
+  <!-- Footer -->
+  <footer class="bg-dark text-light pt-3">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3 col-sm-6">
+          <ul class="list-unstyled">
+            <li class="text-uppercase"><strong>mexopencv</strong></li>
+            <li><a href="/">Home</a></li>
+            <li><a href="https://github.com/kyamagu/mexopencv">GitHub</a></li>
+          </ul>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <ul class="list-unstyled">
+            <li class="text-uppercase"><strong>Documentation</strong></li>
+            <li><a href="https://github.com/kyamagu/mexopencv/wiki">Wiki</a></li>
+            <li><a href="matlab/">User Docs</a></li>
+            <li><a href="cpp/">Dev Docs</a></li>
+          </ul>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <ul class="list-unstyled">
+            <li class="text-uppercase"><strong>External Docs</strong></li>
+            <li><a href="http://docs.opencv.org/3.3.1/">OpenCV</a></li>
+            <li><a href="https://www.mathworks.com/help/matlab/index.html">MATLAB</a></li>
+            <li><a href="https://www.gnu.org/software/octave/doc/interpreter/">Octave</a></li>
+          </ul>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <ul class="list-unstyled">
+            <li class="text-uppercase"><strong>Examples</strong></li>
+            <li><a href="opencv.html">opencv</a></li>
+            <li><a href="opencv_contrib.html">opencv_contrib</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-copyright text-muted">
+      <ul class="list-unstyled mb-0">
+        <li>mexopencv is free software under the <a rel="license" href="https://github.com/kyamagu/mexopencv/blob/master/LICENSE" rel="license">BSD-3 Licence</a></li>
+        <li>Copyright &copy; 2011-2017 mexopencv team</li>
+      </ul>
+    </div>
+  </footer>
+  <!-- /Footer -->
+
+  <!-- "scroll to top" button (only visible on small screen sizes) -->
+  <div class="scroll-top d-md-none d-print-none">
+    <a class="btn btn-primary js-scroll-trigger" href="#page-top">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="vendor/jquery/jquery.slim.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="js/script.min.js"></script>
+
+  <!-- MathJax -->
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ]
+    }
+  });
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML"></script>
+
+</body>
+
+</html>
