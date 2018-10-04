@@ -1,0 +1,51 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.dctDenoising - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.dctDenoising - The function implements simple dct-based denoising" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.dctDenoising - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.dctDenoising</div>
+      <div class="helpcontent"><p class=" h1line">The function implements simple dct-based denoising</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.dctDenoising.html">cv.dctDenoising</a>(src)
+dst = <a href="cv.dctDenoising.html">cv.dctDenoising</a>(src, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> source image (gray or RGB). Internally the function operates on
+<code>single</code> data type.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> destination image, same size and type as input <code>src</code>.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Sigma</strong> expected noise standard deviation. Default 10.0</li>
+<li><strong>BlockSize</strong> size of block side where DCT is computed. Default 16</li>
+</ul>
+<p>See [YSDCT11]. The function is parallelized.</p>
+<h2>References</h2>
+<p>[YSDCT11]:</p>
+<blockquote>
+<p>Guoshen Yu and Guillermo Sapiro. &quot;DCT image denoising: a simple and
+effective image denoising algorithm&quot;, Image Processing On Line, 1 (2011).
+<a href="http://dx.doi.org/10.5201/ipol.2011.ys-dct" target="_blank">DOI</a></p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.fastNlMeansDenoising.html">cv.fastNlMeansDenoising</a>
+ </div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

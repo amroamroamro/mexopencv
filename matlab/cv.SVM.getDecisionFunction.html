@@ -1,0 +1,65 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>getDecisionFunction (cv.SVM) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.SVM.getDecisionFunction - Retrieves the decision function" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">getDecisionFunction (cv.SVM) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.SVM/getDecisionFunction</div>
+      <div class="helpcontent"><p class=" h1line">Retrieves the decision function</p>
+<pre class=" prettyprint lang-matlab"><code>[alpha,svidx,rho] = model.getDecisionFunction(index)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>index</strong> the index of the decision function (0-based). If the
+problem solved is regression, 1-class or 2-class
+classification, then there will be just one decision function
+and the index should always be 0. Otherwise, in the case of
+N-class classification, there will be <code>N(N-1)/2</code> decision
+functions.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>alpha</strong> the optional output vector for weights,
+corresponding to different support vectors. In the case of
+linear SVM all the alpha's will be 1's.</li>
+<li><strong>svidx</strong> the optional output vector of indices of support
+vectors within the matrix of support vectors (which can be
+retrieved by <a href="cv.SVM.getSupportVectors.html">cv.SVM.getSupportVectors</a>. In the case of linear
+SVM each decision function consists of a single &quot;compressed&quot;
+support vector.</li>
+<li><strong>rho</strong> <code>rho</code> parameter of the decision function, a scalar
+subtracted from the weighted sum of kernel responses.</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.SVM.getSupportVectors.html">cv.SVM/getSupportVectors</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

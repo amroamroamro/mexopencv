@@ -1,0 +1,77 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>setActivationFunction (cv.ANN_MLP) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.ANN_MLP.setActivationFunction - Initialize the activation function for each neuron" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">setActivationFunction (cv.ANN_MLP) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.ANN_MLP/setActivationFunction</div>
+      <div class="helpcontent"><p class=" h1line">Initialize the activation function for each neuron</p>
+<pre class=" prettyprint lang-matlab"><code>model.setActivationFunction(ftype)
+model.setActivationFunction(ftype, 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>ftype</strong> The type of activation function. default 'Sigmoid'.
+Possible activation functions:
+<ul>
+<li><strong>Identity</strong> Identity function: <code>f(x) = x</code></li>
+<li><strong>Sigmoid</strong> Symmetrical sigmoid:
+<code>f(x) = beta * (1-exp(-alpha*x))/(1+exp(-alpha*x))</code>. See
+note below.</li>
+<li><strong>Gaussian</strong> Gaussian function:
+<code>f(x) = beta * exp(-alpha^2*x*x)</code></li>
+<li><strong>ReLU</strong> ReLU function: <code>f(x) = max(0,x)</code></li>
+<li><strong>LeakyReLU</strong> Leaky ReLU function: <code>f(x) = x, for x&gt;0</code> and
+<code>f(x) = alpha*x, for x&lt;=0</code></li>
+</ul>
+</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Param1</strong> The first parameter of the activation function,
+<code>alpha</code>. default 0</li>
+<li><strong>Param2</strong> The second parameter of the activation function,
+<code>beta</code>. default 0</li>
+</ul>
+<p>Currently the default and the only fully supported activation
+function is 'Sigmoid'.</p>
+<h3>Note</h3>
+<p>If you are using the default <code>Sigmoid</code> activation function with
+the default parameter values <code>Param1=0</code> and <code>Param2=0</code> then the
+function used is <code>y = 1.7159*tanh(2/3 * x)</code>, so the output will
+range from [-1.7159, 1.7159], instead of [0,1].
+Recall that by definition
+<code>tanh(x) = (1 - exp(-2*x)) / (1 + exp(-2*x))</code>.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.ANN_MLP.ActivationFunction.html">cv.ANN_MLP/ActivationFunction</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

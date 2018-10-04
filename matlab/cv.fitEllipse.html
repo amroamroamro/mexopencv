@@ -1,0 +1,144 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.fitEllipse - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.fitEllipse - Fits an ellipse around a set of 2D points" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.fitEllipse - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.fitEllipse</div>
+      <div class="helpcontent"><p class=" h1line">Fits an ellipse around a set of 2D points</p>
+<pre class=" prettyprint lang-matlab"><code>rct = <a href="cv.fitEllipse.html">cv.fitEllipse</a>(points)
+rct = <a href="cv.fitEllipse.html">cv.fitEllipse</a>(points, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>points</strong> Input 2D point set, stored in numeric array
+(Nx2/Nx1x2/1xNx2) or cell array of 2-element vectors (<code>{[x,y], ...}</code>).
+There should be at least 5 points to fit the ellipse.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>rct</strong> Output rotated rectangle struct with the following fields:
+<ul>
+<li><strong>center</strong> The rectangle mass center <code>[x,y]</code>.</li>
+<li><strong>size</strong> Width and height of the rectangle <code>[w,h]</code>.</li>
+<li><strong>angle</strong> The rotation angle in a clockwise direction. When the angle is
+0, 90, 180, 270 etc., the rectangle becomes an up-right rectangle.</li>
+</ul>
+</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Method</strong> One of:
+<ul>
+<li><strong>Linear</strong> Linear (LIN) conic fitting method. This is the default.</li>
+<li><strong>Direct</strong> Direct least square (DLS) method.</li>
+<li><strong>AMS</strong> Approximate mean square (AMS) method.</li>
+</ul>
+</li>
+</ul>
+<h3>Method = Linear</h3>
+<p>The function calculates the ellipse that fits (in a least-squares sense) a
+set of 2D points best of all. It returns the rotated rectangle in which the
+ellipse is inscribed. The first algorithm described by [Fitzgibbon95] is
+used. Developer should keep in mind that it is possible that the returned
+ellipse/rotatedRect data contains negative indices, due to the data points
+being close to the border of the containing Mat element.</p>
+<h3>Method = Direct</h3>
+<p>The function calculates the ellipse that fits a set of 2D points.
+It returns the rotated rectangle in which the ellipse is inscribed.
+The Direct least square (Direct) method by [Fitzgibbon1999] is used.</p>
+<p>For an ellipse, this basis set is <code>chi = (x^2, x*y, y^2, x, y, 1)</code>, which is
+a set of six free coefficients <code>A^T = {A_xx, A_xy, A_yy, A_x, A_y, A_0}</code>.
+However, to specify an ellipse, all that is needed is five numbers; the
+major and minor axes lengths <code>(a,b)</code>, the position <code>(x_0,y_0)</code>, and the
+orientation <code>theta</code>. This is because the basis set includes lines,
+quadratics, parabolic and hyperbolic functions as well as elliptical
+functions as possible fits.</p>
+<p>The Direct method confines the fit to ellipses by ensuring that
+<code>4*A_xx*A_yy - A_xy^2 &gt; 0</code>. The condition imposed is that
+<code>4*A_xx*A_yy - A_xy^2 = 1</code> which satisfies the inequality and as the
+coefficients can be arbitrarily scaled is not overly restrictive.</p>
+<pre class=" prettyprint lang-matlab"><code>epsilon^2 = A^T * D^T * D * A
+with A^T * C * A = 1
+and C = [0 0 2 0 0 0; 0 -1 0 0 0 0; 2 0 0 0 0 0; 0 0 0 0 0 0; 0 0 0 0 0 0; 0 0 0 0 0 0]
+</code></pre>
+<p>The minimum cost is found by solving the generalized eigenvalue problem.</p>
+<pre class=" prettyprint lang-matlab"><code>D^T * D * A = lambda * (C) * A
+</code></pre>
+<p>The system produces only one positive eigenvalue <code>lambda</code> which is chosen as
+the solution with its eigenvector <code>u</code>. These are used to find the
+coefficients:</p>
+<pre class=" prettyprint lang-matlab"><code>A = sqrt(1 / (u^T * C * u)) * u
+</code></pre>
+<p>The scaling factor guarantees that  <code>A^T * C * A = 1</code>.</p>
+<p>Note: If the determinant of <code>A</code> is too small, the method fallsback to
+'Linear'.</p>
+<h3>Method = AMS</h3>
+<p>The function calculates the ellipse that fits a set of 2D points.
+It returns the rotated rectangle in which the ellipse is inscribed.
+The Approximate Mean Square (AMS) proposed by [Taubin1991] is used.</p>
+<p>For an ellipse, this basis set is <code>chi = (x^2, x*y, y^2, x, y, 1)</code>, which is
+a set of six free coefficients <code>A^T = {A_xx, A_xy, A_yy, A_x, A_y, A_0}</code>.
+However, to specify an ellipse, all that is needed is five numbers; the
+major and minor axes lengths <code>(a,b)</code>, the position <code>(x_0,y_0)</code>, and the
+orientation <code>theta</code>. This is because the basis set includes lines,
+quadratics, parabolic and hyperbolic functions as well as elliptical
+functions as possible fits.</p>
+<p>If the fit is found to be a parabolic or hyperbolic function then the
+'Direct' method is used. The AMS method restricts the fit to parabolic,
+hyperbolic and elliptical curves by imposing the condition that
+<code>A^T * (D_x^T * D_x + D_y^T * D_y) * A = 1</code> where the matrices <code>Dx</code> and <code>Dy</code>
+are the partial derivatives of the design matrix <code>D</code> with respect to x and y.
+The matrices are formed row by row applying the following to each of the
+points in the set:</p>
+<pre class=" prettyprint lang-matlab"><code>D(i,:)   = {x_i^2, x_i y_i, y_i^2, x_i, y_i, 1}
+D_x(i,:) = {2*x_i, y_i, 0, 1, 0, 0}
+D_y(i,:) = {0, x_i, 2*y_i, 0, 1, 0}
+</code></pre>
+<p>The AMS method minimizes the cost function</p>
+<pre class=" prettyprint lang-matlab"><code>epsilon^2 = (A^T * D^T * D * A) / (A^T * (D_x^T * D_x + D_y^T * D_y) * A^T)
+</code></pre>
+<p>The minimum cost is found by solving the generalized eigenvalue problem.</p>
+<pre class=" prettyprint lang-matlab"><code>D^T * D * A = lambda * (D_x^T * D_x + D_y^T * D_y) * A
+</code></pre>
+<p>Note: If the determinant of <code>A</code> is too small, the method fallsback to
+'Linear'.</p>
+<h2>References</h2>
+<p>[Fitzgibbon95]:</p>
+<blockquote>
+<p>Andrew W Fitzgibbon and Robert B Fisher.
+&quot;A buyer's guide to conic fitting&quot;. In Proceedings of the 6th British
+conference on Machine vision (Vol. 2), pages 513-522. BMVA Press, 1995.
+<a href="http://www.bmva.org/bmvc/1995/bmvc-95-050.pdf" target="_blank">PDF</a></p>
+</blockquote>
+<p>[Fitzgibbon1999]:</p>
+<blockquote>
+<p>Andrew Fitzgibbon, Maurizio Pilu, and Robert B. Fisher.
+&quot;Direct least square fitting of ellipses&quot;. IEEE Transactions on Pattern
+Analysis and Machine Intelligence, 21(5):476-480, 1999.
+<a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/ellipse-pami.pdf" target="_blank">PDF</a></p>
+</blockquote>
+<p>[Taubin1991]:</p>
+<blockquote>
+<p>Gabriel Taubin. &quot;Estimation of planar curves, surfaces, and nonplanar
+space curves defined by implicit equations with applications to edge and
+range image segmentation&quot;. IEEE Transactions on Pattern Analysis and
+Machine Intelligence, 13(11):1115-1138, 1991.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.minAreaRect.html">cv.minAreaRect</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

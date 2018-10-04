@@ -1,0 +1,66 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.PCTSignatures/PCTSignatures - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.PCTSignatures.PCTSignatures - Creates PCTSignatures algorithm" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.PCTSignatures/PCTSignatures - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.PCTSignatures/PCTSignatures</div>
+      <div class="helpcontent"><p class=" h1line">Creates PCTSignatures algorithm</p>
+<pre class=" prettyprint lang-matlab"><code>obj = <a href="cv.PCTSignatures.html">cv.PCTSignatures</a>()
+obj = <a href="cv.PCTSignatures.html">cv.PCTSignatures</a>('OptionName',optionValue, ...)
+
+obj = <a href="cv.PCTSignatures.html">cv.PCTSignatures</a>(initSamplingPoints, initSeedCount)
+
+obj = <a href="cv.PCTSignatures.html">cv.PCTSignatures</a>(initSamplingPoints, initClusterSeedIndexes)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>initSamplingPoints</strong> Sampling points used in image sampling.</li>
+<li><strong>initSeedCount</strong> Number of initial clusterization seeds. Must
+be lower or equal to <code>length(initSamplingPoints)</code>.</li>
+<li><strong>initClusterSeedIndexes</strong> Indexes of initial clusterization
+seeds. Its size must be lower or equal to
+<code>length(initSamplingPoints)</code>.</li>
+</ul>
+<h2>Options (first variant)</h2>
+<ul>
+<li><strong>InitSampleCount</strong> Number of points used for image sampling.
+default 2000</li>
+<li><strong>InitSeedCount</strong> Number of initial clusterization seeds. Must
+be lower or equal to <code>InitSampleCount</code>. default 400</li>
+<li><strong>PointDistribution</strong> Distribution of generated points.
+Available:
+<ul>
+<li><strong>Uniform</strong> (default) Generate numbers uniformly.</li>
+<li><strong>Regular</strong> Generate points in a regular grid.</li>
+<li><strong>Normal</strong> Generate points with normal (gaussian)
+distribution.</li>
+</ul>
+</li>
+</ul>
+<p>In the first variant, it creates PCTSignatures algorithm using
+sample and seed count. It generates its own sets of sampling
+points and clusterization seed indexes.</p>
+<p>In the second variant, it creates PCTSignatures algorithm using
+pre-generated sampling points and number of clusterization seeds.
+It uses the provided sampling points and generates its own
+clusterization seed indexes.</p>
+<p>In the third variant, it creates PCTSignatures algorithm using
+pre-generated sampling points and clusterization seeds indexes.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.PCTSignatures.computeSignature.html">cv.PCTSignatures/computeSignature</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

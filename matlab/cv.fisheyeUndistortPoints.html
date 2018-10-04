@@ -1,0 +1,45 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.fisheyeUndistortPoints - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.fisheyeUndistortPoints - Undistorts 2D points using fisheye model" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.fisheyeUndistortPoints - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.fisheyeUndistortPoints</div>
+      <div class="helpcontent"><p class=" h1line">Undistorts 2D points using fisheye model</p>
+<pre class=" prettyprint lang-matlab"><code>undistorted = <a href="cv.fisheyeUndistortPoints.html">cv.fisheyeUndistortPoints</a>(distorted, K, D);
+[...] = <a href="cv.fisheyeUndistortPoints.html">cv.fisheyeUndistortPoints</a>(..., 'OptionName',optionValue, ...);
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>distorted</strong> Object points. An Nx2, 1xNx2, or Nx1x2 array, where N is the
+number of points in the view.</li>
+<li><strong>K</strong> Camera matrix 3x3, <code>K = [fx 0 cx; 0 fy cy; 0 0 1]</code>.</li>
+<li><strong>D</strong> Input vector of distortion coefficients <code>[k1,k2,k3,k4]</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>undistorted</strong> Output array of image points.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>R</strong> Rectification transformation in the object space
+(3x3 matrix or 1x3/3x1 vector).</li>
+<li><strong>P</strong> New camera matrix (3x3) or new projection matrix (3x4).</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.fisheyeUndistortImage.html">cv.fisheyeUndistortImage</a>, <a href="cv.undistortPoints.html">cv.undistortPoints</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

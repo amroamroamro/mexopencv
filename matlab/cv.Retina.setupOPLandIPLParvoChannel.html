@@ -1,0 +1,91 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>setupOPLandIPLParvoChannel (cv.Retina) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Retina.setupOPLandIPLParvoChannel - Setup the OPL and IPL parvo channels (see biologocal model)" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">setupOPLandIPLParvoChannel (cv.Retina) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Retina/setupOPLandIPLParvoChannel</div>
+      <div class="helpcontent"><p class=" h1line">Setup the OPL and IPL parvo channels (see biologocal model)</p>
+<pre class=" prettyprint lang-matlab"><code>obj.setupOPLandIPLParvoChannel('OptionName',optionValue, ...)
+</code></pre>
+<h2>Options</h2>
+<ul>
+<li><strong>ColorMode</strong> specifies if (true) color is processed of not
+(false) to then processing gray level image. default true</li>
+<li><strong>NormaliseOutput</strong> specifies if (true) output is rescaled
+between 0 and 255 of not (false). default true</li>
+<li><strong>PhotoreceptorsLocalAdaptationSensitivity</strong> the photoreceptors
+sensitivity renage is 0-1 (more log compression effect when
+value increases). default 0.7</li>
+<li><strong>PhotoreceptorsTemporalConstant</strong> the time constant of the
+first order low pass filter of the photoreceptors, use it to
+cut high temporal frequencies (noise or fast motion), unit is
+frames, typical value is 1 frame. default 0.5</li>
+<li><strong>PhotoreceptorsSpatialConstant</strong> the spatial constant of the
+first order low pass filter of the photoreceptors, use it to
+cut high spatial frequencies (noise or thick contours), unit
+is pixels, typical value is 1 pixel. default 0.53</li>
+<li><strong>HorizontalCellsGain</strong> gain of the horizontal cells network,
+if 0, then the mean value of the output is zero, if the
+parameter is near 1, then, the luminance is not filtered and
+is still reachable at the output, typicall value is 0.
+default 0.0</li>
+<li><strong>HCellsTemporalConstant</strong> the time constant of the first
+order low pass filter of the horizontal cells, use it to cut
+low temporal frequencies (local luminance variations), unit is
+frames, typical value is 1 frame, as the photoreceptors.
+default 1.0</li>
+<li><strong>HCellsSpatialConstant</strong> the spatial constant of the first
+order low pass filter of the horizontal cells, use it to cut
+low spatial frequencies (local luminance), unit is pixels,
+typical value is 5 pixel, this value is also used for local
+contrast computing when computing the local contrast
+adaptation at the ganglion cells level (Inner Plexiform Layer
+parvocellular channel model). default 7.0</li>
+<li><strong>GanglionCellsSensitivity</strong> the compression strengh of the
+ganglion cells local adaptation output, set a value between
+0.6 and 1 for best results, a high value increases more the
+low value sensitivity and the output saturates faster,
+recommended value: 0.7. default 0.7</li>
+</ul>
+<p>OPL is referred as Outer Plexiform Layer of the retina, it
+allows the spatio-temporal filtering which withens the spectrum
+and reduces spatio-temporal noise while attenuating global
+luminance (low frequency energy) IPL parvo is the OPL next
+processing stage, it refers to a part of the Inner Plexiform
+layer of the retina, it allows high contours sensitivity in
+foveal vision. See reference papers for more information. For
+more information, please have a look at the paper [Benoit2010].</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Retina.setupIPLMagnoChannel.html">cv.Retina/setupIPLMagnoChannel</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

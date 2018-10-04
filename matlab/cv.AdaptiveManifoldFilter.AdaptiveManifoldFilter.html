@@ -1,0 +1,44 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.AdaptiveManifoldFilter/AdaptiveManifoldFilter - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.AdaptiveManifoldFilter.AdaptiveManifoldFilter - Factory method, create instance of AdaptiveManifoldFilter and produce some initialization routines" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.AdaptiveManifoldFilter/AdaptiveManifoldFilter - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.AdaptiveManifoldFilter/AdaptiveManifoldFilter</div>
+      <div class="helpcontent"><p class=" h1line">Factory method, create instance of AdaptiveManifoldFilter and produce some initialization routines</p>
+<pre class=" prettyprint lang-matlab"><code>obj = <a href="cv.AdaptiveManifoldFilter.html">cv.AdaptiveManifoldFilter</a>()
+obj = <a href="cv.AdaptiveManifoldFilter.html">cv.AdaptiveManifoldFilter</a>('OptionName',optionValue, ...)
+</code></pre>
+<h2>Options</h2>
+<ul>
+<li><strong>SigmaS</strong> spatial standard deviation. default 16.0</li>
+<li><strong>SigmaR</strong> color space standard deviation, it is similar to
+the sigma in the color space into <a href="cv.bilateralFilter.html">cv.bilateralFilter</a>.
+default 0.2</li>
+<li><strong>AdjustOutliers</strong> optional, specify perform outliers adjust
+operation or not, (Eq. 9) in the original paper. default false</li>
+</ul>
+<p>For more details about Adaptive Manifold Filter parameters, see
+the original article [Gastal12].</p>
+<h3>Note</h3>
+<p>Joint images with <code>uint8</code> and <code>uint16</code> depth converted to images
+with <code>single</code> depth and [0; 1] color range before processing.
+Hence color space <code>SigmaR</code> must be in [0; 1] range, unlike same
+sigmas in <a href="cv.bilateralFilter.html">cv.bilateralFilter</a> and <a href="cv.DTFilter.dtFilter.html">cv.DTFilter.dtFilter</a> functions.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.AdaptiveManifoldFilter.filter.html">cv.AdaptiveManifoldFilter/filter</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

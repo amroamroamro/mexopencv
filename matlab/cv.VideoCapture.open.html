@@ -1,0 +1,129 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>open (cv.VideoCapture) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.VideoCapture.open - Open video file or a capturing device or a IP video stream for video capturing" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">open (cv.VideoCapture) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.VideoCapture/open</div>
+      <div class="helpcontent"><p class=" h1line">Open video file or a capturing device or a IP video stream for video capturing</p>
+<pre class=" prettyprint lang-matlab"><code>successFlag = cap.open(index)
+successFlag = cap.open(filename)
+successFlag = cap.open(..., 'API',apiPreference)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>index</strong> id of the video capturing device to open. To open
+default camera using default backend just pass 0.</li>
+<li><strong>filename</strong> it can be:
+<ul>
+<li>name of video file (eg. <code>video.avi</code>)</li>
+<li>or image sequence (eg. <code>img_%02d.jpg</code>, which will read
+samples like <code>img_00.jpg</code>, img_01.jpg<code>, img_02.jpg</code>, ...)</li>
+<li>or URL of video stream
+(eg. <code>protocol://host:port/script_name?script_params|auth</code>).
+Note that each video stream or IP camera feed has its own
+URL scheme. Please refer to the documentation of source
+stream to know the right URL.</li>
+<li>or device name (for backends like V4L or gPhoto2)</li>
+</ul>
+</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>successFlag</strong> bool, true if the file/camera has been
+successfully opened.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>API</strong> preferred capture API backend to use. Can be used to
+enforce a specific reader implementation if multiple are
+available: e.g. 'FFMPEG' or 'Images' or 'DirectShow'. The list
+of supported API backends:
+<ul>
+<li><strong>Any</strong> Auto detect. This is the default.</li>
+<li><strong>VfW</strong> Video For Windows (platform native).</li>
+<li><strong>V4L</strong> V4L/V4L2 capturing support via libv4l.</li>
+<li><strong>V4L2</strong> Same as V4L.</li>
+<li><strong>FireWire</strong> IEEE 1394 drivers.</li>
+<li><strong>FireWare</strong> Same as FireWire.</li>
+<li><strong>IEEE1394</strong> Same as FireWire.</li>
+<li><strong>DC1394</strong> Same as FireWire.</li>
+<li><strong>CMU1394</strong> Same as FireWire.</li>
+<li><strong>QuickTime</strong> QuickTime.</li>
+<li><strong>Unicap</strong> Unicap drivers.</li>
+<li><strong>DirectShow</strong> DirectShow (via videoInput).</li>
+<li><strong>PvAPI</strong> PvAPI, Prosilica GigE SDK.</li>
+<li><strong>OpenNI</strong> OpenNI (for Kinect).</li>
+<li><strong>OpenNIAsus</strong> OpenNI (for Asus Xtion).</li>
+<li><strong>Android</strong> Android - not used.</li>
+<li><strong>XIMEA</strong> XIMEA Camera API.</li>
+<li><strong>AVFoundation</strong> AVFoundation framework for iOS
+(OS X Lion will have the same API).</li>
+<li><strong>Giganetix</strong> Smartek Giganetix GigEVisionSDK.</li>
+<li><strong>MediaFoundation</strong> Microsoft Media Foundation
+(via videoInput).</li>
+<li><strong>WinRT</strong> Microsoft Windows Runtime using Media
+Foundation.</li>
+<li><strong>IntelPerC</strong> Intel Perceptual Computing SDK.</li>
+<li><strong>OpenNI2</strong> OpenNI2 (for Kinect).</li>
+<li><strong>OpenNI2Asus</strong> OpenNI2 (for Asus Xtion and Occipital
+Structure sensors).</li>
+<li><strong>gPhoto2</strong> gPhoto2 connection.</li>
+<li><strong>GStreamer</strong> GStreamer.</li>
+<li><strong>FFMPEG</strong> Open video file or stream using the FFMPEG
+library.</li>
+<li><strong>Images</strong> OpenCV Image Sequence (e.g. <code>img_%02d.jpg</code>).</li>
+<li><strong>Aravis</strong> Aravis GigE SDK.</li>
+<li><strong>MotionJPEG</strong> Built-in OpenCV MotionJPEG codec.</li>
+<li><strong>MediaSDK</strong> Intel MediaSDK.</li>
+</ul>
+</li>
+</ul>
+<p>The method first calls <a href="cv.VideoCapture.release.html">cv.VideoCapture.release</a> to close the
+already opened file or camera.</p>
+<h2>Example</h2>
+<p>Use <code>API</code> option to enforce a specific reader implementation
+if multiple are available like 'FFMPEG' or 'Images' or
+'DirectShow'. For example, to open camera 1 using the
+&quot;MS Media Foundation&quot; API:</p>
+<pre class=" prettyprint lang-matlab"><code>cap.open(1, 'API','MediaFoundation')
+</code></pre>
+<h3>Note</h3>
+<p>Backends are available only if they have been built with your
+OpenCV binaries.
+Check your build to know which APIs are currently available.
+To enable/disable APIs, you have to re-configure OpenCV using
+the appropriates CMake switches and recompile OpenCV itself.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.VideoCapture.VideoCapture.html">cv.VideoCapture/VideoCapture</a>, <a href="cv.VideoCapture.isOpened.html">cv.VideoCapture/isOpened</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

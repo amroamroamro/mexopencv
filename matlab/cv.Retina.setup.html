@@ -1,0 +1,58 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>setup (cv.Retina) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Retina.setup - Try to open an XML retina parameters file to adjust current retina instance setup" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">setup (cv.Retina) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Retina/setup</div>
+      <div class="helpcontent"><p class=" h1line">Try to open an XML retina parameters file to adjust current retina instance setup</p>
+<pre class=" prettyprint lang-matlab"><code>obj.setup(retinaParameterFile)
+obj.setup(retinaParameterFile, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>retinaParameterFile</strong> the parameters filename.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>ApplyDefaultSetupOnFailure</strong> set to true if an error must be
+thrown on error. default true</li>
+</ul>
+<p>If the xml file does not exist, then default setup is applied.
+Warning: Exceptions are thrown if read XML file is not valid.</p>
+<p>You can retrieve the current parameters structure using the
+method <a href="cv.Retina.getParameters.html">cv.Retina.getParameters</a> and update it before running
+method <a href="cv.Retina.setupParameters.html">cv.Retina.setupParameters</a>.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Retina.setupParameters.html">cv.Retina/setupParameters</a>, <a href="cv.Retina.write.html">cv.Retina/write</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

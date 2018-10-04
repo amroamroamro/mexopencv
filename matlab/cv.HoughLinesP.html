@@ -1,0 +1,58 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.HoughLinesP - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.HoughLinesP - Finds line segments in a binary image using the probabilistic Hough transform" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.HoughLinesP - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.HoughLinesP</div>
+      <div class="helpcontent"><p class=" h1line">Finds line segments in a binary image using the probabilistic Hough transform</p>
+<pre class=" prettyprint lang-matlab"><code>lines = <a href="cv.HoughLinesP.html">cv.HoughLinesP</a>(image)
+lines = <a href="cv.HoughLinesP.html">cv.HoughLinesP</a>(..., 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>image</strong> 8-bit, single-channel binary source image.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>lines</strong> Output vector of lines. A cell-array of 4-element vectors
+<code>{[x1,y1,x2,y2], ...}</code>, where <code>(x1,y1)</code> and <code>(x2,y2)</code> are the ending
+points of each detected line segment.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Rho</strong> Distance resolution of the accumulator in pixels. default 1.</li>
+<li><strong>Theta</strong> Angle resolution of the accumulator in radians. default pi/180.</li>
+<li><strong>Threshold</strong> Accumulator threshold parameter. Only those lines are
+returned that get enough votes (<code>&gt;Threshold</code>). default 80.</li>
+<li><strong>MinLineLength</strong> Minimum line length. Line segments shorter than that are
+rejected. default 0.</li>
+<li><strong>MaxLineGap</strong> Maximum allowed gap between points on the same line to link
+them. default 0.</li>
+</ul>
+<p>The function implements the probabilistic Hough transform algorithm for line
+detection, described in [Matas00].</p>
+<h2>References</h2>
+<p>[Matas00]:</p>
+<blockquote>
+<p>Jiri Matas, Charles Galambos, and Josef Kittler.
+Robust detection of lines using the progressive probabilistic hough transform.
+Computer Vision and Image Understanding, 78(1):119-137, 2000.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.HoughLines.html">cv.HoughLines</a>, <a href="cv.LineSegmentDetector.html">cv.LineSegmentDetector</a>, <a href="https://www.mathworks.com/help/images/ref/houghlines.html" target="_blank">houghlines</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

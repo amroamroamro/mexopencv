@@ -1,0 +1,46 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.copyTo - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.copyTo - Copies the matrix to another one" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.copyTo - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.copyTo</div>
+      <div class="helpcontent"><p class=" h1line">Copies the matrix to another one</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.copyTo.html">cv.copyTo</a>(src)
+dst = <a href="cv.copyTo.html">cv.copyTo</a>(src, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> Input matrix.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> Destination matrix of the same size and type as <code>src</code>.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Dest</strong> Used to initialize destination matrix. Not set by default.</li>
+<li><strong>Mask</strong> Optional operation mask of the same size as <code>src</code>. Its non-zero
+elements indicate which matrix elements need to be copied. The mask has to
+be of type <code>uint8</code> or <code>logical</code> and can have 1 or multiple channels.
+Not set by default.</li>
+</ul>
+<p>The method copies the matrix data to another matrix. Before copying the data,
+the destination matrix is allocated if needed, initialized with all zeros.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.convertTo.html">cv.convertTo</a>, <a href="https://www.mathworks.com/help/images/ref/roipoly.html" target="_blank">roipoly</a>, <a href="https://www.mathworks.com/help/images/ref/poly2mask.html" target="_blank">poly2mask</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

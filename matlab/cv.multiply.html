@@ -1,0 +1,49 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.multiply - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.multiply - Calculates the per-element scaled product of two arrays" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.multiply - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.multiply</div>
+      <div class="helpcontent"><p class=" h1line">Calculates the per-element scaled product of two arrays</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.multiply.html">cv.multiply</a>(src1, src2)
+dst = <a href="cv.multiply.html">cv.multiply</a>(src1, src2, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src1</strong> first input array.</li>
+<li><strong>src2</strong> second input array of the same size and type as <code>src1</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> output array of the same size and type as <code>src1</code>.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Scale</strong> optional scalar factor. default 1</li>
+<li><strong>DType</strong> optional depth of the output array: <code>uint8</code>, <code>int16</code>, <code>double</code>,
+etc. default -1</li>
+</ul>
+<p>The function <a href="cv.multiply.html">cv.multiply</a> calculates the per-element product of two arrays:</p>
+<pre class=" prettyprint lang-matlab"><code>dst(I) = saturate(scale*src1(I) * src2(I))
+</code></pre>
+<p>Note: Saturation is not applied when the output array has the depth <code>int32</code>.
+You may even get result of an incorrect sign in the case of overflow.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.add.html">cv.add</a>, <a href="cv.subtract.html">cv.subtract</a>, <a href="cv.divide.html">cv.divide</a>, <a href="cv.addWeighted.html">cv.addWeighted</a>, <a href="cv.accumulate.html">cv.accumulate</a>,
+   <a href="cv.accumulateProduct.html">cv.accumulateProduct</a>, <a href="cv.accumulateSquare.html">cv.accumulateSquare</a>, <a href="https://www.mathworks.com/help/images/ref/immultiply.html" target="_blank">immultiply</a>, <a href="https://www.mathworks.com/help/matlab/ref/times.html" target="_blank">times</a>, <a href="https://www.mathworks.com/help/matlab/ref/mtimes.html" target="_blank">mtimes</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

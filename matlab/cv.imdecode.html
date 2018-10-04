@@ -1,0 +1,73 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.imdecode - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.imdecode - Reads an image from a buffer in memory" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.imdecode - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.imdecode</div>
+      <div class="helpcontent"><p class=" h1line">Reads an image from a buffer in memory</p>
+<pre class=" prettyprint lang-matlab"><code>img = <a href="cv.imdecode.html">cv.imdecode</a>(buf)
+img = <a href="cv.imdecode.html">cv.imdecode</a>(buf, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>buf</strong> Input byte array of an encoded image (<code>uint8</code> vector).</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>img</strong> Decoded image.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Unchanged</strong> If set, return the loaded image as is (with alpha channel,
+otherwise it gets cropped). Both the depth and number of channels are
+unchanged as determined by the decoder. default false</li>
+<li><strong>AnyDepth</strong> If set, return 16-bit/32-bit image when the input has the
+corresponding depth, otherwise convert it to 8-bit. default false</li>
+<li><strong>AnyColor</strong> If set, the image is read in any possible color format.
+default false</li>
+<li><strong>Color</strong> If set, always convert image to the 3 channel BGR color image.
+default true</li>
+<li><strong>Grayscale</strong> If set, always convert image to the single channel grayscale
+image. default false</li>
+<li><strong>IgnoreOrientation</strong> If set, do not rotate the image according to EXIF's
+orientation flag. default false</li>
+<li><strong>Flags</strong> Advanced option to directly set the flag specifying the depth
+and color type of a loaded image. Note that setting this integer flag
+overrides all the other flag options. Not set by default:
+<ul>
+<li><code>&gt;0</code>: Return a 3-channel color image. Note that in the current
+implementation the alpha channel, if any, is stripped from the
+output image. For example, a 4-channel RGBA image is loaded as
+RGB if <code>Flags &gt;= 0</code>.</li>
+<li><code>=0</code>: Return a grayscale image</li>
+<li><code>&lt;0</code>: Return the loaded image as is (with alpha channel if present).</li>
+</ul>
+</li>
+<li><strong>FlipChannels</strong> in case the output is color image, flips the color order
+from OpenCV's BGR/BGRA to MATLAB's RGB/RGBA order. default true</li>
+</ul>
+<p>The function reads an image from the specified buffer in the memory. If
+the buffer is too short or contains invalid data, an error is thrown.</p>
+<p>See <a href="cv.imread.html">cv.imread</a> for the list of supported formats and flags description.</p>
+<h3>Note</h3>
+<p>In the case of color images, the decoded images will have the channels
+stored in BGR order. If <code>FlipChannels</code> is true, the order is flipped to
+RGB.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.imencode.html">cv.imencode</a>, <a href="cv.imread.html">cv.imread</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

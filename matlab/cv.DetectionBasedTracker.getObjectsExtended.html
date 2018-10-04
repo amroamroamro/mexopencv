@@ -1,0 +1,62 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>getObjectsExtended (cv.DetectionBasedTracker) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.DetectionBasedTracker.getObjectsExtended - Return tracked objects (extended)" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">getObjectsExtended (cv.DetectionBasedTracker) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.DetectionBasedTracker/getObjectsExtended</div>
+      <div class="helpcontent"><p class=" h1line">Return tracked objects (extended)</p>
+<pre class=" prettyprint lang-matlab"><code>objects = tracker.getObjectsExtended()
+</code></pre>
+<h2>Output</h2>
+<ul>
+<li><strong>objects</strong> a struct-array of tracked objects with the
+following fields:
+<ul>
+<li><strong>id</strong> tracked object ID</li>
+<li><strong>location</strong> rectangle contains the detected object
+<code>[x,y,w,h]</code>.</li>
+<li><strong>status</strong> object status. One of the following strings:
+<ul>
+<li><strong>DetectedNotShownYet</strong></li>
+<li><strong>Detected</strong></li>
+<li><strong>DetectedTemporaryLost</strong></li>
+<li><strong>WrongObject</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.DetectionBasedTracker.getObjects.html">cv.DetectionBasedTracker/getObjects</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

@@ -1,0 +1,49 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>train (cv.DescriptorMatcher) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.DescriptorMatcher.train - Trains a descriptor matcher" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">train (cv.DescriptorMatcher) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.DescriptorMatcher/train</div>
+      <div class="helpcontent"><p class=" h1line">Trains a descriptor matcher</p>
+<pre class=" prettyprint lang-matlab"><code>matcher.train()
+</code></pre>
+<p>Trains a descriptor matcher (for example, the flann index). In all
+methods to match, the method <code>train</code> is run every time before
+matching. Some descriptor matchers (for example,
+<code>BruteForceMatcher</code>) have an empty implementation of this method.
+Other matchers really train their inner structures (for example,
+<code>FlannBasedMatcher</code> trains <code>flann::Index</code>).</p>
+</div><!--after help -->
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

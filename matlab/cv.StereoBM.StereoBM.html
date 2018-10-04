@@ -1,0 +1,45 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.StereoBM/StereoBM - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.StereoBM.StereoBM - Creates StereoBM object" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.StereoBM/StereoBM - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.StereoBM/StereoBM</div>
+      <div class="helpcontent"><p class=" h1line">Creates StereoBM object</p>
+<pre class=" prettyprint lang-matlab"><code>bm = <a href="cv.StereoBM.html">cv.StereoBM</a>()
+bm = <a href="cv.StereoBM.html">cv.StereoBM</a>('OptionName', optionValue, ...)
+</code></pre>
+<h2>Options</h2>
+<ul>
+<li><strong>NumDisparities</strong> the disparity search range. For each pixel
+algorithm will find the best disparity from 0 (default minimum
+disparity) to <code>NumDisparities</code>. The search range can then be
+shifted by changing the minimum disparity. default 0 (which
+uses 64 by default).</li>
+<li><strong>BlockSize</strong> the linear size of the blocks compared by the
+algorithm. The size should be odd (as the block is centered at
+the current pixel). Larger block size implies smoother, though
+less accurate disparity map. Smaller block size gives more
+detailed disparity map, but there is is higher chance for
+algorithm to find a wrong correspondence. default 21.</li>
+</ul>
+<p>The function creates <a href="cv.StereoBM.html">cv.StereoBM</a> object. You can then call
+<a href="cv.StereoBM.compute.html">cv.StereoBM.compute</a> to compute disparity for a specific stereo
+pair.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.StereoBM.compute.html">cv.StereoBM/compute</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

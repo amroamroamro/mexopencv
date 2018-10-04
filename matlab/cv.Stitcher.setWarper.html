@@ -1,0 +1,85 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>setWarper (cv.Stitcher) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Stitcher.setWarper - Set the image warper" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">setWarper (cv.Stitcher) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Stitcher/setWarper</div>
+      <div class="helpcontent"><p class=" h1line">Set the image warper</p>
+<pre class=" prettyprint lang-matlab"><code>obj.setWarper(warperType)
+obj.setWarper(warperType, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>warperType</strong> image warper factory class type, used to create
+the rotation-based warper. One of:
+<ul>
+<li><strong>PlaneWarper</strong> Plane warper factory class. Warper that maps
+an image onto the <code>z = 1</code> plane.</li>
+<li><strong>PlaneWarperGpu</strong> (requires CUDA)</li>
+<li><strong>AffineWarper</strong> Affine warper factory class. Affine warper
+that uses rotations and translations. Uses affine
+transformation in homogeneous coordinates to represent both
+rotation and translation in camera rotation matrix.</li>
+<li><strong>CylindricalWarper</strong> Cylindrical warper factory class.
+Warper that maps an image onto the <code>x*x + z*z = 1</code> cylinder.</li>
+<li><strong>CylindricalWarperGpu</strong> (requires CUDA)</li>
+<li><strong>SphericalWarper</strong> Warper that maps an image onto the unit
+sphere located at the origin. Projects image onto unit
+sphere with origin at [0,0,0] and radius <code>scale</code>, measured
+in pixels. A 360 panorama would therefore have a resulting
+width of <code>2*scale*pi</code> pixels. Poles are located at [0,-1,0]
+and [0,1,0] points.</li>
+<li><strong>SphericalWarperGpu</strong> (requires CUDA)</li>
+<li><strong>FisheyeWarper</strong></li>
+<li><strong>StereographicWarper</strong></li>
+<li><strong>CompressedRectilinearWarper</strong></li>
+<li><strong>CompressedRectilinearPortraitWarper</strong></li>
+<li><strong>PaniniWarper</strong></li>
+<li><strong>PaniniPortraitWarper</strong></li>
+<li><strong>MercatorWarper</strong></li>
+<li><strong>TransverseMercatorWarper</strong></li>
+</ul>
+</li>
+</ul>
+<h2>Options</h2>
+<p>The following are options for the various warpers:</p>
+<h3><code>CompressedRectilinearWarper</code>, <code>CompressedRectilinearPortraitWarper</code>, <code>PaniniWarper</code>, <code>PaniniPortraitWarper</code></h3>
+<ul>
+<li><strong>A</strong> default 1</li>
+<li><strong>B</strong> default 1</li>
+</ul>
+<p>The class uses <code>SphericalWarper</code> by default.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Stitcher.getWarper.html">cv.Stitcher/getWarper</a>, <a href="cv.RotationWarper.html">cv.RotationWarper</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

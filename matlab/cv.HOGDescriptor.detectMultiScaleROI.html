@@ -1,0 +1,80 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>detectMultiScaleROI (cv.HOGDescriptor) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.HOGDescriptor.detectMultiScaleROI - Evaluate specified ROI and return confidence value for each location in multiple scales" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">detectMultiScaleROI (cv.HOGDescriptor) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.HOGDescriptor/detectMultiScaleROI</div>
+      <div class="helpcontent"><p class=" h1line">Evaluate specified ROI and return confidence value for each location in multiple scales</p>
+<pre class=" prettyprint lang-matlab"><code>[rcts, locations] = hog.detectMultiScaleROI(im, locations)
+[...] = hog.detectMultiScaleROI(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>im</strong> 8-bit 1- or 3-channel image where objects are detected.</li>
+<li><strong>locations</strong> input detection region of interest. It specifies
+candidate locations to search for object detections at
+different scales. An struct array with the following fields:
+<ul>
+<li><strong>scale</strong> scale (size) of the bounding box, scalar.</li>
+<li><strong>locations</strong> set of requested locations to be evaluated,
+cell array of points <code>{[x,y], ...}</code>.</li>
+<li><strong>confidences</strong> vector that will contain confidence values
+for each location. Not required on input, this will be
+filled/updated on output.</li>
+</ul>
+</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>rcts</strong> Detected objects boundaries. Cell array of rectangles
+where objects are found, of the form <code>{[x,y,w,h], ...}</code>.</li>
+<li><strong>locations</strong> output updated <code>locations</code> struct array. All
+points are retained, but their confidences are updated.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>HitThreshold</strong> Threshold for the distance between features
+and SVM classifying plane. Usually it is 0 and should be
+specified in the detector coefficients (as the last free
+coefficient). But if the free coefficient is omitted (which is
+allowed), you can specify it manually here. default 0</li>
+<li><strong>GroupThreshold</strong> Minimum possible number of rectangles in a
+group minus 1. The threshold is used on a group of rectangles
+to decide whether to retain it or not. If less than or equal
+to zero, no grouping is performed. See <a href="cv.groupRectangles.html">cv.groupRectangles</a>.
+default 0</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.HOGDescriptor.detectMultiScale.html">cv.HOGDescriptor/detectMultiScale</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

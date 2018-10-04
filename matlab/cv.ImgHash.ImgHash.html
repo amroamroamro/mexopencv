@@ -1,0 +1,68 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.ImgHash/ImgHash - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.ImgHash.ImgHash - Constructor" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.ImgHash/ImgHash - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.ImgHash/ImgHash</div>
+      <div class="helpcontent"><p class=" h1line">Constructor</p>
+<pre class=" prettyprint lang-matlab"><code>obj = <a href="cv.ImgHash.html">cv.ImgHash</a>(alg)
+obj = <a href="cv.ImgHash.html">cv.ImgHash</a>(alg, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>alg</strong> image hash algorithm, one of:
+<ul>
+<li><strong>AverageHash</strong> Computes average hash value of the input
+image. This is a fast image hashing algorithm, but only work
+on simple case. For more details, please refer to
+[lookslikeit].</li>
+<li><strong>BlockMeanHash</strong> Image hash based on block mean. See
+[zauner2010implementation] for details.</li>
+<li><strong>ColorMomentHash</strong> Image hash based on color moments. See
+[tang2012perceptual] for details.</li>
+<li><strong>MarrHildrethHash</strong> Marr-Hildreth Operator Based Hash,
+slowest but more discriminative. See
+[zauner2010implementation] for details.</li>
+<li><strong>PHash</strong> Slower than average_hash, but tolerant of minor
+modifications. This algorithm can combat more variation than
+than AverageHash, for more details please refer to
+[lookslikeit].</li>
+<li><strong>RadialVarianceHash</strong> Image hash based on Radon transform.
+See [tang2012perceptual] for details.</li>
+</ul>
+</li>
+</ul>
+<h2>Options</h2>
+<p>The following are options for the various algorithms:</p>
+<h3><code>BlockMeanHash</code></h3>
+<ul>
+<li><strong>Mode</strong> block mean hash mode. default 'Mode0'</li>
+</ul>
+<h3><code>MarrHildrethHash</code></h3>
+<ul>
+<li><strong>Alpha</strong> scale factor for marr wavelet. default 2</li>
+<li><strong>Scale</strong> level of scale factor. default 1</li>
+</ul>
+<h3><code>RadialVarianceHash</code></h3>
+<ul>
+<li><strong>Sigma</strong> Gaussian kernel standard deviation. default 1</li>
+<li><strong>NumOfAngleLine</strong> Number of angles to consider. default 180</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.ImgHash.compute.html">cv.ImgHash/compute</a>, <a href="cv.ImgHash.compare.html">cv.ImgHash/compare</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

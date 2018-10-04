@@ -1,0 +1,438 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.DTrees - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.DTrees - Decision Trees" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.DTrees - MATLAB File Help</td>
+            <td class="subheader-left"></td>
+            <td class="subheader-right"><a href="cv.DTrees.html">Go to online doc for cv.DTrees</a></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.DTrees</div>
+      <div class="helpcontent"><p class=" h1line">Decision Trees</p>
+<p>The class represents a single decision tree or a collection of decision
+trees.</p>
+<p>The current public interface of the class allows user to train only a
+single decision tree, however the class is capable of storing multiple
+decision trees and using them for prediction (by summing responses or
+using a voting schemes), and the derived from <a href="cv.DTrees.html">cv.DTrees</a> classes (such as
+<a href="cv.RTrees.html">cv.RTrees</a> and <a href="cv.Boost.html">cv.Boost</a>) use this capability to implement decision tree
+ensembles.</p>
+<h2>Decision Trees</h2>
+<p>The ML classes discussed in this section implement Classification and
+Regression Tree algorithms described in [Breiman84].</p>
+<p>The class <a href="cv.DTrees.html">cv.DTrees</a> represents a single decision tree or a collection of
+decision trees. It's also a base class for <a href="cv.RTrees.html">cv.RTrees</a> and <a href="cv.Boost.html">cv.Boost</a>.</p>
+<p>A decision tree is a binary tree (tree where each non-leaf node has two
+child nodes). It can be used either for classification or for regression.
+For classification, each tree leaf is marked with a class label;
+multiple leaves may have the same label. For regression, a constant is
+also assigned to each tree leaf, so the approximation function is
+piecewise constant.</p>
+<h3>Predicting with Decision Trees</h3>
+<p>To reach a leaf node and to obtain a response for the input feature
+vector, the prediction procedure starts with the root node. From each
+non-leaf node the procedure goes to the left (selects the left child
+node as the next observed node) or to the right based on the value of a
+certain variable whose index is stored in the observed node. The
+following variables are possible:</p>
+<ul>
+<li>
+<p><strong>Ordered variables</strong>. The variable value is compared with a threshold
+that is also stored in the node. If the value is less than the
+threshold, the procedure goes to the left. Otherwise, it goes to the
+right. For example, if the weight is less than 1 kilogram, the
+procedure goes to the left, else to the right.</p>
+</li>
+<li>
+<p><strong>Categorical variables</strong>. A discrete variable value is tested to see
+whether it belongs to a certain subset of values (also stored in the
+node) from a limited set of values the variable could take. If it
+does, the procedure goes to the left. Otherwise, it goes to the right.
+For example, if the color is green or red, go to the left, else to the
+right.</p>
+</li>
+</ul>
+<p>So, in each node, a pair of entities (<code>variable_index</code>,
+<code>decision_rule (threshold/subset)</code>) is used. This pair is called a split
+(split on the variable <code>variable_index</code>). Once a leaf node is reached,
+the value assigned to this node is used as the output of the prediction
+procedure.</p>
+<p>Sometimes, certain features of the input vector are missed (for example,
+in the darkness it is difficult to determine the object color), and the
+prediction procedure may get stuck in the certain node (in the mentioned
+example, if the node is split by color). To avoid such situations,
+decision trees use so-called surrogate splits. That is, in addition to
+the best &quot;primary&quot; split, every tree node may also be split to one or
+more other variables with nearly the same results.</p>
+<h3>Training Decision Trees</h3>
+<p>The tree is built recursively, starting from the root node. All training
+data (feature vectors and responses) is used to split the root node. In
+each node the optimum decision rule (the best &quot;primary&quot; split) is found
+based on some criteria. In machine learning, gini &quot;purity&quot; criteria are
+used for classification, and sum of squared errors is used for
+regression. Then, if necessary, the surrogate splits are found. They
+resemble the results of the primary split on the training data. All the
+data is divided using the primary and the surrogate splits (like it is
+done in the prediction procedure) between the left and the right child
+node. Then, the procedure recursively splits both left and right nodes.
+At each node the recursive procedure may stop (that is, stop splitting
+the node further) in one of the following cases:</p>
+<ul>
+<li>Depth of the constructed tree branch has reached the specified maximum
+value.</li>
+<li>Number of training samples in the node is less than the specified
+threshold when it is not statistically representative to split the
+node further.</li>
+<li>All the samples in the node belong to the same class or, in case of
+regression, the variation is too small.</li>
+<li>The best found split does not give any noticeable improvement compared
+to a random choice.</li>
+</ul>
+<p>When the tree is built, it may be pruned using a cross-validation
+procedure, if necessary. That is, some branches of the tree that may
+lead to the model overfitting are cut off. Normally, this procedure is
+only applied to standalone decision trees. Usually tree ensembles build
+trees that are small enough and use their own protection schemes against
+overfitting.</p>
+<h3>Variable Importance</h3>
+<p>Besides the prediction that is an obvious use of decision trees, the
+tree can be also used for various data analyses. One of the key
+properties of the constructed decision tree algorithms is an ability to
+compute the importance (relative decisive power) of each variable. For
+example, in a spam filter that uses a set of words occurred in the
+message as a feature vector, the variable importance rating can be used
+to determine the most &quot;spam-indicating&quot; words and thus help keep the
+dictionary size reasonable.</p>
+<p>Importance of each variable is computed over all the splits on this
+variable in the tree, primary and surrogate ones. Thus, to compute
+variable importance correctly, the surrogate splits must be enabled in
+the training parameters, even if there is no missing data.</p>
+<h2>References</h2>
+<p>[Breiman84]:</p>
+<blockquote>
+<p>Leo Breiman, Jerome Friedman, Charles J Stone, and Richard A Olshen.
+&quot;Classification and regression trees&quot;. CRC press, 1984.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.DTrees.DTrees.html">cv.DTrees/DTrees</a>, <a href="cv.RTrees.html">cv.RTrees</a>, <a href="cv.Boost.html">cv.Boost</a>, <a href="https://www.mathworks.com/help/stats/ref/fitctree.html" target="_blank">fitctree</a>, <a href="https://www.mathworks.com/help/stats/ref/fitrtree.html" target="_blank">fitrtree</a></div>
+      <!--Class-->
+      <div class="sectiontitle">Class Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Superclasses</td>
+            <td><a href="https://www.mathworks.com/help/matlab/ref/handle.html" target="_blank">handle</a></td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Construct on load</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+      <!--Constructors-->
+      <div class="sectiontitle"><a name="constructors"></a>Constructor Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.DTrees.DTrees.html">DTrees</a></td>
+            <td class="m-help">Creates/trains a new decision tree model&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Properties-->
+      <div class="sectiontitle"><a name="properties"></a>Property Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.DTrees.CVFolds.html">CVFolds</a></td>
+            <td class="m-help">If `CVFolds &gt; 1` then algorithms prunes the built decision tree&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.DTrees.MaxCategories.html">MaxCategories</a></td>
+            <td class="m-help">Cluster possible values of a categorical variable into&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.DTrees.MaxDepth.html">MaxDepth</a></td>
+            <td class="m-help">The maximum possible depth of the tree.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.DTrees.MinSampleCount.html">MinSampleCount</a></td>
+            <td class="m-help">If the number of samples in a node is less than this parameter then&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.DTrees.Priors.html">Priors</a></td>
+            <td class="m-help">The array of a priori class probabilities, sorted by the class label&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.DTrees.RegressionAccuracy.html">RegressionAccuracy</a></td>
+            <td class="m-help">Termination criteria for regression trees.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.DTrees.TruncatePrunedTree.html">TruncatePrunedTree</a></td>
+            <td class="m-help">If true then pruned branches are physically removed from the tree.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.DTrees.Use1SERule.html">Use1SERule</a></td>
+            <td class="m-help">If true then a pruning will be harsher.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.DTrees.UseSurrogates.html">UseSurrogates</a></td>
+            <td class="m-help">If true then surrogate splits will be built.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.DTrees.id.html">id</a></td>
+            <td class="m-help">Object ID&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Methods-->
+      <div class="sectiontitle"><a name="methods"></a>Method Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">addlistener</a></td>
+            <td class="m-help">Add listener for event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.DTrees.calcError.html">calcError</a></td>
+            <td class="m-help">Computes error on the training or test dataset&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.DTrees.clear.html">clear</a></td>
+            <td class="m-help">Clears the algorithm state&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.DTrees.delete.html">delete</a></td>
+            <td class="m-help">Destructor&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.DTrees.empty.html">empty</a></td>
+            <td class="m-help">Returns true if the algorithm is empty&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">eq</a></td>
+            <td class="m-help">== (EQ)   Test handle equality.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findobj</a></td>
+            <td class="m-help">Find objects matching specified conditions.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findprop</a></td>
+            <td class="m-help">Find property of MATLAB handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ge</a></td>
+            <td class="m-help">&gt;= (GE)   Greater than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.DTrees.getDefaultName.html">getDefaultName</a></td>
+            <td class="m-help">Returns the algorithm string identifier&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.DTrees.getNodes.html">getNodes</a></td>
+            <td class="m-help">Returns all the nodes&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.DTrees.getRoots.html">getRoots</a></td>
+            <td class="m-help">Returns indices of root nodes&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.DTrees.getSplits.html">getSplits</a></td>
+            <td class="m-help">Returns all the splits&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.DTrees.getSubsets.html">getSubsets</a></td>
+            <td class="m-help">Returns all the bitsets for categorical splits&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.DTrees.getVarCount.html">getVarCount</a></td>
+            <td class="m-help">Returns the number of variables in training samples&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">gt</a></td>
+            <td class="m-help">&gt; (GT)   Greater than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.DTrees.isClassifier.html">isClassifier</a></td>
+            <td class="m-help">Returns true if the model is a classifier&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.DTrees.isTrained.html">isTrained</a></td>
+            <td class="m-help">Returns true if the model is trained&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">isvalid</a></td>
+            <td class="m-help">Test handle validity.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">le</a></td>
+            <td class="m-help">&lt;= (LE)   Less than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">listener</a></td>
+            <td class="m-help">Add listener for event without binding the listener to the source object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.DTrees.load.html">load</a></td>
+            <td class="m-help">Loads algorithm from a file or a string&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">lt</a></td>
+            <td class="m-help">&lt; (LT)   Less than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ne</a></td>
+            <td class="m-help">~= (NE)   Not equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">notify</a></td>
+            <td class="m-help">Notify listeners of event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.DTrees.predict.html">predict</a></td>
+            <td class="m-help">Predicts response(s) for the provided sample(s)&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.DTrees.save.html">save</a></td>
+            <td class="m-help">Saves the algorithm parameters to a file or a string&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.DTrees.train.html">train</a></td>
+            <td class="m-help">Trains a decision tree&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Events-->
+      <div class="sectiontitle"><a name="events"></a>Event Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ObjectBeingDestroyed</a></td>
+            <td class="m-help">Notifies listeners that a particular object has been destroyed.&nbsp;</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

@@ -1,0 +1,274 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.RetinaFastToneMapping - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.RetinaFastToneMapping - Class with tone mapping algorithm of Meylan et al. (2007)" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.RetinaFastToneMapping - MATLAB File Help</td>
+            <td class="subheader-left"></td>
+            <td class="subheader-right"><a href="cv.RetinaFastToneMapping.html">Go to online doc for cv.RetinaFastToneMapping</a></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.RetinaFastToneMapping</div>
+      <div class="helpcontent"><p class=" h1line">Class with tone mapping algorithm of Meylan et al. (2007)</p>
+<p>High Dynamic Range (HDR &gt;8bit images) tone mapping to (conversion to
+8bit) use case of the retina.</p>
+<p>This algorithm is already implemented in thre Retina class
+(<a href="cv.Retina.applyFastToneMapping.html">cv.Retina.applyFastToneMapping</a>) but used it does not require all the
+retina model to be allocated. This allows a light memory use for low
+memory devices (smartphones, etc.). As a summary, these are the model
+properties:</p>
+<ul>
+<li>2 stages of local luminance adaptation with a different local
+neighborhood for each.</li>
+<li>first stage models the retina photorecetors local luminance adaptation</li>
+<li>second stage models th ganglion cells local information adaptation</li>
+<li>compared to the initial publication, this class uses spatio-temporal
+low pass filters instead of spatial only filters. this can help noise
+robustness and temporal stability for video sequence use cases.</li>
+</ul>
+<p>For more information, read to the following papers: [Meylan2007] and
+[Benoit2010]. Regarding spatio-temporal filter and the bigger retina
+model: [Herault2010].</p>
+<h2>References</h2>
+<p>[Meylan2007]:</p>
+<blockquote>
+<p>Meylan L., Alleysson D., and Susstrunk S., &quot;A Model of Retinal Local
+Adaptation for the Tone Mapping of Color Filter Array Images&quot;, Journal
+of Optical Society of America, A, Vol. 24, N. 9, September, 1st, 2007,
+pp. 2807-2816</p>
+</blockquote>
+<p>[Benoit2010]:</p>
+<blockquote>
+<p>Benoit A., Caplier A., Durette B., Herault, J.; &quot;Using Human Visual
+System Modeling For Bio-inspired Low Level Image Processing&quot;, Elsevier,
+Computer Vision and Image Understanding 114 (2010), pp. 758-773,
+<a href="http://dx.doi.org/10.1016/j.cviu.2010.01.011" target="_blank">DOI</a></p>
+</blockquote>
+<p>[Herault2010]:</p>
+<blockquote>
+<p>Jeanny Herault; &quot;Vision: Images, Signals and Neural Networks: Models
+of Neural Processing in Visual Perception&quot; (Progress in Neural
+Processing), ISBN: 9814273686. WAPI (Tower ID): 113266891.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Retina.html">cv.Retina</a></div>
+      <!--Class-->
+      <div class="sectiontitle">Class Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Superclasses</td>
+            <td><a href="https://www.mathworks.com/help/matlab/ref/handle.html" target="_blank">handle</a></td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Construct on load</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+      <!--Constructors-->
+      <div class="sectiontitle"><a name="constructors"></a>Constructor Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.RetinaFastToneMapping.RetinaFastToneMapping.html">RetinaFastToneMapping</a></td>
+            <td class="m-help">Constructor&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Properties-->
+      <div class="sectiontitle"><a name="properties"></a>Property Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.RetinaFastToneMapping.id.html">id</a></td>
+            <td class="m-help">Object ID&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Methods-->
+      <div class="sectiontitle"><a name="methods"></a>Method Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">addlistener</a></td>
+            <td class="m-help">Add listener for event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.RetinaFastToneMapping.applyFastToneMapping.html">applyFastToneMapping</a></td>
+            <td class="m-help">Applies a luminance correction (initially High Dynamic Range (HDR) tone mapping)&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.RetinaFastToneMapping.clear.html">clear</a></td>
+            <td class="m-help">Clears the algorithm state&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.RetinaFastToneMapping.delete.html">delete</a></td>
+            <td class="m-help">Destructor&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.RetinaFastToneMapping.empty.html">empty</a></td>
+            <td class="m-help">Checks if detector object is empty&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">eq</a></td>
+            <td class="m-help">== (EQ)   Test handle equality.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findobj</a></td>
+            <td class="m-help">Find objects matching specified conditions.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findprop</a></td>
+            <td class="m-help">Find property of MATLAB handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ge</a></td>
+            <td class="m-help">&gt;= (GE)   Greater than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.RetinaFastToneMapping.getDefaultName.html">getDefaultName</a></td>
+            <td class="m-help">Returns the algorithm string identifier&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">gt</a></td>
+            <td class="m-help">&gt; (GT)   Greater than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">isvalid</a></td>
+            <td class="m-help">Test handle validity.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">le</a></td>
+            <td class="m-help">&lt;= (LE)   Less than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">listener</a></td>
+            <td class="m-help">Add listener for event without binding the listener to the source object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.RetinaFastToneMapping.load.html">load</a></td>
+            <td class="m-help">Loads algorithm from a file or a string&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">lt</a></td>
+            <td class="m-help">&lt; (LT)   Less than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ne</a></td>
+            <td class="m-help">~= (NE)   Not equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">notify</a></td>
+            <td class="m-help">Notify listeners of event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.RetinaFastToneMapping.save.html">save</a></td>
+            <td class="m-help">Saves the algorithm parameters to a file&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.RetinaFastToneMapping.setup.html">setup</a></td>
+            <td class="m-help">Updates tone mapping behaviors by adjusing the local luminance computation area&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Events-->
+      <div class="sectiontitle"><a name="events"></a>Event Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ObjectBeingDestroyed</a></td>
+            <td class="m-help">Notifies listeners that a particular object has been destroyed.&nbsp;</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

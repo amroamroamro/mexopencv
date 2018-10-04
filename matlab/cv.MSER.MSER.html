@@ -1,0 +1,49 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.MSER/MSER - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.MSER.MSER - Full constructor for MSER detector" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.MSER/MSER - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.MSER/MSER</div>
+      <div class="helpcontent"><p class=" h1line">Full constructor for MSER detector</p>
+<pre class=" prettyprint lang-matlab"><code>obj = <a href="cv.MSER.html">cv.MSER</a>()
+obj = <a href="cv.MSER.html">cv.MSER</a>(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Options</h2>
+<ul>
+<li><strong>Delta</strong> delta, in the code, it compares
+<code>(size_{i}-size_{i-delta})/size_{i-delta}</code>. default 5.</li>
+<li><strong>MinArea</strong> prune the area which smaller than minArea.
+default 60.</li>
+<li><strong>MaxArea</strong> prune the area which bigger than maxArea.
+default 14400.</li>
+<li><strong>MaxVariation</strong> prune the area have similar size to its
+children. default 0.25</li>
+<li><strong>MinDiversity</strong> for color image, trace back to cut off mser
+with diversity less than <code>MinDiversity</code>. default 0.2.</li>
+<li><strong>MaxEvolution</strong> for color image, the evolution steps.
+default 200.</li>
+<li><strong>AreaThreshold</strong> for color image, the area threshold to cause
+re-initialize. default 1.01.</li>
+<li><strong>MinMargin</strong> for color image, ignore too small margin.
+default 0.003.</li>
+<li><strong>EdgeBlurSize</strong> for color image, the aperture size for edge
+blur. default 5.</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.MSER.detectRegions.html">cv.MSER/detectRegions</a>, <a href="cv.MSER.detect.html">cv.MSER/detect</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

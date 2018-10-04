@@ -1,0 +1,280 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.GFTTDetector - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.GFTTDetector - Wrapping class for feature detection using the goodFeaturesToTrack function" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.GFTTDetector - MATLAB File Help</td>
+            <td class="subheader-left"></td>
+            <td class="subheader-right"><a href="cv.GFTTDetector.html">Go to online doc for cv.GFTTDetector</a></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.GFTTDetector</div>
+      <div class="helpcontent"><p class=" h1line">Wrapping class for feature detection using the goodFeaturesToTrack function</p>
+<p>The function finds the most prominent corners in the image or in the
+specified image region, as described in [Shi94]:</p>
+<ol>
+<li>Function calculates the corner quality measure at every source image
+pixel using the <a href="cv.cornerMinEigenVal.html">cv.cornerMinEigenVal</a> or <a href="cv.cornerHarris.html">cv.cornerHarris</a>.</li>
+<li>Function performs a non-maximum suppression (the local maximums in
+<code>3x3</code> neighborhood are retained).</li>
+<li>The corners with the minimal eigenvalue less than
+<code>QualityLevel * max_{x,y}(qualityMeasureMap(x,y))</code> are rejected.</li>
+<li>The remaining corners are sorted by the quality measure in the
+descending order.</li>
+<li>Function throws away each corner for which there is a stronger
+corner at a distance less than <code>maxDistance</code>.</li>
+</ol>
+<h2>References</h2>
+<p>[Shi94]:</p>
+<blockquote>
+<p>Jianbo Shi and Carlo Tomasi. &quot;Good features to track&quot;.
+In Computer Vision and Pattern Recognition, 1994. Proceedings CVPR'94.,
+1994 IEEE Computer Society Conference on, pages 593-600. IEEE, 1994.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.goodFeaturesToTrack.html">cv.goodFeaturesToTrack</a>, <a href="cv.cornerHarris.html">cv.cornerHarris</a>, <a href="cv.cornerMinEigenVal.html">cv.cornerMinEigenVal</a>,
+   <a href="cv.FeatureDetector.html">cv.FeatureDetector</a></div>
+      <!--Class-->
+      <div class="sectiontitle">Class Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Superclasses</td>
+            <td><a href="https://www.mathworks.com/help/matlab/ref/handle.html" target="_blank">handle</a></td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Construct on load</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+      <!--Constructors-->
+      <div class="sectiontitle"><a name="constructors"></a>Constructor Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.GFTTDetector.GFTTDetector.html">GFTTDetector</a></td>
+            <td class="m-help">Constructor&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Properties-->
+      <div class="sectiontitle"><a name="properties"></a>Property Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.GFTTDetector.BlockSize.html">BlockSize</a></td>
+            <td class="m-help">Size of an average block for computing a derivative covariation&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.GFTTDetector.HarrisDetector.html">HarrisDetector</a></td>
+            <td class="m-help">Parameter indicating whether to use a Harris detector&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.GFTTDetector.K.html">K</a></td>
+            <td class="m-help">Free parameter of the Harris detector.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.GFTTDetector.MaxFeatures.html">MaxFeatures</a></td>
+            <td class="m-help">Maximum number of corners to return.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.GFTTDetector.MinDistance.html">MinDistance</a></td>
+            <td class="m-help">Minimum possible Euclidean distance between the returned corners.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.GFTTDetector.QualityLevel.html">QualityLevel</a></td>
+            <td class="m-help">Parameter characterizing the minimal accepted quality of image&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.GFTTDetector.id.html">id</a></td>
+            <td class="m-help">Object ID&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Methods-->
+      <div class="sectiontitle"><a name="methods"></a>Method Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">addlistener</a></td>
+            <td class="m-help">Add listener for event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.GFTTDetector.clear.html">clear</a></td>
+            <td class="m-help">Clears the algorithm state&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.GFTTDetector.delete.html">delete</a></td>
+            <td class="m-help">Destructor&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.GFTTDetector.detect.html">detect</a></td>
+            <td class="m-help">Detects keypoints in an image or image set&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.GFTTDetector.empty.html">empty</a></td>
+            <td class="m-help">Checks if detector object is empty&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">eq</a></td>
+            <td class="m-help">== (EQ)   Test handle equality.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findobj</a></td>
+            <td class="m-help">Find objects matching specified conditions.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findprop</a></td>
+            <td class="m-help">Find property of MATLAB handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ge</a></td>
+            <td class="m-help">&gt;= (GE)   Greater than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.GFTTDetector.getDefaultName.html">getDefaultName</a></td>
+            <td class="m-help">Returns the algorithm string identifier&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">gt</a></td>
+            <td class="m-help">&gt; (GT)   Greater than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">isvalid</a></td>
+            <td class="m-help">Test handle validity.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">le</a></td>
+            <td class="m-help">&lt;= (LE)   Less than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">listener</a></td>
+            <td class="m-help">Add listener for event without binding the listener to the source object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.GFTTDetector.load.html">load</a></td>
+            <td class="m-help">Loads algorithm from a file or a string&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">lt</a></td>
+            <td class="m-help">&lt; (LT)   Less than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ne</a></td>
+            <td class="m-help">~= (NE)   Not equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">notify</a></td>
+            <td class="m-help">Notify listeners of event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.GFTTDetector.save.html">save</a></td>
+            <td class="m-help">Saves the algorithm parameters to a file&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.GFTTDetector.typeid.html">typeid</a></td>
+            <td class="m-help">Name of the C++ type (RTTI)&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Events-->
+      <div class="sectiontitle"><a name="events"></a>Event Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ObjectBeingDestroyed</a></td>
+            <td class="m-help">Notifies listeners that a particular object has been destroyed.&nbsp;</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

@@ -1,0 +1,254 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.GPCForest - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.GPCForest - Implementation of the Global Patch Collider algorithm" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.GPCForest - MATLAB File Help</td>
+            <td class="subheader-left"></td>
+            <td class="subheader-right"><a href="cv.GPCForest.html">Go to online doc for cv.GPCForest</a></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.GPCForest</div>
+      <div class="helpcontent"><p class=" h1line">Implementation of the Global Patch Collider algorithm</p>
+<p>From the following paper:
+<a href="http://research.microsoft.com/en-us/um/people/pkohli/papers/wfrik_cvpr2016.pdf" target="_blank">PDF</a>.</p>
+<h2>Usage</h2>
+<ul>
+<li>Train forest for the Global Patch Collider (or load a pretrained one).</li>
+<li>Find correspondences between two images using Global Patch Collider.
+These can be used to perform optical flow matching and stereo
+matching.</li>
+</ul>
+<p>You can obtain a file &quot;forest.yml.gz&quot; either by manually training it,
+or by downloading one of the files pretrained on some publicly available
+dataset from here:
+<a href="https://drive.google.com/open?id=0B7Hb8cfuzrIIZDFscXVYd0NBNFU" target="_blank">GPC</a></p>
+<h2>References</h2>
+<p>[Wang_2016_CVPR]:</p>
+<blockquote>
+<p>Shenlong Wang, Sean Ryan Fanello, Christoph Rhemann, Shahram Izadi,
+and Pushmeet Kohli. &quot;The Global Patch Collider&quot;. In The IEEE
+Conference on Computer Vision and Pattern Recognition (CVPR), June 2016.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.GPCForest.GPCForest.html">cv.GPCForest/GPCForest</a></div>
+      <!--Class-->
+      <div class="sectiontitle">Class Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Superclasses</td>
+            <td><a href="https://www.mathworks.com/help/matlab/ref/handle.html" target="_blank">handle</a></td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Construct on load</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+      <!--Constructors-->
+      <div class="sectiontitle"><a name="constructors"></a>Constructor Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.GPCForest.GPCForest.html">GPCForest</a></td>
+            <td class="m-help">Creates an instance of GPCForest&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Properties-->
+      <div class="sectiontitle"><a name="properties"></a>Property Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.GPCForest.id.html">id</a></td>
+            <td class="m-help">Object ID&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Methods-->
+      <div class="sectiontitle"><a name="methods"></a>Method Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">addlistener</a></td>
+            <td class="m-help">Add listener for event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.GPCForest.clear.html">clear</a></td>
+            <td class="m-help">Clears the algorithm state&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.GPCForest.delete.html">delete</a></td>
+            <td class="m-help">Destructor&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.GPCForest.empty.html">empty</a></td>
+            <td class="m-help">Returns true if the algorithm is empty&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">eq</a></td>
+            <td class="m-help">== (EQ)   Test handle equality.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.GPCForest.findCorrespondences.html">findCorrespondences</a></td>
+            <td class="m-help">Find correspondences between two images&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findobj</a></td>
+            <td class="m-help">Find objects matching specified conditions.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findprop</a></td>
+            <td class="m-help">Find property of MATLAB handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ge</a></td>
+            <td class="m-help">&gt;= (GE)   Greater than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.GPCForest.getDefaultName.html">getDefaultName</a></td>
+            <td class="m-help">Returns the algorithm string identifier&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">gt</a></td>
+            <td class="m-help">&gt; (GT)   Greater than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">isvalid</a></td>
+            <td class="m-help">Test handle validity.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">le</a></td>
+            <td class="m-help">&lt;= (LE)   Less than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">listener</a></td>
+            <td class="m-help">Add listener for event without binding the listener to the source object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.GPCForest.load.html">load</a></td>
+            <td class="m-help">Loads algorithm from a file or a string&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">lt</a></td>
+            <td class="m-help">&lt; (LT)   Less than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ne</a></td>
+            <td class="m-help">~= (NE)   Not equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">notify</a></td>
+            <td class="m-help">Notify listeners of event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.GPCForest.save.html">save</a></td>
+            <td class="m-help">Saves the algorithm to a file&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.GPCForest.train.html">train</a></td>
+            <td class="m-help">Train the forest using individual samples for each tree&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Events-->
+      <div class="sectiontitle"><a name="events"></a>Event Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ObjectBeingDestroyed</a></td>
+            <td class="m-help">Notifies listeners that a particular object has been destroyed.&nbsp;</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

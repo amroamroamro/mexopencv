@@ -1,0 +1,67 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>performSegment (cv.HfsSegment) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.HfsSegment.performSegment - Do segmentation" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">performSegment (cv.HfsSegment) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.HfsSegment/performSegment</div>
+      <div class="helpcontent"><p class=" h1line">Do segmentation</p>
+<pre class=" prettyprint lang-matlab"><code>dst = obj.performSegment(src)
+dst = obj.performSegment(src, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> the input image.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Draw</strong> whether to draw the image in the returned array. If
+this parameter is false, then the content of the output is a
+matrix of indices, describing the region each pixel belongs
+to, and its data type is <code>uint16</code>. If this parameter is true,
+then the returned array is a segmented picture, and color of
+each region is the average color of all pixels in that region,
+and it's data type is the same as the input image.
+default true</li>
+<li><strong>Backend</strong> back end to use:
+<ul>
+<li><strong>CPU</strong> default.</li>
+<li><strong>GPU</strong> (requires CUDA).</li>
+</ul>
+</li>
+</ul>
+<h2>Output</h2>
+<p><strong>dst</strong> output, depends on <code>Draw</code> option.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.HfsSegment.HfsSegment.html">cv.HfsSegment/HfsSegment</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

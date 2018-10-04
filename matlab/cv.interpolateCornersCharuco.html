@@ -1,0 +1,63 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.interpolateCornersCharuco - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.interpolateCornersCharuco - Interpolate position of ChArUco board corners" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.interpolateCornersCharuco - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.interpolateCornersCharuco</div>
+      <div class="helpcontent"><p class=" h1line">Interpolate position of ChArUco board corners</p>
+<pre class=" prettyprint lang-matlab"><code>[charucoCorners, charucoIds, num] = <a href="cv.interpolateCornersCharuco.html">cv.interpolateCornersCharuco</a>(markerCorners, markerIds, img, board)
+[...] = <a href="cv.interpolateCornersCharuco.html">cv.interpolateCornersCharuco</a>(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>markerCorners</strong> cell array of already detected markers corners. For each
+marker, its four corners are provided, (e.g <code>{{[x,y],..}, ..}</code>). The order
+of the corners should be clockwise.</li>
+<li><strong>markerIds</strong> vector of identifiers for each marker in <code>markerCorners</code>
+(0-based).</li>
+<li><strong>img</strong> input image necesary for corner refinement (8-bit grayscale or
+color). Note that markers are not detected and should be sent in
+<code>markerCorners</code> and <code>markerIds</code> parameters.</li>
+<li><strong>board</strong> layout of ChArUco board.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>charucoCorners</strong> interpolated chessboard corners <code>{[x,y], ..}</code>.</li>
+<li><strong>charucoIds</strong> interpolated chessboard corners identifiers (0-based).</li>
+<li><strong>num</strong> the number of interpolated corners.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>CameraMatrix</strong> optional 3x3 floating-point camera matrix
+<code>A = [fx 0 cx; 0 fy cy; 0 0 1]</code>.</li>
+<li><strong>DistCoeffs</strong> optional vector of distortion coefficients
+<code>[k1,k2,p1,p2,k3,k4,k5,k6,s1,s2,s3,s4]</code> of 4, 5, 8 or 12 elements.</li>
+<li><strong>MinMarkers</strong> number of adjacent markers that must be detected to return
+a charuco corner. default 2</li>
+</ul>
+<p>This function receives the detected markers and returns the 2D position of
+the chessboard corners from a ChArUco board using the detected Aruco
+markers. If camera parameters are provided, the process is based in an
+approximated pose estimation, else it is based on local homography. Only
+visible corners are returned. For each corner, its corresponding identifier
+is also returned in <code>charucoIds</code>.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.detectMarkers.html">cv.detectMarkers</a>, <a href="cv.estimatePoseCharucoBoard.html">cv.estimatePoseCharucoBoard</a>, <a href="cv.drawCharucoBoard.html">cv.drawCharucoBoard</a>,
+   <a href="cv.drawDetectedCornersCharuco.html">cv.drawDetectedCornersCharuco</a>, <a href="cv.projectPoints.html">cv.projectPoints</a>, <a href="cv.getPerspectiveTransform.html">cv.getPerspectiveTransform</a>,
+   <a href="cv.cornerSubPix.html">cv.cornerSubPix</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

@@ -1,0 +1,81 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.transform - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.transform - Performs the matrix transformation of every array element" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.transform - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.transform</div>
+      <div class="helpcontent"><p class=" h1line">Performs the matrix transformation of every array element</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.transform.html">cv.transform</a>(src, mtx)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> Source array that must have as many channels (1 to 4) as columns
+of <code>mtx</code> or columns-1 of <code>mtx</code></li>
+<li><strong>mtx</strong> floating-point transformation matrix.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> Destination array of the same row/column size and depth as <code>src</code>.
+It has as many channels as rows of <code>mtx</code></li>
+</ul>
+<p>The function <a href="cv.transform.html">cv.transform</a> performs the matrix transformation of every
+element of the array <code>src</code> and stores the results in <code>dst</code>:</p>
+<ul>
+<li>
+<p>when columns of <code>mtx</code> equal channels of <code>src</code>:</p>
+<pre class=" prettyprint lang-matlab"><code>dst(I) = mtx * src(I)
+</code></pre>
+</li>
+<li>
+<p>when columns of <code>mtx</code> equal channels+1 of <code>src</code>:</p>
+<pre class=" prettyprint lang-matlab"><code>dst(I) = mtx * [src(I); 1]
+</code></pre>
+</li>
+</ul>
+<p>Every element of the N-channel array <code>src</code> is interpreted as N-element
+vector that is transformed using the MxN or Mx(N+1) matrix <code>mtx</code> to
+M-element vector - the corresponding element of the destination array
+<code>dst</code>.</p>
+<p>The function may be used for geometrical transformation of N-dimensional
+points, arbitrary linear color space transformation (such as various
+kinds of RGB to YUV transforms), shuffling the image channels, and so
+forth.</p>
+<h2>Example</h2>
+<p>This function is equivalent to the following MATLAB code:</p>
+<pre class=" prettyprint lang-matlab"><code>function dst = my_transform(src, mtx)
+    % check sizes
+    [I,J,N] = size(src);
+    [MM,NN] = size(mtx);
+    assert(N==1 || N==2 || N==3 || N==4, '1 to 4 channels');
+    assert(N==NN || (N+1)==NN, 'Wrong dimensions');
+    if N ~= NN, src(:,:,end+1) = 1; end
+
+    % transform
+    dst = zeros([I,J,MM], class(src));
+    for i=1:I
+        for j=1:J
+            dst(i,j,:) = mtx * squeeze(src(i,j,:));
+        end
+    end
+end
+</code></pre>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.perspectiveTransform.html">cv.perspectiveTransform</a>, <a href="cv.getAffineTransform.html">cv.getAffineTransform</a>,
+   <a href="cv.estimateAffine2D.html">cv.estimateAffine2D</a>, <a href="cv.estimateRigidTransform.html">cv.estimateRigidTransform</a>, <a href="cv.warpAffine.html">cv.warpAffine</a>,
+   <a href="cv.warpPerspective.html">cv.warpPerspective</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

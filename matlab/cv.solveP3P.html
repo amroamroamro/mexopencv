@@ -1,0 +1,77 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.solveP3P - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.solveP3P - Finds an object pose from 3 3D-2D point correspondences" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.solveP3P - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.solveP3P</div>
+      <div class="helpcontent"><p class=" h1line">Finds an object pose from 3 3D-2D point correspondences</p>
+<pre class=" prettyprint lang-matlab"><code>[rvecs, tvecs, solutions] = <a href="cv.solveP3P.html">cv.solveP3P</a>(objectPoints, imagePoints, cameraMatrix)
+[...] = <a href="cv.solveP3P.html">cv.solveP3P</a>(..., 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>objectPoints</strong> Array of object points in the object coordinate space,
+1xNx3/Nx1x3 or Nx3 array, where <code>N=3</code> is the number of points, or cell
+array of length <code>N=3</code> of 3-element vectors can be also passed here
+<code>{[x1,y1,z1], [x2,y2,z2], [x3,y3,z3]}</code>.</li>
+<li><strong>imagePoints</strong> Array of corresponding image points, 1xNx2/Nx1x2 or Nx2
+array, where <code>N=3</code> is the number of points, or cell array of length <code>N=3</code>
+of 2-element vectors can be also passed here <code>{[x1,y1], [x2,y2], [x3,y3]}</code>.</li>
+<li><strong>cameraMatrix</strong> Input camera matrix <code>A = [fx 0 cx; 0 fy cy; 0 0 1]</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>rvecs</strong> Output rotation vectors (see <a href="cv.Rodrigues.html">cv.Rodrigues</a>) that, together with
+<code>tvecs</code>, brings points from the model coordinate system to the camera
+coordinate system. A P3P problem has up to 4 solutions.</li>
+<li><strong>tvecs</strong> Output translation vectors.</li>
+<li><strong>solutions</strong> number of solutions.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>DistCoeffs</strong> Input vector of distortion coefficients
+<code>[k1,k2,p1,p2,k3,k4,k5,k6,s1,s2,s3,s4,taux,tauy]</code> of 4, 5, 8, 12 or 14
+elements. If the vector is empty, the zero distortion coefficients are
+assumed. default empty.</li>
+<li><strong>Method</strong> Method for solving the P3P problem. One of the following:
+<ul>
+<li><strong>P3P</strong> (default) Method is based on the paper [gao2003complete].</li>
+<li><strong>AP3P</strong> Method is based on the paper [Ke17].</li>
+</ul>
+</li>
+</ul>
+<p>The function estimates the object pose given 3 object points, their
+corresponding image projections, as well as the camera matrix and the
+distortion coefficients.</p>
+<h2>References</h2>
+<p>[gao2003complete]:</p>
+<blockquote>
+<p>X.S. Gao, X.R. Hou, J. Tang, H.F. Chang; &quot;Complete Solution
+Classification for the Perspective-Three-Point Problem&quot;,
+IEEE Trans. on PAMI, vol. 25, No. 8, p. 930-943, August 2003.</p>
+</blockquote>
+<p>[Ke17]:</p>
+<blockquote>
+<p>T. Ke, S. Roumeliotis; &quot;An Efficient Algebraic Solution to the
+Perspective-Three-Point Problem&quot;, IEEE Conference on Computer Vision and
+Pattern Recognition (CVPR), 2017
+<a href="https://arxiv.org/pdf/1701.08237.pdf" target="_blank">PDF</a></p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.solvePnP.html">cv.solvePnP</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

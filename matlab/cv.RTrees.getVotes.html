@@ -1,0 +1,72 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>getVotes (cv.RTrees) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.RTrees.getVotes - Returns the result of each individual tree in the forest" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">getVotes (cv.RTrees) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.RTrees/getVotes</div>
+      <div class="helpcontent"><p class=" h1line">Returns the result of each individual tree in the forest</p>
+<pre class=" prettyprint lang-matlab"><code>votes = model.getVotes(samples)
+votes = model.getVotes(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>samples</strong> matrix containing the samples for which votes will
+be calculated.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>votes</strong> matrix of the result of the calculation.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Flags</strong> Flags for defining the type of RTrees. For
+convenience, you can set the individual flag options below,
+instead of directly setting bits here. default 0</li>
+<li><strong>RawOutput</strong> See the predict method. default false</li>
+<li><strong>CompressedInput</strong> See the predict method. default false</li>
+<li><strong>PreprocessedInput</strong> See the predict method. default false</li>
+<li><strong>PredictAuto</strong> See the predict method. default false</li>
+<li><strong>PredictSum</strong> See the predict method. default false</li>
+<li><strong>PredictMaxVote</strong> See the predict method. default false</li>
+</ul>
+<p>In case the model is a regression problem, the method will
+return each of the trees' results for each of the sample cases,
+i.e <code>nsamples-by-ntrees</code> matrix.
+If the model is a classifier, it will return a matrix with
+<code>nsamples + 1</code> rows, where the first row gives the class number
+and the following rows return the votes each class had for each
+sample, i.e <code>(nsamples+1)-by-nclasses</code> matrix.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.RTrees.predict.html">cv.RTrees/predict</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

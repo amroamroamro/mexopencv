@@ -1,0 +1,60 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>read (cv.VideoCapture) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.VideoCapture.read - Grabs, decodes and returns the next video frame" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">read (cv.VideoCapture) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.VideoCapture/read</div>
+      <div class="helpcontent"><p class=" h1line">Grabs, decodes and returns the next video frame</p>
+<pre class=" prettyprint lang-matlab"><code>frame = cap.read()
+frame = cap.read('OptionName',optionValue, ...)
+</code></pre>
+<h2>Output</h2>
+<ul>
+<li><strong>frame</strong> output image</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>FlipChannels</strong> in case the output is color image, flips the
+color order from OpenCV's BGR to MATLAB's RGB order.
+default true</li>
+</ul>
+<p>The method combines <a href="cv.VideoCapture.grab.html">cv.VideoCapture.grab</a> and
+<a href="cv.VideoCapture.retrieve.html">cv.VideoCapture.retrieve</a> in one call. This is the most
+convenient method for reading video files or capturing data from
+decode and return the just grabbed frame. If no frames has been
+grabbed (camera has been disconnected, or there are no more
+frames in video file), the function return an empty matrix.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.VideoCapture.grab.html">cv.VideoCapture/grab</a>, <a href="cv.VideoCapture.retrieve.html">cv.VideoCapture/retrieve</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

@@ -1,0 +1,65 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.fisheyeUndistortImage - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.fisheyeUndistortImage - Transforms an image to compensate for fisheye lens distortion" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.fisheyeUndistortImage - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.fisheyeUndistortImage</div>
+      <div class="helpcontent"><p class=" h1line">Transforms an image to compensate for fisheye lens distortion</p>
+<pre class=" prettyprint lang-matlab"><code>undistorted = <a href="cv.fisheyeUndistortImage.html">cv.fisheyeUndistortImage</a>(distorted, K, D)
+undistorted = <a href="cv.fisheyeUndistortImage.html">cv.fisheyeUndistortImage</a>(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>distorted</strong> image with fisheye lens distortion.</li>
+<li><strong>K</strong> Camera matrix 3x3, <code>K = [fx 0 cx; 0 fy cy; 0 0 1]</code>.</li>
+<li><strong>D</strong> Input vector of distortion coefficients <code>[k1,k2,k3,k4]</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>undistorted</strong> Output image with compensated fisheye lens distortion.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>NewCameraMatrix</strong> Camera matrix of the distorted image. By default, it
+is the identity matrix but you may additionally scale and shift the result
+by using a different matrix.</li>
+<li><strong>NewImageSize</strong> Image size after rectification <code>[w,h]</code>. By default, it is
+set to input image size.</li>
+</ul>
+<p>The function transforms an image to compensate radial and tangential lens
+distortion.</p>
+<p>The function is simply a combination of <a href="cv.fisheyeInitUndistortRectifyMap.html">cv.fisheyeInitUndistortRectifyMap</a>
+(with unity <code>R</code>) and <a href="cv.remap.html">cv.remap</a> (with bilinear interpolation). See the former
+function for details of the transformation being performed.</p>
+<p>See below the results of <a href="cv.fisheyeUndistortImage.html">cv.fisheyeUndistortImage</a>:</p>
+<ul>
+<li>a) result of <a href="cv.undistort.html">cv.undistort</a> of perspective camera model (all possible
+coefficients <code>[k1, k2, k3, k4, k5, k6]</code> of distortion were optimized under
+calibration)</li>
+<li>b) result of <a href="cv.fisheyeUndistortImage.html">cv.fisheyeUndistortImage</a> of fisheye camera model (all
+possible coefficients <code>[k1, k2, k3, k4]</code> of fisheye distortion were
+optimized under calibration)</li>
+<li>c) original image was captured with fisheye lens</li>
+</ul>
+<p>Pictures a) and b) almost the same. But if we consider points of image
+located far from the center of image, we can notice that on image a) these
+points are distorted.</p>
+<p><img src="https://docs.opencv.org/3.3.1/fisheye_undistorted.jpg" alt="image" /></p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.fisheyeInitUndistortRectifyMap.html">cv.fisheyeInitUndistortRectifyMap</a>, <a href="cv.remap.html">cv.remap</a>, <a href="cv.undistort.html">cv.undistort</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

@@ -1,0 +1,47 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.Canny2 - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Canny2 - Finds edges in an image using the Canny algorithm with custom image gradient" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.Canny2 - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Canny2</div>
+      <div class="helpcontent"><p class=" h1line">Finds edges in an image using the Canny algorithm with custom image gradient</p>
+<pre class=" prettyprint lang-matlab"><code>edges = <a href="cv.Canny2.html">cv.Canny2</a>(dx, dy, thresh)
+edges = <a href="cv.Canny2.html">cv.Canny2</a>(dx, dy, thresh, 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>dx</strong> 16-bit x derivative of input image (1 or 3 channels of type <code>int16</code>).</li>
+<li><strong>dy</strong> 16-bit y derivative of input image (same size and type as <code>dx</code>).</li>
+<li><strong>thresh</strong> Threshold for the hysteresis procedure. Scalar or 2-element
+vector <code>[low_thresh,high_thresh]</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>edges</strong> Output edge map; single channels 8-bit image, which has the same
+size as the input image.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>L2Gradient</strong> Flag indicating whether a more accurate L2 norm
+<code>sqrt((dI/dx)^2 + (dI/dy)^2)</code> should be used to compute the image gradient
+magnitude (<code>L2gradient=true</code>), or whether the default L1 norm
+<code>abs(dI/dx) + abs(dI/dy)</code> is enough (<code>L2gradient=false</code>). Default false</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Canny.html">cv.Canny</a>, <a href="cv.Sobel.html">cv.Sobel</a>, <a href="cv.Scharr.html">cv.Scharr</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

@@ -1,0 +1,67 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>getFeatures (cv.StructuredEdgeDetection) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.StructuredEdgeDetection.getFeatures - Extracts features from image" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">getFeatures (cv.StructuredEdgeDetection) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.StructuredEdgeDetection.getFeatures</div>
+      <div class="helpcontent"><p class=" h1line">Extracts features from image</p>
+<pre class=" prettyprint lang-matlab"><code>features = <a href="cv.StructuredEdgeDetection.getFeatures.html">cv.StructuredEdgeDetection.getFeatures</a>(src, opts)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> source image to extract features (RGB float in [0;1]).</li>
+<li><strong>opts</strong> a scalar struct of random forest options
+(feature params), with the following fields:
+<ul>
+<li><strong>normRad</strong> <code>gradientNormalizationRadius</code> gradient
+normalization radius.</li>
+<li><strong>grdSmooth</strong> <code>gradientSmoothingRadius</code> radius for smoothing
+of gradients (using convolution with triangle filter).</li>
+<li><strong>shrink</strong> <code>shrinkNumber</code> amount to shrink channels.</li>
+<li><strong>nChns</strong> <code>numberOfOutputChannels</code> number of edge
+orientation bins for output.</li>
+<li><strong>nOrients</strong> <code>numberOfGradientOrientations</code> number of
+orientations per gradient scale.</li>
+</ul>
+</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>features</strong> extracted features.</li>
+</ul>
+<p>Extracted features are appropriate for StructuredEdgeDetection
+training.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.StructuredEdgeDetection.StructuredEdgeDetection.html">cv.StructuredEdgeDetection/StructuredEdgeDetection</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>true</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

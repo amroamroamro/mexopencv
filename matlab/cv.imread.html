@@ -1,0 +1,127 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.imread - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.imread - Loads an image from a file" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.imread - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.imread</div>
+      <div class="helpcontent"><p class=" h1line">Loads an image from a file</p>
+<pre class=" prettyprint lang-matlab"><code>img = <a href="cv.imread.html">cv.imread</a>(filename)
+img = <a href="cv.imread.html">cv.imread</a>(filename, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>filename</strong> Name of a file to be loaded.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>img</strong> Loaded image, whose depth and number of channels depend on options.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Unchanged</strong> If set, return the loaded image as is (with alpha channel,
+otherwise it gets cropped). Both the depth and number of channels are
+unchanged as determined by the decoder. default false</li>
+<li><strong>AnyDepth</strong> If set, return 16-bit/32-bit image when the input has the
+corresponding depth, otherwise convert it to 8-bit. default false</li>
+<li><strong>AnyColor</strong> If set, the image is read in any possible color format.
+default false</li>
+<li><strong>Color</strong> If set, always convert image to the 3 channel BGR color image.
+default true</li>
+<li><strong>Grayscale</strong> If set, always convert image to the single channel grayscale
+image. default false</li>
+<li><strong>GDAL</strong> If set, use the gdal driver for loading the image. default false</li>
+<li><strong>ReduceScale</strong> Loads the image reduced by a scale factor (JPEG library
+natively supports direct image scaling, other formats are resized after
+loading). One of:
+<ul>
+<li><code>1</code>: no scaling (default).</li>
+<li><code>2</code>: image scaled by 1/2 factor.</li>
+<li><code>4</code>: image scaled by 1/4 factor.</li>
+<li><code>8</code>: image scaled by 1/8 factor.</li>
+</ul>
+</li>
+<li><strong>IgnoreOrientation</strong> If set, do not rotate the image according to EXIF's
+orientation flag. default false</li>
+<li><strong>Flags</strong> Advanced option to directly set the flag specifying the depth
+and color type of a loaded image. Note that setting this integer flag
+overrides all the other flag options. Not set by default:
+<ul>
+<li><code>&gt;0</code>: Return a 3-channel color image. Note that in the current
+implementation the alpha channel, if any, is stripped from the
+output image. For example, a 4-channel RGBA image is loaded as
+RGB if <code>Flags &gt;= 0</code>.</li>
+<li><code>=0</code>: Return a grayscale image</li>
+<li><code>&lt;0</code>: Return the loaded image as is (with alpha channel if present).</li>
+</ul>
+</li>
+<li><strong>FlipChannels</strong> in case the output is color image, flips the color order
+from OpenCV's BGR/BGRA to MATLAB's RGB/RGBA order. default true</li>
+</ul>
+<p>The function <a href="cv.imread.html">cv.imread</a> loads an image from the specified file and returns
+it. If the image cannot be read (because of missing file, improper
+permissions, unsupported or invalid format), the function issues an error.</p>
+<p>Currently, the following file formats are supported:</p>
+<ul>
+<li>Windows bitmaps - <code>*.bmp</code>, <code>*.dib</code> (always supported)</li>
+<li>JPEG files - <code>*.jpeg</code>, <code>*.jpg</code>, <code>*.jpe</code> (see the Notes section)</li>
+<li>JPEG 2000 files - <code>*.jp2</code> (see the Notes section)</li>
+<li>Portable Network Graphics - <code>*.png</code> (see the Notes section)</li>
+<li>WebP - <code>*.webp</code> (see the Notes section)</li>
+<li>Portable image format - <code>*.pbm</code>, <code>*.pgm</code>, <code>*.ppm</code>, <code>*.pxm</code>, <code>*.pnm</code>,
+<code>*.pam</code> (always supported)</li>
+<li>Sun rasters - <code>*.sr</code>, <code>*.ras</code> (always supported)</li>
+<li>TIFF files - <code>*.tiff</code>, <code>*.tif</code> (see the Notes section)</li>
+<li>OpenEXR Image files - <code>*.exr</code> (see the Notes section)</li>
+<li>Radiance HDR - <code>*.hdr</code>, <code>*.pic</code> (always supported)</li>
+<li>Raster and Vector geospatial data supported by Gdal (see the Notes section)</li>
+<li>DICOM medical images - <code>*.dcm</code> (see the Notes section)</li>
+</ul>
+<h3>Notes</h3>
+<ul>
+<li>The function determines the type of an image by the content, not by the
+file extension.</li>
+<li>In the case of color images, the decoded images will have the channels
+stored in BGR order. If <code>FlipChannels</code> is set, the channels are flipped to
+RGB order.</li>
+<li>On Microsoft Windows OS and MacOSX, the codecs shipped with an OpenCV
+image (libjpeg, libpng, libtiff, and libjasper) are used by default. So,
+OpenCV can always read JPEGs, PNGs, and TIFFs. On MacOSX, there is also an
+option to use native MacOSX image readers. But beware that currently these
+native image loaders give images with different pixel values because of
+the color management embedded into MacOSX.</li>
+<li>On Linux, BSD flavors and other Unix-like open-source operating systems,
+OpenCV looks for codecs supplied with an OS image. Install the relevant
+packages (do not forget the development files, for example, &quot;libjpeg-dev&quot;,
+in Debian and Ubuntu) to get the codec support or turn on the
+<code>OPENCV_BUILD_3RDPARTY_LIBS</code> flag in CMake.</li>
+<li>In the case you set <code>WITH_GDAL</code> flag to true in CMake and <code>GDAL</code> option to
+load the image, then <a href="http://www.gdal.org" target="_blank">GDAL driver</a> will be used in
+order to decode the image by supporting the following formats:
+<ul>
+<li><a href="http://www.gdal.org/formats_list.html" target="_blank">Raster</a>,</li>
+<li><a href="http://www.gdal.org/ogr_formats.html" target="_blank">Vector</a>.</li>
+</ul>
+</li>
+<li>If EXIF information are embedded in the image file, the EXIF orientation
+will be taken into account and thus the image will be rotated accordingly
+except if the option <code>IgnoreOrientation</code> is passed.</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.imwrite.html">cv.imwrite</a>, <a href="cv.imdecode.html">cv.imdecode</a>, <a href="https://www.mathworks.com/help/matlab/ref/imread.html" target="_blank">imread</a>, <a href="https://www.mathworks.com/help/matlab/ref/imfinfo.html" target="_blank">imfinfo</a>, <a href="https://www.mathworks.com/help/matlab/ref/imformats.html" target="_blank">imformats</a>, <a href="https://www.mathworks.com/help/images/ref/dicomread.html" target="_blank">dicomread</a>,
+   <a href="https://www.mathworks.com/help/images/ref/hdrread.html" target="_blank">hdrread</a>, <a href="https://www.mathworks.com/help/matlab/ref/tiff.html" target="_blank">Tiff</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

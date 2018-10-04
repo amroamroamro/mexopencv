@@ -1,0 +1,61 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>computeGradient (cv.HOGDescriptor) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.HOGDescriptor.computeGradient - Computes gradients and quantized gradient orientations" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">computeGradient (cv.HOGDescriptor) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.HOGDescriptor/computeGradient</div>
+      <div class="helpcontent"><p class=" h1line">Computes gradients and quantized gradient orientations</p>
+<pre class=" prettyprint lang-matlab"><code>[grad, angleOfs] = hog.computeGradient(im)
+[...] = hog.computeGradient(im, 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>im</strong> 8-bit 1- or 3-channel source image to be computed.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>grad</strong> gradient magnitudes (2-channel float matrix of same
+size as the image plus padding).</li>
+<li><strong>angleOfs</strong> quantized gradient orientation with integers in
+the range <code>[0,NBins-1]</code> (2-channel 8-bit matrix of same size
+as the image plus the padding).</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>paddingTL</strong> Optional padding from top-left. default [0,0]</li>
+<li><strong>paddingBR</strong> Optional padding from bottom-right. default [0,0]</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.HOGDescriptor.compute.html">cv.HOGDescriptor/compute</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

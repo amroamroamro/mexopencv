@@ -1,0 +1,288 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.MotionSaliencyBinWangApr2014 - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.MotionSaliencyBinWangApr2014 - A Fast Self-tuning Background Subtraction Algorithm for Motion Saliency" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.MotionSaliencyBinWangApr2014 - MATLAB File Help</td>
+            <td class="subheader-left"></td>
+            <td class="subheader-right"><a href="cv.MotionSaliencyBinWangApr2014.html">Go to online doc for cv.MotionSaliencyBinWangApr2014</a></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.MotionSaliencyBinWangApr2014</div>
+      <div class="helpcontent"><p class=" h1line">A Fast Self-tuning Background Subtraction Algorithm for Motion Saliency</p>
+<p>Implementation of MotionSaliencyBinWangApr2014 for Motion Saliency.</p>
+<h2>Saliency API</h2>
+<p>Many computer vision applications may benefit from understanding where
+humans focus given a scene. Other than cognitively understanding the way
+human perceive images and scenes, finding salient regions and objects in
+the images helps various tasks such as speeding up object detection,
+object recognition, object tracking and content-aware image editing.</p>
+<p>About the saliency, there is a rich literature but the development is
+very fragmented. The principal purpose of this API is to give a unique
+interface, a unique framework for use and plug sever saliency
+algorithms, also with very different nature and methodology, but they
+share the same purpose, organizing algorithms into three main
+categories:</p>
+<ul>
+<li>Static Saliency</li>
+<li>Motion Saliency</li>
+<li>Objectness</li>
+</ul>
+<p>Saliency UML diagram:</p>
+<p><img src="https://docs.opencv.org/3.3.1/saliency.png" alt="image" /></p>
+<p>To see how API works, try tracker demo: <code>computeSaliency_demo.m</code>.</p>
+<h2>Motion Saliency Algorithms</h2>
+<p>Algorithms belonging to this category, are particularly focused to
+detect salient objects over time (hence also over frame), then there is
+a temporal component sealing cosider that allows to detect &quot;moving&quot;
+objects as salient, meaning therefore also the more general sense of
+detection the changes in the scene.</p>
+<p>Presently, the Fast Self-tuning Background Subtraction Algorithm
+[BinWangApr2014] has been implemented.</p>
+<h2>References</h2>
+<p>[BinWangApr2014]:</p>
+<blockquote>
+<p>Bin Wang and Piotr Dudek. &quot;A Fast Self-tuning Background Subtraction
+Algorithm&quot;. In Computer Vision and Pattern Recognition Workshops
+(CVPRW), 2014 IEEE Conference on, pages 401-404. IEEE, 2014.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.StaticSaliencySpectralResidual.html">cv.StaticSaliencySpectralResidual</a></div>
+      <!--Class-->
+      <div class="sectiontitle">Class Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Superclasses</td>
+            <td><a href="https://www.mathworks.com/help/matlab/ref/handle.html" target="_blank">handle</a></td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Construct on load</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+      <!--Constructors-->
+      <div class="sectiontitle"><a name="constructors"></a>Constructor Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.MotionSaliencyBinWangApr2014.MotionSaliencyBinWangApr2014.html">MotionSaliencyBinWangApr2014</a></td>
+            <td class="m-help">Constructor, creates a specialized saliency algorithm of this type&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Properties-->
+      <div class="sectiontitle"><a name="properties"></a>Property Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.MotionSaliencyBinWangApr2014.ImageHeight.html">ImageHeight</a></td>
+            <td class="m-help">Height of input image.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.MotionSaliencyBinWangApr2014.ImageWidth.html">ImageWidth</a></td>
+            <td class="m-help">Width of input image.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.MotionSaliencyBinWangApr2014.id.html">id</a></td>
+            <td class="m-help">Object ID&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Methods-->
+      <div class="sectiontitle"><a name="methods"></a>Method Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">addlistener</a></td>
+            <td class="m-help">Add listener for event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.MotionSaliencyBinWangApr2014.clear.html">clear</a></td>
+            <td class="m-help">Clears the algorithm state&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.MotionSaliencyBinWangApr2014.computeSaliency.html">computeSaliency</a></td>
+            <td class="m-help">Compute the saliency&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.MotionSaliencyBinWangApr2014.delete.html">delete</a></td>
+            <td class="m-help">Destructor&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.MotionSaliencyBinWangApr2014.empty.html">empty</a></td>
+            <td class="m-help">Checks if detector object is empty&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">eq</a></td>
+            <td class="m-help">== (EQ)   Test handle equality.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findobj</a></td>
+            <td class="m-help">Find objects matching specified conditions.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findprop</a></td>
+            <td class="m-help">Find property of MATLAB handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ge</a></td>
+            <td class="m-help">&gt;= (GE)   Greater than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.MotionSaliencyBinWangApr2014.getDefaultName.html">getDefaultName</a></td>
+            <td class="m-help">Returns the algorithm string identifier&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">gt</a></td>
+            <td class="m-help">&gt; (GT)   Greater than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.MotionSaliencyBinWangApr2014.init.html">init</a></td>
+            <td class="m-help">This function allows the correct initialization of all data structures that will be used by the algorithm&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">isvalid</a></td>
+            <td class="m-help">Test handle validity.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">le</a></td>
+            <td class="m-help">&lt;= (LE)   Less than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">listener</a></td>
+            <td class="m-help">Add listener for event without binding the listener to the source object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.MotionSaliencyBinWangApr2014.load.html">load</a></td>
+            <td class="m-help">Loads algorithm from a file or a string&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">lt</a></td>
+            <td class="m-help">&lt; (LT)   Less than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ne</a></td>
+            <td class="m-help">~= (NE)   Not equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">notify</a></td>
+            <td class="m-help">Notify listeners of event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.MotionSaliencyBinWangApr2014.save.html">save</a></td>
+            <td class="m-help">Saves the algorithm parameters to a file&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.MotionSaliencyBinWangApr2014.setImagesize.html">setImagesize</a></td>
+            <td class="m-help">This is a utility function that allows to set the correct size (taken from the input image) in the corresponding variables
+               that will be used to size the data structures of the algorithm&nbsp;
+            </td>
+         </tr>
+      </tbody></table>
+      <!--Events-->
+      <div class="sectiontitle"><a name="events"></a>Event Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ObjectBeingDestroyed</a></td>
+            <td class="m-help">Notifies listeners that a particular object has been destroyed.&nbsp;</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

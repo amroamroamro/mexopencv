@@ -1,0 +1,310 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.BinaryDescriptorMatcher - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.BinaryDescriptorMatcher - BinaryDescriptor matcher class" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.BinaryDescriptorMatcher - MATLAB File Help</td>
+            <td class="subheader-left"></td>
+            <td class="subheader-right"><a href="cv.BinaryDescriptorMatcher.html">Go to online doc for cv.BinaryDescriptorMatcher</a></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.BinaryDescriptorMatcher</div>
+      <div class="helpcontent"><p class=" h1line">BinaryDescriptor matcher class</p>
+<p>Furnishes all functionalities for querying a dataset provided by user or
+internal to class (that user must, anyway, populate) on the model of
+Descriptor Matchers.</p>
+<p>Once descriptors have been extracted from an image (both they represent
+lines and points), it becomes interesting to be able to match a
+descriptor with another one extracted from a different image and
+representing the same line or point, seen from a differente perspective
+or on a different scale. In reaching such goal, the main headache is
+designing an efficient search algorithm to associate a query descriptor
+to one extracted from a dataset. In the following, a matching modality
+based on <em>Multi-Index Hashing (MiHashing)</em> will be described.</p>
+<h3>Multi-Index Hashing</h3>
+<p>The theory described in this section is based on [MIH]. Given a dataset
+populated with binary codes, each code is indexed <code>m</code> times into <code>m</code>
+different hash tables, according to <code>m</code> substrings it has been divided
+into. Thus, given a query code, all the entries close to it at least in
+one substring are returned by search as <em>neighbor candidates</em>. Returned
+entries are then checked for validity by verifying that their full codes
+are not distant (in Hamming space) more than <code>r</code> bits from query code.
+In details, each binary code <code>h</code> composed of <code>b</code> bits is divided into
+<code>m</code> disjoint substrings <code>h^(1), ..., h^(m)</code>, each with length
+<code>floor(b/m)</code> or <code>ceil(b/m)</code> bits. Formally, when two codes <code>h</code> and <code>g</code>
+differ by at the most <code>r</code> bits, in at the least one of their <code>m</code>
+substrings they differ by at the most <code>floor(r/m)</code> bits. In particular,
+when <code>||h-g||_H &lt;= r</code> (where <code>||.||_H</code> is the Hamming norm), there must
+exist a substring <code>k</code> (with <code>1 &lt;= k &lt;= m</code>) such that:</p>
+<pre class=" prettyprint lang-matlab"><code>|| h^(k) - g^(k) ||_H &lt;= floor(r/m)
+</code></pre>
+<p>That means that if Hamming distance between each of the <code>m</code> substring is
+strictly greater than <code>floor(r/m)</code>, then <code>||h-g||_H</code> must be larger that
+<code>r</code> and that is a contradiction. If the codes in dataset are divided
+into <code>m</code> substrings, then <code>m</code> tables will be built. Given a query <code>q</code>
+with substrings <code>{q^(i)}_[i=1..m]</code>, <code>i</code>-th hash table is searched for
+entries distant at the most <code>floor(r/m)</code> from <code>q^(i)</code> and a set of
+candidates <code>N_i(q)</code> is obtained. The union of sets <code>N(q) = U_i {N_i(q)}</code>
+is a superset of the <code>r</code>-neighbors of <code>q</code>. Then, last step of algorithm
+is computing the Hamming distance between <code>q</code> and each element in <code>N(q)</code>,
+deleting the codes that are distant more that <code>r</code> from <code>q</code>.</p>
+<h2>References</h2>
+<p>[MIH]:</p>
+<blockquote>
+<p>Mohammad Norouzi, Ali Punjani, and David J Fleet. &quot;Fast search in
+hamming space with Multi-Index Hashing&quot;. In Computer Vision and
+Pattern Recognition (CVPR), 2012 IEEE Conference on, pages 3108-3115.
+IEEE, 2012.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.BinaryDescriptor.html">cv.BinaryDescriptor</a>, <a href="cv.DescriptorMatcher.html">cv.DescriptorMatcher</a>, <a href="cv.drawLineMatches.html">cv.drawLineMatches</a></div>
+      <!--Class-->
+      <div class="sectiontitle">Class Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Superclasses</td>
+            <td><a href="https://www.mathworks.com/help/matlab/ref/handle.html" target="_blank">handle</a></td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Construct on load</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+      <!--Constructors-->
+      <div class="sectiontitle"><a name="constructors"></a>Constructor Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.BinaryDescriptorMatcher.BinaryDescriptorMatcher.html">BinaryDescriptorMatcher</a></td>
+            <td class="m-help">Constructor&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Properties-->
+      <div class="sectiontitle"><a name="properties"></a>Property Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.BinaryDescriptorMatcher.id.html">id</a></td>
+            <td class="m-help">Object ID&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Methods-->
+      <div class="sectiontitle"><a name="methods"></a>Method Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BinaryDescriptorMatcher.add.html">add</a></td>
+            <td class="m-help">Store locally new descriptors to be inserted in dataset, without updating dataset&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">addlistener</a></td>
+            <td class="m-help">Add listener for event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BinaryDescriptorMatcher.clear.html">clear</a></td>
+            <td class="m-help">Clear dataset and internal data&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BinaryDescriptorMatcher.delete.html">delete</a></td>
+            <td class="m-help">Destructor&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BinaryDescriptorMatcher.empty.html">empty</a></td>
+            <td class="m-help">Returns true if there are no train descriptors in the collection&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">eq</a></td>
+            <td class="m-help">== (EQ)   Test handle equality.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findobj</a></td>
+            <td class="m-help">Find objects matching specified conditions.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findprop</a></td>
+            <td class="m-help">Find property of MATLAB handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ge</a></td>
+            <td class="m-help">&gt;= (GE)   Greater than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BinaryDescriptorMatcher.getDefaultName.html">getDefaultName</a></td>
+            <td class="m-help">Returns the algorithm string identifier&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">gt</a></td>
+            <td class="m-help">&gt; (GT)   Greater than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">isvalid</a></td>
+            <td class="m-help">Test handle validity.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BinaryDescriptorMatcher.knnMatch.html">knnMatch</a></td>
+            <td class="m-help">For every input query descriptor, retrieve the best k matching ones from a dataset provided from user or from the one internal
+               to class&nbsp;
+            </td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">le</a></td>
+            <td class="m-help">&lt;= (LE)   Less than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">listener</a></td>
+            <td class="m-help">Add listener for event without binding the listener to the source object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BinaryDescriptorMatcher.load.html">load</a></td>
+            <td class="m-help">Loads algorithm from a file or a string&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">lt</a></td>
+            <td class="m-help">&lt; (LT)   Less than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BinaryDescriptorMatcher.match.html">match</a></td>
+            <td class="m-help">For every input query descriptor, retrieve the best matching one from a dataset provided from user or from the one internal
+               to class&nbsp;
+            </td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ne</a></td>
+            <td class="m-help">~= (NE)   Not equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">notify</a></td>
+            <td class="m-help">Notify listeners of event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BinaryDescriptorMatcher.radiusMatch.html">radiusMatch</a></td>
+            <td class="m-help">For every input query descriptor, retrieve, from a dataset provided from user or from the one internal to class, all the descriptors
+               that are not further than maxDist from input query&nbsp;
+            </td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BinaryDescriptorMatcher.save.html">save</a></td>
+            <td class="m-help">Saves the algorithm parameters to a file&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BinaryDescriptorMatcher.train.html">train</a></td>
+            <td class="m-help">Update dataset by inserting into it all descriptors that were stored locally by add function&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Events-->
+      <div class="sectiontitle"><a name="events"></a>Event Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ObjectBeingDestroyed</a></td>
+            <td class="m-help">Notifies listeners that a particular object has been destroyed.&nbsp;</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

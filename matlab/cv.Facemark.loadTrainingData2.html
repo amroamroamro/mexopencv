@@ -1,0 +1,77 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>loadTrainingData2 (cv.Facemark) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Facemark.loadTrainingData2 - A utility to load facial landmark dataset from a single file" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">loadTrainingData2 (cv.Facemark) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Facemark.loadTrainingData2</div>
+      <div class="helpcontent"><p class=" h1line">A utility to load facial landmark dataset from a single file</p>
+<pre class=" prettyprint lang-matlab"><code>[imagesPaths, landmarks, success] = <a href="cv.Facemark.loadTrainingData2.html">cv.Facemark.loadTrainingData2</a>(filename)
+[...] = <a href="cv.Facemark.loadTrainingData2.html">cv.Facemark.loadTrainingData2</a>(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>filename</strong> The filename of a file that contains the dataset
+information. Each line contains the filename of an image
+followed by pairs of <code>x</code> and <code>y</code> values of facial landmarks
+points separated by a space.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>imagesPaths</strong> A cell-aray where each element represent the
+filename of image in the dataset. Images are not loaded by
+default to save memory.</li>
+<li><strong>landmarks</strong> The loaded landmark points for all training
+data <code>{{[x,y], ...}, ...}</code>.</li>
+<li><strong>success</strong> success flag.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Delim</strong> Delimiter between each element, the default value is
+a whitespace <code>' '</code>.</li>
+<li><strong>Offset</strong> An offset value to adjust the loaded points.
+default 0.0</li>
+</ul>
+<p>This dataset format simply consists of a single file, where each
+line contains an image path followed by list of x/y coordinates
+of its corresponding annotation. Number of points of each sample
+is not included, and the code will load all value pairs until
+the end of line.</p>
+<p>Example of file format expected:</p>
+<pre class=" prettyprint lang-matlab"><code>/path/to/image1.jpg 336.820955 240.864510 334.238298 260.922709 ...
+/path/to/image2.jpg 376.158428 230.845712 376.736984 254.924635 ...
+...
+</code></pre>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Facemark.loadTrainingData3.html">cv.Facemark.loadTrainingData3</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>true</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

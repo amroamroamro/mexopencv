@@ -1,0 +1,71 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.LineIterator - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.LineIterator - Raster line iterator" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.LineIterator - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.LineIterator</div>
+      <div class="helpcontent"><p class=" h1line">Raster line iterator</p>
+<pre class=" prettyprint lang-matlab"><code>[pos, count] = <a href="cv.LineIterator.html">cv.LineIterator</a>(img, pt1, pt2)
+[...] = <a href="cv.LineIterator.html">cv.LineIterator</a>(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>img</strong> input image</li>
+<li><strong>pt1</strong> first point <code>[x,y]</code></li>
+<li><strong>pt2</strong> second point <code>[x,y]</code></li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>pos</strong> pixel position coordinates <code>[x,y]</code> as a <code>count-by-2</code> matrix</li>
+<li><strong>count</strong> number of pixels along the line</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Connectivity</strong> 8-connected or 4-connected. default 8</li>
+<li><strong>LeftToRight</strong> default false</li>
+</ul>
+<p>The function iterates over the line connecting <code>pt1</code> and <code>pt2</code>. The line
+will be clipped on the image boundaries. The line is 8-connected or
+4-connected. If <code>LeftToRight=true</code>, then the iteration is always done from
+the left-most point to the right most, not to depend on the ordering of
+<code>pt1</code> and <code>pt2</code> parameters.</p>
+<p>The function is used to iterate over all the pixels on the raster line
+segment connecting two specified points.</p>
+<p>The function <a href="cv.LineIterator.html">cv.LineIterator</a> is used to get each pixel of a raster line. It
+can be treated as versatile implementation of the Bresenham algorithm where
+you can stop at each pixel and do some extra processing, for example, grab
+pixel values along the line or draw a line with an effect (for example, with
+XOR operation).</p>
+<p>The function <a href="cv.LineIterator.html">cv.LineIterator</a> returns the positions in the image, and the
+number of pixels along the line.</p>
+<h2>Example</h2>
+<pre class=" prettyprint lang-matlab"><code>img = imread(fullfile(mexopencv.root(),'test','fruits.jpg'));
+pt1 = [10 15];    % 0-based
+pt2 = [200 100];  % 0-based
+
+% grabs pixels along the line (pt1, pt2) from 8-bit 3-channel image
+[xy,num] = <a href="cv.LineIterator.html">cv.LineIterator</a>(img, pt1, pt2, 'Connectivity',8);
+xy = xy + 1;  % 1-based subscripts
+c = zeros(num, size(img,3), class(img));
+for i=1:num
+    c(i,:) = img(xy(i,2), xy(i,1), :);
+end
+</code></pre>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="https://www.mathworks.com/help/images/ref/improfile.html" target="_blank">improfile</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

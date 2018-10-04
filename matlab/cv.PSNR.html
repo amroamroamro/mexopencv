@@ -1,0 +1,46 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.PSNR - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.PSNR - Computes the Peak Signal-to-Noise Ratio (PSNR) image quality metric" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.PSNR - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.PSNR</div>
+      <div class="helpcontent"><p class=" h1line">Computes the Peak Signal-to-Noise Ratio (PSNR) image quality metric</p>
+<pre class=" prettyprint lang-matlab"><code>psnr = <a href="cv.PSNR.html">cv.PSNR</a>(src1, src2)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src1</strong> first input array (gray or color image), 8-bit integer type.</li>
+<li><strong>src2</strong> second input array of the same size and type as <code>src1</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>psnr</strong> Computed signal-to-noise ratio</li>
+</ul>
+<p>This function calculates the Peak Signal-to-Noise Ratio (PSNR) image quality
+metric in decibels (dB), between two input arrays <code>src1</code> and <code>src2</code>. Arrays
+must have <code>uint8</code> depth.</p>
+<p>The PSNR is calculated as follows:</p>
+<pre class=" prettyprint lang-matlab"><code>PSNR = 10 * log10(R^2 / MSE)
+</code></pre>
+<p>where <code>R</code> is the maximum integer value of <code>uint8</code> depth (255) and <code>MSE</code> is
+the mean squared error between the two arrays.</p>
+<p>See <a href="https://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio" target="_blank">PSNR</a> for
+more details.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="https://www.mathworks.com/help/images/ref/psnr.html" target="_blank">psnr</a>, <a href="https://www.mathworks.com/help/images/ref/immse.html" target="_blank">immse</a>, <a href="https://www.mathworks.com/help/images/ref/ssim.html" target="_blank">ssim</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

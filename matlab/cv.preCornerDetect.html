@@ -1,0 +1,55 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.preCornerDetect - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.preCornerDetect - Calculates a feature map for corner detection" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.preCornerDetect - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.preCornerDetect</div>
+      <div class="helpcontent"><p class=" h1line">Calculates a feature map for corner detection</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.preCornerDetect.html">cv.preCornerDetect</a>(src)
+dst = <a href="cv.preCornerDetect.html">cv.preCornerDetect</a>(src, 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> Source single-channel 8-bit of floating-point image.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> Output image that has the <code>single</code> type and the same size as <code>src</code>.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>KSize</strong> Aperture size of the <a href="cv.Sobel.html">cv.Sobel</a> operator. default 3.</li>
+<li><strong>BorderType</strong> Pixel extrapolation method. See <a href="cv.copyMakeBorder.html">cv.copyMakeBorder</a>.
+default 'Default'</li>
+</ul>
+<p>The function calculates the complex spatial derivative-based function of the
+source image.</p>
+<pre class=" prettyprint lang-matlab"><code>dst = (Dx*src)^2*Dyy*src + (Dy*src)^2*Dxx*src - 2*Dx*src*Dy*src*Dxy*src
+</code></pre>
+<p>where <code>Dx</code>, <code>Dy</code> are the first image derivatives, <code>Dxx</code>, <code>Dyy</code> are the
+second image derivatives, and <code>Dxy</code> is the mixed derivative.</p>
+<p>The corners can be found as local maximums of the functions, as shown below:</p>
+<pre class=" prettyprint lang-matlab"><code>corners = <a href="cv.preCornerDetect.html">cv.preCornerDetect</a>(image, 'KSize',3);
+
+% dilation with 3x3 rectangular structuring element
+dilated_corners = <a href="cv.dilate.html">cv.dilate</a>(corners);
+corner_mask = (corners == dilated_corners);
+</code></pre>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.cornerMinEigenVal.html">cv.cornerMinEigenVal</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

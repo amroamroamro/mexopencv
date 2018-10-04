@@ -1,0 +1,64 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>getLayer (cv.Net) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Net.getLayer - Returns layer with specified id or name which the network use" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">getLayer (cv.Net) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Net/getLayer</div>
+      <div class="helpcontent"><p class=" h1line">Returns layer with specified id or name which the network use</p>
+<pre class=" prettyprint lang-matlab"><code>layer = net.getLayer(layerId)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>layerId</strong> layer name or layer id.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>layer</strong> returned layer. Scalar structure with the following
+fields:
+<ul>
+<li><strong>blobs</strong> List of stored learned parameters as returned by
+<a href="cv.Net.getParam.html">cv.Net.getParam</a>.</li>
+<li><strong>name</strong> name of the layer instance, can be used for logging
+or other internal purposes.</li>
+<li><strong>type</strong> Type name which was used for creating layer by
+layer factory.</li>
+<li><strong>preferableTarget</strong> preferred target for layer forwarding
+(see <a href="cv.Net.setPreferableTarget.html">cv.Net.setPreferableTarget</a>).</li>
+</ul>
+</li>
+</ul>
+<p>Layers are the building blocks of networks.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Net.getLayerId.html">cv.Net/getLayerId</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

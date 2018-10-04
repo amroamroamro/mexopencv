@@ -1,0 +1,58 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.calcOpticalFlowSparseToDense - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.calcOpticalFlowSparseToDense - Fast dense optical flow based on PyrLK sparse matches interpolation" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.calcOpticalFlowSparseToDense - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.calcOpticalFlowSparseToDense</div>
+      <div class="helpcontent"><p class=" h1line">Fast dense optical flow based on PyrLK sparse matches interpolation</p>
+<pre class=" prettyprint lang-matlab"><code>flow = <a href="cv.calcOpticalFlowSparseToDense.html">cv.calcOpticalFlowSparseToDense</a>(from, to)
+flow = <a href="cv.calcOpticalFlowSparseToDense.html">cv.calcOpticalFlowSparseToDense</a>(from, to, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>from</strong> first 8-bit 3-channel or 1-channel image.</li>
+<li><strong>to</strong> second 8-bit 3-channel or 1-channel image of the same size as
+<code>from</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>flow</strong> computed flow image that has the same size as <code>from</code> and type
+<code>single</code> (2-channels). Flow for <code>(x,y)</code> is stored in the third dimension.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>GridStep</strong> stride used in sparse match computation. Lower values usually
+result in higher quality but slow down the algorithm. default 8</li>
+<li><strong>K</strong> number of nearest-neighbor matches considered, when fitting a
+locally affine model. Lower values can make the algorithm noticeably
+faster at the cost of some quality degradation. default 128</li>
+<li><strong>Sigma</strong> parameter defining how fast the weights decrease in the
+locally-weighted affine fitting. Higher values can help preserve fine
+details, lower values can help to get rid of the noise in the output flow.
+default 0.05</li>
+<li><strong>UsePostProcessing</strong> defines whether the
+<a href="cv.FastGlobalSmootherFilter.fastGlobalSmootherFilter.html">cv.FastGlobalSmootherFilter.fastGlobalSmootherFilter</a> is used for
+post-processing after interpolation. default true</li>
+<li><strong>FGSLambda</strong> see the respective parameter of
+<a href="cv.FastGlobalSmootherFilter.fastGlobalSmootherFilter.html">cv.FastGlobalSmootherFilter.fastGlobalSmootherFilter</a>, default 500.0</li>
+<li><strong>FGSSigma</strong> see the respective parameter of
+<a href="cv.FastGlobalSmootherFilter.fastGlobalSmootherFilter.html">cv.FastGlobalSmootherFilter.fastGlobalSmootherFilter</a>, default 1.5</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.calcOpticalFlowPyrLK.html">cv.calcOpticalFlowPyrLK</a>, <a href="cv.SparsePyrLKOpticalFlow.html">cv.SparsePyrLKOpticalFlow</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

@@ -1,0 +1,63 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.ShapeContextDistanceExtractor/ShapeContextDistanceExtractor - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.ShapeContextDistanceExtractor.ShapeContextDistanceExtractor - Constructor" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.ShapeContextDistanceExtractor/ShapeContextDistanceExtractor - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.ShapeContextDistanceExtractor/ShapeContextDistanceExtractor</div>
+      <div class="helpcontent"><p class=" h1line">Constructor</p>
+<pre class=" prettyprint lang-matlab"><code>obj = <a href="cv.ShapeContextDistanceExtractor.html">cv.ShapeContextDistanceExtractor</a>()
+obj = <a href="cv.ShapeContextDistanceExtractor.html">cv.ShapeContextDistanceExtractor</a>('OptionName',optionValue, ...)
+</code></pre>
+<h2>Options</h2>
+<ul>
+<li><strong>AngularBins</strong> see
+<a href="cv.ShapeContextDistanceExtractor.AngularBins.html">cv.ShapeContextDistanceExtractor.AngularBins</a>, default 12</li>
+<li><strong>RadialBins</strong> see
+<a href="cv.ShapeContextDistanceExtractor.RadialBins.html">cv.ShapeContextDistanceExtractor.RadialBins</a>, default 4</li>
+<li><strong>InnerRadius</strong> see
+<a href="cv.ShapeContextDistanceExtractor.InnerRadius.html">cv.ShapeContextDistanceExtractor.InnerRadius</a>, default 0.2</li>
+<li><strong>OuterRadius</strong> see
+<a href="cv.ShapeContextDistanceExtractor.OuterRadius.html">cv.ShapeContextDistanceExtractor.OuterRadius</a>, default 2</li>
+<li><strong>Iterations</strong> see
+<a href="cv.ShapeContextDistanceExtractor.Iterations.html">cv.ShapeContextDistanceExtractor.Iterations</a>, default 3</li>
+<li><strong>CostExtractor</strong> an algorithm that defines the cost matrix
+between descriptors, specified as
+<code>{comparerType, 'OptionName',optionValue, ...}</code>. See
+<a href="cv.ShapeContextDistanceExtractor.setCostExtractor.html">cv.ShapeContextDistanceExtractor.setCostExtractor</a>, where
+<code>comparerType</code> is one of:
+<ul>
+<li><strong>NormHistogramCostExtractor</strong></li>
+<li><strong>EMDHistogramCostExtractor</strong></li>
+<li><strong>ChiHistogramCostExtractor</strong> (default)</li>
+<li><strong>EMDL1HistogramCostExtractor</strong></li>
+</ul>
+</li>
+<li><strong>TransformAlgorithm</strong> an algorithm that defines the aligning
+transformation, specified as
+<code>{transformerType, 'OptionName',optionValue, ...}</code>. See
+<a href="cv.ShapeContextDistanceExtractor.setTransformAlgorithm.html">cv.ShapeContextDistanceExtractor.setTransformAlgorithm</a>, where
+<code>transformerType</code> is one of:
+<ul>
+<li><strong>ThinPlateSplineShapeTransformer</strong> (default)</li>
+<li><strong>AffineTransformer</strong></li>
+</ul>
+</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.ShapeContextDistanceExtractor.computeDistance.html">cv.ShapeContextDistanceExtractor/computeDistance</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

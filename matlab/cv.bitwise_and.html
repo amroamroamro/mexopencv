@@ -1,0 +1,70 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.bitwise_and - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.bitwise_and - Calculates the per-element bit-wise conjunction of two arrays or an array and a scalar" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.bitwise_and - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.bitwise_and</div>
+      <div class="helpcontent"><p class=" h1line">Calculates the per-element bit-wise conjunction of two arrays or an array and a scalar</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.bitwise_and.html">cv.bitwise_and</a>(src1, src2)
+dst = <a href="cv.bitwise_and.html">cv.bitwise_and</a>(src1, src2, 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src1</strong> first input array or a scalar.</li>
+<li><strong>src2</strong> second input array or a scalar. In case both are array, they must
+have the same size and type.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> output array that has the same size and type as the input arrays.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Mask</strong> optional operation mask, 8-bit single channel array, that
+specifies elements of the output array to be changed. Not set by default.</li>
+<li><strong>Dest</strong> Used to initialize the output <code>dst</code> when a mask is used. Not set
+by default.</li>
+</ul>
+<p>Computes bitwise conjunction of the two arrays (<code>dst = src1 &amp; src2</code>).</p>
+<p>The function calculates the per-element bit-wise logical conjunction for:</p>
+<ul>
+<li>
+<p>Two arrays when <code>src1</code> and <code>src2</code> have the same size:</p>
+<pre class=" prettyprint lang-matlab"><code>dst(I) = src1(I) AND src2(I) if mask(I) != 0
+</code></pre>
+</li>
+<li>
+<p>An array and a scalar when <code>src2</code> is constructed from Scalar or has the
+same number of elements as <code>size(src1,3)</code>:</p>
+<pre class=" prettyprint lang-matlab"><code>dst(I) = src1(I) AND src2 if mask(I) != 0
+</code></pre>
+</li>
+<li>
+<p>A scalar and an array when <code>src1</code> is constructed from Scalar or has the
+same number of elements as <code>size(src2,3)</code>:</p>
+<pre class=" prettyprint lang-matlab"><code>dst(I) = src1 AND src2(I) if mask(I) != 0
+</code></pre>
+</li>
+</ul>
+<p>In case of floating-point arrays, their machine-specific bit representations
+(usually IEEE754-compliant) are used for the operation. In case of
+multi-channel arrays, each channel is processed independently. In the second
+and third cases above, the scalar is first converted to the array type.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.bitwise_or.html">cv.bitwise_or</a>, <a href="cv.bitwise_xor.html">cv.bitwise_xor</a>, <a href="cv.bitwise_not.html">cv.bitwise_not</a>, <a href="https://www.mathworks.com/help/matlab/ref/bitand.html" target="_blank">bitand</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

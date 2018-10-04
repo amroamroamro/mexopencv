@@ -1,0 +1,44 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.TextDetectorCNN/TextDetectorCNN - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.TextDetectorCNN.TextDetectorCNN - Creates an instance using the provided parameters" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.TextDetectorCNN/TextDetectorCNN - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.TextDetectorCNN/TextDetectorCNN</div>
+      <div class="helpcontent"><p class=" h1line">Creates an instance using the provided parameters</p>
+<pre class=" prettyprint lang-matlab"><code>obj = <a href="cv.TextDetectorCNN.html">cv.TextDetectorCNN</a>(modelArchFilename, modelWeightsFilename)
+obj = <a href="cv.TextDetectorCNN.html">cv.TextDetectorCNN</a>(..., 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>modelArchFilename</strong> path to the prototxt file describing the
+classifiers architecture (the <code>.prototxt</code> file).</li>
+<li><strong>modelWeightsFilename</strong> path to the file containing the
+pretrained weights of the model in caffe-binary form
+(the <code>.caffemodel</code> file).</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>DetectionSizes</strong> a list of sizes for multiscale detection.
+The values
+<code>{[300,300], [700,500], [700,300], [700,700], [1600,1600]}</code>
+are recommended in [LiaoSBWL17] to achieve the best quality.
+default <code>{[300,300]}</code>.</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.TextDetectorCNN.html">cv.TextDetectorCNN</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

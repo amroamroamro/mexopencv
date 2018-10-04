@@ -1,0 +1,45 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.CLAHE - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.CLAHE - Contrast Limited Adaptive Histogram Equalization" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.CLAHE - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.CLAHE</div>
+      <div class="helpcontent"><p class=" h1line">Contrast Limited Adaptive Histogram Equalization</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.CLAHE.html">cv.CLAHE</a>(src)
+dst = <a href="cv.CLAHE.html">cv.CLAHE</a>(src, 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> Input 8-bit or 16-bit single-channel image.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> output image</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>ClipLimit</strong> Threshold for contrast limiting. default 40.0</li>
+<li><strong>TileGridSize</strong> Size of grid for histogram equalization. Input image will
+be divided into equally sized rectangular tiles. <code>TileGridSize</code> defines
+the number of tiles in row and column. default [8,8]</li>
+</ul>
+<p>Equalizes the histogram of a grayscale image using Contrast Limited Adaptive
+Histogram Equalization.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="https://www.mathworks.com/help/images/ref/adapthisteq.html" target="_blank">adapthisteq</a>, <a href="cv.equalizeHist.html">cv.equalizeHist</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

@@ -1,0 +1,63 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>drawSignature (cv.PCTSignatures) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.PCTSignatures.drawSignature - Draws signature in the source image and outputs the result" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">drawSignature (cv.PCTSignatures) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.PCTSignatures.drawSignature</div>
+      <div class="helpcontent"><p class=" h1line">Draws signature in the source image and outputs the result</p>
+<pre class=" prettyprint lang-matlab"><code>result = <a href="cv.PCTSignatures.drawSignature.html">cv.PCTSignatures.drawSignature</a>(source, signature)
+result = <a href="cv.PCTSignatures.drawSignature.html">cv.PCTSignatures.drawSignature</a>(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>source</strong> Source image.</li>
+<li><strong>signature</strong> Image signature (<code>single</code> matrix with 8 columns).</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>result</strong> Output result.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>RadiusToShorterSideRatio</strong> Determines maximal radius of
+signature in the output image. default 1/8</li>
+<li><strong>BorderThickness</strong> Border thickness of the visualized
+signature. default 1</li>
+</ul>
+<p>Signatures are visualized as a circle with radius based on
+signature weight and color based on signature color. Contrast
+and entropy are not visualized.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.PCTSignatures.computeSignature.html">cv.PCTSignatures/computeSignature</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>true</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

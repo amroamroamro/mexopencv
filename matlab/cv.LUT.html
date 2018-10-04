@@ -1,0 +1,49 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.LUT - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.LUT - Performs a look-up table transform of an array" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.LUT - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.LUT</div>
+      <div class="helpcontent"><p class=" h1line">Performs a look-up table transform of an array</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.LUT.html">cv.LUT</a>(src, lut)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> input array of 8-bit elements (<code>uint8</code> or <code>int8</code>).</li>
+<li><strong>lut</strong> look-up table of 256 elements; in case of multi-channel input
+array <code>src</code>, the table should either have a single channel (in this case
+the same table is used for all channels) or the same number of channels as
+in the input array.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> output array of the same size and number of channels as <code>src</code>, and
+the same depth as <code>lut</code>.</li>
+</ul>
+<p>The function <a href="cv.LUT.html">cv.LUT</a> fills the output array with values from the look-up
+table. Indices of the entries are taken from the input array. That is, the
+function processes each element of src as follows:</p>
+<pre class=" prettyprint lang-matlab"><code>dst(I) = lut(src(I) + d)
+</code></pre>
+<p>where:</p>
+<pre class=" prettyprint lang-matlab"><code>d = { 0   if src has uint8 depth
+    { 128 if src has  int8 depth
+</code></pre>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.convertScaleAbs.html">cv.convertScaleAbs</a>, <a href="cv.convertTo.html">cv.convertTo</a>, <a href="cv.applyColorMap.html">cv.applyColorMap</a>, <a href="https://www.mathworks.com/help/images/ref/intlut.html" target="_blank">intlut</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

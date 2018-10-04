@@ -1,0 +1,67 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>guidedFilter (cv.GuidedFilter) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.GuidedFilter.guidedFilter - Simple one-line Guided Filter call" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">guidedFilter (cv.GuidedFilter) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.GuidedFilter.guidedFilter</div>
+      <div class="helpcontent"><p class=" h1line">Simple one-line Guided Filter call</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.GuidedFilter.guidedFilter.html">cv.GuidedFilter.guidedFilter</a>(src, guide)
+dst = <a href="cv.GuidedFilter.guidedFilter.html">cv.GuidedFilter.guidedFilter</a>(src, guide, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> filtering image with any numbers of channels.</li>
+<li><strong>guide</strong> guided image with up to 3 channels, if it have more
+then 3 channels then only first 3 channels will be used.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> output image.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Radius</strong> radius of Guided Filter. default 7</li>
+<li><strong>EPS</strong> regularization term of Guided Filter. <code>eps^2</code> is
+similar to the sigma in the color space into
+<a href="cv.bilateralFilter.html">cv.bilateralFilter</a>. default 500.0</li>
+<li><strong>DDepth</strong> optional depth of the output image. <code>DDepth</code> can be
+set to -1, which will be equivalent to <code>class(src)</code>. Default -1</li>
+</ul>
+<p>If you have multiple images to filter with the same guided image
+then use GuidedFilter interface to avoid extra computations on
+initialization stage.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.GuidedFilter.filter.html">cv.GuidedFilter/filter</a>, <a href="cv.bilateralFilter.html">cv.bilateralFilter</a>,
+   <a href="cv.DTFilter.dtFilter.html">cv.DTFilter.dtFilter</a>, <a href="cv.AdaptiveManifoldFilter.amFilter.html">cv.AdaptiveManifoldFilter.amFilter</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>true</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

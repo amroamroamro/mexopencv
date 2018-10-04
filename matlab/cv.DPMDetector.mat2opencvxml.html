@@ -1,0 +1,65 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>mat2opencvxml (cv.DPMDetector) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.DPMDetector.mat2opencvxml - Convert DPM 2007 model (MAT) to cascade model (XML)" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">mat2opencvxml (cv.DPMDetector) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.DPMDetector.mat2opencvxml</div>
+      <div class="helpcontent"><p class=" h1line">Convert DPM 2007 model (MAT) to cascade model (XML)</p>
+<pre class=" prettyprint lang-matlab"><code><a href="cv.DPMDetector.mat2opencvxml.html">cv.DPMDetector.mat2opencvxml</a>(matpath, xmlpath)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>matpath</strong> input MAT filename, path to the DPM VOC 2007
+model.</li>
+<li><strong>xmlpath</strong> output XML filename, path to the OpenCV file
+storage model.</li>
+</ul>
+<p>The method converts [Felzenszwalb2010] model files to xml
+format specified by OpenCV's implementation. The usage is the
+following:</p>
+<pre class=" prettyprint lang-matlab"><code>matpath = 'VOC2007/cat_final.mat';
+xmlpath = 'cat.xml';
+<a href="cv.DPMDetector.mat2opencvxml.html">cv.DPMDetector.mat2opencvxml</a>(matpath, xmlpath);
+</code></pre>
+<p>Check the latest models in:</p>
+<ul>
+<li><a href="http://www.cs.brown.edu/~pff/latent/" target="_blank">Brown</a></li>
+<li><a href="http://www.cs.berkeley.edu/~rbg/latent/index.html" target="_blank">Berkeley</a></li>
+<li><a href="https://github.com/rbgirshick/voc-dpm" target="_blank">GitHub</a></li>
+</ul>
+<p>This <code>mat2opencvxml</code> utility is taken from:
+<a href="https://github.com/opencv/opencv_extra/blob/3.2.0/testdata/cv/dpm/mat2opencvxml.m" target="_blank">mat2opencvxml.m</a></p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.DPMDetector.html">cv.DPMDetector</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>true</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

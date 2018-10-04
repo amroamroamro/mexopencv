@@ -1,0 +1,308 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.ImgHash - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.ImgHash - Base class for Image Hashing algorithms" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.ImgHash - MATLAB File Help</td>
+            <td class="subheader-left"></td>
+            <td class="subheader-right"><a href="cv.ImgHash.html">Go to online doc for cv.ImgHash</a></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.ImgHash</div>
+      <div class="helpcontent"><p class=" h1line">Base class for Image Hashing algorithms</p>
+<p>This module brings implementations of different image hashing algorithms.
+It provides algorithms to extract the hash of images and fast way to
+figure out most similar images in huge data set.</p>
+<h3>Supported Algorithms</h3>
+<ul>
+<li>Average hash (also called Different hash)</li>
+<li>PHash (also called Perceptual hash)</li>
+<li>Marr Hildreth Hash</li>
+<li>Radial Variance Hash</li>
+<li>Block Mean Hash (modes 0 and 1)</li>
+<li>Color Moment Hash (this is the one and only hash algorithm resist to
+rotation attack (-90~90 degree)</li>
+</ul>
+<p>You can study more about image hashing from the paper and websites
+listed in the references section.</p>
+<h3>Performance under different attacks</h3>
+<p><img src="https://docs.opencv.org/3.3.0/attack_performance.JPG" alt="Performance chart" /></p>
+<h3>Speed comparison with PHash library (100 images from ukbench)</h3>
+<p><img src="https://docs.opencv.org/3.3.1/hash_computation_chart.JPG" alt="Hash Computation chart" />
+<img src="https://docs.opencv.org/3.3.1/hash_comparison_chart.JPG" alt="Hash comparison chart" /></p>
+<p>As you can see, hash computation speed of img_hash module outperform
+<a href="http://www.phash.org/" target="_blank">PHash library</a> a lot.</p>
+<p>PS: I do not list out the comparison of Average hash, PHash and Color
+Moment hash, because I cannot find them in PHash.</p>
+<h3>Motivation</h3>
+<p>Collects useful image hash algorithms into OpenCV, so we do not need to
+rewrite them by ourselves again and again or rely on another 3rd party
+library (ex: PHash library). BOVW or correlation matching are good and
+robust, but they are very slow compare with image hash, if you need to
+deal with large scale CBIR (content based image retrieval) problem,
+image hash is a more reasonable solution.</p>
+<h3>More info</h3>
+<p>You can learn more about img_hash modules from following links, these
+links show you how to find similar image from ukbench dataset, provide
+thorough benchmark of different attacks (contrast, blur, noise
+(gaussion, pepper and salt), jpeg compression, watermark, resize).</p>
+<ul>
+<li><a href="http://qtandopencv.blogspot.my/2016/06/introduction-to-image-hash-module-of.html" target="_blank">Introduction to image hash module of OpenCV</a></li>
+<li><a href="http://qtandopencv.blogspot.my/2016/06/speed-up-image-hashing-of-opencvimghash.html" target="_blank">Speed up image hashing of OpenCV (img_hash) and introduce color moment hash</a></li>
+</ul>
+<h3>Contributors</h3>
+<p><a href="mailto:thamngapwei@gmail.com">Tham Ngap Wei</a></p>
+<h2>References</h2>
+<p>[lookslikeit]:</p>
+<blockquote>
+<p>Neal Krawetz.
+<a href="http://www.hackerfactor.com/blog/?/archives/432-Looks-Like-It.html" target="_blank">Looks Like It</a>.</p>
+</blockquote>
+<p>[tang2012perceptual]:</p>
+<blockquote>
+<p>Zhenjun Tang, Yumin Dai, Xianquan Zhang. &quot;Perceptual Hashing for Color
+Images Using Invariant Moments. Appl. Math, 6(2S):643S-650S, 2012.</p>
+</blockquote>
+<p>[zauner2010implementation]:</p>
+<blockquote>
+<p>Christoph Zauner. &quot;Implementation and benchmarking of perceptual image
+hash functions&quot;. 2010.</p>
+</blockquote>
+</div><!--after help -->
+      <!--Class-->
+      <div class="sectiontitle">Class Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Superclasses</td>
+            <td><a href="https://www.mathworks.com/help/matlab/ref/handle.html" target="_blank">handle</a></td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Construct on load</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+      <!--Constructors-->
+      <div class="sectiontitle"><a name="constructors"></a>Constructor Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.ImgHash.ImgHash.html">ImgHash</a></td>
+            <td class="m-help">Constructor&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Properties-->
+      <div class="sectiontitle"><a name="properties"></a>Property Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.ImgHash.id.html">id</a></td>
+            <td class="m-help">Object ID&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Methods-->
+      <div class="sectiontitle"><a name="methods"></a>Method Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">addlistener</a></td>
+            <td class="m-help">Add listener for event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.ImgHash.averageHash.html">averageHash</a></td>
+            <td class="m-help">Calculates the average hash in one call&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.ImgHash.blockMeanHash.html">blockMeanHash</a></td>
+            <td class="m-help">Computes block mean hash of the input image&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.ImgHash.colorMomentHash.html">colorMomentHash</a></td>
+            <td class="m-help">Computes color moment hash of the input&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.ImgHash.compare.html">compare</a></td>
+            <td class="m-help">Compare two hash values&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.ImgHash.compute.html">compute</a></td>
+            <td class="m-help">Computes hash of the input image&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.ImgHash.delete.html">delete</a></td>
+            <td class="m-help">Destructor&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">eq</a></td>
+            <td class="m-help">== (EQ)   Test handle equality.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findobj</a></td>
+            <td class="m-help">Find objects matching specified conditions.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findprop</a></td>
+            <td class="m-help">Find property of MATLAB handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ge</a></td>
+            <td class="m-help">&gt;= (GE)   Greater than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">gt</a></td>
+            <td class="m-help">&gt; (GT)   Greater than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">isvalid</a></td>
+            <td class="m-help">Test handle validity.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">le</a></td>
+            <td class="m-help">&lt;= (LE)   Less than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">listener</a></td>
+            <td class="m-help">Add listener for event without binding the listener to the source object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">lt</a></td>
+            <td class="m-help">&lt; (LT)   Less than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.ImgHash.marrHildrethHash.html">marrHildrethHash</a></td>
+            <td class="m-help">Computes average hash value of the input image&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ne</a></td>
+            <td class="m-help">~= (NE)   Not equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">notify</a></td>
+            <td class="m-help">Notify listeners of event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.ImgHash.pHash.html">pHash</a></td>
+            <td class="m-help">Computes pHash value of the input image&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.ImgHash.radialVarianceHash.html">radialVarianceHash</a></td>
+            <td class="m-help">Computes radial variance hash of the input image&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.ImgHash.typeid.html">typeid</a></td>
+            <td class="m-help">Name of the C++ type (RTTI)&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Events-->
+      <div class="sectiontitle"><a name="events"></a>Event Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ObjectBeingDestroyed</a></td>
+            <td class="m-help">Notifies listeners that a particular object has been destroyed.&nbsp;</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

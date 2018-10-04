@@ -1,0 +1,68 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>compute (cv.BinaryDescriptor) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.BinaryDescriptor.compute - Requires descriptors computation" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">compute (cv.BinaryDescriptor) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.BinaryDescriptor/compute</div>
+      <div class="helpcontent"><p class=" h1line">Requires descriptors computation</p>
+<pre class=" prettyprint lang-matlab"><code>[descriptors, keylines] = obj.compute(img, keylines)
+[descriptors, keylines] = obj.compute(imgs, keylines)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>img</strong> Input image (first variant), 8-bit grayscale.</li>
+<li><strong>imgs</strong> Image set (second variant), cell array of images.</li>
+<li><strong>keylines</strong> Input collection of keylines containing lines for
+which descriptors must be computed. In the first variant, this
+is a struct-array of detected lines. In the second variant, it
+is a cell-array, where <code>keylines{i}</code> is a set of lines
+detected in <code>imgs{i}</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>descriptors</strong> Computed descriptors. In the second variant of
+the method <code>descriptors{i}</code> are descriptors computed for a
+<code>keylines{i}</code>. Row <code>j</code> in <code>descriptors</code> (or <code>descriptors{i}</code>)
+is the descriptor for <code>j</code>-th keypoint.</li>
+<li><strong>keylines</strong> Optional output with possibly updated keylines.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>ReturnFloatDescr</strong> flag (when set to true, original
+non-binary descriptors are returned). default false</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.BinaryDescriptor.detect.html">cv.BinaryDescriptor/detect</a>,
+   <a href="cv.BinaryDescriptor.detectAndCompute.html">cv.BinaryDescriptor/detectAndCompute</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

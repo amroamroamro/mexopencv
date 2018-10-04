@@ -1,0 +1,62 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>predict2 (cv.EM) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.EM.predict2 - Returns log-likelihood values and indices of the most probable mixture component for given samples" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">predict2 (cv.EM) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.EM/predict2</div>
+      <div class="helpcontent"><p class=" h1line">Returns log-likelihood values and indices of the most probable mixture component for given samples</p>
+<pre class=" prettyprint lang-matlab"><code>[logLikelihoods, labels, probs] = model.predict2(sample)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>samples</strong> Samples for classification. It should be a
+one-channel matrix of size <code>nsamples-by-dims</code> with each row
+representing one sample.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>logLikelihoods</strong> Output vector that contains a likelihood
+logarithm value for each sample. It has <code>nsamples-by-1</code> size
+and <code>double</code> type.</li>
+<li><strong>labels</strong> Output &quot;class label&quot; for each sample:
+<code>labels_i = argmax_{k}(p_{i,k}), i=1..N</code> (indices of the most
+probable mixture component for each sample). It has
+<code>nsamples-by-1</code> size and <code>double</code> type.</li>
+<li><strong>probs</strong> Optional output matrix that contains posterior
+probabilities of each mixture component given the sample. It
+has <code>nsamples-by-ClustersNumber</code> size and <code>double</code> type.</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.EM.predict.html">cv.EM/predict</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

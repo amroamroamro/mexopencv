@@ -1,0 +1,65 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>getNumThreads (cv.Utils) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Utils.getNumThreads - Returns number of threads used by OpenCV for parallel regions" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">getNumThreads (cv.Utils) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Utils.getNumThreads</div>
+      <div class="helpcontent"><p class=" h1line">Returns number of threads used by OpenCV for parallel regions</p>
+<pre class=" prettyprint lang-matlab"><code>n = <a href="cv.Utils.getNumThreads.html">cv.Utils.getNumThreads</a>()
+</code></pre>
+<h2>Output</h2>
+<ul>
+<li><strong>n</strong> number of threads.</li>
+</ul>
+<p>The exact meaning of the return value depends on the threading
+framework used by OpenCV library:</p>
+<ul>
+<li><strong>TBB</strong> The number of threads, that OpenCV will try to use for
+parallel regions. If there is any <code>tbb::thread_scheduler_init</code>
+in user code conflicting with OpenCV, then function returns
+default number of threads used by TBB library.</li>
+<li><strong>OpenMP</strong> An upper bound on the number of threads that could
+be used to form a new team.</li>
+<li><strong>Concurrency</strong> The number of threads, that OpenCV will try to
+use for parallel regions.</li>
+<li><strong>GCD</strong> Unsupported; returns the GCD thread pool limit (512)
+for compatibility.</li>
+<li><strong>C=</strong> The number of threads, that OpenCV will try to use for
+parallel regions, if before called <code>setNumThreads</code> with
+<code>threads &gt; 0</code>, otherwise returns the number of logical CPUs,
+available for the process.</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Utils.setNumThreads.html">cv.Utils.setNumThreads</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>true</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

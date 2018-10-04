@@ -1,0 +1,58 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>imagesFromBlob (cv.Net) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Net.imagesFromBlob - Parse a 4D blob and output the images it contains" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">imagesFromBlob (cv.Net) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Net.imagesFromBlob</div>
+      <div class="helpcontent"><p class=" h1line">Parse a 4D blob and output the images it contains</p>
+<pre class=" prettyprint lang-matlab"><code>imgs = <a href="cv.Net.imagesFromBlob.html">cv.Net.imagesFromBlob</a>(blob)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>blob</strong> 4-dimensional array <code>(images, channels, height, width)</code>
+in floating-point precision (<code>single</code>) from which you would
+like to extract the images.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>imgs</strong> cell-array of matrices containing the images
+extracted from the blob in floating-point precision (<code>single</code>).
+They are non-normalized neither mean-added. The number of
+returned images equals the first dimension of the blob
+(batch size). Every image has a number of channels equals to
+the second dimension of the blob (depth).</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Net.blobFromImages.html">cv.Net.blobFromImages</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>true</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

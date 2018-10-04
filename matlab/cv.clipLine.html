@@ -1,0 +1,44 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.clipLine - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.clipLine - Clips the line against the image rectangle" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.clipLine - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.clipLine</div>
+      <div class="helpcontent"><p class=" h1line">Clips the line against the image rectangle</p>
+<pre class=" prettyprint lang-matlab"><code>[B,pt1,pt2] = <a href="cv.clipLine.html">cv.clipLine</a>(imgSize, pt1, pt2)
+[B,pt1,pt2] = <a href="cv.clipLine.html">cv.clipLine</a>(imgRect, pt1, pt2)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>imgSize</strong> Image size <code>[w,h]</code>. The image rectangle is <code>[0, 0, w, h]</code>.</li>
+<li><strong>imgRect</strong> Image rectangle <code>[x, y, w, h]</code>.</li>
+<li><strong>pt1</strong> First line point <code>[x1,y1]</code>.</li>
+<li><strong>pt2</strong> Second line point <code>[x2,y2]</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>B</strong> Logical value. See below.</li>
+<li><strong>pt1</strong> First line point.</li>
+<li><strong>pt2</strong> Second line point.</li>
+</ul>
+<p>The function <a href="cv.clipLine.html">cv.clipLine</a> calculates a part of the line segment that is
+entirely within the specified rectangle. It returns false if the line
+segment is completely outside the rectangle. Otherwise, it returns true.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.line.html">cv.line</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

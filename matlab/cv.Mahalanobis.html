@@ -1,0 +1,44 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.Mahalanobis - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Mahalanobis - Calculates the Mahalanobis distance between two vectors" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.Mahalanobis - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Mahalanobis</div>
+      <div class="helpcontent"><p class=" h1line">Calculates the Mahalanobis distance between two vectors</p>
+<pre class=" prettyprint lang-matlab"><code>d = <a href="cv.Mahalanobis.html">cv.Mahalanobis</a>(v1, v2, icovar)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>v1</strong> first 1D input vector.</li>
+<li><strong>v2</strong> second 1D input vector.</li>
+<li><strong>icovar</strong> inverse covariance matrix.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>d</strong> Mahalanobis distance.</li>
+</ul>
+<p>The function <a href="cv.Mahalanobis.html">cv.Mahalanobis</a> calculates and returns the weighted distance
+between two vectors:</p>
+<pre class=" prettyprint lang-matlab"><code>d(v1,v2) = sqrt( sum_{i,j} [icovar(i,j) * (v1(I) - v2(I)) * (v1(j) - v2(j))] )
+</code></pre>
+<p>The covariance matrix may be calculated using the <a href="cv.calcCovarMatrix.html">cv.calcCovarMatrix</a>
+function and then inverted using the <a href="cv.invert.html">cv.invert</a> function (preferably using
+the 'SVD' method, as the most accurate).</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.calcCovarMatrix.html">cv.calcCovarMatrix</a>, <a href="cv.invert.html">cv.invert</a>, <a href="https://www.mathworks.com/help/matlab/ref/cov.html" target="_blank">cov</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

@@ -1,0 +1,54 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.DetectionBasedTracker/DetectionBasedTracker - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.DetectionBasedTracker.DetectionBasedTracker - Creates a new tracker object" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.DetectionBasedTracker/DetectionBasedTracker - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.DetectionBasedTracker/DetectionBasedTracker</div>
+      <div class="helpcontent"><p class=" h1line">Creates a new tracker object</p>
+<pre class=" prettyprint lang-matlab"><code>tracker = <a href="cv.DetectionBasedTracker.html">cv.DetectionBasedTracker</a>(mainDetector, trackingDetector)
+tracker = <a href="cv.DetectionBasedTracker.html">cv.DetectionBasedTracker</a>(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>mainDetector</strong>, <strong>trackingDetector</strong> detector of the form
+<code>{filename, 'key',val, ...}</code> where <code>filename</code> is the name of
+the file from which the classifier is loaded. See detection
+options below for valid key/value pairs. Currently only one
+detector based on <a href="cv.CascadeClassifier.html">cv.CascadeClassifier</a> is supported.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>MaxTrackLifetime</strong> must be non-negative. default 5</li>
+<li><strong>MinDetectionPeriod</strong> the minimal time between run of the big
+object detector (on the whole frame) in msec (1000 mean 1 sec).
+default 0</li>
+</ul>
+<h2>CascadeClassifier detection options</h2>
+<ul>
+<li><strong>ScaleFactor</strong> Parameter specifying how much the image size
+is reduced at each image scale. default 1.1</li>
+<li><strong>MinNeighbors</strong> Parameter specifying how many neighbors each
+candiate rectangle should have to retain it. default 2</li>
+<li><strong>MinSize</strong> Minimum possible object size. Objects smaller than
+that are ignored. default <code>[96,96]</code>.</li>
+<li><strong>MaxSize</strong> Maximum possible object size. Objects larger than
+that are ignored. default <code>[intmax,intmax]</code>.</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.DetectionBasedTracker.process.html">cv.DetectionBasedTracker/process</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

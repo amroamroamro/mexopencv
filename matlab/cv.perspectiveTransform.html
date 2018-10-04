@@ -1,0 +1,62 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.perspectiveTransform - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.perspectiveTransform - Performs the perspective matrix transformation of vectors" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.perspectiveTransform - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.perspectiveTransform</div>
+      <div class="helpcontent"><p class=" h1line">Performs the perspective matrix transformation of vectors</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.perspectiveTransform.html">cv.perspectiveTransform</a>(src, mtx)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> Source two-channel or three-channel floating-point array. Each
+element is a 2D/3D vector to be transformed specified as a numeric
+Nx2/Nx1x2/1xNx2 or Nx3/Nx1x3/1xNx3 array. Also can be specified as a
+cell-array of 2D/3D points <code>{[x,y],...}</code> or <code>{[x,y,z],...}</code>.</li>
+<li><strong>mtx</strong> 3x3 or 4x4 floating-point transformation matrix. In case <code>src</code> has
+2D points, <code>mtx</code> must be a 3x3 matrix, otherwise 4x4 matrix in case of 3D
+points.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> Destination array of the same size and type as <code>src</code> (either
+numeric or cell array).</li>
+</ul>
+<p>The function <a href="cv.perspectiveTransform.html">cv.perspectiveTransform</a> transforms every element of <code>src</code> by
+treating it as a 2D or 3D vector, in the following way:</p>
+<pre class=" prettyprint lang-matlab"><code>[x,y,z] -&gt; [X/w, Y/w, Z/w]
+</code></pre>
+<p>where</p>
+<pre class=" prettyprint lang-matlab"><code>[X,Y,Z,W] = mtx * [x,y,z,1]
+</code></pre>
+<p>and
+| W    if W ~=0
+w = |
+| inf  otherwise</p>
+<p>Here a 3D vector transformation is shown. In case of a 2D vector
+transformation, the <code>z</code> component is omitted.</p>
+<h3>Note</h3>
+<p>The function transforms a sparse set of 2D or 3D vectors. If you want to
+transform an image using perspective transformation, use <a href="cv.warpPerspective.html">cv.warpPerspective</a>.
+If you have an inverse problem, that is, you want to compute the most
+probable perspective transformation out of several pairs of corresponding
+points, you can use <a href="cv.getPerspectiveTransform.html">cv.getPerspectiveTransform</a> or <a href="cv.findHomography.html">cv.findHomography</a>.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.transform.html">cv.transform</a>, <a href="cv.warpAffine.html">cv.warpAffine</a>, <a href="cv.warpPerspective.html">cv.warpPerspective</a>,
+   <a href="cv.getPerspectiveTransform.html">cv.getPerspectiveTransform</a>, <a href="cv.findHomography.html">cv.findHomography</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

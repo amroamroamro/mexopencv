@@ -1,0 +1,65 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.FASTForPointSet - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.FASTForPointSet - Estimates cornerness for pre-specified KeyPoints using the FAST algorithm" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.FASTForPointSet - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.FASTForPointSet</div>
+      <div class="helpcontent"><p class=" h1line">Estimates cornerness for pre-specified KeyPoints using the FAST algorithm</p>
+<pre class=" prettyprint lang-matlab"><code>keypoints = <a href="cv.FASTForPointSet.html">cv.FASTForPointSet</a>(im, keypoints)
+keypoints = <a href="cv.FASTForPointSet.html">cv.FASTForPointSet</a>(im, keypoints, 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>im</strong> 8-bit grayscale image where keypoints (corners) are to be detected.</li>
+<li><strong>keypoints</strong> keypoints which should be tested to fit the FAST criteria.
+A 1-by-N structure array, with at least the &quot;pt&quot; field filled. In the
+output, keypoints not being detected as corners are removed.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>keypoints</strong> Keypoints detected on the image. With their &quot;response&quot; field
+calculated.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Threshold</strong> Threshold on difference between intensity of the central
+pixel and pixels on a circle around this pixel. default 10.</li>
+<li><strong>NonmaxSuppression</strong> If it is true, non-maximum supression is applied to
+detected corners (keypoints). default true.</li>
+<li><strong>Type</strong> one of the three neighborhoods as defined in the paper:
+<ul>
+<li><strong>TYPE_9_16</strong> (default)</li>
+<li><strong>TYPE_7_12</strong></li>
+<li><strong>TYPE_5_8</strong></li>
+</ul>
+</li>
+</ul>
+<p>Detects corners using the FAST algorithm by [Rosten06].</p>
+<p>Rational: Some applications only want to know if there are feature at
+specific locations. To fit these needs the <a href="cv.FAST.html">cv.FAST</a> approach is extended in
+<a href="cv.FASTForPointSet.html">cv.FASTForPointSet</a> to recieve a vector of locations and calculates the FAST
+response on these positions. If it is below the threshold, it will be
+removed from the list.</p>
+<h2>References</h2>
+<p>[Rosten06]:</p>
+<blockquote>
+<p>E. Rosten (Machine Learning for High-speed Corner Detection, 2006).</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.FAST.html">cv.FAST</a>, <a href="cv.FastFeatureDetector.html">cv.FastFeatureDetector</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

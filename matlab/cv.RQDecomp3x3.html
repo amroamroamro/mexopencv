@@ -1,0 +1,61 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.RQDecomp3x3 - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.RQDecomp3x3 - Computes an RQ decomposition of 3x3 matrices" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.RQDecomp3x3 - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.RQDecomp3x3</div>
+      <div class="helpcontent"><p class=" h1line">Computes an RQ decomposition of 3x3 matrices</p>
+<pre class=" prettyprint lang-matlab"><code>[R,Q] = <a href="cv.RQDecomp3x3.html">cv.RQDecomp3x3</a>(M)
+[R,Q,S] = <a href="cv.RQDecomp3x3.html">cv.RQDecomp3x3</a>(M)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>M</strong> 3x3 input matrix.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>R</strong> 3x3 upper-triangular matrix.</li>
+<li><strong>Q</strong> 3x3 orthogonal matrix.</li>
+<li><strong>S</strong> Optional output struct with the following fields:
+<ul>
+<li><strong>Qx</strong> 3x3 rotation matrix around x-axis.</li>
+<li><strong>Qy</strong> 3x3 rotation matrix around y-axis.</li>
+<li><strong>Qz</strong> 3x3 rotation matrix around z-axis.</li>
+<li><strong>eulerAngles</strong> 3-element vector containing three Euler angles of
+rotation in degrees.</li>
+</ul>
+</li>
+</ul>
+<p>The function computes a RQ decomposition using the given rotations. This
+function is used in <a href="cv.decomposeProjectionMatrix.html">cv.decomposeProjectionMatrix</a> to decompose the left
+3x3 submatrix of a projection matrix into a camera and a rotation matrix.</p>
+<p>It optionally returns three rotation matrices, one for each axis, and the
+three Euler angles (as the return value) that could be used in OpenGL. Note,
+there is always more than one sequence of rotations about the three
+principal axes that results in the same orientation of an object, eg. see
+[Slabaugh]. Returned tree rotation matrices and corresponding three Euler
+angles are only one of the possible solutions.</p>
+<h2>References</h2>
+<p>[Slabaugh]:</p>
+<blockquote>
+<p>Gregory G Slabaugh. &quot;Computing euler angles from a rotation matrix&quot;.
+Retrieved on August, 6:2000, 1999.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.decomposeProjectionMatrix.html">cv.decomposeProjectionMatrix</a>, <a href="https://www.mathworks.com/help/matlab/ref/qr.html" target="_blank">qr</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

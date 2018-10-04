@@ -1,0 +1,61 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>predict (cv.SVMSGD) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.SVMSGD.predict - Predicts response(s) for the provided sample(s)" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">predict (cv.SVMSGD) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.SVMSGD/predict</div>
+      <div class="helpcontent"><p class=" h1line">Predicts response(s) for the provided sample(s)</p>
+<pre class=" prettyprint lang-matlab"><code>[results,f] = model.predict(samples)
+[...] = model.predict(..., 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>samples</strong> The input samples, floating-point matrix.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>results</strong> The output matrix of results.</li>
+<li><strong>f</strong> If you pass one sample then prediction result is
+returned here, otherwise unused and returns 0. If you want to
+get responses for several samples then <code>results</code> stores all
+response predictions for corresponding samples.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Flags</strong> The optional predict flags, model-dependent.
+Not used. default 0</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.SVMSGD.train.html">cv.SVMSGD/train</a>, <a href="cv.SVMSGD.calcError.html">cv.SVMSGD/calcError</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

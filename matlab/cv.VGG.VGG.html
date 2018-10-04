@@ -1,0 +1,60 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.VGG/VGG - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.VGG.VGG - Constructor" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.VGG/VGG - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.VGG/VGG</div>
+      <div class="helpcontent"><p class=" h1line">Constructor</p>
+<pre class=" prettyprint lang-matlab"><code>obj = <a href="cv.VGG.html">cv.VGG</a>()
+obj = <a href="cv.VGG.html">cv.VGG</a>('OptionName',optionValue, ...)
+</code></pre>
+<h2>Options</h2>
+<ul>
+<li><strong>Desc</strong> Type of descriptor to use, '120' is default (120
+dimensions float). Available types are:
+<ul>
+<li><strong>120</strong></li>
+<li><strong>80</strong></li>
+<li><strong>64</strong></li>
+<li><strong>48</strong></li>
+</ul>
+</li>
+<li><strong>Sigma</strong> Gaussian kernel value for image blur. default is 1.4</li>
+<li><strong>ImgNormalize</strong> Use image sample intensity normalization.
+default true</li>
+<li><strong>UseScaleOrientation</strong> Sample patterns using keypoints
+orientation. default true</li>
+<li><strong>ScaleFactor</strong> Adjust the sampling window of detected
+keypoints to 64.0 (VGG sampling window).
+<ul>
+<li>6.25 is default and fits for <a href="cv.KAZE.html">cv.KAZE</a>, <a href="cv.SURF.html">cv.SURF</a> detected
+keypoints window ratio</li>
+<li>6.75 should be the scale for <a href="cv.SIFT.html">cv.SIFT</a> detected keypoints
+window ratio</li>
+<li>5.00 should be the scale for <a href="cv.AKAZE.html">cv.AKAZE</a>, <a href="cv.MSDDetector.html">cv.MSDDetector</a>,
+<a href="cv.AgastFeatureDetector.html">cv.AgastFeatureDetector</a>, <a href="cv.FastFeatureDetector.html">cv.FastFeatureDetector</a>, <a href="cv.BRISK.html">cv.BRISK</a>
+keypoints window ratio</li>
+<li>0.75 should be the scale for <a href="cv.ORB.html">cv.ORB</a> keypoints ratio</li>
+</ul>
+</li>
+<li><strong>DescNormalize</strong> Clamp descriptors to 255 and convert to
+<code>uint8</code>. default false</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.VGG.compute.html">cv.VGG/compute</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

@@ -1,0 +1,48 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.thinning - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.thinning - Applies a binary blob thinning operation, to achieve a skeletization of the input image" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.thinning - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.thinning</div>
+      <div class="helpcontent"><p class=" h1line">Applies a binary blob thinning operation, to achieve a skeletization of the input image</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.thinning.html">cv.thinning</a>(src)
+dst = <a href="cv.thinning.html">cv.thinning</a>(src, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> Source 8-bit single-channel image, containing binary blobs, with
+blobs having 255 pixel values.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> Destination image of the same size and the same type as <code>src</code>.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>ThinningType</strong> Which thinning algorithm should be used. One of:
+<ul>
+<li><strong>ZhangSuen</strong> Thinning technique of Zhang-Suen (default).</li>
+<li><strong>GuoHall</strong> Thinning technique of Guo-Hall.</li>
+</ul>
+</li>
+</ul>
+<p>The function transforms a binary blob image into a skeletized form using the
+technique of Zhang-Suen.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.threshold.html">cv.threshold</a>, <a href="https://www.mathworks.com/help/images/ref/bwmorph.html" target="_blank">bwmorph</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

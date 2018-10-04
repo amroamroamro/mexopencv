@@ -1,0 +1,62 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.minEnclosingTriangle - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.minEnclosingTriangle - Finds a triangle of minimum area enclosing a 2D point set and returns its area" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.minEnclosingTriangle - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.minEnclosingTriangle</div>
+      <div class="helpcontent"><p class=" h1line">Finds a triangle of minimum area enclosing a 2D point set and returns its area</p>
+<pre class=" prettyprint lang-matlab"><code>[triangle,area] = <a href="cv.minEnclosingTriangle.html">cv.minEnclosingTriangle</a>(points)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>points</strong> Input vector of 2D points with depth <code>int32</code> or <code>single</code>,
+stored in numeric array (Nx2/Nx1x2/1xNx2) or cell array of 2-element
+vectors (<code>{[x,y], ...}</code>).</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>triangle</strong> Output vector of three 2D points defining the vertices of the
+triangle.</li>
+<li><strong>area</strong> triangle area</li>
+</ul>
+<p>The function finds a triangle of minimum area enclosing the given set of 2D
+points and returns its area.</p>
+<p>The implementation of the algorithm is based on O'Rourke's [ORourke86] and
+Klee and Laskowski's [KleeLaskowski85] papers. O'Rourke provides a
+<code>theta(n)</code> algorithm for finding the minimal enclosing triangle of a 2D
+convex polygon with <code>n</code> vertices. Since the <a href="cv.minEnclosingTriangle.html">cv.minEnclosingTriangle</a> function
+takes a 2D point set as input an additional preprocessing step of computing
+the convex hull of the 2D point set is required. The complexity of the
+<a href="cv.convexHull.html">cv.convexHull</a> function is <code>O(nlog(n))</code> which is higher than <code>theta(n)</code>.
+Thus the overall complexity of the function is <code>O(nlog(n))</code>.</p>
+<h2>References</h2>
+<p>[ORourke86]:</p>
+<blockquote>
+<p>Joseph O'Rourke, Alok Aggarwal, Sanjeev Maddila, and Michael Baldwin.
+&quot;An optimal algorithm for finding minimal enclosing triangles&quot;.
+Journal of Algorithms, 7(2):258-269, 1986.</p>
+</blockquote>
+<p>[KleeLaskowski85]:</p>
+<blockquote>
+<p>Victor Klee and Michael C Laskowski.
+&quot;Finding the smallest triangles containing a given convex polygon&quot;.
+Journal of Algorithms, 6(3):359-375, 1985.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.minEnclosingCircle.html">cv.minEnclosingCircle</a>, <a href="cv.convexHull.html">cv.convexHull</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

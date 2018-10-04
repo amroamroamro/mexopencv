@@ -1,0 +1,243 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.VariationalRefinement - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.VariationalRefinement - Variational optical flow refinement" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.VariationalRefinement - MATLAB File Help</td>
+            <td class="subheader-left"></td>
+            <td class="subheader-right"><a href="cv.VariationalRefinement.html">Go to online doc for cv.VariationalRefinement</a></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.VariationalRefinement</div>
+      <div class="helpcontent"><p class=" h1line">Variational optical flow refinement</p>
+<p>This class implements variational refinement of the input flow field,
+i.e. it uses input flow to initialize the minimization of the following
+functional:</p>
+<pre class=" prettyprint lang-matlab"><code>E(U) = integral_{Omega}(delta * Psi(E_I) + gamma * Psi(E_G) + alpha * Psi(E_S))
+</code></pre>
+<p>where <code>E_I</code>, <code>E_G</code>, <code>E_S</code> are color constancy, gradient constancy and
+smoothness terms respectively. <code>Psi(s^2) = sqrt(s^2 + epsilon^2)</code> is a
+robust penalizer to limit the influence of outliers. A complete
+formulation and a description of the minimization procedure can be found
+in [Brox2004].</p>
+<h2>References</h2>
+<p>[Brox2004]:</p>
+<blockquote>
+<p>Thomas Brox, Andres Bruhn, Nils Papenberg, and Joachim Weickert.
+&quot;High accuracy optical flow estimation based on a theory for warping&quot;.
+In Computer Vision-ECCV 2004, pages 25-36. Springer, 2004.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.VariationalRefinement.calc.html">cv.VariationalRefinement/calc</a></div>
+      <!--Class-->
+      <div class="sectiontitle">Class Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Superclasses</td>
+            <td><a href="https://www.mathworks.com/help/matlab/ref/handle.html" target="_blank">handle</a></td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Construct on load</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+      <!--Constructors-->
+      <div class="sectiontitle"><a name="constructors"></a>Constructor Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.VariationalRefinement.VariationalRefinement.html">VariationalRefinement</a></td>
+            <td class="m-help">Creates an instance of VariationalRefinement&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Properties-->
+      <div class="sectiontitle"><a name="properties"></a>Property Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.VariationalRefinement.Alpha.html">Alpha</a></td>
+            <td class="m-help">Weight of the smoothness term. default 20.0&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.VariationalRefinement.Delta.html">Delta</a></td>
+            <td class="m-help">Weight of the color constancy term. default 5.0&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.VariationalRefinement.FixedPointIterations.html">FixedPointIterations</a></td>
+            <td class="m-help">Number of outer (fixed-point) iterations in the minimization&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.VariationalRefinement.Gamma.html">Gamma</a></td>
+            <td class="m-help">Weight of the gradient constancy term. default 10.0&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.VariationalRefinement.Omega.html">Omega</a></td>
+            <td class="m-help">Relaxation factor in SOR. default 1.6&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.VariationalRefinement.SorIterations.html">SorIterations</a></td>
+            <td class="m-help">Number of inner successive over-relaxation (SOR) iterations in the&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.VariationalRefinement.id.html">id</a></td>
+            <td class="m-help">Object ID&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Methods-->
+      <div class="sectiontitle"><a name="methods"></a>Method Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">addlistener</a></td>
+            <td class="m-help">Add listener for event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.VariationalRefinement.calc.html">calc</a></td>
+            <td class="m-help">Calculates an optical flow&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.VariationalRefinement.calcUV.html">calcUV</a></td>
+            <td class="m-help">calc function overload to handle separate horizontal (u) and vertical (v) flow components (to avoid extra splits/merges)&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.VariationalRefinement.collectGarbage.html">collectGarbage</a></td>
+            <td class="m-help">Releases all inner buffers&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.VariationalRefinement.delete.html">delete</a></td>
+            <td class="m-help">Destructor&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">eq</a></td>
+            <td class="m-help">== (EQ)   Test handle equality.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findobj</a></td>
+            <td class="m-help">Find objects matching specified conditions.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findprop</a></td>
+            <td class="m-help">Find property of MATLAB handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ge</a></td>
+            <td class="m-help">&gt;= (GE)   Greater than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">gt</a></td>
+            <td class="m-help">&gt; (GT)   Greater than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">isvalid</a></td>
+            <td class="m-help">Test handle validity.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">le</a></td>
+            <td class="m-help">&lt;= (LE)   Less than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">listener</a></td>
+            <td class="m-help">Add listener for event without binding the listener to the source object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">lt</a></td>
+            <td class="m-help">&lt; (LT)   Less than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ne</a></td>
+            <td class="m-help">~= (NE)   Not equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">notify</a></td>
+            <td class="m-help">Notify listeners of event.&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Events-->
+      <div class="sectiontitle"><a name="events"></a>Event Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ObjectBeingDestroyed</a></td>
+            <td class="m-help">Notifies listeners that a particular object has been destroyed.&nbsp;</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

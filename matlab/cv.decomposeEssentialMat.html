@@ -1,0 +1,51 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.decomposeEssentialMat - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.decomposeEssentialMat - Decompose an essential matrix to possible rotations and translation" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.decomposeEssentialMat - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.decomposeEssentialMat</div>
+      <div class="helpcontent"><p class=" h1line">Decompose an essential matrix to possible rotations and translation</p>
+<pre class=" prettyprint lang-matlab"><code>S = <a href="cv.decomposeEssentialMat.html">cv.decomposeEssentialMat</a>(E)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>E</strong> The input essential matrix, 3x3.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>S</strong> Decomposed <code>E</code>. A scalar struct with the following fields:
+<ul>
+<li><strong>R1</strong> One possible rotation matrix, 3x3.</li>
+<li><strong>R2</strong> Another possible rotation matrix, 3x3.</li>
+<li><strong>t</strong> One possible translation, 3x1.</li>
+</ul>
+</li>
+</ul>
+<p>This function decompose an essential matrix <code>E</code> using SVD decomposition
+[HartleyZ00]. Generally 4 possible poses exists for a given <code>E</code>. They are
+<code>[R1,t]</code>, <code>[R1,-t]</code>, <code>[R2,t]</code>, <code>[R2,-t]</code>. By decomposing <code>E</code>, you can only
+get the direction of the translation, so the function returns unit <code>t</code>.</p>
+<h2>References</h2>
+<p>[HartleyZ00]:</p>
+<blockquote>
+<p>Richard Hartley and Andrew Zisserman. &quot;Multiple view geometry in computer
+vision&quot;. Cambridge university press, 2003.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.findEssentialMat.html">cv.findEssentialMat</a>, <a href="cv.SVD.html">cv.SVD</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

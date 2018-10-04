@@ -1,0 +1,107 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>detect (cv.CascadeClassifier) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.CascadeClassifier.detect - Detects objects of different sizes in the input image" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">detect (cv.CascadeClassifier) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.CascadeClassifier/detect</div>
+      <div class="helpcontent"><p class=" h1line">Detects objects of different sizes in the input image</p>
+<pre class=" prettyprint lang-matlab"><code>boxes = classifier.detect(im)
+[boxes, numDetections] = classifier.detect(im)
+[boxes, rejectLevels, levelWeights] = classifier.detect(im)
+[...] = classifier.detect(im, 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>im</strong> Matrix of the type <code>uint8</code> containing an image where
+objects are detected.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>boxes</strong> Cell array of rectangles where each rectangle
+contains the detected object, the rectangles may be partially
+outside the original image.</li>
+<li><strong>numDetections</strong> optional vector of detection numbers for the
+corresponding objects. An object's number of detections is the
+number of neighboring positively classified rectangles that
+were joined together to form the object.</li>
+<li><strong>rejectLevels</strong> optional output vector of integers. Implies
+<code>OutputRejectLevels=true</code>.</li>
+<li><strong>levelWeights</strong> optional output vector of doubles. Implies
+<code>OutputRejectLevels=true</code>.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>ScaleFactor</strong> Parameter specifying how much the image size
+is reduced at each image scale. default 1.1</li>
+<li><strong>MinNeighbors</strong> Parameter specifying how many neighbors each
+candiate rectangle should have to retain it. default 3</li>
+<li><strong>MinSize</strong> Minimum possible object size. Objects smaller than
+that are ignored. Not set by default.</li>
+<li><strong>MaxSize</strong> Maximum possible object size. Objects larger than
+that are ignored. If <code>MaxSize == MinSize</code> model is evaluated
+on single scale. Not set by default.</li>
+<li><strong>OutputRejectLevels</strong> if is true returns <code>rejectLevels</code> and
+<code>levelWeights</code>. default false</li>
+<li><strong>DoCannyPruning</strong> Parameter with the same meaning for an old
+cascade as in the function <code>cvHaarDetectObjects</code>. It is not
+used for a new cascade. default false</li>
+<li><strong>ScaleImage</strong> Parameter with the same meaning for an old
+cascade as in the function <code>cvHaarDetectObjects</code>. It is not
+used for a new cascade. default false</li>
+<li><strong>FindBiggestObject</strong> Parameter with the same meaning for an
+old cascade as in the function <code>cvHaarDetectObjects</code>. It is
+not used for a new cascade. default false</li>
+<li><strong>DoRoughSearch</strong> Parameter with the same meaning for an old
+cascade as in the function <code>cvHaarDetectObjects</code>. It is not
+used for a new cascade. default false</li>
+</ul>
+<p>The detected objects are returned as a cell array of rectangles.
+Note that the function has three variants based on the number of
+output arguments.</p>
+<p>The function is parallelized with the TBB library.</p>
+<p>The third variant allows you to retrieve the final stage
+decision certainty of classification. For this, one needs to set
+<code>OutputRejectLevels</code> to true and request the <code>rejectLevels</code> and
+<code>levelWeights</code> output arguments. For each resulting detection,
+<code>levelWeights</code> will then contain the certainty of classification
+at the final stage. This value can then be used to separate
+strong from weaker classifications.
+A code sample on how to use it efficiently can be found below:</p>
+<pre class=" prettyprint lang-matlab"><code>model = <a href="cv.CascadeClassifier.html">cv.CascadeClassifier</a>('/path/to/your/model.xml');
+[boxes, levels, weights] = model.detect(img, 'OutputRejectLevels',true);
+fprintf('Detection [%d,%d,%d,%d] with weight %f\n', boxes{1}, weights(1));
+</code></pre>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.CascadeClassifier.CascadeClassifier.html">cv.CascadeClassifier/CascadeClassifier</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

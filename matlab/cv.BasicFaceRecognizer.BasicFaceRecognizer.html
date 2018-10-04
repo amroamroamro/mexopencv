@@ -1,0 +1,71 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.BasicFaceRecognizer/BasicFaceRecognizer - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.BasicFaceRecognizer.BasicFaceRecognizer - Constructor" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.BasicFaceRecognizer/BasicFaceRecognizer - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.BasicFaceRecognizer/BasicFaceRecognizer</div>
+      <div class="helpcontent"><p class=" h1line">Constructor</p>
+<pre class=" prettyprint lang-matlab"><code>obj = <a href="cv.BasicFaceRecognizer.html">cv.BasicFaceRecognizer</a>(ftype)
+obj = <a href="cv.BasicFaceRecognizer.html">cv.BasicFaceRecognizer</a>(ftype, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>ftype</strong> Face recognizer type. One of:
+<ul>
+<li><strong>Eigenfaces</strong> Face Recognizer based on Eigenfaces.</li>
+<li><strong>Fisherfaces</strong> Face Recognizer based on Fisherfaces.</li>
+</ul>
+</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>NumComponents</strong> The number of components, default 0.
+<ul>
+<li><strong>Eigenfaces</strong> The number of components kept for this
+Principal Component Analysis. As a hint: There's no rule how
+many components (read: Eigenfaces) should be kept for good
+reconstruction capabilities. It is based on your input data,
+so experiment with the number. Keeping 80 components should
+almost always be sufficient.</li>
+<li><strong>Fisherfaces</strong> The number of components kept for this
+Linear Discriminant Analysis with the Fisherfaces criterion.
+It's useful to keep all components, that means the number of
+your classes <code>c</code> (read: subjects, persons you want to
+recognize). If you leave this at the default (0) or set it
+to a value less-equal 0 or greater (<code>c-1</code>), it will be set
+to the correct number (<code>c-1</code>) automatically.</li>
+</ul>
+</li>
+<li><strong>Threshold</strong> The threshold applied in the prediction. If the
+distance to the nearest neighbor is larger than the threshold,
+the prediction returns -1. default <code>realmax</code></li>
+</ul>
+<h3>Notes</h3>
+<ul>
+<li>Training and prediction must be done on grayscale images, use
+<a href="cv.cvtColor.html">cv.cvtColor</a> to convert between the color spaces.</li>
+<li>THE EIGENFACES/FISHERFACES METHOD MAKES THE ASSUMPTION, THAT
+THE TRAINING AND TEST IMAGES ARE OF EQUAL SIZE. (caps-lock,
+because I got so many mails asking for this). You have to make
+sure your input data has the correct shape, else a meaningful
+exception is thrown. Use <a href="cv.resize.html">cv.resize</a> to resize the images.</li>
+<li>This model does not support updating.</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.BasicFaceRecognizer.train.html">cv.BasicFaceRecognizer/train</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

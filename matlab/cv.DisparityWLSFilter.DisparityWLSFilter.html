@@ -1,0 +1,53 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.DisparityWLSFilter/DisparityWLSFilter - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.DisparityWLSFilter.DisparityWLSFilter - Factory method to create instance of DisparityWLSFilter" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.DisparityWLSFilter/DisparityWLSFilter - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.DisparityWLSFilter/DisparityWLSFilter</div>
+      <div class="helpcontent"><p class=" h1line">Factory method to create instance of DisparityWLSFilter</p>
+<pre class=" prettyprint lang-matlab"><code>obj = <a href="cv.DisparityWLSFilter.html">cv.DisparityWLSFilter</a>(matcher_left)
+obj = <a href="cv.DisparityWLSFilter.html">cv.DisparityWLSFilter</a>(use_confidence)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>matcher_left</strong> stereo matcher instance that will be used
+with the filter. An object of one of the following classes:
+<ul>
+<li><strong><a href="cv.StereoBM.html">cv.StereoBM</a></strong> stereo correspondence using the block
+matching algorithm.</li>
+<li><strong><a href="cv.StereoSGBM.html">cv.StereoSGBM</a></strong> stereo correspondence using the
+semi-global block matching algorithm.</li>
+</ul>
+</li>
+<li><strong>use_confidence</strong> Boolean. Filtering with confidence requires
+two disparity maps (for the left and right views) and is
+approximately two times slower. However, quality is typically
+significantly better.</li>
+</ul>
+<p>The first variant is a convenience factory method that creates
+an instance of DisparityWLSFilter and sets up all the relevant
+filter parameters automatically based on the matcher instance.
+Currently supports only <a href="cv.StereoBM.html">cv.StereoBM</a> and <a href="cv.StereoSGBM.html">cv.StereoSGBM</a>.</p>
+<p>The second variant is a more generic factory method, that create
+instance of DisparityWLSFilter and execute basic initialization
+routines. When using this method you will need to set-up the
+ROI, matchers and other parameters by yourself.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.DisparityWLSFilter.filter.html">cv.DisparityWLSFilter/filter</a>,
+   <a href="cv.DisparityWLSFilter.createRightMatcher.html">cv.DisparityWLSFilter.createRightMatcher</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

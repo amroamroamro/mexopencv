@@ -1,0 +1,99 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.normalize - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.normalize - Normalizes the norm or value range of an array" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.normalize - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.normalize</div>
+      <div class="helpcontent"><p class=" h1line">Normalizes the norm or value range of an array</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.normalize.html">cv.normalize</a>(src)
+dst = <a href="cv.normalize.html">cv.normalize</a>(..., 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> input array.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> output array of the same size as <code>src</code>. See <code>DType</code> option.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Alpha</strong> norm value to normalize to or the lower range boundary in case
+of the range normalization. default 1</li>
+<li><strong>Beta</strong> upper range boundary in case of the range normalization; it is
+not used for the norm normalization. default 0</li>
+<li><strong>NormType</strong> normalization type, default 'L2'. One of:
+<ul>
+<li><strong>Inf</strong></li>
+<li><strong>L1</strong></li>
+<li><strong>L2</strong></li>
+<li><strong>MinMax</strong></li>
+</ul>
+</li>
+<li><strong>DType</strong> when negative, the output array has the same type as <code>src</code>;
+otherwise, it has the same number of channels as <code>src</code> and the specified
+depth (a numeric class name: <code>uint8</code>, <code>double</code>, etc.). default -1</li>
+<li><strong>Mask</strong> optional operation mask. Not set by default.</li>
+<li><strong>Dest</strong> initial array used for output. This can initialize <code>dst</code> when
+<code>Mask</code> is used. Not set by default.</li>
+</ul>
+<p>The function <a href="cv.normalize.html">cv.normalize</a> scales and shifts the input array elements so that:</p>
+<pre class=" prettyprint lang-matlab"><code>||dst||_Lp = alpha
+</code></pre>
+<p>(where <code>p</code>=Inf, 1 or 2) when <code>NormType</code>='Inf', 'L1', or 'L2', respectively;
+or so that:</p>
+<pre class=" prettyprint lang-matlab"><code>min(dst) = alpha, max(dst) = beta
+</code></pre>
+<p>when <code>NormType</code>='MinMax' (for dense arrays only). The optional <code>Mask</code>
+specifies a sub-array to be normalized. This means that the norm or min-max
+are calculated over the sub-array, and then this sub-array is modified to be
+normalized. If you want to only use the mask to calculate the norm or
+min-max but modify the whole array, you can use <a href="cv.norm.html">cv.norm</a> and <a href="cv.convertTo.html">cv.convertTo</a>.</p>
+<h2>Example</h2>
+<p>Possible usage with some positive example data:</p>
+<pre class=" prettyprint lang-matlab"><code>positiveData = [2.0, 8.0, 10.0];
+
+% Norm to probability (total count)
+% sum(numbers) = 20.0
+% 2.0      0.1     (2.0/20.0)
+% 8.0      0.4     (8.0/20.0)
+% 10.0     0.5     (10.0/20.0)
+normalizedData_l1 = <a href="cv.normalize.html">cv.normalize</a>(positiveData, 'NormType','L1');
+
+% Norm to unit vector: ||positiveData|| = 1.0
+% 2.0      0.15
+% 8.0      0.62
+% 10.0     0.77
+normalizedData_l2 = <a href="cv.normalize.html">cv.normalize</a>(positiveData, 'NormType','L2');
+
+% Norm to max element
+% 2.0      0.2     (2.0/10.0)
+% 8.0      0.8     (8.0/10.0)
+% 10.0     1.0     (10.0/10.0)
+normalizedData_inf = <a href="cv.normalize.html">cv.normalize</a>(positiveData, 'NormType','Inf');
+
+% Norm to range [0.0;1.0]
+% 2.0      0.0     (shift to left border)
+% 8.0      0.75    (6.0/8.0)
+% 10.0     1.0     (shift to right border)
+normalizedData_minmax = <a href="cv.normalize.html">cv.normalize</a>(positiveData, 'NormType','MinMax');
+</code></pre>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.convertTo.html">cv.convertTo</a>, <a href="cv.norm.html">cv.norm</a>, <a href="cv.norm.html">norm</a>, <a href="https://www.mathworks.com/help/matlab/ref/min.html" target="_blank">min</a>, <a href="https://www.mathworks.com/help/matlab/ref/max.html" target="_blank">max</a>, <a href="https://www.mathworks.com/help/images/ref/mat2gray.html" target="_blank">mat2gray</a>, <a href="https://www.mathworks.com/help/matlab/ref/im2double.html" target="_blank">im2double</a>, <a href="https://www.mathworks.com/help/stats/ref/zscore.html" target="_blank">zscore</a>,
+   <a href="https://www.mathworks.com/help/matlab/ref/rescale.html" target="_blank">rescale</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

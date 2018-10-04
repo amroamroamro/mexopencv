@@ -1,0 +1,86 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>update (cv.LBPHFaceRecognizer) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.LBPHFaceRecognizer.update - Updates a FaceRecognizer with given data and associated labels" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">update (cv.LBPHFaceRecognizer) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.LBPHFaceRecognizer/update</div>
+      <div class="helpcontent"><p class=" h1line">Updates a FaceRecognizer with given data and associated labels</p>
+<pre class=" prettyprint lang-matlab"><code>obj.update(src, labels)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> The training images, that means the faces you want to
+learn. The data has to be given as a cell array of matrices.</li>
+<li><strong>labels</strong> The labels corresponding to the images. have to be
+given as an integer vector.</li>
+</ul>
+<p>This method updates a (probably trained) FaceRecognizer, but
+only if the algorithm supports it. The Local Binary Patterns
+Histograms (LBPH) recognizer (see <a href="cv.LBPHFaceRecognizer.html">cv.LBPHFaceRecognizer</a>) can be
+updated. For the Eigenfaces and Fisherfaces method, this is
+algorithmically not possible and you have to re-estimate the
+model with <a href="cv.BasicFaceRecognizer.train.html">cv.BasicFaceRecognizer.train</a>. In any case, a call to
+train empties the existing model and learns a new model, while
+update does not delete any model data.</p>
+<pre class=" prettyprint lang-matlab"><code>% Create a new LBPH model (it can be updated) and use the
+% default parameters, this is the most common usage of this
+% specific FaceRecognizer:
+model = <a href="cv.LBPHFaceRecognizer.html">cv.LBPHFaceRecognizer</a>();
+% This is the common interface to train all of the available
+% FaceRecognizer implementations:
+model.train(images, labels);
+% Some containers to hold new image.
+% You should add some images to the containers:
+newImages = {..};
+newLabels = [..];
+% Now updating the model is as easy as calling:
+model.update(newImages,newLabels);
+% This will preserve the old model data and extend the
+% existing model with the new features extracted from
+% newImages!
+</code></pre>
+<p>Calling update on an Eigenfaces model (see
+<a href="cv.BasicFaceRecognizer.html">cv.BasicFaceRecognizer</a>), which doesn't support updating, will
+throw an error similar to:</p>
+<pre class=" prettyprint lang-matlab"><code>OpenCV Error: The function/feature is not implemented (This
+FaceRecognizer (FaceRecognizer.Eigenfaces) does not support
+updating, you have to use FaceRecognizer::train to update it.)
+</code></pre>
+<p>NOTE: The FaceRecognizer does not store your training images,
+because this would be very memory intense and it's not the
+responsibility of te FaceRecognizer to do so. The caller is
+responsible for maintaining the dataset, he want to work with.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.LBPHFaceRecognizer.train.html">cv.LBPHFaceRecognizer/train</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

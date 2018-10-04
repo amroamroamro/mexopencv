@@ -1,0 +1,100 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.bm3dDenoising - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.bm3dDenoising - Performs image denoising using the Block-Matching and 3D-filtering algorithm" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.bm3dDenoising - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.bm3dDenoising</div>
+      <div class="helpcontent"><p class=" h1line">Performs image denoising using the Block-Matching and 3D-filtering algorithm</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.bm3dDenoising.html">cv.bm3dDenoising</a>(src)
+[dstStep1, dstStep2] = <a href="cv.bm3dDenoising.html">cv.bm3dDenoising</a>(src)
+[...] = <a href="cv.bm3dDenoising.html">cv.bm3dDenoising</a>(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> Input 8-bit or 16-bit 1-channel image.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> Output image with the same size and type as <code>src</code>.</li>
+<li><strong>dstStep1</strong> Output image of the first step of BM3D with the same size and
+type as <code>src</code>. <code>Basic</code> image must be provided.</li>
+<li><strong>dstStep2</strong> Output image of the second step of BM3D with the same size
+and type as <code>src</code>.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Basic</strong> Basic image, initial estimate of the first step. Must be
+provided in the case of <code>Step=2</code>.</li>
+<li><strong>H</strong> Parameter regulating filter strength. Big <code>H</code> value perfectly
+removes noise but also removes image details, smaller <code>H</code> value preserves
+details but also preserves some noise. default 1</li>
+<li><strong>TemplateWindowSize</strong> Size in pixels of the template patch that is used
+for block-matching. Should be power of 2. default 4</li>
+<li><strong>SearchWindowSize</strong> Size in pixels of the window that is used to perform
+block-matching. Affect performance linearly: greater <code>SearchWindowsSize</code>
+greater denoising time. Must be larger than <code>TemplateWindowSize</code>.
+default 16</li>
+<li><strong>BlockMatchingStep1</strong> Block matching threshold for the first step of BM3D
+(hard thresholding), i.e. maximum distance for which two blocks are
+considered similar. Value expressed in euclidean distance. default 2500</li>
+<li><strong>BlockMatchingStep2</strong> Block matching threshold for the second step of
+BM3D (Wiener filtering), i.e. maximum distance for which two blocks are
+considered similar. Value expressed in euclidean distance. default 400</li>
+<li><strong>GroupSize</strong> Maximum size of the 3D group for collaborative filtering.
+default 8</li>
+<li><strong>SlidingStep</strong> Sliding step to process every next reference block.
+default 1</li>
+<li><strong>Beta</strong> Kaiser window parameter that affects the sidelobe attenuation of
+the transform of the window. Kaiser window is used in order to reduce
+border effects. To prevent usage of the window, set beta to zero.
+default 2.0</li>
+<li><strong>NormType</strong> Norm used to calculate distance between blocks. L2 is slower
+than L1 but yields more accurate results. default 'L2'. One:
+<ul>
+<li><strong>L2</strong></li>
+<li><strong>L1</strong></li>
+</ul>
+</li>
+<li><strong>Step</strong> Step of BM3D to be executed. Possible variants are: step 1,
+step 2, both steps. In the first variant, allowed are only '1' and 'All'.
+'2' is not allowed as it requires <code>Basic</code> estimate to be present. One of:
+<ul>
+<li><strong>All</strong> (default) Execute all steps of the algorithm.</li>
+<li><strong>1</strong> Execute only first step of the algorithm.</li>
+<li><strong>2</strong> Execute only second step of the algorithm.</li>
+</ul>
+</li>
+<li><strong>TransformType</strong> Type of the orthogonal transform used in collaborative
+filtering step. Currently only Haar transform is supported. One of:
+<ul>
+<li><strong>Haar</strong> (default) Un-normalized Haar transform.</li>
+</ul>
+</li>
+</ul>
+<p>Performs image denoising using the Block-Matching and 3D-filtering algorithm
+<a href="http://www.cs.tut.fi/~foi/GCF-BM3D/BM3D_TIP_2007.pdf" target="_blank">PDF</a> with several
+computational optimizations. Noise expected to be a gaussian white noise.</p>
+<p>This function expected to be applied to grayscale images. Advanced usage of
+this function can be manual denoising of colored image in different
+colorspaces.</p>
+<p>Note: This algorithm is patented and is excluded in the default
+configuration; Set <code>OPENCV_ENABLE_NONFREE</code> CMake option and rebuild the
+library.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.fastNlMeansDenoising.html">cv.fastNlMeansDenoising</a>, <a href="https://www.mathworks.com/help/images/ref/wiener2.html" target="_blank">wiener2</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

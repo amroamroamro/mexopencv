@@ -1,0 +1,57 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>addTrainingSample (cv.Facemark) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Facemark.addTrainingSample - Add one training sample to the trainer" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">addTrainingSample (cv.Facemark) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Facemark/addTrainingSample</div>
+      <div class="helpcontent"><p class=" h1line">Add one training sample to the trainer</p>
+<pre class=" prettyprint lang-matlab"><code>success = obj.addTrainingSample(img, landmarks)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>img</strong> Input image.</li>
+<li><strong>landmarks</strong> The ground-truth of facial landmarks points
+corresponds to the image <code>{[x,y], ...}</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>success</strong> success flag.</li>
+</ul>
+<p>In the case of LBF, this function internally calls the face
+detector function, so you will need to either pass the option
+<code>CascadeFace</code> to use the default detector, or set a custom
+function in <a href="cv.Facemark.setFaceDetector.html">cv.Facemark.setFaceDetector</a></p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Facemark.training.html">cv.Facemark/training</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

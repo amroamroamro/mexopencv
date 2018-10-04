@@ -1,0 +1,75 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.refineDetectedMarkers - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.refineDetectedMarkers - Refind not detected markers based on the already detected and the board layout" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.refineDetectedMarkers - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.refineDetectedMarkers</div>
+      <div class="helpcontent"><p class=" h1line">Refind not detected markers based on the already detected and the board layout</p>
+<pre class=" prettyprint lang-matlab"><code>[detectedCorners, detectedIds, rejectedCorners] = <a href="cv.refineDetectedMarkers.html">cv.refineDetectedMarkers</a>(img, board, detectedCorners, detectedIds, rejectedCorners)
+[detectedCorners, detectedIds, rejectedCorners, recoveredIdxs] = <a href="cv.refineDetectedMarkers.html">cv.refineDetectedMarkers</a>(...)
+[...] = <a href="cv.refineDetectedMarkers.html">cv.refineDetectedMarkers</a>(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>img</strong> input image (8-bit grayscale or color).</li>
+<li><strong>board</strong> layout of markers in the board.</li>
+<li><strong>detectedCorners</strong> cell array of already detected marker corners
+<code>{{[x,y],..}, ..}</code>.</li>
+<li><strong>detectedIds</strong> vector of already detected marker identifiers (0-based).</li>
+<li><strong>rejectedCorners</strong> cell array of rejected candidates during the marker
+detection process <code>{{[x,y],..}, ..}</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>detectedCorners</strong> output refined marker corners.</li>
+<li><strong>detectedIds</strong> output refined marker identifiers</li>
+<li><strong>rejectedCorners</strong> output refined rejected corners.</li>
+<li><strong>recoveredIdxs</strong> Optional array that returns the indexes of the recovered
+candidates in the original <code>rejectedCorners</code> array.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>CameraMatrix</strong> optional input 3x3 floating-point camera matrix
+<code>A = [fx 0 cx; 0 fy cy; 0 0 1]</code>.</li>
+<li><strong>DistCoeffs</strong> optional vector of distortion coefficients
+<code>[k1,k2,p1,p2,k3,k4,k5,k6,s1,s2,s3,s4]</code> of 4, 5, 8 or 12 elements.</li>
+<li><strong>MinRepDistance</strong> minimum distance between the corners of the rejected
+candidate and the reprojected marker in order to consider it as a
+correspondence. default 10.0</li>
+<li><strong>ErrorCorrectionRate</strong> rate of allowed erroneous bits respect to the
+error correction capability of the used dictionary. -1 ignores the error
+correction step. default 3.0</li>
+<li><strong>CheckAllOrders</strong> Consider the four posible corner orders in the
+<code>rejectedCorners</code> array. If it set to false, only the provided corner
+order is considered (default true).</li>
+<li><strong>DetectorParameters</strong> marker detection parameters.</li>
+</ul>
+<p>This function tries to find markers that were not detected in the basic
+<a href="cv.detectMarkers.html">cv.detectMarkers</a> function. First, based on the current detected marker and
+the board layout, the function interpolates the position of the missing
+markers. Then it tries to find correspondence between the reprojected
+markers and the rejected candidates based on the <code>minRepDistance</code> and
+<code>errorCorrectionRate</code> parameters. If camera parameters and distortion
+coefficients are provided, missing markers are reprojected using
+<a href="cv.projectPoints.html">cv.projectPoints</a> function. If not, missing marker projections are
+interpolated using global homography, and all the marker corners in the
+board must have the same Z coordinate.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.detectMarkers.html">cv.detectMarkers</a>, <a href="cv.estimatePoseBoard.html">cv.estimatePoseBoard</a>, <a href="cv.findHomography.html">cv.findHomography</a>,
+   <a href="cv.perspectiveTransform.html">cv.perspectiveTransform</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

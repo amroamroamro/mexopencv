@@ -1,0 +1,80 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.EM/CovarianceMatrixType - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.EM.CovarianceMatrixType - Constraint on covariance matrices which defines type of matrices." />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.EM/CovarianceMatrixType - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.EM/CovarianceMatrixType</div>
+      <div class="helpcontent"><p class=" h1line">Constraint on covariance matrices which defines type of matrices.</p>
+<p>Possible values:</p>
+<ul>
+<li><strong>Spherical</strong> A scaled identity matrix <code>mu_k*I</code>. There is the only
+parameter <code>mu_k</code> to be estimated for each matrix. The option may
+be used in special cases, when the constraint is relevant, or as a
+first step in the optimization (for example in case when the data
+is preprocessed with <a href="cv.PCA.html">cv.PCA</a>). The results of such preliminary
+estimation may be passed again to the optimization procedure, this
+time with <code>CovarianceMatrixType='Diagonal'</code>.</li>
+<li><strong>Diagonal</strong> A diagonal matrix with positive diagonal elements.
+The number of free parameters is <code>d</code> for each matrix. This is most
+commonly used option yielding good estimation results.</li>
+<li><strong>Generic</strong> A symmetric positively defined matrix. The number of
+free parameters in each matrix is about <code>d^2/2</code>. It is not
+recommended to use this option, unless there is pretty accurate
+initial estimation of the parameters and/or a huge number of
+training samples.</li>
+<li><strong>Default</strong> Synonym for 'Diagonal'. This is the default.</li>
+</ul>
+</div><!--after help -->
+      <!--Property-->
+      <div class="sectiontitle">Property Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Constant</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Dependent</td>
+            <td>true</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Transient</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">GetAccess</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">SetAccess</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">GetObservable</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">SetObservable</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

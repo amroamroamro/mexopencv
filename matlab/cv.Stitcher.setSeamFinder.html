@@ -1,0 +1,89 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>setSeamFinder (cv.Stitcher) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Stitcher.setSeamFinder - Set the seam finder" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">setSeamFinder (cv.Stitcher) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Stitcher/setSeamFinder</div>
+      <div class="helpcontent"><p class=" h1line">Set the seam finder</p>
+<pre class=" prettyprint lang-matlab"><code>obj.setSeamFinder(seamType)
+obj.setSeamFinder(seamType, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>seamType</strong> seam estimator type. One of:
+<ul>
+<li><strong>NoSeamFinder</strong> Stub seam estimator which does nothing.</li>
+<li><strong>VoronoiSeamFinder</strong> Voronoi diagram-based pairwise seam
+estimator.</li>
+<li><strong>DpSeamFinder</strong></li>
+<li><strong>GraphCutSeamFinder</strong> Minimum graph cut-based seam
+estimator. See details in [V03].</li>
+<li><strong>GraphCutSeamFinderGpu</strong> (requires CUDA)</li>
+</ul>
+</li>
+</ul>
+<h2>Options</h2>
+<p>The following are options for the various seam finders:</p>
+<h3><code>DpSeamFinder</code></h3>
+<ul>
+<li><strong>CostFunction</strong> default 'Color'. One of:
+<ul>
+<li><strong>Color</strong></li>
+<li><strong>ColorGrad</strong></li>
+</ul>
+</li>
+</ul>
+<h3><code>GraphCutSeamFinder</code></h3>
+<ul>
+<li><strong>CostType</strong> default 'ColorGrad'. One of:
+<ul>
+<li><strong>Color</strong></li>
+<li><strong>ColorGrad</strong></li>
+</ul>
+</li>
+<li><strong>TerminalCost</strong> default 10000.0</li>
+<li><strong>BadRegionPenaly</strong> default 1000.0</li>
+</ul>
+<p>The class uses <code>GraphCutSeamFinder</code> by default.</p>
+<h2>References</h2>
+<p>[V03]:</p>
+<blockquote>
+<p>Vivek Kwatra, Arno Schodl, Irfan Essa, Greg Turk, and Aaron
+Bobick. &quot;Graphcut textures: image and video synthesis using
+graph cuts&quot;. In ACM Transactions on Graphics (ToG), volume 22,
+pages 277-286. ACM, 2003.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Stitcher.getSeamFinder.html">cv.Stitcher/getSeamFinder</a>, <a href="cv.SeamFinder.html">cv.SeamFinder</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

@@ -1,0 +1,90 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.subtract - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.subtract - Calculates the per-element difference between two arrays or array and a scalar" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.subtract - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.subtract</div>
+      <div class="helpcontent"><p class=" h1line">Calculates the per-element difference between two arrays or array and a scalar</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.subtract.html">cv.subtract</a>(src1, src2)
+dst = <a href="cv.subtract.html">cv.subtract</a>(src1, src2, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src1</strong> first input array or a scalar.</li>
+<li><strong>src2</strong> second input array or a scalar.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> output array of the same size and number of channels as the input
+array(s). The depth is defined by <code>DType</code> or that of <code>src1</code>/<code>src2</code>.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Mask</strong> optional operation mask; this is an 8-bit single channel array
+that specifies elements of the output array to be changed. Not set by
+default.</li>
+<li><strong>Dest</strong> Used to initialize the output <code>dst</code> when a mask is used. Not set
+by default.</li>
+<li><strong>DType</strong> optional depth of the output array: <code>uint8</code>, <code>int16</code>, <code>double</code>,
+etc. (see the discussion below). Must be specified if input arrays are of
+different types. default -1</li>
+</ul>
+<p>The function <a href="cv.subtract.html">cv.subtract</a> calculates:</p>
+<ul>
+<li>
+<p>Difference between two arrays, when both input arrays have the same size
+and the same number of channels:</p>
+<pre class=" prettyprint lang-matlab"><code>dst(I) = saturate(src1(I) - src2(I)) if mask(I) != 0
+</code></pre>
+</li>
+<li>
+<p>Difference between an array and a scalar, when <code>src2</code> is constructed from
+Scalar or has the same number of elements as <code>size(src1,3)</code>:</p>
+<pre class=" prettyprint lang-matlab"><code>dst(I) = saturate(src1(I) - src2) if mask(I) != 0
+</code></pre>
+</li>
+<li>
+<p>Difference between a scalar and an array, when <code>src1</code> is constructed from
+Scalar or has the same number of elements as <code>size(src2,3)</code>:</p>
+<pre class=" prettyprint lang-matlab"><code>dst(I) = saturate(src1 - src2(I)) if mask(I) != 0
+</code></pre>
+</li>
+<li>
+<p>The reverse difference between a scalar and an array in the case of
+<code>SubRS</code>:</p>
+<pre class=" prettyprint lang-matlab"><code>dst(I) = saturate(src2 - src1(I)) if mask(I) != 0
+</code></pre>
+</li>
+</ul>
+<p>where <code>I</code> is a multi-dimensional index of array elements. In case of
+multi-channel arrays, each channel is processed independently.</p>
+<p>The first function in the list above can be replaced with matrix expressions:</p>
+<pre class=" prettyprint lang-matlab"><code>dst = src1 - src2;
+</code></pre>
+<p>The input arrays and the output array can all have the same or different
+depths. For example, you can subtract to 8-bit unsigned arrays and store the
+difference in a 16-bit signed array. Depth of the output array is determined
+by <code>DType</code> parameter. In the second and third cases above, as well as in the
+first case, when <code>class(src1) == class(src2)</code>, <code>DType</code> can be set to the
+default -1. In this case the output array will have the same depth as the
+input array, be it <code>src1</code>, <code>src2</code> or both.</p>
+<p>Note: Saturation is not applied when the output array has the depth <code>int32</code>.
+You may even get result of an incorrect sign in the case of overflow.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.add.html">cv.add</a>, <a href="cv.addWeighted.html">cv.addWeighted</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

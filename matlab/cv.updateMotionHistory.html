@@ -1,0 +1,67 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.updateMotionHistory - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.updateMotionHistory - Updates the motion history image by a moving silhouette" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.updateMotionHistory - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.updateMotionHistory</div>
+      <div class="helpcontent"><p class=" h1line">Updates the motion history image by a moving silhouette</p>
+<pre class=" prettyprint lang-matlab"><code>mhi = <a href="cv.updateMotionHistory.html">cv.updateMotionHistory</a>(silhouette, mhi, timestamp, duration)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>silhouette</strong> Silhouette mask that has non-zero pixels where the motion
+occurs.</li>
+<li><strong>mhi</strong> Input motion history image to be updated by the function
+(single-channel, 32-bit floating-point).</li>
+<li><strong>timestamp</strong> Current time in milliseconds or other units.</li>
+<li><strong>duration</strong> Maximal duration of the motion track in the same units as
+timestamp.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>mhi</strong> Updated motion history image (single-channel, 32-bit
+floating-point).</li>
+</ul>
+<p>The function updates the motion history image as follows:</p>
+<pre class=" prettyprint lang-matlab"><code>           | timestamp  if silhouette(x,y) != 0
+mhi(x,y) = | 0          if silhouette(x,y) == 0 and mhi &lt; (timestamp &lt; duration)
+           | mhi(x,y)   otherwise
+</code></pre>
+<p>That is, <code>mhi</code> pixels where the motion occurs are set to the current
+timestamp, while the pixels where the motion happened last time a long time
+ago are cleared.</p>
+<p>The function, together with <a href="cv.calcMotionGradient.html">cv.calcMotionGradient</a> and
+<a href="cv.calcGlobalOrientation.html">cv.calcGlobalOrientation</a>, implements a motion templates technique described
+in [Davis97] and [Bradski00].</p>
+<h2>References</h2>
+<p>[Davis97]:</p>
+<blockquote>
+<p>James W Davis and Aaron F Bobick. &quot;The representation and recognition of
+human movement using temporal templates&quot;. In Computer Vision and Pattern
+Recognition, 1997. Proceedings., 1997 IEEE Computer Society Conference on,
+pages 928-934. IEEE, 1997.</p>
+</blockquote>
+<p>[Bradski00]:</p>
+<blockquote>
+<p>GR Bradski and J Davis. &quot;Motion segmentation and pose recognition with
+motion history gradients&quot;. In Applications of Computer Vision, 2000,
+Fifth IEEE Workshop on., pages 238-244. IEEE, 2000.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.calcMotionGradient.html">cv.calcMotionGradient</a>, <a href="cv.calcGlobalOrientation.html">cv.calcGlobalOrientation</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

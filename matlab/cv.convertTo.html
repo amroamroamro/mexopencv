@@ -1,0 +1,50 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.convertTo - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.convertTo - Converts an array to another data type with optional scaling" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.convertTo - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.convertTo</div>
+      <div class="helpcontent"><p class=" h1line">Converts an array to another data type with optional scaling</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.convertTo.html">cv.convertTo</a>(src)
+dst = <a href="cv.convertTo.html">cv.convertTo</a>(src, 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> Input matrix.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> Output image of the same size as <code>src</code>, and the specified type.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>RType</strong> desired output matrix type (<code>uint8</code>, <code>int32</code>, <code>double</code>, etc.),
+or rather the depth since the number of channels are the same as the input
+has; if it is negative, the output matrix will have the same type as the
+input. Default -1</li>
+<li><strong>Alpha</strong> optional scale factor. default 1.0</li>
+<li><strong>Beta</strong> optional delta added to the scaled values. default 0.0</li>
+</ul>
+<p>The method converts source pixel values to the target data type.
+Saturation is applied at the end to avoid possible overflows:</p>
+<pre class=" prettyprint lang-matlab"><code>dst = cast(src*alpha + beta, RType);
+</code></pre>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.copyTo.html">cv.copyTo</a>, <a href="cv.normalize.html">cv.normalize</a>, <a href="https://www.mathworks.com/help/matlab/ref/cast.html" target="_blank">cast</a>, <a href="https://www.mathworks.com/help/matlab/ref/typecast.html" target="_blank">typecast</a>, <a href="https://www.mathworks.com/help/matlab/ref/im2double.html" target="_blank">im2double</a>, <a href="https://www.mathworks.com/help/images/ref/im2uint8.html" target="_blank">im2uint8</a>,
+   <a href="https://www.mathworks.com/help/images/ref/mat2gray.html" target="_blank">mat2gray</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

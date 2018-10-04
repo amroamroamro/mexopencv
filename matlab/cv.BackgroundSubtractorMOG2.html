@@ -1,0 +1,280 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.BackgroundSubtractorMOG2 - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.BackgroundSubtractorMOG2 - Gaussian Mixture-based Background/Foreground Segmentation Algorithm" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.BackgroundSubtractorMOG2 - MATLAB File Help</td>
+            <td class="subheader-left"></td>
+            <td class="subheader-right"><a href="cv.BackgroundSubtractorMOG2.html">Go to online doc for cv.BackgroundSubtractorMOG2</a></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.BackgroundSubtractorMOG2</div>
+      <div class="helpcontent"><p class=" h1line">Gaussian Mixture-based Background/Foreground Segmentation Algorithm</p>
+<p>The class implements the Gaussian mixture model background subtraction
+described in [Zivkovic2004] and [Zivkovic2006].</p>
+<p>The code is very fast and performs also shadow detection. Number of
+Gausssian components is adapted per pixel.</p>
+<p>The algorithm similar to the standard Stauffer&amp;Grimson algorithm with
+additional selection of the number of the Gaussian components based on
+[Zivkovic04recursiveunsupervised].</p>
+<h2>References</h2>
+<p>[Zivkovic2004]:</p>
+<blockquote>
+<p>Zoran Zivkovic. &quot;Improved adaptive gaussian mixture model for
+background subtraction&quot;. In Pattern Recognition, 2004. ICPR 2004.
+Proceedings of the 17th International Conference on, volume 2,
+pages 28-31. IEEE, 2004.
+<a href="http://www.zoranz.net/Publications/zivkovic2004ICPR.pdf" target="_blank">PDF</a>.</p>
+</blockquote>
+<p>[Zivkovic2006]:</p>
+<blockquote>
+<p>Zoran Zivkovic and Ferdinand van der Heijden. &quot;Efficient adaptive
+density estimation per image pixel for the task of background
+subtraction&quot;. Pattern recognition letters, 27(7):773-780, 2006.
+<a href="http://www.zoranz.net/Publications/zivkovicPRL2006.pdf" target="_blank">PDF</a>.</p>
+</blockquote>
+<p>[Zivkovic04recursiveunsupervised]:</p>
+<blockquote>
+<p>Zoran Zivkovic and Ferdinand van der Heijden, &quot;Recursive unsupervised
+learning of finite mixture models&quot;, IEEE Trans. on Pattern Analysis
+and Machine Intelligence, vol.26, no.5, pages 651-656, 2004.
+<a href="http://www.zoranz.net/Publications/zivkovic2004PAMI.pdf" target="_blank">PDF</a>.</p>
+</blockquote>
+<p>[Prati03detectingmoving]:</p>
+<blockquote>
+<p>Andrea Prati, Ivana Mikic, Mohan M. Trivedi, Rita Cucchiara.
+&quot;Detecting Moving Shadows: Algorithms and Evaluation&quot;, IEEE PAMI, 2003.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.BackgroundSubtractorMOG2.BackgroundSubtractorMOG2.html">cv.BackgroundSubtractorMOG2/BackgroundSubtractorMOG2</a>,
+   <a href="cv.BackgroundSubtractorMOG2.apply.html">cv.BackgroundSubtractorMOG2/apply</a>,
+   <a href="cv.BackgroundSubtractorMOG2.getBackgroundImage.html">cv.BackgroundSubtractorMOG2/getBackgroundImage</a>,
+   <a href="https://www.mathworks.com/help/vision/ref/vision.foregrounddetector.html" target="_blank">vision.ForegroundDetector</a></div>
+      <!--Class-->
+      <div class="sectiontitle">Class Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Superclasses</td>
+            <td><a href="https://www.mathworks.com/help/matlab/ref/handle.html" target="_blank">handle</a></td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Construct on load</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+      <!--Constructors-->
+      <div class="sectiontitle"><a name="constructors"></a>Constructor Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.BackgroundSubtractorMOG2.BackgroundSubtractorMOG2.html">BackgroundSubtractorMOG2</a></td>
+            <td class="m-help">Creates MOG2 Background Subtractor&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Properties-->
+      <div class="sectiontitle"><a name="properties"></a>Property Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.BackgroundSubtractorMOG2.BackgroundRatio.html">BackgroundRatio</a></td>
+            <td class="m-help">The &quot;background ratio&quot; parameter of the algorithm.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.BackgroundSubtractorMOG2.ComplexityReductionThreshold.html">ComplexityReductionThreshold</a></td>
+            <td class="m-help">The complexity reduction threshold.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.BackgroundSubtractorMOG2.DetectShadows.html">DetectShadows</a></td>
+            <td class="m-help">The shadow detection flag.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.BackgroundSubtractorMOG2.History.html">History</a></td>
+            <td class="m-help">The number of last frames that affect the background model.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.BackgroundSubtractorMOG2.NMixtures.html">NMixtures</a></td>
+            <td class="m-help">The number of gaussian components in the background model.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.BackgroundSubtractorMOG2.ShadowThreshold.html">ShadowThreshold</a></td>
+            <td class="m-help">The shadow threshold.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.BackgroundSubtractorMOG2.ShadowValue.html">ShadowValue</a></td>
+            <td class="m-help">The shadow value.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.BackgroundSubtractorMOG2.VarInit.html">VarInit</a></td>
+            <td class="m-help">The initial variance of gaussian components. default 15&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.BackgroundSubtractorMOG2.VarMax.html">VarMax</a></td>
+            <td class="m-help">Maximum variance. default 5*15&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.BackgroundSubtractorMOG2.VarMin.html">VarMin</a></td>
+            <td class="m-help">Minimmum variance. default 4&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.BackgroundSubtractorMOG2.VarThreshold.html">VarThreshold</a></td>
+            <td class="m-help">The variance threshold for the pixel-model match.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.BackgroundSubtractorMOG2.VarThresholdGen.html">VarThresholdGen</a></td>
+            <td class="m-help">The variance threshold for the pixel-model match used for new&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.BackgroundSubtractorMOG2.id.html">id</a></td>
+            <td class="m-help">Object ID&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Methods-->
+      <div class="sectiontitle"><a name="methods"></a>Method Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">addlistener</a></td>
+            <td class="m-help">Add listener for event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BackgroundSubtractorMOG2.apply.html">apply</a></td>
+            <td class="m-help">Updates the background model and computes the foreground mask&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BackgroundSubtractorMOG2.delete.html">delete</a></td>
+            <td class="m-help">Destructor&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">eq</a></td>
+            <td class="m-help">== (EQ)   Test handle equality.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findobj</a></td>
+            <td class="m-help">Find objects matching specified conditions.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findprop</a></td>
+            <td class="m-help">Find property of MATLAB handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ge</a></td>
+            <td class="m-help">&gt;= (GE)   Greater than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BackgroundSubtractorMOG2.getBackgroundImage.html">getBackgroundImage</a></td>
+            <td class="m-help">Computes a background image&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">gt</a></td>
+            <td class="m-help">&gt; (GT)   Greater than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">isvalid</a></td>
+            <td class="m-help">Test handle validity.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">le</a></td>
+            <td class="m-help">&lt;= (LE)   Less than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">listener</a></td>
+            <td class="m-help">Add listener for event without binding the listener to the source object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">lt</a></td>
+            <td class="m-help">&lt; (LT)   Less than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ne</a></td>
+            <td class="m-help">~= (NE)   Not equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">notify</a></td>
+            <td class="m-help">Notify listeners of event.&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Events-->
+      <div class="sectiontitle"><a name="events"></a>Event Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ObjectBeingDestroyed</a></td>
+            <td class="m-help">Notifies listeners that a particular object has been destroyed.&nbsp;</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

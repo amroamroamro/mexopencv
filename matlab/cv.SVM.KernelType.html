@@ -1,0 +1,80 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.SVM/KernelType - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.SVM.KernelType - Type of a SVM kernel." />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.SVM/KernelType - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.SVM/KernelType</div>
+      <div class="helpcontent"><p class=" h1line">Type of a SVM kernel.</p>
+<p>Default value is 'RBF'. One of the following predefined kernels:</p>
+<ul>
+<li><strong>Custom</strong> Returned by property in case when custom kernel has
+been set. See <a href="cv.SVM.setCustomKernel.html">cv.SVM.setCustomKernel</a>.</li>
+<li><strong>Linear</strong> Linear kernel. No mapping is done, linear
+discrimination (or regression) is done in the original feature
+space. It is the fastest option. <code>K(x_i,x_j) = x_i' * x_j</code>.</li>
+<li><strong>Poly</strong> Polynomial kernel.
+<code>K(x_i,x_j) = (gamma * x_i' * x_j + coef0)^degree, gamma&gt;0</code>.</li>
+<li><strong>RBF</strong> Radial basis function (RBF), a good choice in most cases.
+<code>K(x_i,x_j) = exp(-gamma * ||x_i - x_j||^2), gamma&gt;0</code>.</li>
+<li><strong>Sigmoid</strong> Sigmoid kernel.
+<code>K(x_i,x_j) = tanh(gamma * x_i' * x_j + coef0)</code>.</li>
+<li><strong>Chi2</strong> Exponential Chi2 kernel, similar to the RBF kernel.
+<code>K(x_i,x_j) = exp(-gamma * X2(x_i,x_j))</code>,
+<code>X2(x_i,x_j) = (x_i - x_j)^2 / (x_i + x_j), gamma&gt;0</code>.</li>
+<li><strong>Intersection</strong> Histogram intersection kernel. A fast kernel.
+<code>K(x_i,x_j) = min(x_i,x_j)</code>.</li>
+</ul>
+</div><!--after help -->
+      <!--Property-->
+      <div class="sectiontitle">Property Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Constant</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Dependent</td>
+            <td>true</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Transient</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">GetAccess</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">SetAccess</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">GetObservable</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">SetObservable</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

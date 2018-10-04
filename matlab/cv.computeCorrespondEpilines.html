@@ -1,0 +1,60 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.computeCorrespondEpilines - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.computeCorrespondEpilines - For points in an image of a stereo pair, computes the corresponding epilines in the other image" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.computeCorrespondEpilines - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.computeCorrespondEpilines</div>
+      <div class="helpcontent"><p class=" h1line">For points in an image of a stereo pair, computes the corresponding epilines in the other image</p>
+<pre class=" prettyprint lang-matlab"><code>lines = <a href="cv.computeCorrespondEpilines.html">cv.computeCorrespondEpilines</a>(points, F)
+[...] = <a href="cv.computeCorrespondEpilines.html">cv.computeCorrespondEpilines</a>(..., 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>points</strong> Input points. Nx2/Nx1x2/1xNx2 floating-point array, or cell
+array of length N of 2-element vectors <code>{[x,y], ...}</code>.</li>
+<li><strong>F</strong> 3x3 Fundamental matrix that can be estimated using
+<a href="cv.findFundamentalMat.html">cv.findFundamentalMat</a> or <a href="cv.stereoRectify.html">cv.stereoRectify</a>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>lines</strong> Output vector of the epipolar lines corresponding to the points
+in the other image. Each line <code>ax + by + c = 0</code> is encoded by 3 numbers
+<code>(a,b,c)</code>. Nx3/Nx1x3 numeric matrix or a cell-array of 3-element vectors
+<code>{[a,b,c], ...}</code> depending on <code>points</code> format.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>WhichImage</strong> Index of the image (1 or 2) that contains the points.
+default 1.</li>
+</ul>
+<p>For every point in one of the two images of a stereo pair, the function
+finds the equation of the corresponding epipolar line in the other image.</p>
+<p>From the fundamental matrix definition (see <a href="cv.findFundamentalMat.html">cv.findFundamentalMat</a>), line
+<code>lines2{i}</code> in the second image for the point <code>points1{i}</code> in the first image
+(when <code>WhichImage=1</code>) is computed as:</p>
+<pre class=" prettyprint lang-matlab"><code>lines2{i} = F * points1{i}
+</code></pre>
+<p>And vice versa, when <code>WhichImage=2</code>, <code>lines1{i}</code> is computed from
+<code>points2{i}</code> as:</p>
+<pre class=" prettyprint lang-matlab"><code>lines1{i} = F^T * points2{i}
+</code></pre>
+<p>Line coefficients are defined up to a scale. They are normalized so that
+<code>a_i^2 + b_i^2 = 1</code>.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.findFundamentalMat.html">cv.findFundamentalMat</a>, <a href="cv.stereoRectify.html">cv.stereoRectify</a>, <a href="https://www.mathworks.com/help/vision/ref/epipolarline.html" target="_blank">epipolarLine</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

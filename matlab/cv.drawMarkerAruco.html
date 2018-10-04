@@ -1,0 +1,45 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.drawMarkerAruco - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.drawMarkerAruco - Draw a canonical marker image" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.drawMarkerAruco - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.drawMarkerAruco</div>
+      <div class="helpcontent"><p class=" h1line">Draw a canonical marker image</p>
+<pre class=" prettyprint lang-matlab"><code>img = <a href="cv.drawMarkerAruco.html">cv.drawMarkerAruco</a>(dictionary, id, sidePixels)
+img = <a href="cv.drawMarkerAruco.html">cv.drawMarkerAruco</a>(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>dictionary</strong> dictionary of markers indicating the type of markers.</li>
+<li><strong>id</strong> identifier of the marker that will be returned. It has to be a
+valid id in the specified dictionary (0-based).</li>
+<li><strong>sidePixels</strong> size of the image in pixels.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>img</strong> output image with the marker, of size <code>sidePixels-by-sidePixels</code>.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>BorderBits</strong> width of the marker border. default 1</li>
+</ul>
+<p>This function returns a marker image in its canonical form (i.e. ready to be
+printed).</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.estimatePoseBoard.html">cv.estimatePoseBoard</a>, <a href="cv.drawPlanarBoard.html">cv.drawPlanarBoard</a>, <a href="cv.drawCharucoBoard.html">cv.drawCharucoBoard</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

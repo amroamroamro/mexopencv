@@ -1,0 +1,72 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>getEdge (cv.Subdiv2D) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Subdiv2D.getEdge - Returns one of the edges related to the given edge" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">getEdge (cv.Subdiv2D) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Subdiv2D/getEdge</div>
+      <div class="helpcontent"><p class=" h1line">Returns one of the edges related to the given edge</p>
+<pre class=" prettyprint lang-matlab"><code>e = obj.getEdge(edge, nextEdgeType)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>edge</strong> Subdivision edge ID.</li>
+<li><strong>nextEdgeType</strong> Parameter specifying which of the related
+edges to return. The following edge type navigation values are
+possible:
+<ul>
+<li><strong>NextAroundOrg</strong> next around the edge origin (<code>eOnext</code> on
+the picture below if <code>e</code> is the input edge).</li>
+<li><strong>NextAroundDst</strong> next around the edge vertex (<code>eDnext</code>).</li>
+<li><strong>PrevAroundOrg</strong> previous around the edge origin
+(reversed <code>eRnext</code>).</li>
+<li><strong>PrevAroundDst</strong> previous around the edge destination
+(reversed <code>eLnext</code>).</li>
+<li><strong>NextAroundLeft</strong> next around the left facet (<code>eLnext</code>).</li>
+<li><strong>NextAroundRight</strong> next around the right facet (<code>eRnext</code>).</li>
+<li><strong>PrevAroundLeft</strong> previous around the left facet
+(reversed <code>eOnext</code>).</li>
+<li><strong>PrevAroundRight</strong> previous around the right facet
+(reversed <code>eDnext</code>).</li>
+</ul>
+</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>e</strong> edge ID related to the input edge.</li>
+</ul>
+<p>A sample output is shown below:</p>
+<p><img src="https://github.com/opencv/opencv/raw/master/modules/imgproc/doc/pics/quadedge.png" alt="image" /></p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Subdiv2D.getVertex.html">cv.Subdiv2D/getVertex</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

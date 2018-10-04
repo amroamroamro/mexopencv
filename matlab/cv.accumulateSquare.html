@@ -1,0 +1,49 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.accumulateSquare - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.accumulateSquare - Adds the square of a source image to the accumulator image" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.accumulateSquare - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.accumulateSquare</div>
+      <div class="helpcontent"><p class=" h1line">Adds the square of a source image to the accumulator image</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.accumulateSquare.html">cv.accumulateSquare</a>(src, dst)
+dst = <a href="cv.accumulateSquare.html">cv.accumulateSquare</a>(src, dst, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> Input image of type <code>uint8</code>, <code>uint16</code>, <code>single</code>, or <code>double</code>, with
+any number of channels</li>
+<li><strong>dst</strong> Input accumulator image with the same number of channels as input
+image, and a depth of <code>single</code> or <code>double</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> Output accumulator image.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>mask</strong> Optional operation mask. Not set by default</li>
+</ul>
+<p>The function adds the input image <code>src</code> or its selected region, raised to a
+power of 2, to the accumulator <code>dst</code>:</p>
+<pre class=" prettyprint lang-matlab"><code>dst(x,y) = dst(x,y) + src(x,y)^2  if mask(x,y)~=0
+</code></pre>
+<p>The function supports multi-channel images. Each channel is processed
+independently.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.accumulate.html">cv.accumulate</a>, <a href="cv.accumulateProduct.html">cv.accumulateProduct</a>, <a href="cv.accumulateWeighted.html">cv.accumulateWeighted</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

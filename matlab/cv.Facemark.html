@@ -1,0 +1,368 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.Facemark - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Facemark - Base class for all facemark models" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.Facemark - MATLAB File Help</td>
+            <td class="subheader-left"></td>
+            <td class="subheader-right"><a href="cv.Facemark.html">Go to online doc for cv.Facemark</a></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Facemark</div>
+      <div class="helpcontent"><p class=" h1line">Base class for all facemark models</p>
+<p>Facial landmark detection is a useful algorithm with many possible
+applications including expression transfer, virtual make-up, and facial
+puppetry. This class implements an API for facial landmark detector.
+Two kinds of algorithms are implemented including active appearance
+model [AAM] and regressed local binary features [LBF] able to work in
+real-time.</p>
+<p>All facemark models in OpenCV are derived from the abstract base class
+Facemark, which provides a unified access to all facemark algorithms in
+OpenCV.</p>
+<p>To utilize the Facemark API in your program, please take a look at the
+opencv tutorials, as well as mexopencv samples.</p>
+<h2>Description</h2>
+<p>Facemark is a base class which provides universal access to any specific
+facemark algorithm. Therefore, the users should declare a desired
+algorithm before they can use it in their application.</p>
+<p>The typical pipeline for facemark detection is listed as follows:</p>
+<ul>
+<li>(Non-mandatory) Set a user defined face detection using
+<a href="cv.Facemark.setFaceDetector.html">cv.Facemark.setFaceDetector</a>. The facemark algorithms are desgined
+to fit the facial points into a face. Therefore, the face information
+should be provided to the facemark algorithm. Some algorithms might
+provides a default face recognition function. However, the users might
+prefer to use their own face detector to obtains the best possible
+detection result.</li>
+<li>(Non-mandatory) Training the model for a specific algorithm using
+<a href="cv.Facemark.training.html">cv.Facemark.training</a>. In this case, the model should be
+automatically saved by the algorithm. If the user already have a
+trained model, then this part can be omitted.</li>
+<li>Load the trained model using <a href="cv.Facemark.loadModel.html">cv.Facemark.loadModel</a>.</li>
+<li>Perform the fitting via the <a href="cv.Facemark.fit.html">cv.Facemark.fit</a>.</li>
+</ul>
+<h3>Example</h3>
+<p>Here is an example of loading a pretrained model
+(you should provide full paths to files specified below):</p>
+<pre class=" prettyprint lang-matlab"><code>obj = <a href="cv.Facemark.html">cv.Facemark</a>('LBF', 'CascadeFace','lbpcascade_frontalface.xml');
+obj.loadModel('lbfmodel.yaml');
+img = imread('lena.jpg');
+faces = obj.getFaces(img);
+landmarks = obj.fit(img, faces);
+for i=1:numel(faces)
+    img = <a href="cv.rectangle.html">cv.rectangle</a>(img, faces{i}, 'Color','g');
+    img = <a href="cv.Facemark.drawFacemarks.html">cv.Facemark.drawFacemarks</a>(img, landmarks{i});
+end
+imshow(img)
+</code></pre>
+<h3>Example</h3>
+<p>Here is an example of training a model:</p>
+<pre class=" prettyprint lang-matlab"><code>% filename to save the trained model
+obj = <a href="cv.Facemark.html">cv.Facemark</a>('LBF', 'ModelFilename','ibug68.model');
+obj.setFaceDetector('myFaceDetector');
+
+% load the list of dataset: image paths and landmark file paths
+[imgFiles, ptsFiles] = <a href="cv.Facemark.loadDatasetList.html">cv.Facemark.loadDatasetList</a>(...
+    'data/images_train.txt', 'data/points_train.txt');
+
+% add training samples
+for i=1:numel(imgFiles)
+    img = imread(imgFiles{i});
+    pts = <a href="cv.Facemark.loadFacePoints.html">cv.Facemark.loadFacePoints</a>(ptsFiles{i});
+    obj.addTrainingSample(img, pts);
+end
+obj.training();
+</code></pre>
+<h2>References</h2>
+<p>[AAM]:</p>
+<blockquote>
+<p>G. Tzimiropoulos and M. Pantic, &quot;Optimization problems for fast AAM
+fitting in-the-wild,&quot; ICCV 2013.</p>
+</blockquote>
+<p>[LBF]:</p>
+<blockquote>
+<p>S. Ren, et al. , &quot;Face alignment at 3000 fps via regressing local
+binary features&quot;, CVPR 2014.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.FacemarkKazemi.html">cv.FacemarkKazemi</a>, <a href="cv.Facemark.Facemark.html">cv.Facemark/Facemark</a></div>
+      <!--Class-->
+      <div class="sectiontitle">Class Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Superclasses</td>
+            <td><a href="https://www.mathworks.com/help/matlab/ref/handle.html" target="_blank">handle</a></td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Construct on load</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+      <!--Constructors-->
+      <div class="sectiontitle"><a name="constructors"></a>Constructor Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.Facemark.Facemark.html">Facemark</a></td>
+            <td class="m-help">Constructor&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Properties-->
+      <div class="sectiontitle"><a name="properties"></a>Property Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.Facemark.func.html">func</a></td>
+            <td class="m-help">name of custom face detector function&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.Facemark.id.html">id</a></td>
+            <td class="m-help">Object ID&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Methods-->
+      <div class="sectiontitle"><a name="methods"></a>Method Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Facemark.addTrainingSample.html">addTrainingSample</a></td>
+            <td class="m-help">Add one training sample to the trainer&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">addlistener</a></td>
+            <td class="m-help">Add listener for event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Facemark.delete.html">delete</a></td>
+            <td class="m-help">Destructor&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Facemark.drawFacemarks.html">drawFacemarks</a></td>
+            <td class="m-help">Utility to draw the detected facial landmark points&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">eq</a></td>
+            <td class="m-help">== (EQ)   Test handle equality.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findobj</a></td>
+            <td class="m-help">Find objects matching specified conditions.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findprop</a></td>
+            <td class="m-help">Find property of MATLAB handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Facemark.fit.html">fit</a></td>
+            <td class="m-help">Detect landmarks in faces&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ge</a></td>
+            <td class="m-help">&gt;= (GE)   Greater than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Facemark.getData.html">getData</a></td>
+            <td class="m-help">Get data from an algorithm&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Facemark.getFaces.html">getFaces</a></td>
+            <td class="m-help">Detect faces from a given image using default or user-defined face detector&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Facemark.getFacesHAAR.html">getFacesHAAR</a></td>
+            <td class="m-help">Default face detector&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">gt</a></td>
+            <td class="m-help">&gt; (GT)   Greater than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">isvalid</a></td>
+            <td class="m-help">Test handle validity.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">le</a></td>
+            <td class="m-help">&lt;= (LE)   Less than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">listener</a></td>
+            <td class="m-help">Add listener for event without binding the listener to the source object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Facemark.loadDatasetList.html">loadDatasetList</a></td>
+            <td class="m-help">A utility to load list of paths to training images and annotation files&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Facemark.loadFacePoints.html">loadFacePoints</a></td>
+            <td class="m-help">A utility to load facial landmark information from a given file&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Facemark.loadModel.html">loadModel</a></td>
+            <td class="m-help">A function to load the trained model before the fitting process&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Facemark.loadTrainingData1.html">loadTrainingData1</a></td>
+            <td class="m-help">A utility to load facial landmark information from the dataset&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Facemark.loadTrainingData2.html">loadTrainingData2</a></td>
+            <td class="m-help">A utility to load facial landmark dataset from a single file&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Facemark.loadTrainingData3.html">loadTrainingData3</a></td>
+            <td class="m-help">Extracts the data for training from .txt files which contains the corresponding image name and landmarks&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">lt</a></td>
+            <td class="m-help">&lt; (LT)   Less than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ne</a></td>
+            <td class="m-help">~= (NE)   Not equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">notify</a></td>
+            <td class="m-help">Notify listeners of event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Facemark.setFaceDetector.html">setFaceDetector</a></td>
+            <td class="m-help">Set a user-defined face detector for the Facemark algorithm&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Facemark.training.html">training</a></td>
+            <td class="m-help">Trains a Facemark algorithm using the given dataset&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Events-->
+      <div class="sectiontitle"><a name="events"></a>Event Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ObjectBeingDestroyed</a></td>
+            <td class="m-help">Notifies listeners that a particular object has been destroyed.&nbsp;</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

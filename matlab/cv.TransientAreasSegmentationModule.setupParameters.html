@@ -1,0 +1,70 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>setupParameters (cv.TransientAreasSegmentationModule) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.TransientAreasSegmentationModule.setupParameters - Pass segmentation parameters to adjust current segmentation instance setup" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">setupParameters (cv.TransientAreasSegmentationModule) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.TransientAreasSegmentationModule/setupParameters</div>
+      <div class="helpcontent"><p class=" h1line">Pass segmentation parameters to adjust current segmentation instance setup</p>
+<pre class=" prettyprint lang-matlab"><code>obj.setupParameters('OptionName',optionValue, ...)
+</code></pre>
+<h2>Options</h2>
+<ul>
+<li><strong>ThresholdON</strong> default 100</li>
+<li><strong>ThresholdOFF</strong> default 100</li>
+<li><strong>LocalEnergyTemporalConstant</strong> the time constant of the first
+order low pass filter, use it to cut high temporal frequencies
+(noise or fast motion), unit is frames, typical value is 0.5
+frame. default 0.5</li>
+<li><strong>LocalEnergySpatialConstant</strong> the spatial constant of the
+first order low pass filter, use it to cut high spatial
+frequencies (noise or thick contours), unit is pixels, typical
+value is 5 pixel. default 5</li>
+<li><strong>NeighborhoodEnergyTemporalConstant</strong> local neighborhood
+energy filtering parameters: the aim is to get information
+about the energy neighborhood to perform a center surround
+energy analysis. default 1</li>
+<li><strong>NeighborhoodEnergySpatialConstant</strong> see
+<code>NeighborhoodEnergyTemporalConstant</code>. default 15</li>
+<li><strong>ContextEnergyTemporalConstant</strong> context neighborhood energy
+filtering parameters: the aim is to get information about the
+energy on a wide neighborhood area to filtered out local
+effects. default 1</li>
+<li><strong>ContextEnergySpatialConstant</strong> see
+<code>ContextEnergyTemporalConstant</code>. default 75</li>
+</ul>
+<p>Sets new parameter structure that stores the transient events
+detector setup parameters.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.TransientAreasSegmentationModule.setup.html">cv.TransientAreasSegmentationModule/setup</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

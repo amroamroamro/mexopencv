@@ -1,0 +1,54 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.cvtColorTwoPlane - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.cvtColorTwoPlane - Dual-plane color conversion modes" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.cvtColorTwoPlane - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.cvtColorTwoPlane</div>
+      <div class="helpcontent"><p class=" h1line">Dual-plane color conversion modes</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.cvtColorTwoPlane.html">cv.cvtColorTwoPlane</a>(ysrc, uvsrc, code)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>ysrc</strong> Luma component (Y').</li>
+<li><strong>uvsrc</strong> Chrominance components (UV).</li>
+<li><strong>code</strong> Color space conversion code string. The following codes are
+supported:
+<ul>
+<li><strong>YUV2RGB_NV12</strong></li>
+<li><strong>YUV2BGR_NV12</strong></li>
+<li><strong>YUV2RGB_NV21</strong></li>
+<li><strong>YUV2BGR_NV21</strong></li>
+<li><strong>YUV420sp2RGB</strong></li>
+<li><strong>YUV420sp2BGR</strong></li>
+<li><strong>YUV2RGBA_NV12</strong></li>
+<li><strong>YUV2BGRA_NV12</strong></li>
+<li><strong>YUV2RGBA_NV21</strong></li>
+<li><strong>YUV2BGRA_NV21</strong></li>
+<li><strong>YUV420sp2RGBA</strong></li>
+<li><strong>YUV420sp2BGRA</strong></li>
+</ul>
+</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> Output image of the same row/column size and depth as <code>ysrc</code>.</li>
+</ul>
+<p>Only YUV 4:2:0 is currently supported.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.cvtColor.html">cv.cvtColor</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

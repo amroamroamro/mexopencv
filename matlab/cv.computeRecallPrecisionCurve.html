@@ -1,0 +1,46 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.computeRecallPrecisionCurve - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.computeRecallPrecisionCurve - Evaluate a descriptor extractor by computing precision/recall curve" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.computeRecallPrecisionCurve - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.computeRecallPrecisionCurve</div>
+      <div class="helpcontent"><p class=" h1line">Evaluate a descriptor extractor by computing precision/recall curve</p>
+<pre class=" prettyprint lang-matlab"><code>recallPrecisionCurve = <a href="cv.computeRecallPrecisionCurve.html">cv.computeRecallPrecisionCurve</a>(matches1to2, correctMatches1to2Mask)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>matches1to2</strong> Cell array of matches, each match is a structure array
+with the following fields:
+<ul>
+<li><strong>queryIdx</strong> query descriptor index (zero-based index)</li>
+<li><strong>trainIdx</strong> train descriptor index (zero-based index)</li>
+<li><strong>imgIdx</strong> train image index (zero-based index)</li>
+<li><strong>distance</strong> distance between descriptors (scalar)</li>
+</ul>
+</li>
+<li><strong>correctMatches1to2Mask</strong> Cell array of the same size as <code>matches1to2</code>.
+A mask indicating correct matches.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>recallPrecisionCurve</strong> Recall/precision curve, Nx2 matrix.</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.evaluateFeatureDetector.html">cv.evaluateFeatureDetector</a>, <a href="cv.DescriptorExtractor.html">cv.DescriptorExtractor</a>,
+   <a href="cv.DescriptorMatcher.html">cv.DescriptorMatcher</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

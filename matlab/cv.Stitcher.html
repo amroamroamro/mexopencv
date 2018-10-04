@@ -1,0 +1,423 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.Stitcher - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Stitcher - High level image stitcher" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.Stitcher - MATLAB File Help</td>
+            <td class="subheader-left"></td>
+            <td class="subheader-right"><a href="cv.Stitcher.html">Go to online doc for cv.Stitcher</a></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Stitcher</div>
+      <div class="helpcontent"><p class=" h1line">High level image stitcher</p>
+<p>It's possible to use this class without being aware of the entire
+stitching pipeline. However, to be able to achieve higher stitching
+stability and quality of the final images at least being familiar with
+the theory is recommended.</p>
+<p><img src="https://docs.opencv.org/3.3.1/StitchingPipeline.jpg" alt="image" /></p>
+<p>This figure illustrates the stitching module pipeline implemented in the
+<a href="cv.Stitcher.html">cv.Stitcher</a> class. Using that class it's possible to configure/remove
+some steps, i.e. adjust the stitching pipeline according to the
+particular needs.</p>
+<p>The implemented stitching pipeline is very similar to the one proposed
+in [BL07].</p>
+<h1>Camera models</h1>
+<p>There are currently 2 camera models implemented in stitching pipeline.</p>
+<ul>
+<li><em>Homography model</em> expecting perspective transformations between
+images implemented in <code>BestOf2NearestMatcher</code>,
+<code>HomographyBasedEstimator</code>, <code>BundleAdjusterReproj</code>, and
+<code>BundleAdjusterRay</code>.</li>
+<li><em>Affine model</em> expecting affine transformation with 6 DOF or 4 DOF
+implemented in <code>AffineBestOf2NearestMatcher</code>, <code>AffineBasedEstimator</code>,
+<code>BundleAdjusterAffine</code>, <code>BundleAdjusterAffinePartial</code>, and
+<code>AffineWarper</code>.</li>
+</ul>
+<p>Homography model is useful for creating photo panoramas captured by
+camera, while affine-based model can be used to stitch scans and object
+captured by specialized devices. Use <a href="cv.Stitcher.Stitcher.html">cv.Stitcher.Stitcher</a> to get
+preconfigured pipeline for one of those models.</p>
+<p>Note: Certain detailed settings of <a href="cv.Stitcher.html">cv.Stitcher</a> might not make sense.
+Especially you should not mix classes implementing affine model and
+classes implementing Homography model, as they work with different
+transformations.</p>
+<h2>Example</h2>
+<ul>
+<li>A basic example on image stitching can be found in the
+<code>stitching_demo.m</code> sample</li>
+<li>A detailed example on image stitching can be found in the
+<code>stitching_detailed_demo.m</code> sample.</li>
+</ul>
+<h2>References</h2>
+<p>[BL07]:</p>
+<blockquote>
+<p>Matthew Brown and David G Lowe.
+&quot;Automatic panoramic image stitching using invariant features&quot;.
+International journal of computer vision, 74(1):59-73, 2007.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Stitcher.Stitcher.html">cv.Stitcher/Stitcher</a></div>
+      <!--Class-->
+      <div class="sectiontitle">Class Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Superclasses</td>
+            <td><a href="https://www.mathworks.com/help/matlab/ref/handle.html" target="_blank">handle</a></td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Construct on load</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+      <!--Constructors-->
+      <div class="sectiontitle"><a name="constructors"></a>Constructor Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.Stitcher.Stitcher.html">Stitcher</a></td>
+            <td class="m-help">Creates a Stitcher configured in one of the stitching modes&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Properties-->
+      <div class="sectiontitle"><a name="properties"></a>Property Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.Stitcher.CompositingResol.html">CompositingResol</a></td>
+            <td class="m-help">Compositing resolution. default 'Orig'&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.Stitcher.PanoConfidenceThresh.html">PanoConfidenceThresh</a></td>
+            <td class="m-help">Panorama confidence threshold. default 1&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.Stitcher.RegistrationResol.html">RegistrationResol</a></td>
+            <td class="m-help">Registration resolution. default 0.6&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.Stitcher.SeamEstimationResol.html">SeamEstimationResol</a></td>
+            <td class="m-help">Seam estimation resolution. default 1&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.Stitcher.WaveCorrectKind.html">WaveCorrectKind</a></td>
+            <td class="m-help">Correction kind. default 'Horiz'&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.Stitcher.WaveCorrection.html">WaveCorrection</a></td>
+            <td class="m-help">Whether it should try to make panorama more horizontal (or vertical).&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.Stitcher.id.html">id</a></td>
+            <td class="m-help">Object ID&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Methods-->
+      <div class="sectiontitle"><a name="methods"></a>Method Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">addlistener</a></td>
+            <td class="m-help">Add listener for event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Stitcher.cameras.html">cameras</a></td>
+            <td class="m-help">Estimates camera parameters&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Stitcher.component.html">component</a></td>
+            <td class="m-help">Image indices&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Stitcher.composePanorama.html">composePanorama</a></td>
+            <td class="m-help">Compose panorama&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Stitcher.delete.html">delete</a></td>
+            <td class="m-help">Destructor&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">eq</a></td>
+            <td class="m-help">== (EQ)   Test handle equality.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Stitcher.estimateTransform.html">estimateTransform</a></td>
+            <td class="m-help">Estimate transformation&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findobj</a></td>
+            <td class="m-help">Find objects matching specified conditions.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findprop</a></td>
+            <td class="m-help">Find property of MATLAB handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ge</a></td>
+            <td class="m-help">&gt;= (GE)   Greater than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Stitcher.getBlender.html">getBlender</a></td>
+            <td class="m-help">Get the blender&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Stitcher.getBundleAdjuster.html">getBundleAdjuster</a></td>
+            <td class="m-help">Get the bundle adjuster&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Stitcher.getExposureCompensator.html">getExposureCompensator</a></td>
+            <td class="m-help">Get the exposire compensator&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Stitcher.getFeaturesFinder.html">getFeaturesFinder</a></td>
+            <td class="m-help">Get the features finder&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Stitcher.getFeaturesMatcher.html">getFeaturesMatcher</a></td>
+            <td class="m-help">Get the features matcher&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Stitcher.getMatchingMask.html">getMatchingMask</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Stitcher.getSeamFinder.html">getSeamFinder</a></td>
+            <td class="m-help">Get the seam finder&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Stitcher.getWarper.html">getWarper</a></td>
+            <td class="m-help">Get the warper&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">gt</a></td>
+            <td class="m-help">&gt; (GT)   Greater than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">isvalid</a></td>
+            <td class="m-help">Test handle validity.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">le</a></td>
+            <td class="m-help">&lt;= (LE)   Less than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">listener</a></td>
+            <td class="m-help">Add listener for event without binding the listener to the source object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">lt</a></td>
+            <td class="m-help">&lt; (LT)   Less than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ne</a></td>
+            <td class="m-help">~= (NE)   Not equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">notify</a></td>
+            <td class="m-help">Notify listeners of event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Stitcher.setBlender.html">setBlender</a></td>
+            <td class="m-help">Set the blender&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Stitcher.setBundleAdjuster.html">setBundleAdjuster</a></td>
+            <td class="m-help">Set the bundle adjuster&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Stitcher.setExposureCompensator.html">setExposureCompensator</a></td>
+            <td class="m-help">Set the exposure compensator&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Stitcher.setFeaturesFinder.html">setFeaturesFinder</a></td>
+            <td class="m-help">Set the features finder&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Stitcher.setFeaturesMatcher.html">setFeaturesMatcher</a></td>
+            <td class="m-help">Set the features matcher&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Stitcher.setMatchingMask.html">setMatchingMask</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Stitcher.setSeamFinder.html">setSeamFinder</a></td>
+            <td class="m-help">Set the seam finder&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Stitcher.setWarper.html">setWarper</a></td>
+            <td class="m-help">Set the image warper&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Stitcher.stitch.html">stitch</a></td>
+            <td class="m-help">Tries to stitch the given images&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Stitcher.workScale.html">workScale</a></td>
+            <td class="m-help">Work scale&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Events-->
+      <div class="sectiontitle"><a name="events"></a>Event Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ObjectBeingDestroyed</a></td>
+            <td class="m-help">Notifies listeners that a particular object has been destroyed.&nbsp;</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

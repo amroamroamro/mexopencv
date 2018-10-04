@@ -1,0 +1,43 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.convertPointsToHomogeneous - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.convertPointsToHomogeneous - Converts points from Euclidean to homogeneous space" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.convertPointsToHomogeneous - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.convertPointsToHomogeneous</div>
+      <div class="helpcontent"><p class=" h1line">Converts points from Euclidean to homogeneous space</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.convertPointsToHomogeneous.html">cv.convertPointsToHomogeneous</a>(src)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> Input vector of N-dimensional points (2D/3D points).
+Mx2/Mx1x2/1xMx2 or Mx3/Mx1x3/1xMx3 numeric array, or cell-array of
+2/3-element vectors in the form: <code>{[x,y], [x,y], ...}</code> or
+<code>{[x,y,z], [x,y,z], ...}</code>. Supports floating-point types.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> Output vector of (N+1)-dimensional points (3D/4D points).
+Mx3/Mx1x3 or Mx4/Mx1x4 numeric array, or cell-array of 3/4-elements
+vectors, respectively matching the input shape.</li>
+</ul>
+<p>The function converts points from Euclidean to homogeneous space by
+appending 1's to the tuple of point coordinates. That is, each point
+<code>(x1, x2, ..., xn)</code> is converted to <code>(x1, x2, ..., xn, 1)</code>.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.convertPointsFromHomogeneous.html">cv.convertPointsFromHomogeneous</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

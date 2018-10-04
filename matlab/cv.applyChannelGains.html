@@ -1,0 +1,37 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.applyChannelGains - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.applyChannelGains - Implements an efficient fixed-point approximation for applying channel gains, which is the last step of multiple white balance algorithms" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.applyChannelGains - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.applyChannelGains</div>
+      <div class="helpcontent"><p class=" h1line">Implements an efficient fixed-point approximation for applying channel gains, which is the last step of multiple white balance algorithms</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.applyChannelGains.html">cv.applyChannelGains</a>(src, gains)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> Input 3-channel image in the BGR color space (either <code>uint8</code> or
+<code>uint16</code>).</li>
+<li><strong>gains</strong> gains for the [B,G,R] channels.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> Output image of the same size and type as <code>src</code>.</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.GrayworldWB.html">cv.GrayworldWB</a>, <a href="cv.LearningBasedWB.html">cv.LearningBasedWB</a>, <a href="https://www.mathworks.com/help/images/ref/imapplymatrix.html" target="_blank">imapplymatrix</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

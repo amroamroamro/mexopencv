@@ -1,0 +1,68 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>calc (cv.SparsePyrLKOpticalFlow) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.SparsePyrLKOpticalFlow.calc - Calculates a sparse optical flow" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">calc (cv.SparsePyrLKOpticalFlow) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.SparsePyrLKOpticalFlow/calc</div>
+      <div class="helpcontent"><p class=" h1line">Calculates a sparse optical flow</p>
+<pre class=" prettyprint lang-matlab"><code>nextPts = obj.calc(prevImg, nextImg, prevPts)
+[nextPts, status, err] = obj.calc(...)
+[...] = obj.calc(..., 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>prevImg</strong> First input image.</li>
+<li><strong>nextImg</strong> Second input image of the same size and the same
+type as <code>prevImg</code>.</li>
+<li><strong>prevPts</strong> Vector of 2D points for which the flow needs to be
+found.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>nextPts</strong> Output vector of 2D points containing the
+calculated new positions of input features in the second image.</li>
+<li><strong>status</strong> Output status vector. Each element of the vector is
+set to 1 if the flow for the corresponding features has been
+found. Otherwise, it is set to 0.</li>
+<li><strong>err</strong> Optional output vector that contains error response
+for each point (inverse confidence).</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>InitialFlow</strong> Vector of 2D points to be used for the initial
+estimate of <code>nextPts</code>. Not set by default.</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.SparsePyrLKOpticalFlow.html">cv.SparsePyrLKOpticalFlow</a>, <a href="cv.calcOpticalFlowPyrLK.html">cv.calcOpticalFlowPyrLK</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

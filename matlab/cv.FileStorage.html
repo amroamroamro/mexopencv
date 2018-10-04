@@ -1,0 +1,170 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.FileStorage - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.FileStorage - Reading from or writing to a XML/YAML/JSON file storage" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.FileStorage - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.FileStorage</div>
+      <div class="helpcontent"><p class=" h1line">Reading from or writing to a XML/YAML/JSON file storage</p>
+<pre class=" prettyprint lang-matlab"><code>S = <a href="cv.FileStorage.html">cv.FileStorage</a>(source)
+[S,~] = <a href="cv.FileStorage.html">cv.FileStorage</a>(source)
+
+<a href="cv.FileStorage.html">cv.FileStorage</a>(source, S)
+<a href="cv.FileStorage.html">cv.FileStorage</a>(source, X1, X2, ...)
+str = <a href="cv.FileStorage.html">cv.FileStorage</a>(source, S)
+str = <a href="cv.FileStorage.html">cv.FileStorage</a>(source, X1, X2, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>source</strong> Name of the file to open or the text string to read the data
+from. Extension of the file (<code>.xml</code>, <code>.yml</code>/<code>.yaml</code>, or <code>.json</code>)
+determines its format (XML, YAML or JSON respectively). Also you can
+append <code>.gz</code> to work with gzip-compressed files, for example
+<code>myHugeMatrix.xml.gz</code>. When serializing to a string, <code>source</code> is used just
+to specify the output file format (e.g. <code>mydata.xml</code>, <code>.yml</code>). A file name
+can also contain parameters like <code>file.yml?base64</code> (case sensitive) in
+which case it outputs sequences in Base64 encoding rather than in plain
+text.</li>
+<li><strong>S</strong> Scalar struct to be written to file. Each field represents an object
+where the field name is the variable name, and the field value is the
+object value.</li>
+<li><strong>X1</strong>, <strong>X2</strong>, <strong>...</strong> objects to be written to file. This is equivalent
+to the previous format with <code>S = struct('name',{{X1,X2,...}})</code> with a
+placeholder field name based on the filename.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>S</strong> Scalar struct read from file. Each field represents a variable.</li>
+<li><strong>str</strong> optional output when writing. If requested, the data is persisted
+to a string in memory instead of writing to disk.</li>
+</ul>
+<p>The function reads or writes a MATLAB object from/to a
+<a href="http://www.w3.org/XML" target="_blank">XML</a>, <a href="http://www.yaml.org" target="_blank">YAML</a>, or
+<a href="http://www.json.org/" target="_blank">JSON</a> file. The file is compatible with OpenCV
+formats.</p>
+<p>The function also supports reading and writing from/to serialized strings.
+In reading mode, a second dummpy output is used to differentiate between
+whether the input is a filename or a serialized string.</p>
+<p>In writing mode, and when the input argument is not a scalar struct (<code>S</code>),
+the function creates a scalar struct with default field name and stores the
+objects (<code>X1</code>, <code>X2</code>, ...) in that struct. In other words the following
+forms are equivalent:</p>
+<pre class=" prettyprint lang-matlab"><code>vars = {'hi', pi, magic(5)};
+<a href="cv.FileStorage.html">cv.FileStorage</a>('mydata.xml', vars{:});
+
+S = struct();
+S.(name) = vars;
+<a href="cv.FileStorage.html">cv.FileStorage</a>('mydata.xml', S);
+</code></pre>
+<p>where <code>name</code> is a default object name generated from the filename.</p>
+<p>A few limitations to be aware of:</p>
+<ul>
+<li>numerical scalars of all kinds are imported as double type
+(e.g <code>int32(1)</code> is loaded as <code>double(1)</code>).</li>
+<li>Cell arrays are exported as linearized 1-dimensional arrays
+(e.g: <code>{1 2; 3 4}</code> is saved as <code>{1 2 3 4}</code>).</li>
+<li>Struct arrays are exported as linearized cell-array of scalar structs
+(e.g: <code>repmat(struct('x',1), [2 2])</code> is saved as <code>{struct('x',1), ...}</code>).</li>
+<li>Empty arrays (including numerical, struct, or cell) will not retain their
+size in non-zero dimensions when exported
+(e.g: <code>zeros(0,4)</code>, <code>cell(4,0)</code>, <code>struct([])</code>).</li>
+<li>Certain formats (YAML) might trim strings when importing
+(e.g: <code>' hi '</code> is loaded <code>'hi'</code>).</li>
+</ul>
+<h2>Example</h2>
+<p>A quick usage example is shown below.</p>
+<p>Writing to a file:</p>
+<pre class=" prettyprint lang-matlab"><code>% export two variables to a YAML file
+% first is a 2x3 matrix named field1, second is a string named field2
+S = struct('field1',randn(2,3), 'field2','this is the second field');
+<a href="cv.FileStorage.html">cv.FileStorage</a>('my.yml', S);
+</code></pre>
+<p>Reading from a file:</p>
+<pre class=" prettyprint lang-matlab"><code>% import variables from YAML file
+S = <a href="cv.FileStorage.html">cv.FileStorage</a>('my.yml');
+S.field1  % matrix
+S.field2  % string
+</code></pre>
+<p>Replace '.yml' with '.xml' to use XML format.</p>
+<h2>Example</h2>
+<p>Below is an example of four variables stored in XML, YAML and JSON files:</p>
+<pre class=" prettyprint lang-matlab"><code>&gt;&gt; S = struct('var1',magic(3), 'var2','foo bar', 'var3',1, 'var4',{{2 3}});
+&gt;&gt; <a href="cv.FileStorage.html">cv.FileStorage</a>('test.xml', S);
+&gt;&gt; <a href="cv.FileStorage.html">cv.FileStorage</a>('test.yml', S);
+&gt;&gt; <a href="cv.FileStorage.html">cv.FileStorage</a>('test.json', S);
+&gt;&gt; S = <a href="cv.FileStorage.html">cv.FileStorage</a>('test.xml')
+S =
+    var1: [3x3 double]
+    var2: 'foo bar'
+    var3: 1
+    var4: {[2]  [3]}
+</code></pre>
+<ul>
+<li><strong>XML</strong></li>
+</ul>
+<pre class=" prettyprint"><code class="language-xml">&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;opencv_storage&gt;
+  &lt;var1 type_id=&quot;opencv-matrix&quot;&gt;
+    &lt;rows&gt;3&lt;/rows&gt;
+    &lt;cols&gt;3&lt;/cols&gt;
+    &lt;dt&gt;d&lt;/dt&gt;
+    &lt;data&gt;8. 1. 6. 3. 5. 7. 4. 9. 2.&lt;/data&gt;
+  &lt;/var1&gt;
+  &lt;var2&gt;&quot;foo bar&quot;&lt;/var2&gt;
+  &lt;var3&gt;1.&lt;/var3&gt;
+  &lt;var4&gt;2. 3.&lt;/var4&gt;
+&lt;/opencv_storage&gt;
+</code></pre>
+<ul>
+<li><strong>YAML</strong></li>
+</ul>
+<pre class=" prettyprint"><code class="language-yaml">%YAML:1.0
+---
+var1: !!opencv-matrix
+   rows: 3
+   cols: 3
+   dt: d
+   data: [ 8., 1., 6., 3., 5., 7., 4., 9., 2. ]
+var2: foo bar
+var3: 1.
+var4:
+   - 2.
+   - 3.
+</code></pre>
+<ul>
+<li><strong>JSON</strong></li>
+</ul>
+<pre class=" prettyprint"><code class="language-json">{
+    &quot;var1&quot;: {
+        &quot;type_id&quot;: &quot;opencv-matrix&quot;,
+        &quot;rows&quot;: 3,
+        &quot;cols&quot;: 3,
+        &quot;dt&quot;: &quot;d&quot;,
+        &quot;data&quot;: [ 8., 1., 6., 3., 5., 7., 4., 9., 2. ]
+    },
+    &quot;var2&quot;: &quot;foo bar&quot;,
+    &quot;var3&quot;: 1.,
+    &quot;var4&quot;: [
+        2.,
+        3.
+    ]
+}
+</code></pre>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="https://www.mathworks.com/help/matlab/ref/load.html" target="_blank">load</a>, <a href="https://www.mathworks.com/help/matlab/ref/save.html" target="_blank">save</a>, <a href="https://www.mathworks.com/help/matlab/ref/xmlread.html" target="_blank">xmlread</a>, <a href="https://www.mathworks.com/help/matlab/ref/xmlwrite.html" target="_blank">xmlwrite</a>, <a href="https://www.mathworks.com/help/matlab/ref/jsonencode.html" target="_blank">jsonencode</a>, <a href="https://www.mathworks.com/help/matlab/ref/jsondecode.html" target="_blank">jsondecode</a>,
+   netcdf, <a href="https://www.mathworks.com/help/matlab/ref/h5info.html" target="_blank">h5info</a>, <a href="https://www.mathworks.com/help/matlab/ref/hdfinfo.html" target="_blank">hdfinfo</a>, <a href="https://www.mathworks.com/help/matlab/ref/hdftool.html" target="_blank">hdftool</a>, cdflib</div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

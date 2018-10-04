@@ -1,0 +1,68 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>predict (cv.BasicFaceRecognizer) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.BasicFaceRecognizer.predict - Predicts a label and associated confidence (e.g. distance) for a given input image" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">predict (cv.BasicFaceRecognizer) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.BasicFaceRecognizer/predict</div>
+      <div class="helpcontent"><p class=" h1line">Predicts a label and associated confidence (e.g. distance) for a given input image</p>
+<pre class=" prettyprint lang-matlab"><code>[label, confidence] = obj.predict(src)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> Sample image to get a prediction from.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>label</strong> The predicted label for the given image.</li>
+<li><strong>confidence</strong> Associated confidence (e.g. distance) for the
+predicted label.</li>
+</ul>
+<p>The following example shows how to get a prediction from a
+trained model:</p>
+<pre class=" prettyprint lang-matlab"><code>% Do your initialization here (create the FaceRecognizer model) ...
+% Read in a sample image:
+img = <a href="cv.imread.html">cv.imread</a>('person1/3.jpg', 'Grayscale',true);
+% And get a prediction from the FaceRecognizer:
+predicted = model.predict(img);
+</code></pre>
+<p>Or to get a prediction and the associated confidence (e.g.
+distance):</p>
+<pre class=" prettyprint lang-matlab"><code>% Do your initialization here (create the FaceRecognizer model) ...
+img = <a href="cv.imread.html">cv.imread</a>('person1/3.jpg', 'Grayscale',true);
+% Get the prediction and associated confidence from the model
+[predicted_label, predicted_confidence] = model.predict(img);
+</code></pre>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.BasicFaceRecognizer.train.html">cv.BasicFaceRecognizer/train</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

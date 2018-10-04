@@ -1,0 +1,63 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>from3points (cv.RotatedRect) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.RotatedRect.from3points - Create a rotated rectangle from 3 points" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">from3points (cv.RotatedRect) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.RotatedRect.from3points</div>
+      <div class="helpcontent"><p class=" h1line">Create a rotated rectangle from 3 points</p>
+<pre class=" prettyprint lang-matlab"><code>rrect = <a href="cv.RotatedRect.from3points.html">cv.RotatedRect.from3points</a>(pt1, pt2, pt3)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>pt1</strong>, <strong>pt2</strong>, <strong>pt3</strong> Any 3 end points <code>[x,y]</code> of the
+rotated rectangle. They must be given in order (either
+clockwise or anticlockwise). By definition, the two sides
+formed by these three points must be perpendicular.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>rrect</strong> output rotated rectangle. A structure with the
+following fields:
+<ul>
+<li><strong>center</strong> The rectangle mass center <code>[x,y]</code>.</li>
+<li><strong>size</strong> Width and height of the rectangle <code>[w,h]</code>.</li>
+<li><strong>angle</strong> The rotation angle in a clockwise direction. When
+the angle is 0, 90, 180, 270 etc., the rectangle becomes an
+up-right rectangle.</li>
+</ul>
+</li>
+</ul>
+</div><!--after help -->
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>true</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

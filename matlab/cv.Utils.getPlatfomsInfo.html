@@ -1,0 +1,202 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>getPlatfomsInfo (cv.Utils) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Utils.getPlatfomsInfo - Get information about OpenCL devices" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">getPlatfomsInfo (cv.Utils) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Utils.getPlatfomsInfo</div>
+      <div class="helpcontent"><p class=" h1line">Get information about OpenCL devices</p>
+<pre class=" prettyprint lang-matlab"><code>platforms = <a href="cv.Utils.getPlatfomsInfo.html">cv.Utils.getPlatfomsInfo</a>()
+</code></pre>
+<h2>Output</h2>
+<ul>
+<li><strong>platforms</strong> struct-array of information about OpenCL
+platforms:
+<ul>
+<li><strong>name</strong> Platform name string.</li>
+<li><strong>vendor</strong> Platform vendor string.</li>
+<li><strong>version</strong> OpenCL version string supported by the
+implementation.</li>
+<li><strong>device</strong> struct-array of information about OpenCL device:
+<ul>
+<li><strong>name</strong> Device name string.</li>
+<li><strong>extensions</strong> Space separated list of extension names.</li>
+<li><strong>version</strong> OpenCL version string supported by the device.</li>
+<li><strong>vendorName</strong> Vendor name string.</li>
+<li><strong>vendorID</strong> Vendor ID string.</li>
+<li><strong>OpenCL_C_Version</strong> The highest OpenCL C version
+supported by the compiler for this device.</li>
+<li><strong>OpenCLVersion</strong> OpenCL version string supported by the
+device.</li>
+<li><strong>deviceVersionMajor</strong> OpenCL major version supported by
+the device.</li>
+<li><strong>deviceVersionMinor</strong> OpenCL minor version supported by
+the device.</li>
+<li><strong>driverVersion</strong> OpenCL software driver version string.</li>
+<li><strong>type</strong> The OpenCL device type (CPU, GPU, etc.).</li>
+<li><strong>addressBits</strong> The default compute device address space
+size, 32 or 64 bits.</li>
+<li><strong>available</strong> true if the device is available and false if
+the device is not available.</li>
+<li><strong>compilerAvailable</strong> Is false if the implementation does
+not have a compiler available to compile the program
+source. Is true if the compiler is available.</li>
+<li><strong>linkerAvailable</strong> Is false if the implementation does
+not have a linker available. Is true if the linker is
+available.</li>
+<li><strong>doubleFPConfig</strong> Describes double precision
+floating-point capability of the device.</li>
+<li><strong>singleFPConfig</strong> Describes single precision
+floating-point capability of the device:
+<ul>
+<li><strong>Denorm</strong> denorms are supported.</li>
+<li><strong>InfNaN</strong> INF and NaNs are supported.</li>
+<li><strong>RoundToNearest</strong> round to nearest even rounding mode
+supported.</li>
+<li><strong>RoundToZero</strong> round to zero rounding mode supported.</li>
+<li><strong>RoundToInf</strong> round to positive and negative infinity
+rounding modes supported.</li>
+<li><strong>FMA</strong> IEEE754-2008 fused multiply-add is supported.</li>
+<li><strong>SoftFloat</strong> Basic floating-point operations (such as
+addition, subtraction, multiplication) are implemented
+in software.</li>
+<li><strong>halfFPConfig</strong> Describes the optional half precision
+floating-point capability of the device.</li>
+</ul>
+</li>
+<li><strong>endianLittle</strong> Is true if the OpenCL device is a little
+endian device and false otherwise.</li>
+<li><strong>errorCorrectionSupport</strong> Is true if the device
+implements error correction for all accesses to compute
+device memory (global and constant). Is false if the
+device does not implement such error correction.</li>
+<li><strong>executionCapabilities</strong> Describes the execution
+capabilities of the device:
+<ul>
+<li><strong>Kernel</strong> The OpenCL device can execute OpenCL kernels.</li>
+<li><strong>NativeKernel</strong> The OpenCL device can execute native
+kernels.</li>
+</ul>
+</li>
+<li><strong>globalMemCacheSize</strong> Size of global memory cache in
+bytes.</li>
+<li><strong>globalMemCacheType</strong> Type of global memory cache
+supported, one of: 'NoCache', 'ReadOnlyCache',
+'ReadWriteCache'.</li>
+<li><strong>globalMemCacheLineSize</strong> Size of global memory cache
+line in bytes.</li>
+<li><strong>globalMemSize</strong> Size of global device memory in bytes.</li>
+<li><strong>localMemSize</strong> Size of local memory arena in bytes.</li>
+<li><strong>localMemType</strong> Type of local memory supported (local or
+global).</li>
+<li><strong>hostUnifiedMemory</strong> Is true if the device and the host
+have a unified memory subsystem and is false otherwise.</li>
+<li><strong>imageSupport</strong> Is CL_TRUE if images are supported by the
+OpenCL device and CL_FALSE otherwise.</li>
+<li><strong>imageFromBufferSupport</strong> Is true if
+&quot;cl_khr_image2d_from_buffer&quot; extension is supported.</li>
+<li><strong>imagePitchAlignment</strong> The row pitch alignment size in
+pixels for 2D images created from a buffer.</li>
+<li><strong>imageBaseAddressAlignment</strong></li>
+<li><strong>image2DMaxWidth</strong> Max width of 2D image or 1D image not
+created from a buffer object in pixels</li>
+<li><strong>image2DMaxHeight</strong> Max height of 2D image in pixels.</li>
+<li><strong>image3DMaxWidth</strong> Max width of 3D image in pixels.</li>
+<li><strong>image3DMaxHeight</strong> Max height of 3D image in pixels.</li>
+<li><strong>image3DMaxDepth</strong> Max depth of 3D image in pixels.</li>
+<li><strong>imageMaxBufferSize</strong> Max number of pixels for a 1D image
+created from a buffer object.</li>
+<li><strong>imageMaxArraySize</strong> Max number of images in a 1D or 2D
+image array.</li>
+<li><strong>maxClockFrequency</strong> Maximum configured clock frequency
+of the device in MHz.</li>
+<li><strong>maxComputeUnits</strong> The number of parallel compute units
+on the OpenCL device. A work-group executes on a single
+compute unit.</li>
+<li><strong>maxConstantArgs</strong> Max number of arguments declared with
+the <code>__constant</code> qualifier in a kernel.</li>
+<li><strong>maxConstantBufferSize</strong> Max size in bytes of a constant
+buffer allocation.</li>
+<li><strong>maxMemAllocSize</strong> Max size of memory object allocation
+in bytes.</li>
+<li><strong>maxParameterSize</strong> Max size in bytes of all arguments
+that can be passed to a kernel.</li>
+<li><strong>maxReadImageArgs</strong> Max number of image objects arguments
+of a kernel declared with the <code>read_only</code> qualifier.</li>
+<li><strong>maxWriteImageArgs</strong> Max number of image objects
+arguments of a kernel declared with the <code>write_only</code>
+qualifier.</li>
+<li><strong>maxSamplers</strong> Maximum number of samplers that can be
+used in a kernel.</li>
+<li><strong>maxWorkGroupSize</strong> Maximum number of work-items in a
+work-group executing a kernel on a single compute unit,
+using the data parallel execution model.</li>
+<li><strong>maxWorkItemDims</strong> Maximum dimensions that specify the
+global and local work-item IDs used by the data parallel
+execution model.</li>
+<li><strong>maxWorkItemSizes</strong> Maximum number of work-items that can
+be specified in each dimension of the work-group.</li>
+<li><strong>memBaseAddrAlign</strong> The minimum value is the size
+(in bits) of the largest OpenCL built-in data type
+supported by the device.</li>
+<li><strong>nativeVectorWidthChar</strong>, <strong>nativeVectorWidthShort</strong>,
+<strong>nativeVectorWidthInt</strong>, <strong>nativeVectorWidthLong</strong>,
+<strong>nativeVectorWidthFloat</strong>, <strong>nativeVectorWidthDouble</strong>,
+<strong>nativeVectorWidthHalf</strong> The native ISA vector width. The
+vector width is defined as the number of scalar elements
+that can be stored in the vector.</li>
+<li><strong>preferredVectorWidthChar</strong>, <strong>preferredVectorWidthShort</strong>,
+<strong>preferredVectorWidthInt</strong>, <strong>preferredVectorWidthLong</strong>,
+<strong>preferredVectorWidthFloat</strong>, <strong>preferredVectorWidthDouble</strong>,
+<strong>preferredVectorWidthHalf</strong> Preferred native vector width
+size for built-in scalar types that can be put into
+vectors. The vector width is defined as the number of
+scalar elements that can be stored in the vector.</li>
+<li><strong>printfBufferSize</strong> Maximum size in bytes of the internal
+buffer that holds the output of <code>printf</code> calls from a
+kernel.</li>
+<li><strong>profilingTimerResolution</strong> Resolution of timer, i.e. the
+number of nanoseconds elapsed before the timer is
+incremented.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>See OpenCL
+<a href="https://www.khronos.org/registry/OpenCL/sdk/2.0/docs/man/xhtml/clGetDeviceInfo.html" target="_blank">docs</a>.</p>
+<p>If OpenCV is compiled without OpenCL support, the function
+returns an empty struct.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Utils.haveOpenCL.html">cv.Utils.haveOpenCL</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>true</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

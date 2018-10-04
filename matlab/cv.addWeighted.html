@@ -1,0 +1,56 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.addWeighted - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.addWeighted - Calculates the weighted sum of two arrays" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.addWeighted - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.addWeighted</div>
+      <div class="helpcontent"><p class=" h1line">Calculates the weighted sum of two arrays</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.addWeighted.html">cv.addWeighted</a>(src1, alpha, src2, beta, gamma)
+dst = <a href="cv.addWeighted.html">cv.addWeighted</a>(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src1</strong> first input array.</li>
+<li><strong>alpha</strong> weight for the first array elements.</li>
+<li><strong>src2</strong> second input array of the same size and channel number as <code>src1</code>.</li>
+<li><strong>beta</strong> weight for the second array elements.</li>
+<li><strong>gamma</strong> scalar added to each sum.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> output array that has the same size and number of channels as the
+input arrays.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>DType</strong> optional depth of the output array: <code>uint8</code>, <code>int16</code>, <code>double</code>,
+etc. Must be specified if input arrays are of different types. When both
+input arrays have the same depth, <code>DType</code> can be set to -1, which will be
+equivalent to <code>class(src1)</code>. default -1</li>
+</ul>
+<p>The function <a href="cv.addWeighted.html">cv.addWeighted</a> calculates the weighted sum of two arrays as
+follows:</p>
+<pre class=" prettyprint lang-matlab"><code>dst(I) = saturate(src1(I)*alpha + src2(I)*beta + gamma)
+</code></pre>
+<p>where <code>I</code> is a multi-dimensional index of array elements. In case of
+multi-channel arrays, each channel is processed independently.</p>
+<p>Note: Saturation is not applied when the output array has the depth <code>int32</code>.
+You may even get result of an incorrect sign in the case of overflow.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.add.html">cv.add</a>, <a href="cv.subtract.html">cv.subtract</a>, <a href="cv.convertScaleAbs.html">cv.convertScaleAbs</a>, <a href="https://www.mathworks.com/help/images/ref/imlincomb.html" target="_blank">imlincomb</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

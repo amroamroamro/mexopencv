@@ -1,0 +1,58 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.DAISY/DAISY - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.DAISY.DAISY - Constructor" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.DAISY/DAISY - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.DAISY/DAISY</div>
+      <div class="helpcontent"><p class=" h1line">Constructor</p>
+<pre class=" prettyprint lang-matlab"><code>obj = <a href="cv.DAISY.html">cv.DAISY</a>()
+obj = <a href="cv.DAISY.html">cv.DAISY</a>(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Options</h2>
+<ul>
+<li><strong>Radius</strong> radius of the descriptor at the initial scale.
+default 15</li>
+<li><strong>RadiusQuant</strong> amount of radial range division quantity.
+default 3</li>
+<li><strong>AngleQuant</strong> amount of angular range division quantity.
+default 8</li>
+<li><strong>GradOrientationsQuant</strong> amount of gradient orientations
+range division quantity. default 8</li>
+<li><strong>Normalization</strong> choose descriptors normalization type, where
+<ul>
+<li><strong>None</strong> will not do any normalization (default)</li>
+<li><strong>Partial</strong> mean that histograms are normalized
+independently for L2 norm equal to 1.0</li>
+<li><strong>Full</strong> mean that descriptors are normalized for L2 norm
+equal to 1.0</li>
+<li><strong>SIFT</strong> mean that descriptors are normalized for L2 norm
+equal to 1.0 but no individual one is bigger than 0.154 as
+in SIFT</li>
+</ul>
+</li>
+<li><strong>H</strong> optional 3x3 homography matrix used to warp the grid of
+daisy but sampling keypoints remains unwarped on image.
+default empty</li>
+<li><strong>Interpolation</strong> switch to disable interpolation for speed
+improvement at minor quality loss. default true</li>
+<li><strong>UseOrientation</strong> sample patterns using keypoints
+orientation, disabled by default. default false</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.DAISY.compute.html">cv.DAISY/compute</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

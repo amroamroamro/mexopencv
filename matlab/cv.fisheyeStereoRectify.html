@@ -1,0 +1,71 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.fisheyeStereoRectify - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.fisheyeStereoRectify - Stereo rectification for fisheye camera model" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.fisheyeStereoRectify - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.fisheyeStereoRectify</div>
+      <div class="helpcontent"><p class=" h1line">Stereo rectification for fisheye camera model</p>
+<pre class=" prettyprint lang-matlab"><code>S = <a href="cv.fisheyeStereoRectify.html">cv.fisheyeStereoRectify</a>(K1, D1, K2, D2, imageSize, R, T)
+[...] = <a href="cv.fisheyeStereoRectify.html">cv.fisheyeStereoRectify</a>(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>K1</strong> First camera matrix 3x3.</li>
+<li><strong>D1</strong> First camera distortion parameters of 4 elements.</li>
+<li><strong>K2</strong> Second camera matrix 3x3.</li>
+<li><strong>D2</strong> Second camera distortion parameters of 4 elements.</li>
+<li><strong>imageSize</strong> Size of the image used for stereo calibration <code>[w,h]</code>.</li>
+<li><strong>R</strong> Rotation matrix between the coordinate systems of the first and the
+second cameras, 3x3/3x1 (see <a href="cv.Rodrigues.html">cv.Rodrigues</a>).</li>
+<li><strong>T</strong> Translation vector between coordinate systems of the cameras, 3x1.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>S</strong> scalar struct having the following fields:
+<ul>
+<li><strong>R1</strong> 3x3 rectification transform (rotation matrix) for the first
+camera.</li>
+<li><strong>R2</strong> 3x3 rectification transform (rotation matrix) for the second
+camera.</li>
+<li><strong>P1</strong> 3x4 projection matrix in the new (rectified) coordinate systems
+for the first camera.</li>
+<li><strong>P2</strong> 3x4 projection matrix in the new (rectified) coordinate systems
+for the second camera.</li>
+<li><strong>Q</strong> 4x4 disparity-to-depth mapping matrix (see <a href="cv.reprojectImageTo3D.html">cv.reprojectImageTo3D</a>).</li>
+</ul>
+</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>ZeroDisparity</strong> If the flag is set, the function makes the principal
+points of each camera have the same pixel coordinates in the rectified
+views. And if the flag is not set, the function may still shift the images
+in the horizontal or vertical direction (depending on the orientation of
+epipolar lines) to maximize the useful image area. default true</li>
+<li><strong>NewImageSize</strong> New image resolution after rectification. The same size
+should be passed to <a href="cv.fisheyeInitUndistortRectifyMap.html">cv.fisheyeInitUndistortRectifyMap</a>. When [0,0] is
+passed (default), it is set to the original <code>imageSize</code>. Setting it to
+larger value can help you preserve details in the original image,
+especially when there is a big radial distortion.</li>
+<li><strong>Balance</strong> Sets the new focal length in range between the min focal
+length and the max focal length. Balance is in range of [0,1]. default 0</li>
+<li><strong>FOVScale</strong> Divisor for new focal length. default 1.0</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.fisheyeStereoCalibrate.html">cv.fisheyeStereoCalibrate</a>, <a href="cv.stereoRectify.html">cv.stereoRectify</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

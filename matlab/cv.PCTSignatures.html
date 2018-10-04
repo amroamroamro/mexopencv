@@ -1,0 +1,369 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.PCTSignatures - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.PCTSignatures - Class implementing PCT (Position-Color-Texture) signature extraction" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.PCTSignatures - MATLAB File Help</td>
+            <td class="subheader-left"></td>
+            <td class="subheader-right"><a href="cv.PCTSignatures.html">Go to online doc for cv.PCTSignatures</a></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.PCTSignatures</div>
+      <div class="helpcontent"><p class=" h1line">Class implementing PCT (Position-Color-Texture) signature extraction</p>
+<p>As described in [KrulisLS16].</p>
+<p>The algorithm is divided to a feature sampler and a clusterizer. Feature
+sampler produces samples at given set of coordinates. Clusterizer then
+produces clusters of these samples using k-means algorithm. Resulting
+set of clusters is the signature of the input image.</p>
+<p>A signature is an array of 8-dimensional points. Used dimensions are:
+weight, x/y position; Lab color L/a/b, contrast, entropy.</p>
+<h2>References</h2>
+<p>[KrulisLS16]:</p>
+<blockquote>
+<p>Martin Krulis, Jakub Lokoc, and Tomas Skopal. &quot;Efficient extraction of
+clustering-based feature signatures using GPU architectures&quot;.
+Multimedia Tools Appl., 75(13):8071-8103, 2016.</p>
+</blockquote>
+<p>[BeecksUS10]:</p>
+<blockquote>
+<p>Christian Beecks, Merih Seran Uysal, and Thomas Seidl.
+&quot;Signature quadratic form distance&quot;. In CIVR, pages 438-445. ACM, 2010.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.PCTSignatures.computeSignature.html">cv.PCTSignatures/computeSignature</a>, <a href="cv.PCTSignaturesSQFD.html">cv.PCTSignaturesSQFD</a></div>
+      <!--Class-->
+      <div class="sectiontitle">Class Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Superclasses</td>
+            <td><a href="https://www.mathworks.com/help/matlab/ref/handle.html" target="_blank">handle</a></td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Construct on load</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+      <!--Constructors-->
+      <div class="sectiontitle"><a name="constructors"></a>Constructor Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.PCTSignatures.PCTSignatures.html">PCTSignatures</a></td>
+            <td class="m-help">Creates PCTSignatures algorithm&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Properties-->
+      <div class="sectiontitle"><a name="properties"></a>Property Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.PCTSignatures.ClusterMinSize.html">ClusterMinSize</a></td>
+            <td class="m-help">This parameter multiplied by the index of iteration gives lower&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.PCTSignatures.DistanceFunction.html">DistanceFunction</a></td>
+            <td class="m-help">Distance function selector used for measuring distance between two&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.PCTSignatures.DropThreshold.html">DropThreshold</a></td>
+            <td class="m-help">Remove centroids in k-means whose weight is lesser or equal to given&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.PCTSignatures.GrayscaleBits.html">GrayscaleBits</a></td>
+            <td class="m-help">Color resolution of the greyscale bitmap represented in allocated&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.PCTSignatures.IterationCount.html">IterationCount</a></td>
+            <td class="m-help">Number of iterations of the k-means clustering. We use fixed number&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.PCTSignatures.JoiningDistance.html">JoiningDistance</a></td>
+            <td class="m-help">Threshold euclidean distance between two centroids. If two cluster&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.PCTSignatures.MaxClustersCount.html">MaxClustersCount</a></td>
+            <td class="m-help">Maximal number of generated clusters. If the number is exceeded, the&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.PCTSignatures.WeightA.html">WeightA</a></td>
+            <td class="m-help">Weight (multiplicative constant) that linearly stretch individual&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.PCTSignatures.WeightB.html">WeightB</a></td>
+            <td class="m-help">Weight (multiplicative constant) that linearly stretch individual&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.PCTSignatures.WeightContrast.html">WeightContrast</a></td>
+            <td class="m-help">Weight (multiplicative constant) that linearly stretch individual&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.PCTSignatures.WeightEntropy.html">WeightEntropy</a></td>
+            <td class="m-help">Weight (multiplicative constant) that linearly stretch individual&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.PCTSignatures.WeightL.html">WeightL</a></td>
+            <td class="m-help">Weight (multiplicative constant) that linearly stretch individual&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.PCTSignatures.WeightX.html">WeightX</a></td>
+            <td class="m-help">Weight (multiplicative constant) that linearly stretch individual&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.PCTSignatures.WeightY.html">WeightY</a></td>
+            <td class="m-help">Weight (multiplicative constant) that linearly stretch individual&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.PCTSignatures.WindowRadius.html">WindowRadius</a></td>
+            <td class="m-help">Size of the texture sampling window used to compute contrast and&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.PCTSignatures.id.html">id</a></td>
+            <td class="m-help">Object ID&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Methods-->
+      <div class="sectiontitle"><a name="methods"></a>Method Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">addlistener</a></td>
+            <td class="m-help">Add listener for event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.PCTSignatures.computeSignature.html">computeSignature</a></td>
+            <td class="m-help">Computes signature of given image&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.PCTSignatures.computeSignatures.html">computeSignatures</a></td>
+            <td class="m-help">Computes signatures for multiple images in parallel&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.PCTSignatures.delete.html">delete</a></td>
+            <td class="m-help">Destructor&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.PCTSignatures.drawSignature.html">drawSignature</a></td>
+            <td class="m-help">Draws signature in the source image and outputs the result&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">eq</a></td>
+            <td class="m-help">== (EQ)   Test handle equality.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findobj</a></td>
+            <td class="m-help">Find objects matching specified conditions.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findprop</a></td>
+            <td class="m-help">Find property of MATLAB handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ge</a></td>
+            <td class="m-help">&gt;= (GE)   Greater than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.PCTSignatures.generateInitPoints.html">generateInitPoints</a></td>
+            <td class="m-help">Generates initial sampling points according to selected point distribution&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.PCTSignatures.getInitSeedCount.html">getInitSeedCount</a></td>
+            <td class="m-help">Number of initial seeds for the k-means algorithm&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.PCTSignatures.getInitSeedIndexes.html">getInitSeedIndexes</a></td>
+            <td class="m-help">Initial seeds for the k-means algorithm&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.PCTSignatures.getSampleCount.html">getSampleCount</a></td>
+            <td class="m-help">Number of initial samples taken from the image&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.PCTSignatures.getSamplingPoints.html">getSamplingPoints</a></td>
+            <td class="m-help">Initial samples taken from the image&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">gt</a></td>
+            <td class="m-help">&gt; (GT)   Greater than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">isvalid</a></td>
+            <td class="m-help">Test handle validity.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">le</a></td>
+            <td class="m-help">&lt;= (LE)   Less than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">listener</a></td>
+            <td class="m-help">Add listener for event without binding the listener to the source object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">lt</a></td>
+            <td class="m-help">&lt; (LT)   Less than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ne</a></td>
+            <td class="m-help">~= (NE)   Not equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">notify</a></td>
+            <td class="m-help">Notify listeners of event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.PCTSignatures.setInitSeedIndexes.html">setInitSeedIndexes</a></td>
+            <td class="m-help">Sets initial seed indexes for the k-means algorithm&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.PCTSignatures.setSamplingPoints.html">setSamplingPoints</a></td>
+            <td class="m-help">Sets sampling points used to sample the input image&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.PCTSignatures.setTranslation.html">setTranslation</a></td>
+            <td class="m-help">SETRANSLATION  Sets translation of the individual axis of the feature space&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.PCTSignatures.setTranslations.html">setTranslations</a></td>
+            <td class="m-help">SETRANSLATIONS  Sets translations of the individual axes of the feature space&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.PCTSignatures.setWeight.html">setWeight</a></td>
+            <td class="m-help">Sets weight (multiplicative constant) that linearly stretch individual axis of the feature space&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.PCTSignatures.setWeights.html">setWeights</a></td>
+            <td class="m-help">Sets weights (multiplicative constants) that linearly stretch individual axes of the feature space&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Events-->
+      <div class="sectiontitle"><a name="events"></a>Event Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ObjectBeingDestroyed</a></td>
+            <td class="m-help">Notifies listeners that a particular object has been destroyed.&nbsp;</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

@@ -1,0 +1,62 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.decomposeProjectionMatrix - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.decomposeProjectionMatrix - Decomposes a projection matrix into a rotation matrix and a camera matrix" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.decomposeProjectionMatrix - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.decomposeProjectionMatrix</div>
+      <div class="helpcontent"><p class=" h1line">Decomposes a projection matrix into a rotation matrix and a camera matrix</p>
+<pre class=" prettyprint lang-matlab"><code>[cameraMatrix,rotMatrix,transVect] = <a href="cv.decomposeProjectionMatrix.html">cv.decomposeProjectionMatrix</a>(projMatrix)
+[cameraMatrix,rotMatrix,transVect,S] = <a href="cv.decomposeProjectionMatrix.html">cv.decomposeProjectionMatrix</a>(projMatrix)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>projMatrix</strong> 3x4 input projection matrix P.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>cameraMatrix</strong> 3x3 camera matrix K.</li>
+<li><strong>rotMatrix</strong> 3x3 external rotation matrix R.</li>
+<li><strong>transVect</strong> 4x1 translation vector T.</li>
+<li><strong>S</strong> Optional output struct with the following fields:
+<ul>
+<li><strong>rotMatrX</strong> 3x3 rotation matrix around x-axis.</li>
+<li><strong>rotMatrY</strong> 3x3 rotation matrix around y-axis.</li>
+<li><strong>rotMatrZ</strong> 3x3 rotation matrix around z-axis.</li>
+<li><strong>eulerAngles</strong> 3-element vector containing three Euler angles of
+rotation in degrees.</li>
+</ul>
+</li>
+</ul>
+<p>The function computes a decomposition of a projection matrix into a
+calibration and a rotation matrix and the position of a camera.</p>
+<p>It optionally returns three rotation matrices, one for each axis, and
+three Euler angles that could be used in OpenGL. Note, there is always more
+than one sequence of rotations about the three principal axes that results
+in the same orientation of an object, eg. see [Slabaugh]. Returned three
+rotation matrices and corresponding three Euler angles are only one of the
+possible solutions.</p>
+<p>The function is based on <a href="cv.RQDecomp3x3.html">cv.RQDecomp3x3</a></p>
+<h2>References</h2>
+<p>[Slabaugh]:</p>
+<blockquote>
+<p>Gregory G Slabaugh. &quot;Computing euler angles from a rotation matrix&quot;.
+Retrieved on August, 6:2000, 1999.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.RQDecomp3x3.html">cv.RQDecomp3x3</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

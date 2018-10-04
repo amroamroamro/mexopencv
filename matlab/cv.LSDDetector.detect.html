@@ -1,0 +1,116 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>detect (cv.LSDDetector) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.LSDDetector.detect - Detect lines inside an image or image set" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">detect (cv.LSDDetector) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.LSDDetector/detect</div>
+      <div class="helpcontent"><p class=" h1line">Detect lines inside an image or image set</p>
+<pre class=" prettyprint lang-matlab"><code>keylines = obj.detect(img)
+keylines = obj.detect(imgs)
+[...] = obj.detect(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>img</strong> Input image (first variant), 8-bit grayscale.</li>
+<li><strong>imgs</strong> Image set (second variant), cell array of images.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>keylines</strong> Extracted lines for one or more images. In the
+first variant, a 1-by-N structure array. In the second
+variant of the method, <code>keylines{i}</code> is a set of keylines
+detected in <code>imgs{i}</code>. Each keyline is described with a
+<code>KeyLine</code> structure with the following fields:
+<ul>
+<li><strong>angle</strong> orientation of the line.</li>
+<li><strong>class_id</strong> object ID, that can be used to cluster keylines
+by the line they represent.</li>
+<li><strong>octave</strong> octave (pyramid layer), from which the keyline
+has been extracted.</li>
+<li><strong>pt</strong> coordinates of the middlepoint <code>[x,y]</code>.</li>
+<li><strong>response</strong> the response, by which the strongest keylines
+have been selected. It's represented by the ratio between
+line's length and maximum between image's width and height.</li>
+<li><strong>size</strong> minimum area containing line.</li>
+<li><strong>startPoint</strong> the start point of the line in the original
+image <code>[x,y]</code>.</li>
+<li><strong>endPoint</strong> the end point of the line in the original image
+<code>[x,y]</code>.</li>
+<li><strong>startPointInOctave</strong> the start point of the line in the
+octave it was extracted from <code>[x,y]</code>.</li>
+<li><strong>endPointInOctave</strong> the end point of the line in the octave
+it was extracted from <code>[x,y]</code>.</li>
+<li><strong>lineLength</strong> the length of line.</li>
+<li><strong>numOfPixels</strong> number of pixels covered by the line.</li>
+</ul>
+</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Scale</strong> scale factor used in pyramids generation. default 2</li>
+<li><strong>NumOctaves</strong> number of octaves inside pyramid. default 1</li>
+<li><strong>Mask</strong> optional mask matrix to detect only <code>KeyLines</code> of
+interest. It must be a logical or 8-bit integer matrix with
+non-zero values in the region of interest. In the second
+variant, it is a cell-array of masks for each input image,
+<code>masks{i}</code> is a mask for <code>imgs{i}</code>. Not set by default.</li>
+</ul>
+<p><code>KeyLine</code> is a struct to represent a line.</p>
+<p>As aformentioned, it is been necessary to design a class that
+fully stores the information needed to characterize completely a
+line and plot it on image it was extracted from, when required.</p>
+<p><code>KeyLine</code> class has been created for such goal; it is mainly
+inspired to Feature2d's <code>KeyPoint</code> class, since <code>KeyLine</code> shares
+some of <code>KeyPoint</code>'s fields, even if a part of them assumes a
+different meaning, when speaking about lines. In particular:</p>
+<ul>
+<li>the <code>class_id</code> field is used to gather lines extracted from
+different octaves which refer to same line inside original
+image (such lines and the one they represent in original image
+share the same <code>class_id</code> value)</li>
+<li>the <code>angle</code> field represents line's slope with respect to
+(positive) X axis</li>
+<li>the <code>pt</code> field represents line's midpoint</li>
+<li>the <code>response</code> field is computed as the ratio between the
+line's length and maximum between image's width and height</li>
+<li>the <code>size</code> field is the area of the smallest rectangle
+containing line</li>
+</ul>
+<p>Apart from fields inspired to <code>KeyPoint</code> class, <code>KeyLines</code>
+stores information about extremes of line in original image and
+in octave it was extracted from, about line's length and number
+of pixels it covers.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.LSDDetector.LSDDetector.html">cv.LSDDetector/LSDDetector</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

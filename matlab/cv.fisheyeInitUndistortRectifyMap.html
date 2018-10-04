@@ -1,0 +1,55 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.fisheyeInitUndistortRectifyMap - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.fisheyeInitUndistortRectifyMap - Computes undistortion and rectification maps (fisheye)" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.fisheyeInitUndistortRectifyMap - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.fisheyeInitUndistortRectifyMap</div>
+      <div class="helpcontent"><p class=" h1line">Computes undistortion and rectification maps (fisheye)</p>
+<pre class=" prettyprint lang-matlab"><code>[map1, map2] = <a href="cv.fisheyeInitUndistortRectifyMap.html">cv.fisheyeInitUndistortRectifyMap</a>(K, D, siz)
+[...] = <a href="cv.fisheyeInitUndistortRectifyMap.html">cv.fisheyeInitUndistortRectifyMap</a>(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>K</strong> Camera matrix 3x3, <code>K = [fx 0 cx; 0 fy cy; 0 0 1]</code>.</li>
+<li><strong>D</strong> Input vector of distortion coefficients <code>[k1,k2,k3,k4]</code>.</li>
+<li><strong>size</strong> Undistorted image size <code>[w,h]</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>map1</strong> The first output map. See <code>M1Type</code>.</li>
+<li><strong>map2</strong> The second output map. See <code>M1Type</code>.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>R</strong> Rectification transformation in the object space
+(3x3 matrix or 1x3/3x1 vector).</li>
+<li><strong>P</strong> New camera matrix (3x3) or new projection matrix (3x4).</li>
+<li><strong>M1Type</strong> Type of the first output map, default -1 (equivalent to
+<code>int16</code>). See <a href="cv.convertMaps.html">cv.convertMaps</a> for details. One of:
+<ul>
+<li><strong>int16</strong> (fixed-point representation).</li>
+<li><strong>single1</strong> (separate floating-point representation).</li>
+</ul>
+</li>
+</ul>
+<p>The function computes undistortion and rectification maps for image
+transform by <a href="cv.remap.html">cv.remap</a>. If <code>D</code> is empty zero distortion is used, if <code>R</code> or
+<code>P</code> is empty identity matrixes are used.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.initUndistortRectifyMap.html">cv.initUndistortRectifyMap</a>, <a href="cv.remap.html">cv.remap</a>, <a href="cv.convertMaps.html">cv.convertMaps</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

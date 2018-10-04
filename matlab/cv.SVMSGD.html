@@ -1,0 +1,404 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.SVMSGD - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.SVMSGD - Stochastic Gradient Descent SVM classifier" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.SVMSGD - MATLAB File Help</td>
+            <td class="subheader-left"></td>
+            <td class="subheader-right"><a href="cv.SVMSGD.html">Go to online doc for cv.SVMSGD</a></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.SVMSGD</div>
+      <div class="helpcontent"><p class=" h1line">Stochastic Gradient Descent SVM classifier</p>
+<p>SVMSGD provides a fast and easy-to-use implementation of the SVM
+classifier using the Stochastic Gradient Descent approach, as presented
+in [bottou2010large].</p>
+<p>The classifier has following parameters:</p>
+<ul>
+<li>model type,</li>
+<li>margin type,</li>
+<li>margin regularization (<code>lambda</code>),</li>
+<li>initial step size (<code>gamma_0</code>),</li>
+<li>step decreasing power (<code>c</code>),</li>
+<li>and termination criteria.</li>
+</ul>
+<p>The model type may have one of the following values: 'SGD' and 'ASGD'.</p>
+<ul>
+<li>
+<p><strong>SGD</strong> is the classic version of SVMSGD classifier: every next step
+is calculated by the formula:</p>
+<pre class=" prettyprint lang-matlab"><code>w_{t+1} = w_t - gamma(t) * (dQ_i/dw)|_{w = w_t}
+</code></pre>
+<p>where</p>
+<ul>
+<li><code>w_t</code> is the weights vector for decision function at step <code>t</code>,</li>
+<li><code>gamma(t)</code> is the step size of model parameters at the iteration
+<code>t</code>, it is decreased on each step by the formula
+<code>gamma(t) = gamma_0 * (1 + lambda*gamma_0*t)^(-c)</code></li>
+<li><code>Q_i</code> is the target functional from SVM task for sample with
+number <code>i</code>, this sample is chosen stochastically on each step of
+the algorithm.</li>
+</ul>
+</li>
+<li>
+<p><strong>ASGD</strong> is Average Stochastic Gradient Descent SVM Classifier. ASGD
+classifier averages weights vector on each step of algorithm by the
+formula <code>wHat_{t+1} = t/(1+t) * wHat_t + 1/(1+t) * w_{t+1}</code>.</p>
+</li>
+</ul>
+<p>The recommended model type is ASGD (following [bottou2010large]).</p>
+<p>The margin type may have one of the following values:</p>
+<ul>
+<li><strong>SoftMargin</strong> You should use 'HardMargin' type, if you have linearly
+separable sets.</li>
+<li><strong>HardMargin</strong> You should use 'SoftMargin' type, if you have
+non-linearly separable sets or sets with outliers.</li>
+</ul>
+<p>In the general case (if you know nothing about linear separability of
+your sets), use 'SoftMargin'.</p>
+<p>The other parameters may be described as follows:</p>
+<ul>
+<li>Margin regularization parameter is responsible for weights decreasing
+at each step and for the strength of restrictions on outliers (the
+less the parameter, the less probability that an outlier will be
+ignored). Recommended value for SGD model is 0.0001, for ASGD model
+is 0.00001.</li>
+<li>Initial step size parameter is the initial value for the step size
+<code>gamma(t)</code>. You will have to find the best initial step for your
+problem.</li>
+<li>Step decreasing power is the power parameter for <code>gamma(t)</code> decreasing
+by the formula, mentioned above. Recommended value for SGD model is 1,
+for ASGD model is 0.75.</li>
+<li>Termination criteria can be 'Count', 'EPS', or 'Count+EPS'. You will
+have to find the best termination criteria for your problem.</li>
+</ul>
+<p>Note that the parameters margin regularization, initial step size, and
+step decreasing power should be positive.</p>
+<p>To use SVMSGD algorithm do as follows:</p>
+<ul>
+<li>first, create the <a href="cv.SVMSGD.html">cv.SVMSGD</a> object. The algorithm will set optimal
+parameters by default, but you can set your own parameters via
+properties <a href="cv.SVMSGD.SvmsgdType.html">cv.SVMSGD.SvmsgdType</a>, <a href="cv.SVMSGD.MarginType.html">cv.SVMSGD.MarginType</a>,
+<a href="cv.SVMSGD.MarginRegularization.html">cv.SVMSGD.MarginRegularization</a>, <a href="cv.SVMSGD.InitialStepSize.html">cv.SVMSGD.InitialStepSize</a>, and
+<a href="cv.SVMSGD.StepDecreasingPower.html">cv.SVMSGD.StepDecreasingPower</a>.</li>
+<li>then the SVM model can be trained using the train features and the
+correspondent labels by the method <a href="cv.SVMSGD.train.html">cv.SVMSGD.train</a>.</li>
+<li>after that, the label of a new feature vector can be predicted using
+the method <a href="cv.SVMSGD.predict.html">cv.SVMSGD.predict</a>.</li>
+</ul>
+<p>Example:</p>
+<pre class=" prettyprint lang-matlab"><code>% Create empty object
+svmsgd = <a href="cv.SVMSGD.html">cv.SVMSGD</a>();
+% Train the Stochastic Gradient Descent SVM
+svmsgd.train(trainData);
+% Predict labels for the new samples
+svmsgd.predict(samples, responses);
+</code></pre>
+<h2>References</h2>
+<p>[bottou2010large]:</p>
+<blockquote>
+<p>Leon Bottou. &quot;Large-scale machine learning with stochastic gradient
+descent&quot;. In Proceedings of COMPSTAT 2010, pages 177-186. Springer.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.SVMSGD.SVMSGD.html">cv.SVMSGD/SVMSGD</a>, <a href="cv.SVM.html">cv.SVM</a>, <a href="https://www.mathworks.com/help/stats/ref/fitcsvm.html" target="_blank">fitcsvm</a></div>
+      <!--Class-->
+      <div class="sectiontitle">Class Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Superclasses</td>
+            <td><a href="https://www.mathworks.com/help/matlab/ref/handle.html" target="_blank">handle</a></td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Construct on load</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+      <!--Constructors-->
+      <div class="sectiontitle"><a name="constructors"></a>Constructor Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.SVMSGD.SVMSGD.html">SVMSGD</a></td>
+            <td class="m-help">Creates empty model&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Properties-->
+      <div class="sectiontitle"><a name="properties"></a>Property Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.SVMSGD.InitialStepSize.html">InitialStepSize</a></td>
+            <td class="m-help">Parameter initial step size of a SVMSGD optimization problem.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.SVMSGD.MarginRegularization.html">MarginRegularization</a></td>
+            <td class="m-help">Parameter margin regularization of a SVMSGD optimization problem.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.SVMSGD.MarginType.html">MarginType</a></td>
+            <td class="m-help">Margin type.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.SVMSGD.StepDecreasingPower.html">StepDecreasingPower</a></td>
+            <td class="m-help">Parameter step decreasing power of a SVMSGD optimization problem.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.SVMSGD.SvmsgdType.html">SvmsgdType</a></td>
+            <td class="m-help">Algorithm type.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.SVMSGD.TermCriteria.html">TermCriteria</a></td>
+            <td class="m-help">Termination criteria of the training algorithm.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.SVMSGD.id.html">id</a></td>
+            <td class="m-help">Object ID&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Methods-->
+      <div class="sectiontitle"><a name="methods"></a>Method Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">addlistener</a></td>
+            <td class="m-help">Add listener for event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.SVMSGD.calcError.html">calcError</a></td>
+            <td class="m-help">Computes error on the training or test dataset&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.SVMSGD.clear.html">clear</a></td>
+            <td class="m-help">Clears the algorithm state&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.SVMSGD.delete.html">delete</a></td>
+            <td class="m-help">Destructor&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.SVMSGD.empty.html">empty</a></td>
+            <td class="m-help">Returns true if the algorithm is empty&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">eq</a></td>
+            <td class="m-help">== (EQ)   Test handle equality.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findobj</a></td>
+            <td class="m-help">Find objects matching specified conditions.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findprop</a></td>
+            <td class="m-help">Find property of MATLAB handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ge</a></td>
+            <td class="m-help">&gt;= (GE)   Greater than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.SVMSGD.getDefaultName.html">getDefaultName</a></td>
+            <td class="m-help">Returns the algorithm string identifier&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.SVMSGD.getShift.html">getShift</a></td>
+            <td class="m-help">Get model shift&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.SVMSGD.getVarCount.html">getVarCount</a></td>
+            <td class="m-help">Returns the number of variables in training samples&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.SVMSGD.getWeights.html">getWeights</a></td>
+            <td class="m-help">Get model weights&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">gt</a></td>
+            <td class="m-help">&gt; (GT)   Greater than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.SVMSGD.isClassifier.html">isClassifier</a></td>
+            <td class="m-help">Returns true if the model is a classifier&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.SVMSGD.isTrained.html">isTrained</a></td>
+            <td class="m-help">Returns true if the model is trained&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">isvalid</a></td>
+            <td class="m-help">Test handle validity.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">le</a></td>
+            <td class="m-help">&lt;= (LE)   Less than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">listener</a></td>
+            <td class="m-help">Add listener for event without binding the listener to the source object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.SVMSGD.load.html">load</a></td>
+            <td class="m-help">Loads algorithm from a file or a string&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">lt</a></td>
+            <td class="m-help">&lt; (LT)   Less than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ne</a></td>
+            <td class="m-help">~= (NE)   Not equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">notify</a></td>
+            <td class="m-help">Notify listeners of event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.SVMSGD.predict.html">predict</a></td>
+            <td class="m-help">Predicts response(s) for the provided sample(s)&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.SVMSGD.save.html">save</a></td>
+            <td class="m-help">Saves the algorithm parameters to a file or a string&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.SVMSGD.setOptimalParameters.html">setOptimalParameters</a></td>
+            <td class="m-help">Function sets optimal parameters values for chosen SVM SGD model&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.SVMSGD.train.html">train</a></td>
+            <td class="m-help">Trains the statistical model&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Events-->
+      <div class="sectiontitle"><a name="events"></a>Event Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ObjectBeingDestroyed</a></td>
+            <td class="m-help">Notifies listeners that a particular object has been destroyed.&nbsp;</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

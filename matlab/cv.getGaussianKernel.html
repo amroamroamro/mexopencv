@@ -1,0 +1,53 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.getGaussianKernel - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.getGaussianKernel - Returns Gaussian filter coefficients" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.getGaussianKernel - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.getGaussianKernel</div>
+      <div class="helpcontent"><p class=" h1line">Returns Gaussian filter coefficients</p>
+<pre class=" prettyprint lang-matlab"><code>kernel = <a href="cv.getGaussianKernel.html">cv.getGaussianKernel</a>()
+kernel = <a href="cv.getGaussianKernel.html">cv.getGaussianKernel</a>('OptionName', optionValue, ...)
+</code></pre>
+<h2>Output</h2>
+<ul>
+<li><strong>kernel</strong> Output kernel of the specified size and type.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>KSize</strong> Aperture size. It should be odd (<code>mod(KSize,2)==1</code>) and
+positive. default 5.</li>
+<li><strong>Sigma</strong> Gaussian standard deviation. If it is non-positive, it is
+computed from <code>KSize</code> as <code>sigma = 0.3 * ((KSize-1) * 0.5 - 1) + 0.8</code>.
+default -1.</li>
+<li><strong>KType</strong> Type of filter coefficients. It can be <code>single</code> or <code>double</code>.
+default <code>double</code>.</li>
+</ul>
+<p>The function computes and returns the <code>KSize x 1</code> matrix of Gaussian filter
+coefficients:</p>
+<pre class=" prettyprint lang-matlab"><code>G_i = alpha * exp( -(i - (KSize-1)/2)^2 / (2*sigma^2) )
+</code></pre>
+<p>where <code>i = 0, ..., KSize-1</code> and <code>alpha</code> is the scale factor chosen so that
+<code>sum_{i}(G_i) = 1</code>.</p>
+<p>Two of such generated kernels can be passed to <a href="cv.sepFilter2D.html">cv.sepFilter2D</a>. Those
+functions automatically recognize smoothing kernels (a symmetrical kernel
+with sum of weights equal to 1) and handle them accordingly. You may also
+use the higher-level <a href="cv.GaussianBlur.html">cv.GaussianBlur</a></p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.sepFilter2D.html">cv.sepFilter2D</a>, <a href="cv.getDerivKernels.html">cv.getDerivKernels</a>, <a href="cv.getStructuringElement.html">cv.getStructuringElement</a>,
+   <a href="cv.GaussianBlur.html">cv.GaussianBlur</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

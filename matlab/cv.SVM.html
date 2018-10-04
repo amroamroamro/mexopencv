@@ -1,0 +1,381 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.SVM - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.SVM - Support Vector Machines" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.SVM - MATLAB File Help</td>
+            <td class="subheader-left"></td>
+            <td class="subheader-right"><a href="cv.SVM.html">Go to online doc for cv.SVM</a></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.SVM</div>
+      <div class="helpcontent"><p class=" h1line">Support Vector Machines</p>
+<h2>Support Vector Machines</h2>
+<p>Originally, support vector machines (SVM) was a technique for building
+an optimal binary (2-class) classifier. Later the technique was extended
+to regression and clustering problems. SVM is a partial case of
+kernel-based methods. It maps feature vectors into a higher-dimensional
+space using a kernel function and builds an optimal linear
+discriminating function in this space or an optimal hyper-plane that
+fits into the training data. In case of SVM, the kernel is not defined
+explicitly. Instead, a distance between any 2 points in the hyper-space
+needs to be defined.</p>
+<p>The solution is optimal, which means that the margin between the
+separating hyper-plane and the nearest feature vectors from both classes
+(in case of 2-class classifier) is maximal. The feature vectors that are
+the closest to the hyper-plane are called support vectors, which means
+that the position of other vectors does not affect the hyper-plane (the
+decision function).</p>
+<p>SVM implementation in OpenCV is based on [LibSVM].</p>
+<p><a href="cv.SVM.html">cv.SVM</a> implements the &quot;one-against-one&quot; approach for multi-class
+classification. If <code>N</code> is the number of classes, then <code>N*(N-1)/2</code>
+classifiers are constructed, each one trained with data from two classes
+for every pair of distinct classes (<code>N</code> choose 2).</p>
+<h2>References</h2>
+<p>[LibSVM]:</p>
+<blockquote>
+<p>C.-C. Chang and C.-J. Lin. &quot;LIBSVM: a library for support vector machines&quot;,
+ACM Transactions on Intelligent Systems and Technology, 2:27:1-27:27, 2011.
+<a href="http://www.csie.ntu.edu.tw/~cjlin/papers/libsvm.pdf" target="_blank">PDF</a></p>
+</blockquote>
+<p>[Burges98]:</p>
+<blockquote>
+<p>C. Burges. &quot;A tutorial on support vector machines for pattern recognition&quot;,
+Knowledge Discovery and Data Mining 2(2), 1998
+<a href="http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.117.3731" target="_blank">CiteSeerX</a></p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.SVM.SVM.html">cv.SVM/SVM</a>, <a href="cv.SVM.train.html">cv.SVM/train</a>, <a href="cv.SVM.predict.html">cv.SVM/predict</a>, <a href="cv.SVM.trainAuto.html">cv.SVM/trainAuto</a>,
+   <a href="https://www.mathworks.com/help/stats/ref/fitcsvm.html" target="_blank">fitcsvm</a></div>
+      <!--Class-->
+      <div class="sectiontitle">Class Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Superclasses</td>
+            <td><a href="https://www.mathworks.com/help/matlab/ref/handle.html" target="_blank">handle</a></td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Construct on load</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+      <!--Constructors-->
+      <div class="sectiontitle"><a name="constructors"></a>Constructor Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.SVM.SVM.html">SVM</a></td>
+            <td class="m-help">Creates/trains a new SVM instance&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Properties-->
+      <div class="sectiontitle"><a name="properties"></a>Property Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.SVM.C.html">C</a></td>
+            <td class="m-help">Parameter `C` of a SVM optimization problem.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.SVM.ClassWeights.html">ClassWeights</a></td>
+            <td class="m-help">Optional weights in the `C_SVC` problem, assigned to particular&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.SVM.Coef0.html">Coef0</a></td>
+            <td class="m-help">Parameter `coef0` of a kernel function.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.SVM.Degree.html">Degree</a></td>
+            <td class="m-help">Parameter `degree` of a kernel function.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.SVM.Gamma.html">Gamma</a></td>
+            <td class="m-help">Parameter `gamma` of a kernel function.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.SVM.KernelType.html">KernelType</a></td>
+            <td class="m-help">Type of a SVM kernel.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.SVM.Nu.html">Nu</a></td>
+            <td class="m-help">Parameter `nu` of a SVM optimization problem.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.SVM.P.html">P</a></td>
+            <td class="m-help">Parameter `epsilon` of a SVM optimization problem.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.SVM.TermCriteria.html">TermCriteria</a></td>
+            <td class="m-help">Termination criteria.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.SVM.Type.html">Type</a></td>
+            <td class="m-help">of a SVM formulation.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.SVM.id.html">id</a></td>
+            <td class="m-help">Object ID&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Methods-->
+      <div class="sectiontitle"><a name="methods"></a>Method Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">addlistener</a></td>
+            <td class="m-help">Add listener for event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.SVM.calcError.html">calcError</a></td>
+            <td class="m-help">Computes error on the training or test dataset&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.SVM.clear.html">clear</a></td>
+            <td class="m-help">Clears the algorithm state&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.SVM.delete.html">delete</a></td>
+            <td class="m-help">Destructor&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.SVM.empty.html">empty</a></td>
+            <td class="m-help">Returns true if the algorithm is empty&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">eq</a></td>
+            <td class="m-help">== (EQ)   Test handle equality.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findobj</a></td>
+            <td class="m-help">Find objects matching specified conditions.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findprop</a></td>
+            <td class="m-help">Find property of MATLAB handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ge</a></td>
+            <td class="m-help">&gt;= (GE)   Greater than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.SVM.getDecisionFunction.html">getDecisionFunction</a></td>
+            <td class="m-help">Retrieves the decision function&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.SVM.getDefaultName.html">getDefaultName</a></td>
+            <td class="m-help">Returns the algorithm string identifier&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.SVM.getSupportVectors.html">getSupportVectors</a></td>
+            <td class="m-help">Retrieves all the support vectors&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.SVM.getUncompressedSupportVectors.html">getUncompressedSupportVectors</a></td>
+            <td class="m-help">Retrieves all the uncompressed support vectors of a linear SVM&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.SVM.getVarCount.html">getVarCount</a></td>
+            <td class="m-help">Returns the number of variables in training samples&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">gt</a></td>
+            <td class="m-help">&gt; (GT)   Greater than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.SVM.isClassifier.html">isClassifier</a></td>
+            <td class="m-help">Returns true if the model is a classifier&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.SVM.isTrained.html">isTrained</a></td>
+            <td class="m-help">Returns true if the model is trained&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">isvalid</a></td>
+            <td class="m-help">Test handle validity.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">le</a></td>
+            <td class="m-help">&lt;= (LE)   Less than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">listener</a></td>
+            <td class="m-help">Add listener for event without binding the listener to the source object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.SVM.load.html">load</a></td>
+            <td class="m-help">Loads algorithm from a file or a string&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">lt</a></td>
+            <td class="m-help">&lt; (LT)   Less than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ne</a></td>
+            <td class="m-help">~= (NE)   Not equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">notify</a></td>
+            <td class="m-help">Notify listeners of event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.SVM.predict.html">predict</a></td>
+            <td class="m-help">Predicts response(s) for the provided sample(s)&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.SVM.save.html">save</a></td>
+            <td class="m-help">Saves the algorithm parameters to a file or a string&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.SVM.setCustomKernel.html">setCustomKernel</a></td>
+            <td class="m-help">Initialize with custom kernel&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.SVM.train.html">train</a></td>
+            <td class="m-help">Trains the statistical model&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.SVM.trainAuto.html">trainAuto</a></td>
+            <td class="m-help">Trains an SVM with optimal parameters&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Events-->
+      <div class="sectiontitle"><a name="events"></a>Event Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ObjectBeingDestroyed</a></td>
+            <td class="m-help">Notifies listeners that a particular object has been destroyed.&nbsp;</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

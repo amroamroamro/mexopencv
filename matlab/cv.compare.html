@@ -1,0 +1,77 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.compare - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.compare - Performs the per-element comparison of two arrays or an array and scalar value" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.compare - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.compare</div>
+      <div class="helpcontent"><p class=" h1line">Performs the per-element comparison of two arrays or an array and scalar value</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.compare.html">cv.compare</a>(src1, src2, cmpop)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src1</strong> first input array or a scalar; when it is an array, it must have
+a single channel.</li>
+<li><strong>src2</strong> second input array or a scalar; when it is an array, it must have
+a single channel.</li>
+<li><strong>cmpop</strong> comparison type, specifies correspondence between the arrays.
+One of:
+<ul>
+<li><strong>eq</strong> <code>src1</code> is equal to <code>src2</code>.</li>
+<li><strong>gt</strong> <code>src1</code> is greater than <code>src2</code>.</li>
+<li><strong>ge</strong> <code>src1</code> is greater than or equal to <code>src2</code>.</li>
+<li><strong>lt</strong> <code>src1</code> is less than <code>src2</code>.</li>
+<li><strong>le</strong> <code>src1</code> is less than or equal to <code>src2</code>.</li>
+<li><strong>ne</strong> <code>src1</code> is unequal to <code>src2</code>.</li>
+</ul>
+</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> output array of type <code>uint8</code> that has the same size and the same
+number of channels as the input arrays.</li>
+</ul>
+<p>The function compares:</p>
+<ul>
+<li>
+<p>Elements of two arrays when <code>src1</code> and <code>src2</code> have the same size:</p>
+<pre class=" prettyprint lang-matlab"><code>dst(I) = src1(I) cmpop src2(I)
+</code></pre>
+</li>
+<li>
+<p>Elements of <code>src1</code> with a scalar <code>src2</code> when <code>src2</code> is constructed from
+Scalar or has a single element:</p>
+<pre class=" prettyprint lang-matlab"><code>dst(I) = src1(I) cmpop src2
+</code></pre>
+</li>
+<li>
+<p><code>src1</code> with elements of <code>src2</code> when <code>src1</code> is constructed from Scalar or
+has a single element:</p>
+<pre class=" prettyprint lang-matlab"><code>dst(I) = src1 cmpop src2(I)
+</code></pre>
+</li>
+</ul>
+<p>When the comparison result is true, the corresponding element of output
+array is set to 255. The comparison operations can be replaced with the
+equivalent matrix expressions:</p>
+<pre class=" prettyprint lang-matlab"><code>dst1 = src1 &gt;= src2;
+dst2 = src1 &lt; 8;
+...
+</code></pre>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.threshold.html">cv.threshold</a>, <a href="https://www.mathworks.com/help/matlab/ref/eq.html" target="_blank">eq</a>, <a href="https://www.mathworks.com/help/matlab/ref/gt.html" target="_blank">gt</a>, <a href="https://www.mathworks.com/help/matlab/ref/ge.html" target="_blank">ge</a>, <a href="https://www.mathworks.com/help/matlab/ref/lt.html" target="_blank">lt</a>, <a href="https://www.mathworks.com/help/matlab/ref/le.html" target="_blank">le</a>, <a href="https://www.mathworks.com/help/matlab/ref/ne.html" target="_blank">ne</a>, <a href="https://www.mathworks.com/help/matlab/ref/min.html" target="_blank">min</a>, <a href="https://www.mathworks.com/help/matlab/ref/max.html" target="_blank">max</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

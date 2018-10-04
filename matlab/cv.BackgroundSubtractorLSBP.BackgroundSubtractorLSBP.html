@@ -1,0 +1,59 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.BackgroundSubtractorLSBP/BackgroundSubtractorLSBP - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.BackgroundSubtractorLSBP.BackgroundSubtractorLSBP - Creates a LSBP Background Subtractor" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.BackgroundSubtractorLSBP/BackgroundSubtractorLSBP - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.BackgroundSubtractorLSBP/BackgroundSubtractorLSBP</div>
+      <div class="helpcontent"><p class=" h1line">Creates a LSBP Background Subtractor</p>
+<pre class=" prettyprint lang-matlab"><code>bs = <a href="cv.BackgroundSubtractorLSBP.html">cv.BackgroundSubtractorLSBP</a>()
+bs = <a href="cv.BackgroundSubtractorLSBP.html">cv.BackgroundSubtractorLSBP</a>('OptionName', optionValue, ...)
+</code></pre>
+<h2>Options</h2>
+<ul>
+<li><strong>MotionCompensation</strong> Whether to use camera motion
+compensation. One of:
+<ul>
+<li><strong>None</strong> (default)</li>
+<li><strong>LK</strong></li>
+</ul>
+</li>
+<li><strong>NSamples</strong> Number of samples to maintain at each point of
+the frame. default 20</li>
+<li><strong>LSBPRadius</strong> LSBP descriptor radius. default 16</li>
+<li><strong>TLower</strong> Lower bound for T-values. See [LGuo2016] for
+details. default 2.0</li>
+<li><strong>TUpper</strong> Upper bound for T-values. See [LGuo2016] for
+details. default 32.0</li>
+<li><strong>TInc</strong> Increase step for T-values. See [LGuo2016] for
+details. default 1.0</li>
+<li><strong>TDec</strong> Decrease step for T-values. See [LGuo2016] for
+details. default 0.05</li>
+<li><strong>RScale</strong> Scale coefficient for threshold values. default 10.0</li>
+<li><strong>RIncDec</strong> Increase/Decrease step for threshold values.
+default 0.005</li>
+<li><strong>NoiseRemovalThresholdFacBG</strong> Strength of the noise removal
+for background points. default 0.0004</li>
+<li><strong>NoiseRemovalThresholdFacFG</strong> Strength of the noise removal
+for foreground points. default 0.0008</li>
+<li><strong>LSBPThreshold</strong> Threshold for LSBP binary string. default 8</li>
+<li><strong>MinCount</strong> Minimal number of matches for sample to be
+considered as foreground. default 2</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.BackgroundSubtractorLSBP.html">cv.BackgroundSubtractorLSBP</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

@@ -1,0 +1,57 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.BackgroundSubtractorGSOC/BackgroundSubtractorGSOC - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.BackgroundSubtractorGSOC.BackgroundSubtractorGSOC - Creates a GSOC Background Subtractor" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.BackgroundSubtractorGSOC/BackgroundSubtractorGSOC - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.BackgroundSubtractorGSOC/BackgroundSubtractorGSOC</div>
+      <div class="helpcontent"><p class=" h1line">Creates a GSOC Background Subtractor</p>
+<pre class=" prettyprint lang-matlab"><code>bs = <a href="cv.BackgroundSubtractorGSOC.html">cv.BackgroundSubtractorGSOC</a>()
+bs = <a href="cv.BackgroundSubtractorGSOC.html">cv.BackgroundSubtractorGSOC</a>('OptionName', optionValue, ...)
+</code></pre>
+<h2>Options</h2>
+<ul>
+<li><strong>MotionCompensation</strong> Whether to use camera motion
+compensation. One of:
+<ul>
+<li><strong>None</strong> (default)</li>
+<li><strong>LK</strong></li>
+</ul>
+</li>
+<li><strong>NSamples</strong> Number of samples to maintain at each point of
+the frame. default 20</li>
+<li><strong>ReplaceRate</strong> Probability of replacing the old sample, i.e
+how fast the model will update itself. default 0.003</li>
+<li><strong>PropagationRate</strong> Probability of propagating to neighbors.
+default 0.01</li>
+<li><strong>HitsThreshold</strong> How many positives the sample must get
+before it will be considered as a possible replacement.
+default 32</li>
+<li><strong>Alpha</strong> Scale coefficient for threshold. default 0.01</li>
+<li><strong>Beta</strong> Bias coefficient for threshold. default 0.0022</li>
+<li><strong>BlinkingSupressionDecay</strong> Blinking supression decay factor.
+default 0.1</li>
+<li><strong>BlinkingSupressionMultiplier</strong> Blinking supression
+multiplier. default 0.1</li>
+<li><strong>NoiseRemovalThresholdFacBG</strong> Strength of the noise removal
+for background points. default 0.0004</li>
+<li><strong>NoiseRemovalThresholdFacFG</strong> Strength of the noise removal
+for foreground points. default 0.0008</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.BackgroundSubtractorGSOC.html">cv.BackgroundSubtractorGSOC</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

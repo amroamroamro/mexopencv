@@ -1,0 +1,104 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.drawContours - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.drawContours - Draws contours outlines or filled contours" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.drawContours - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.drawContours</div>
+      <div class="helpcontent"><p class=" h1line">Draws contours outlines or filled contours</p>
+<pre class=" prettyprint lang-matlab"><code>im = <a href="cv.drawContours.html">cv.drawContours</a>(im, contours)
+im = <a href="cv.drawContours.html">cv.drawContours</a>(im, contours, 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>im</strong> Image on which to draw contours.</li>
+<li><strong>contours</strong> All the input contours. Each contour is stored as a 2D point
+vector (integer points). A cell array of cell arrays of the form:
+<code>{{[x,y],[x,y],...}, ...}</code>, or a cell array of Nx2 matrices.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>im</strong> Destination image, same size and type as input <code>im</code>.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>ContourIdx</strong> Parameter indicating a contour to draw. A zero-based index
+in the range <code>[0,length(contours)-1]</code>. If it is negative, all the contours
+are drawn. default -1</li>
+<li><strong>Color</strong> Color of the contours. default is white color.</li>
+<li><strong>Thickness</strong> Thickness of lines the contours are drawn with. If it is
+negative (for example, -1 or the string 'Filled'), the contour interiors
+are drawn. default 1</li>
+<li><strong>LineType</strong> Line connectivity. One of:
+<ul>
+<li><strong>4</strong> 4-connected line</li>
+<li><strong>8</strong> 8-connected line (default)</li>
+<li><strong>AA</strong> anti-aliased line</li>
+</ul>
+</li>
+<li><strong>Hierarchy</strong> Optional information about hierarchy. It is only needed if
+you want to draw only some of the contours (see <code>MaxLevel</code>). A cell array
+of 4-element vectors for each contour of the form
+<code>{[next,prev,child,parent], ...}</code>, or a Nx4/Nx1x4/1xNx4 numeric matrix of
+integers. default empty</li>
+<li><strong>MaxLevel</strong> Maximal level for drawn contours. If it is 0, only the
+specified contour is drawn. If it is 1, the function draws the contour(s)
+and all the nested contours. If it is 2, the function draws the contours,
+all the nested contours, all the nested-to-nested contours, and so on.
+This parameter is only taken into account when there is <code>Hierarchy</code>
+available. default <code>intmax('int32')</code></li>
+<li><strong>Offset</strong> Optional contour shift parameter. Shift all the drawn contours
+by the specified <code>offset = (dx,dy)</code>. default [0,0]</li>
+</ul>
+<p>The function draws contour outlines in the image if <code>Thickness &gt;= 0</code> or
+fills the area bounded by the contours if <code>Thickness &lt; 0</code>.</p>
+<h2>Example</h2>
+<p>The example below shows how to retrieve connected components from a binary
+image and label them:</p>
+<pre class=" prettyprint lang-matlab"><code>% binary (black-n-white) image
+src = <a href="cv.imread.html">cv.imread</a>('bw.png', 'Flags',0);
+src = logical(src &gt; 0);
+
+[contours,hierarchy] = <a href="cv.findContours.html">cv.findContours</a>(src, 'Mode','CComp', ...
+    'Method','Simple');
+
+% iterate through all the top-level contours,
+% draw each connected component with its own random color
+dst = zeros([size(src),3], 'uint8');
+idx = 0;
+while idx &gt;= 0
+    color = randi([0 255], [1 3], 'uint8');
+    dst = <a href="cv.drawContours.html">cv.drawContours</a>(dst, contours, 'ContourIdx',idx, ...
+        'Color',color, 'Thickness','Filled', 'LineType',8, ...
+        'Hierarchy',hierarchy);
+    idx = hierarchy{idx+1}(1);
+end
+
+subplot(121), imshow(src), title('Source')
+subplot(122), imshow(dst), title('Components')
+</code></pre>
+<h3>Note</h3>
+<p>When <code>Thickness='Filled'</code>, the function is designed to handle connected
+components with holes correctly even when no hierarchy date is provided.
+This is done by analyzing all the outlines together using even-odd rule.
+This may give incorrect results if you have a joint collection of separately
+retrieved contours. In order to solve this problem, you need to call
+<a href="cv.drawContours.html">cv.drawContours</a> separately for each sub-group of contours, or iterate over
+the collection using <code>ContourIdx</code> parameter.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.findContours.html">cv.findContours</a>, <a href="cv.fillPoly.html">cv.fillPoly</a>, <a href="https://www.mathworks.com/help/images/ref/visboundaries.html" target="_blank">visboundaries</a>, <a href="https://www.mathworks.com/help/images/ref/bwlabel.html" target="_blank">bwlabel</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

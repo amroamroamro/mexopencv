@@ -1,0 +1,62 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.cornerEigenValsAndVecs - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.cornerEigenValsAndVecs - Calculates eigenvalues and eigenvectors of image blocks for corner detection" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.cornerEigenValsAndVecs - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.cornerEigenValsAndVecs</div>
+      <div class="helpcontent"><p class=" h1line">Calculates eigenvalues and eigenvectors of image blocks for corner detection</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.cornerEigenValsAndVecs.html">cv.cornerEigenValsAndVecs</a>(src)
+dst = <a href="cv.cornerEigenValsAndVecs.html">cv.cornerEigenValsAndVecs</a>(src, 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> Input single-channel 8-bit or floating-point image.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> Image to store the results. It has the same row/column size as
+<code>src</code> and the <code>single</code> type (where <code>size(dst,3)==6</code>). Eigenvalues and
+eigenvectors are stored along the channels, see below.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>BlockSize</strong> Neighborhood size (see details below). default 5.</li>
+<li><strong>KSize</strong> Aperture parameter for the <a href="cv.Sobel.html">cv.Sobel</a> operator. default 3.</li>
+<li><strong>BorderType</strong> Pixel extrapolation method. See <a href="cv.copyMakeBorder.html">cv.copyMakeBorder</a>.
+default 'Default'</li>
+</ul>
+<p>For every pixel <code>p</code>, the function <a href="cv.cornerEigenValsAndVecs.html">cv.cornerEigenValsAndVecs</a> considers a
+<code>blockSize x blockSize</code> neigborhood <code>S(p)</code>. It calculates the covariation
+matrix of derivatives over the neighborhood as:</p>
+<pre class=" prettyprint lang-matlab"><code>M = [
+    sum_{S(p)}(dI/dx)^2        sum_{S(p)}(dI/dx * dI/dy)
+    sum_{S(p)}(dI/dx * dI/dy)  sum_{S(p)}(dI/dy)^2
+]
+</code></pre>
+<p>where the derivatives are computed using the Sobel operator.</p>
+<p>After that, it finds eigenvectors and eigenvalues of <code>M</code> and stores them in
+the destination image as <code>(lambda_1, lambda_2, x_1, y_1, x_2, y_2)</code> where:</p>
+<ul>
+<li><code>lambda_1</code>, <code>lambda_2</code> are the non-sorted eigenvalues of <code>M</code></li>
+<li><code>x_1</code>, <code>y_1</code> are the eigenvectors corresponding to <code>lambda_1</code></li>
+<li><code>x_2</code>, <code>y_2</code> are the eigenvectors corresponding to <code>lambda_2</code></li>
+</ul>
+<p>The output of the function can be used for robust edge or corner detection.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.cornerMinEigenVal.html">cv.cornerMinEigenVal</a>, <a href="cv.cornerHarris.html">cv.cornerHarris</a>, <a href="cv.preCornerDetect.html">cv.preCornerDetect</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

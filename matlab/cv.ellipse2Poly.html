@@ -1,0 +1,51 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.ellipse2Poly - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.ellipse2Poly - Approximates an elliptic arc with a polyline" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.ellipse2Poly - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.ellipse2Poly</div>
+      <div class="helpcontent"><p class=" h1line">Approximates an elliptic arc with a polyline</p>
+<pre class=" prettyprint lang-matlab"><code>pts = <a href="cv.ellipse2Poly.html">cv.ellipse2Poly</a>(center, axes)
+[...] = <a href="cv.ellipse2Poly.html">cv.ellipse2Poly</a>(..., 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>center</strong> Center of the arc <code>[x,y]</code>.</li>
+<li><strong>axes</strong> Half of the size of the ellipse main axes <code>[a,b]</code>. See <a href="cv.ellipse.html">cv.ellipse</a>
+for details.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>pts</strong> Output vector of polyline vertices. An Nx2 numeric matrix
+<code>[x y; ...]</code>.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Angle</strong> Rotation angle of the ellipse in degrees. See <a href="cv.ellipse.html">cv.ellipse</a> for
+details. default 0.</li>
+<li><strong>StartAngle</strong> Starting angle of the elliptic arc in degrees. default 0</li>
+<li><strong>EndAngle</strong> Ending angle of the elliptic arc in degrees. default 360</li>
+<li><strong>Delta</strong> Angle between the subsequent polyline vertices. It defines the
+approximation accuracy. default 5.</li>
+</ul>
+<p>The function <a href="cv.ellipse2Poly.html">cv.ellipse2Poly</a> computes the vertices of a polyline that
+approximates the specified elliptic arc. It is used by <a href="cv.ellipse.html">cv.ellipse</a>. If
+<code>StartAngle</code> is greater than <code>EndAngle</code>, they are swapped.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.ellipse.html">cv.ellipse</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

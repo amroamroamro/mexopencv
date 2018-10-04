@@ -1,0 +1,51 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.l0Smooth - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.l0Smooth - Global image smoothing via L0 gradient minimization" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.l0Smooth - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.l0Smooth</div>
+      <div class="helpcontent"><p class=" h1line">Global image smoothing via L0 gradient minimization</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.l0Smooth.html">cv.l0Smooth</a>(src)
+dst = <a href="cv.l0Smooth.html">cv.l0Smooth</a>(src, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> source image for filtering with unsigned 8-bit or signed 16-bit or
+floating-point depth.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> destination image.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Lambda</strong> parameter defining the smooth term weight. default 0.02</li>
+<li><strong>Kappa</strong> parameter defining the increasing factor of the weight of the
+gradient data term. default 2.0</li>
+</ul>
+<p>For more details about L0 Smoother, see the original paper [xu2011image].</p>
+<h2>References</h2>
+<p>[xu2011image]:</p>
+<blockquote>
+<p>Li Xu, Cewu Lu, Yi Xu, and Jiaya Jia. &quot;Image smoothing via L0 gradient
+minimization&quot;. In ACM Transactions on Graphics (TOG), volume 30,
+page 174. ACM, 2011.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.jointBilateralFilter.html">cv.jointBilateralFilter</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

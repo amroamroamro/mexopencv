@@ -1,0 +1,42 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.blendLinear - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.blendLinear - Performs linear blending of two images" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.blendLinear - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.blendLinear</div>
+      <div class="helpcontent"><p class=" h1line">Performs linear blending of two images</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.blendLinear.html">cv.blendLinear</a>(src1, src2, weights1, weights2)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src1</strong> First image, it has a depth of <code>uint8</code> or <code>single</code>, and any
+number of channels.</li>
+<li><strong>src2</strong> second image of same size and type as <code>src1</code>.</li>
+<li><strong>weights1</strong> floating-point matrix of size same as input images.</li>
+<li><strong>weights2</strong> floating-point matrix of size same as input images.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> blended image, of same size and type as input images.</li>
+</ul>
+<p>Performs linear blending of two images:</p>
+<pre class=" prettyprint lang-matlab"><code>dst(i,j) = weights1(i,j) * src1(i,j) + weights2(i,j) * src2(i,j)
+</code></pre>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.addWeighted.html">cv.addWeighted</a>, <a href="cv.add.html">cv.add</a>, <a href="https://www.mathworks.com/help/images/ref/imlincomb.html" target="_blank">imlincomb</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

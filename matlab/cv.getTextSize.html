@@ -1,0 +1,69 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.getTextSize - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.getTextSize - Calculates the width and height of a text string" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.getTextSize - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.getTextSize</div>
+      <div class="helpcontent"><p class=" h1line">Calculates the width and height of a text string</p>
+<pre class=" prettyprint lang-matlab"><code>[siz, baseLine] = <a href="cv.getTextSize.html">cv.getTextSize</a>(text)
+[...] = <a href="cv.getTextSize.html">cv.getTextSize</a>(..., 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>text</strong> Input text string.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>siz</strong> Size of a box that contains the specified text <code>[w,h]</code>.</li>
+<li><strong>baseLine</strong> y-coordinate of the baseline relative to the bottom-most
+text point. The baseline is the line on which the bottoms of characters
+such as 'a' and 'b' are aligned. Characters such as 'y' and 'g' hang below
+the baseline.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>FontFace</strong> Font to use. One of the following:
+<ul>
+<li><strong>HersheySimplex</strong> (default)</li>
+<li><strong>HersheyPlain</strong></li>
+<li><strong>HersheyDuplex</strong></li>
+<li><strong>HersheyComplex</strong></li>
+<li><strong>HersheyTriplex</strong></li>
+<li><strong>HersheyComplexSmall</strong></li>
+<li><strong>HersheyScriptSimplex</strong></li>
+<li><strong>HersheyScriptComplex</strong></li>
+</ul>
+</li>
+<li><strong>FontStyle</strong> Font style. One of:
+<ul>
+<li><strong>Regular</strong> (default)</li>
+<li><strong>Italic</strong></li>
+</ul>
+</li>
+<li><strong>FontScale</strong> Font scale factor that is multiplied by the font-specific
+base size. default 1.0</li>
+<li><strong>Thickness</strong> Thickness of lines used to render the text. default 1</li>
+</ul>
+<p>The function <a href="cv.getTextSize.html">cv.getTextSize</a> calculates and returns the size of a box that
+contains the specified text.</p>
+<h2>Example</h2>
+<p>Refer to the <code>draw_text_demo.m</code> sample. The code renders some text, the
+tight box surrounding it, and the baseline.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.putText.html">cv.putText</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

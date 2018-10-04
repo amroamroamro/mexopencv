@@ -1,0 +1,61 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>interpolate (cv.EdgeAwareInterpolator) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.EdgeAwareInterpolator.interpolate - Interpolate input sparse matches" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">interpolate (cv.EdgeAwareInterpolator) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.EdgeAwareInterpolator/interpolate</div>
+      <div class="helpcontent"><p class=" h1line">Interpolate input sparse matches</p>
+<pre class=" prettyprint lang-matlab"><code>dense_flow = obj.interpolate(from_image, from_points, to_image, to_points)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>from_image</strong> first of the two matched images, 8-bit
+single-channel or three-channel.</li>
+<li><strong>from_points</strong> points of the <code>from_image</code> for which there are
+correspondences in the <code>to_image</code> (a cell array of 2-element
+float vectors <code>{[x,y],..}</code>, size shouldn't exceed 32767).</li>
+<li><strong>to_image</strong> second of the two matched images, 8-bit
+single-channel or three-channel.</li>
+<li><strong>to_points</strong> points in the <code>to_image</code> corresponding to
+<code>from_points</code> (a cell array of 2-element float vectors
+<code>{[x,y],..}</code>, size shouldn't exceed 32767).</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dense_flow</strong> output dense matching (two-channel <code>single</code>
+image).</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.EdgeAwareInterpolator.EdgeAwareInterpolator.html">cv.EdgeAwareInterpolator/EdgeAwareInterpolator</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

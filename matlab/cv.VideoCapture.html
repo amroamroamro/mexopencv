@@ -1,0 +1,400 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.VideoCapture - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.VideoCapture - Class for video capturing from video files or cameras" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.VideoCapture - MATLAB File Help</td>
+            <td class="subheader-left"></td>
+            <td class="subheader-right"><a href="cv.VideoCapture.html">Go to online doc for cv.VideoCapture</a></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.VideoCapture</div>
+      <div class="helpcontent"><p class=" h1line">Class for video capturing from video files or cameras</p>
+<p>The class provides an API for capturing video from cameras or for
+reading video files and image sequences.</p>
+<h2>Example</h2>
+<p>Here is how the class can be used:</p>
+<pre class=" prettyprint lang-matlab"><code>cap = <a href="cv.VideoCapture.html">cv.VideoCapture</a>(0);        % open the default camera
+pause(3);                        % see note below
+if ~cap.isOpened()               % check if we succeeded
+    error('camera failed to initialized');
+end
+for t=1:30
+    frame = cap.read();           % get a new frame from camera
+    imshow(frame);
+    pause(0.1);
+end
+% the camera will be deinitialized automatically in destructor
+% when &quot;cap&quot; goes out of scope
+% you can also explicitly call cap.release() to close the camera
+</code></pre>
+<p>Note: In some environments, there is a concurrency issue during camera
+initialization. To avoid unexpected crash, pause for a few seconds after
+the initialization of <a href="cv.VideoCapture.html">cv.VideoCapture</a> object.</p>
+<h1>Video I/O with OpenCV Overview</h1>
+<p>The OpenCV &quot;videoio&quot; module is a set of classes and functions to read
+and write video or images sequence.</p>
+<p>Basically, the module provides the <a href="cv.VideoCapture.html">cv.VideoCapture</a> and <a href="cv.VideoWriter.html">cv.VideoWriter</a>
+classes as 2-layer interface to many video I/O APIs used as backend.</p>
+<p><img src="https://docs.opencv.org/3.3.1/videoio_overview.svg" alt="image" /></p>
+<p>Some backends such as (<code>DirectShow</code>) Direct Show, Video For Windows
+(<code>VfW</code>), Microsoft Media Foundation (<code>MediaFoundation</code>), Video 4 Linux
+(<code>V4L</code>), etc... are interfaces to the video I/O library provided by the
+operating system.</p>
+<p>Some others backends like OpenNI2 for Kinect, Intel Perceptual Computing
+SDK, GStreamer, XIMEA Camera API, etc... are interfaces to proprietary
+drivers or to external library.</p>
+<p>See the list of supported backends here: <a href="cv.VideoCapture.open.html">cv.VideoCapture.open</a></p>
+<p>Warning: Some backends are experimental use them at your own risk.
+Note: Each backend supports devices properties (<a href="cv.VideoCapture.set.html">cv.VideoCapture.set</a>) in
+a different way or might not support any property at all.</p>
+<h2>Select the backend at runtime</h2>
+<p>OpenCV automatically selects and uses first available backend
+(<code>API='Any'</code>).</p>
+<p>As advanced usage you can select the backend to use at runtime.
+Currently this option is available only with <a href="cv.VideoCapture.html">cv.VideoCapture</a>.</p>
+<p>For example to grab from default camera using Direct Show as backend</p>
+<pre class=" prettyprint lang-matlab"><code>% declare a capture object
+cap = <a href="cv.VideoCapture.html">cv.VideoCapture</a>(0, 'API','DirectShow')
+
+% or specify the API preference with open
+cap.open(0, 'API','DirectShow');
+</code></pre>
+<p>If you want to grab from a file using the Direct Show as backend:</p>
+<pre class=" prettyprint lang-matlab"><code>% declare a capture object
+cap = <a href="cv.VideoCapture.html">cv.VideoCapture</a>(filename, 'API','DirectShow')
+
+% or specify the API preference with open
+cap.open(filename, 'API','DirectShow');
+</code></pre>
+<h3>Enable backends</h3>
+<p>Backends are available only if they have been built with your OpenCV
+binaries.</p>
+<p>Check in <code>opencv2/cvconfig.h</code> to know which APIs are currently available
+(e.g. <code>HAVE_MSMF, HAVE_VFW, HAVE_LIBV4L</code>, etc...).</p>
+<p>To enable/disable APIs, you have to:</p>
+<ol>
+<li>re-configure OpenCV using appropriates CMake switches
+(e.g. <code>-DWITH_MSMF=ON -DWITH_VFW=ON ...</code>) or checking related switch
+in cmake-gui</li>
+<li>rebuild OpenCV itself</li>
+</ol>
+<h3>Use 3rd party drivers or cameras</h3>
+<p>Many industrial cameras or some video I/O devices don't provide standard
+driver interfaces for the operating system. Thus you can't use
+<a href="cv.VideoCapture.html">cv.VideoCapture</a> or <a href="cv.VideoWriter.html">cv.VideoWriter</a> with these devices.</p>
+<h2>The FFmpeg library</h2>
+<p>OpenCV can use the <a href="http://ffmpeg.org/" target="_blank">FFmpeg</a> library as backend to
+record, convert and stream audio and video. FFMpeg is a complete,
+cross-reference solution. If you enable FFmpeg while configuring OpenCV
+than CMake will download and install the binaries in
+<code>OPENCV_SOURCE_CODE/3rdparty/ffmpeg/</code>. To use FFMpeg at runtime, you
+must deploy the FFMepg binaries with your application.</p>
+<p>Note: FFmpeg is licensed under the GNU Lesser General Public License
+(LGPL) version 2.1 or later. See
+<code>OPENCV_SOURCE_CODE/3rdparty/ffmpeg/readme.txt</code> and
+http://ffmpeg.org/legal.html for details and licensing information.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.VideoCapture.VideoCapture.html">cv.VideoCapture/VideoCapture</a>, <a href="cv.VideoCapture.read.html">cv.VideoCapture/read</a>,
+   <a href="cv.VideoWriter.html">cv.VideoWriter</a>, <a href="https://www.mathworks.com/help/matlab/ref/videoreader.html" target="_blank">VideoReader</a>, mmreader, aviread, webcam, <a href="https://www.mathworks.com/help/imaq/ref/videoinput.html" target="_blank">videoinput</a>,
+   <a href="https://www.mathworks.com/help/imaq/ref/imaq.videodevice.html" target="_blank">imaq.VideoDevice</a>, <a href="https://www.mathworks.com/help/vision/ref/vision.videofilereader.html" target="_blank">vision.VideoFileReader</a></div>
+      <!--Class-->
+      <div class="sectiontitle">Class Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Superclasses</td>
+            <td><a href="https://www.mathworks.com/help/matlab/ref/handle.html" target="_blank">handle</a></td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Construct on load</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+      <!--Constructors-->
+      <div class="sectiontitle"><a name="constructors"></a>Constructor Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.VideoCapture.VideoCapture.html">VideoCapture</a></td>
+            <td class="m-help">Open video file or a capturing device or a IP video stream for video capturing&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Properties-->
+      <div class="sectiontitle"><a name="properties"></a>Property Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.VideoCapture.Brightness.html">Brightness</a></td>
+            <td class="m-help">of the image (only for those cameras that support it).&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.VideoCapture.Contrast.html">Contrast</a></td>
+            <td class="m-help">of the image (only for cameras).&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.VideoCapture.ConvertRGB.html">ConvertRGB</a></td>
+            <td class="m-help">Boolean flags indicating whether images should be converted to RGB.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.VideoCapture.Exposure.html">Exposure</a></td>
+            <td class="m-help">(only for those cameras that support it).&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.VideoCapture.FPS.html">FPS</a></td>
+            <td class="m-help">Frame rate.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.VideoCapture.Format.html">Format</a></td>
+            <td class="m-help">of the frames returned by cv.VideoCapture.retrieve.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.VideoCapture.FourCC.html">FourCC</a></td>
+            <td class="m-help">4-character code of codec. See cv.VideoWriter.open.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.VideoCapture.FrameCount.html">FrameCount</a></td>
+            <td class="m-help">Number of frames in the video file.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.VideoCapture.FrameHeight.html">FrameHeight</a></td>
+            <td class="m-help">Height of the frames in the video stream.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.VideoCapture.FrameWidth.html">FrameWidth</a></td>
+            <td class="m-help">Width of the frames in the video stream.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.VideoCapture.Gain.html">Gain</a></td>
+            <td class="m-help">of the image (only for those cameras that support it).&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.VideoCapture.Hue.html">Hue</a></td>
+            <td class="m-help">of the image (only for cameras).&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.VideoCapture.Mode.html">Mode</a></td>
+            <td class="m-help">Backend-specific value indicating the current capture mode.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.VideoCapture.PosAviRatio.html">PosAviRatio</a></td>
+            <td class="m-help">Relative position of the video file:&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.VideoCapture.PosFrames.html">PosFrames</a></td>
+            <td class="m-help">0-based index of the frame to be decoded/captured next.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.VideoCapture.PosMsec.html">PosMsec</a></td>
+            <td class="m-help">Current position of the video file in milliseconds or video capture&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.VideoCapture.Rectification.html">Rectification</a></td>
+            <td class="m-help">flag for stereo cameras&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.VideoCapture.Saturation.html">Saturation</a></td>
+            <td class="m-help">of the image (only for cameras).&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.VideoCapture.id.html">id</a></td>
+            <td class="m-help">Object ID&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Methods-->
+      <div class="sectiontitle"><a name="methods"></a>Method Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">addlistener</a></td>
+            <td class="m-help">Add listener for event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.VideoCapture.delete.html">delete</a></td>
+            <td class="m-help">Destructor&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">eq</a></td>
+            <td class="m-help">== (EQ)   Test handle equality.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findobj</a></td>
+            <td class="m-help">Find objects matching specified conditions.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findprop</a></td>
+            <td class="m-help">Find property of MATLAB handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ge</a></td>
+            <td class="m-help">&gt;= (GE)   Greater than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.VideoCapture.get.html">get</a></td>
+            <td class="m-help">Returns the specified VideoCapture property&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.VideoCapture.grab.html">grab</a></td>
+            <td class="m-help">Grabs the next frame from video file or capturing device&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">gt</a></td>
+            <td class="m-help">&gt; (GT)   Greater than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.VideoCapture.isOpened.html">isOpened</a></td>
+            <td class="m-help">Returns true if video capturing has been initialized already&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">isvalid</a></td>
+            <td class="m-help">Test handle validity.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">le</a></td>
+            <td class="m-help">&lt;= (LE)   Less than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">listener</a></td>
+            <td class="m-help">Add listener for event without binding the listener to the source object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">lt</a></td>
+            <td class="m-help">&lt; (LT)   Less than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ne</a></td>
+            <td class="m-help">~= (NE)   Not equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">notify</a></td>
+            <td class="m-help">Notify listeners of event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.VideoCapture.open.html">open</a></td>
+            <td class="m-help">Open video file or a capturing device or a IP video stream for video capturing&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.VideoCapture.read.html">read</a></td>
+            <td class="m-help">Grabs, decodes and returns the next video frame&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.VideoCapture.release.html">release</a></td>
+            <td class="m-help">Closes video file or capturing device&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.VideoCapture.retrieve.html">retrieve</a></td>
+            <td class="m-help">Decodes and returns the grabbed video frame&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.VideoCapture.set.html">set</a></td>
+            <td class="m-help">Sets a property in the VideoCapture&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Events-->
+      <div class="sectiontitle"><a name="events"></a>Event Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ObjectBeingDestroyed</a></td>
+            <td class="m-help">Notifies listeners that a particular object has been destroyed.&nbsp;</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

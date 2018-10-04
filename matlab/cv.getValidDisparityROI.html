@@ -1,0 +1,51 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.getValidDisparityROI - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.getValidDisparityROI - Computes valid disparity ROI from the valid ROIs of the rectified images" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.getValidDisparityROI - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.getValidDisparityROI</div>
+      <div class="helpcontent"><p class=" h1line">Computes valid disparity ROI from the valid ROIs of the rectified images</p>
+<pre class=" prettyprint lang-matlab"><code>r = <a href="cv.getValidDisparityROI.html">cv.getValidDisparityROI</a>(roi1, roi2)
+r = <a href="cv.getValidDisparityROI.html">cv.getValidDisparityROI</a>(roi1, roi2, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>roi1</strong>, <strong>roi2</strong> rectangles inside the rectified images where all the
+the pixels are valid <code>[x,y,w,h]</code> (as returned by <a href="cv.stereoRectify.html">cv.stereoRectify</a>).</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>r</strong> computed rectangle inside the disparity of valid ROI <code>[x,y,w,h]</code>.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>MinDisparity</strong> Minimum possible disparity value. Normally, it is zero
+but sometimes rectification algorithms can shift images, so this parameter
+needs to be adjusted accordingly. default 0</li>
+<li><strong>NumDisparities</strong> Maximum disparity minus minimum disparity. The value is
+always greater than zero. default 64</li>
+<li><strong>BlockSize</strong> the linear size of the matched block size. The size should
+be odd (as the block is centered at the current pixel). Larger block size
+implies smoother, though less accurate disparity map. Smaller block size
+gives more detailed disparity map, but there is is higher chance for
+algorithm to find a wrong correspondence. default 21.</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.stereoRectify.html">cv.stereoRectify</a>, <a href="cv.StereoBM.html">cv.StereoBM</a>, <a href="cv.StereoSGBM.html">cv.StereoSGBM</a>, <a href="cv.filterSpeckles.html">cv.filterSpeckles</a>,
+   <a href="cv.validateDisparity.html">cv.validateDisparity</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

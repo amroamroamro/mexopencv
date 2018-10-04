@@ -1,0 +1,62 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>NMSBoxes (cv.Net) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Net.NMSBoxes - Performs non-maximum suppression given boxes and corresponding scores" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">NMSBoxes (cv.Net) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Net.NMSBoxes</div>
+      <div class="helpcontent"><p class=" h1line">Performs non-maximum suppression given boxes and corresponding scores</p>
+<pre class=" prettyprint lang-matlab"><code>indices = <a href="cv.Net.NMSBoxes.html">cv.Net.NMSBoxes</a>(bboxes, scores, score_threshold, nms_threshold)
+indices = <a href="cv.Net.NMSBoxes.html">cv.Net.NMSBoxes</a>(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>bboxes</strong> a set of bounding boxes to apply NMS.</li>
+<li><strong>scores</strong> a set of corresponding confidences.</li>
+<li><strong>score_threshold</strong> a threshold used to filter boxes by score.</li>
+<li><strong>nms_threshold</strong> a threshold used in non maximum suppression.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>indices</strong> the kept indices of bboxes after NMS.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Eta</strong> a coefficient in adaptive threshold formula:
+<code>nms_threshold_{i+1} = eta * nms_threshold_{i}</code>. default 1.0</li>
+<li><strong>TopK</strong> if <code>&gt; 0</code>, keep at most <code>TopK</code> picked indices.
+default 0</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.groupRectangles.html">cv.groupRectangles</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>true</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

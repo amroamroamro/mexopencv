@@ -1,0 +1,90 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>train (cv.LBPHFaceRecognizer) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.LBPHFaceRecognizer.train - Trains a FaceRecognizer with given data and associated labels" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">train (cv.LBPHFaceRecognizer) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.LBPHFaceRecognizer/train</div>
+      <div class="helpcontent"><p class=" h1line">Trains a FaceRecognizer with given data and associated labels</p>
+<pre class=" prettyprint lang-matlab"><code>obj.train(src, labels)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> The training images, that means the faces you want to
+learn. The data has to be given as a cell array of matrices.</li>
+<li><strong>labels</strong> The labels corresponding to the images. have to be
+given as an integer vector.</li>
+</ul>
+<p>The following source code snippet shows you how to learn a
+Fisherfaces model on a given set of images. The images are read
+with <a href="cv.imread.html">cv.imread</a> and pushed into a cell array. The labels of each
+image are stored within an integer vector. Think of the label as
+the subject (the person) this image belongs to, so same subjects
+(persons) should have the same label. For the available
+FaceRecognizer you don't have to pay any attention to the order
+of the labels, just make sure same persons have the same label:</p>
+<pre class=" prettyprint lang-matlab"><code>% holds images and labels
+images = {};
+labels = [];
+% images for first person
+images{end+1} = <a href="cv.imread.html">cv.imread</a>('person0/0.jpg', 'Grayscale',true);
+labels{end+1} = 0;
+images{end+1} = <a href="cv.imread.html">cv.imread</a>('person0/1.jpg', 'Grayscale',true);
+labels{end+1} = 0;
+images{end+1} = <a href="cv.imread.html">cv.imread</a>('person0/2.jpg', 'Grayscale',true);
+labels{end+1} = 0;
+% images for second person
+images{end+1} = <a href="cv.imread.html">cv.imread</a>('person1/0.jpg', 'Grayscale',true);
+labels{end+1} = 1;
+images{end+1} = <a href="cv.imread.html">cv.imread</a>('person1/1.jpg', 'Grayscale',true);
+labels{end+1} = 1;
+images{end+1} = <a href="cv.imread.html">cv.imread</a>('person1/2.jpg', 'Grayscale',true);
+labels{end+1} = 1;
+</code></pre>
+<p>Now that you have read some images, we can create a new
+FaceRecognizer. In this example I'll create a Fisherfaces model
+and decide to keep all of the possible Fisherfaces:</p>
+<pre class=" prettyprint lang-matlab"><code>% Create a new Fisherfaces model and retain all available
+% Fisherfaces, this is the most common usage of this specific
+% FaceRecognizer:
+model = <a href="cv.BasicFaceRecognizer.html">cv.BasicFaceRecognizer</a>('Fisherfaces');
+</code></pre>
+<p>And finally train it on the given dataset (the face images and
+labels):</p>
+<pre class=" prettyprint lang-matlab"><code>% This is the common interface to train all of the available FaceRecognizer
+% implementations:
+model.train(images, labels);
+</code></pre>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.LBPHFaceRecognizer.predict.html">cv.LBPHFaceRecognizer/predict</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

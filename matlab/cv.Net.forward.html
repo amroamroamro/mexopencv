@@ -1,0 +1,66 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>forward (cv.Net) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Net.forward - Runs forward pass" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">forward (cv.Net) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Net/forward</div>
+      <div class="helpcontent"><p class=" h1line">Runs forward pass</p>
+<pre class=" prettyprint lang-matlab"><code>blob = net.forward()
+blob = net.forward(outputName)
+
+blobs = net.forward(outBlobNames)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>outputName</strong> name for layer which output is needed to get.</li>
+<li><strong>outBlobNames</strong> names for layers which outputs are needed to
+get.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>blob</strong> blob for first output of specified layer.</li>
+<li><strong>blobs</strong> blobs for first outputs of specified layers
+(cell array).</li>
+</ul>
+<p>The first form runs forward pass to compute output of layer
+with name <code>outputName</code>. By default (<code>outputName</code> not specified)
+runs forward pass for the whole network.
+(i.e <code>names = net.getLayerNames(); outputName = names(end);</code>).
+It returns blob for first output of specified layer.</p>
+<p>The second form runs forward pass to compute outputs of layers
+listed in <code>outBlobNames</code>. It returns blobs for first outputs of
+specified layers.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Net.forwardAndRetrieve.html">cv.Net/forwardAndRetrieve</a>, <a href="cv.Net.Net.html">cv.Net/Net</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

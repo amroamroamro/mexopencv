@@ -1,0 +1,100 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.findTransformECC - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.findTransformECC - Finds the geometric transform (warp) between two images in terms of the ECC criterion" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.findTransformECC - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.findTransformECC</div>
+      <div class="helpcontent"><p class=" h1line">Finds the geometric transform (warp) between two images in terms of the ECC criterion</p>
+<pre class=" prettyprint lang-matlab"><code>warpMatrix = <a href="cv.findTransformECC.html">cv.findTransformECC</a>(templateImage, inputImage)
+[warpMatrix,rho] = <a href="cv.findTransformECC.html">cv.findTransformECC</a>(templateImage, inputImage)
+[...] = <a href="cv.findTransformECC.html">cv.findTransformECC</a>(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>templateImage</strong> single-channel template image; <code>uint8</code> or <code>single</code> array.</li>
+<li><strong>inputImage</strong> single-channel input image which should be warped with the
+final <code>warpMatrix</code> in order to provide an image similar to <code>templateImage</code>,
+same type as <code>templateImage</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>warpMatrix</strong> floating-point 2x3 or 3x3 mapping matrix (warp).</li>
+<li><strong>rho</strong> correlation coefficient.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>MotionType</strong> parameter, specifying the type of motion:
+<ul>
+<li><strong>Translation</strong> sets a translational motion model; <code>warpMatrix</code> is 2x3
+with the first 2x2 part being the unity matrix and the rest two
+parameters being estimated.</li>
+<li><strong>Euclidean</strong> sets a Euclidean (rigid) transformation as motion model;
+three parameters are estimated; <code>warpMatrix</code> is 2x3.</li>
+<li><strong>Affine</strong> sets an affine motion model (DEFAULT); six parameters are
+estimated; <code>warpMatrix</code> is 2x3.</li>
+<li><strong>Homography</strong> sets a homography as a motion model; eight parameters are
+estimated; <code>warpMatrix</code> is 3x3.</li>
+</ul>
+</li>
+<li><strong>Criteria</strong> parameter, specifying the termination criteria of the ECC
+algorithm; <code>Criteria.epsilon</code> defines the threshold of the increment in
+the correlation coefficient between two iterations (a negative
+<code>Criteria.epsilon</code> makes <code>Criteria.maxcount</code> the only termination
+criterion). Default values are:
+<code>struct('type','Count+EPS', 'maxCount',50, 'epsilon',0.001)</code></li>
+<li><strong>Mask</strong> An optional mask to indicate valid values of <code>inputImage</code>.
+Not set by default.</li>
+<li><strong>InputWarp</strong> Initial estimate for <code>warpMatrix</code>. See the notes below.
+Default <code>eye(2,3)</code> or <code>eye(3,3)</code> depending on motion type.</li>
+</ul>
+<p>The function estimates the optimum transformation (<code>warpMatrix</code>) with
+respect to ECC criterion ([EP08]), that is:</p>
+<pre class=" prettyprint lang-matlab"><code>warpMatrix = argmax_{W} ECC(templateImage(x,y), inputImage(x',y'))
+</code></pre>
+<p>where:</p>
+<pre class=" prettyprint lang-matlab"><code>[x';y'] = W * [x;y;1]
+</code></pre>
+<p>(the equation holds with homogeneous coordinates for homography). It returns
+the final enhanced correlation coefficient, that is the correlation
+coefficient between the template image and the final warped input image.
+When a 3x3 matrix is given with <code>MotionType</code> being one of 'Translation',
+'Euclidean', or 'Affine', the third row is ignored.</p>
+<p>Unlike <a href="cv.findHomography.html">cv.findHomography</a> and <a href="cv.estimateRigidTransform.html">cv.estimateRigidTransform</a>, the function
+<a href="cv.findTransformECC.html">cv.findTransformECC</a> implements an area-based alignment that builds on
+intensity similarities. In essence, the function updates the initial
+transformation that roughly aligns the images. If this information is
+missing, the identity warp (unity matrix) is used as an initialization. Note
+that if images undergo strong displacements/rotations, an initial
+transformation that roughly aligns the images is necessary (e.g., a simple
+euclidean/similarity transform that allows for the images showing the same
+image content approximately). Use inverse warping in the second image to
+take an image close to the first one, i.e. use the flag <code>WarpInverse</code> with
+<a href="cv.warpAffine.html">cv.warpAffine</a> or <a href="cv.warpPerspective.html">cv.warpPerspective</a>. Note that the function throws an
+exception if algorithm does not converges.</p>
+<h2>References</h2>
+<p>[EP08]:</p>
+<blockquote>
+<p>Georgios D Evangelidis and Emmanouil Z Psarakis. &quot;Parametric image
+alignment using enhanced correlation coefficient maximization&quot;.
+Pattern Analysis and Machine Intelligence, IEEE Transactions on,
+30(10):1858-1865, 2008.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.estimateAffine2D.html">cv.estimateAffine2D</a>, <a href="cv.estimateAffinePartial2D.html">cv.estimateAffinePartial2D</a>,
+   <a href="cv.estimateRigidTransform.html">cv.estimateRigidTransform</a>, <a href="cv.findHomography.html">cv.findHomography</a>, <a href="https://www.mathworks.com/help/images/ref/imregtform.html" target="_blank">imregtform</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

@@ -1,0 +1,76 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.putText - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.putText - Draws a text string" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.putText - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.putText</div>
+      <div class="helpcontent"><p class=" h1line">Draws a text string</p>
+<pre class=" prettyprint lang-matlab"><code>img = <a href="cv.putText.html">cv.putText</a>(img, txt, org)
+[...] = <a href="cv.putText.html">cv.putText</a>(..., 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>img</strong> Image.</li>
+<li><strong>txt</strong> Text string to be drawn.</li>
+<li><strong>org</strong> Bottom-left corner of the text string in the image <code>[x,y]</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>img</strong> Output image, same size and type as input <code>img</code>.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>FontFace</strong> Font type to use. One of the following:
+<ul>
+<li><strong>HersheySimplex</strong> Normal size sans-serif (default)</li>
+<li><strong>HersheyPlain</strong> Small size sans-serif</li>
+<li><strong>HersheyDuplex</strong> Normal size sans-serif; more complex than
+<code>HersheySimplex</code></li>
+<li><strong>HersheyComplex</strong> Normal size serif; more complex than <code>HersheyDuplex</code></li>
+<li><strong>HersheyTriplex</strong> Normal size serif; more complex than <code>HersheyComplex</code></li>
+<li><strong>HersheyComplexSmall</strong> Smaller version of <code>HersheyComplex</code></li>
+<li><strong>HersheyScriptSimplex</strong> Handwriting style</li>
+<li><strong>HersheyScriptComplex</strong> More complex variant of <code>HersheyScriptSimplex</code></li>
+</ul>
+</li>
+<li><strong>FontStyle</strong> Font style. One of:
+<ul>
+<li><strong>Regular</strong> (default)</li>
+<li><strong>Italic</strong></li>
+</ul>
+</li>
+<li><strong>FontScale</strong> Font scale factor that is multiplied by the font-specific
+base size. default 1.0</li>
+<li><strong>Color</strong> 3-element floating-point vector specifying text color.</li>
+<li><strong>Thickness</strong> Thickness of the lines used to draw a text. default 1.</li>
+<li><strong>LineType</strong> Line type (see <a href="cv.line.html">cv.line</a>). One of:
+<ul>
+<li><strong>4</strong> 4-connected line</li>
+<li><strong>8</strong> 8-connected line (default)</li>
+<li><strong>AA</strong> anti-aliased line</li>
+</ul>
+</li>
+<li><strong>BottomLeftOrigin</strong> When true, the image data origin is at the
+bottom-left corner. Otherwise, it is at the top-left corner. default false</li>
+</ul>
+<p>The function <a href="cv.putText.html">cv.putText</a> renders the specified text string in the image.
+Symbols that cannot be rendered using the specified font are replaced by
+question marks. See <a href="cv.getTextSize.html">cv.getTextSize</a> for a text rendering code example.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.getTextSize.html">cv.getTextSize</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

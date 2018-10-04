@@ -1,0 +1,54 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>detectEdges (cv.StructuredEdgeDetection) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.StructuredEdgeDetection.detectEdges - The function detects edges in src and draw them to dst" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">detectEdges (cv.StructuredEdgeDetection) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.StructuredEdgeDetection/detectEdges</div>
+      <div class="helpcontent"><p class=" h1line">The function detects edges in src and draw them to dst</p>
+<pre class=" prettyprint lang-matlab"><code>dst = obj.detectEdges(src)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> source image (RGB, float, in [0;1]) to detect edges.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> destination image (grayscale, float, in [0;1]) where
+edges are drawn.</li>
+</ul>
+<p>The algorithm underlies this function is much more robust to
+texture presence, than common approaches, e.g. <a href="cv.Sobel.html">cv.Sobel</a>.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Sobel.html">cv.Sobel</a>, <a href="cv.Canny.html">cv.Canny</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

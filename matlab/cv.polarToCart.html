@@ -1,0 +1,52 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.polarToCart - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.polarToCart - Calculates x and y coordinates of 2D vectors from their magnitude and angle" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.polarToCart - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.polarToCart</div>
+      <div class="helpcontent"><p class=" h1line">Calculates x and y coordinates of 2D vectors from their magnitude and angle</p>
+<pre class=" prettyprint lang-matlab"><code>[x, y] = <a href="cv.polarToCart.html">cv.polarToCart</a>(mag, ang)
+[...] = <a href="cv.polarToCart.html">cv.polarToCart</a>(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>mag</strong> floating-point array of magnitudes of 2D vectors; it must have the
+same size and type as <code>ang</code>.</li>
+<li><strong>ang</strong> floating-point array of angles of 2D vectors.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>x</strong> output array of x-coordinates of 2D vectors; it has the same size
+and type as <code>ang</code>.</li>
+<li><strong>y</strong> output array of y-coordinates of 2D vectors; it has the same size
+and type as <code>ang</code>.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Degrees</strong> when true, the input angles are measured in degrees,
+otherwise, they are measured in radians. default false</li>
+</ul>
+<p>The function <a href="cv.polarToCart.html">cv.polarToCart</a> calculates the Cartesian coordinates of each 2D
+vector represented by the corresponding elements of magnitude and angle:</p>
+<pre class=" prettyprint lang-matlab"><code>x(I) = magnitude(I) * cos(angle(I))
+y(I) = magnitude(I) * sin(angle(I))
+</code></pre>
+<p>The relative accuracy of the estimated coordinates is about 1e-6.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.cartToPolar.html">cv.cartToPolar</a>, <a href="cv.magnitude.html">cv.magnitude</a>, <a href="cv.phase.html">cv.phase</a>, <a href="https://www.mathworks.com/help/matlab/ref/pol2cart.html" target="_blank">pol2cart</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

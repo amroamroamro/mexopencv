@@ -1,0 +1,103 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.norm - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.norm - Calculates absolute array norm, absolute difference norm, or relative difference norm" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.norm - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.norm</div>
+      <div class="helpcontent"><p class=" h1line">Calculates absolute array norm, absolute difference norm, or relative difference norm</p>
+<pre class=" prettyprint lang-matlab"><code>nrm = <a href="cv.norm.html">cv.norm</a>(src1)
+nrm = <a href="cv.norm.html">cv.norm</a>(src1, src2)
+nrm = <a href="cv.norm.html">cv.norm</a>(..., 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src1</strong> first input array.</li>
+<li><strong>src2</strong> second input array of the same size and the same type as <code>src1</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>nrm</strong> the calculated norm.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>NormType</strong> type of the norm, default 'L2'. One of:
+<ul>
+<li><strong>Inf</strong> Infinity norm (maximum norm).</li>
+<li><strong>L1</strong> L1 norm (Taxicab norm or Manhattan norm).</li>
+<li><strong>L2</strong> L2 norm (Euclidean norm).</li>
+<li><strong>L2Sqr</strong> Squared L2 norm.</li>
+<li><strong>Hamming</strong> In the case of one input array, calculates the Hamming
+distance of the array from zero. In the case of two input arrays,
+calculates the Hamming distance between the arrays.</li>
+<li><strong>Hamming2</strong> Similar to 'Hamming', but in the calculation, each two bits
+of the input sequence will be added and treated as a single bit to be
+used in the same calculation as 'Hamming'.</li>
+</ul>
+</li>
+<li><strong>Relative</strong> if true, computes relative difference, otherwise absolute
+difference. default false</li>
+<li><strong>Mask</strong> optional operation mask; it must have the same size as <code>src1</code> and
+logical type. Not set by default.</li>
+</ul>
+<p>In the first variant (when there is no <code>src2</code>), the function <a href="cv.norm.html">cv.norm</a>
+calculates the absolute norm of <code>src1</code>. The type of norm to calculate is
+specified using <code>NormType</code>:</p>
+<pre class=" prettyprint lang-matlab"><code>       { ||src1||_Linf   = max(abs(src1(:)))     , if NormType='Inf'
+norm = { ||src1||_L1     = sum(abs(src1(:)))     , if NormType='L1'
+       { ||src1||_L2     = sqrt(sum(src1(:).^2)) , if NormType='L2'
+       { (||src1||_L2)^2 = sum(src1(:).^2)       , if NormType='L2Sqr'
+</code></pre>
+<p>In the second variant, the function calculates the absolute difference norm
+or the relative difference norm of arrays <code>src1</code> and <code>src2</code>. The type of
+norm to calculate is specified using <code>NormType</code>:</p>
+<pre class=" prettyprint lang-matlab"><code>       { ||src1 - src2||_Linf   = max(abs(src1(:) - src2(:)))       , if NormType='Inf'
+norm = { ||src1 - src2||_L1     = sum(abs(src1(:) - src2(:)))       , if NormType='L1'
+       { ||src1 - src2||_L2     = sqrt(sum((src1(:) - src2(:)).^2)) , if NormType='L2'
+       { (||src1 - src2||_L2)^2 = sum((src1(:) - src2(:)).^2)       , if NormType='L2Sqr'
+</code></pre>
+<p>or:</p>
+<pre class=" prettyprint lang-matlab"><code>       { ||src1 - src2||_Linf / ||src2||_Linf , if NormType='Inf'   &amp;&amp; Relative=True
+norm = { ||src1 - src2||_L1 / ||src2||_L1     , if NormType='L1'    &amp;&amp; Relative=True
+       { ||src1 - src2||_L2 / ||src2||_L2     , if NormType='L2'    &amp;&amp; Relative=True
+       { (||src1 - src2||_L2 / ||src2||_L2)^2 , if NormType='L2Sqr' &amp;&amp; Relative=True
+</code></pre>
+<p>As example for one array consider the function <code>r(x) = [x; 1-x]</code>,
+<code>x in [-1;1]</code>. The L1, L2 and Linf norm for the sample value
+<code>r(-1) = [-1; 2]</code> is calculated as follows:</p>
+<pre class=" prettyprint lang-matlab"><code>||r(-1)||_L1   = abs(-1) + abs(2) = 3
+||r(-1)||_L2   = sqrt((-1)^2 + (2)^2) = sqrt(5)
+||r(-1)||_Linf = max(abs(-1), abs(2)) = 2
+</code></pre>
+<p>and for <code>r(0.5) = [0.5; 0.5]</code> the calculation is:</p>
+<pre class=" prettyprint lang-matlab"><code>||r(0.5)||_L1   = |0.5| + |0.5| = 1
+||r(0.5)||_L2   = sqrt((0.5)^2 + (0.5)^2) = sqrt(0.5)
+||r(0.5)||_Linf = max(abs(0.5), abs(0.5)) = 0.5
+</code></pre>
+<p>The following graphic shows all values for the three norm functions
+<code>||r(x)||_L1</code>, <code>||r(x)||_L2</code> and <code>||r(x)||_Linf</code>.
+It is notable that the L1 norm forms the upper and the Linf norm forms the
+lower border for the example function <code>r(x)</code>.</p>
+<p><img src="https://docs.opencv.org/3.3.1/NormTypes_OneArray_1-2-INF.png" alt="image" /></p>
+<p>When the <code>Mask</code> parameter is specified and it is not empty, the norm is
+calculated only over the region specified by the mask.</p>
+<p>Multi-channel input arrays are treated as single-channel arrays, that is,
+the results for all channels are combined.</p>
+<p>Hamming norms can only be calculated with <code>uint8</code> depth arrays.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.normalize.html">cv.normalize</a>, <a href="https://www.mathworks.com/help/matlab/ref/norm.html" target="_blank">norm</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

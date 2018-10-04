@@ -1,0 +1,48 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.getRotationMatrix2D - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.getRotationMatrix2D - Calculates an affine matrix of 2D rotation" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.getRotationMatrix2D - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.getRotationMatrix2D</div>
+      <div class="helpcontent"><p class=" h1line">Calculates an affine matrix of 2D rotation</p>
+<pre class=" prettyprint lang-matlab"><code>M = <a href="cv.getRotationMatrix2D.html">cv.getRotationMatrix2D</a>(center, angle, scale)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>center</strong> Center of the rotation in the source image <code>[x,y]</code>.</li>
+<li><strong>angle</strong> Rotation angle in degrees. Positive values mean counter-clockwise
+rotation (the coordinate origin is assumed to be the top-left corner).</li>
+<li><strong>scale</strong> Isotropic scale factor.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>M</strong> The output affine transformation, 2x3 double matrix.</li>
+</ul>
+<p>The function calculates the following matrix:</p>
+<pre class=" prettyprint lang-matlab"><code>[ a, b, (1-a)*center(1) - b*center(2) ;
+ -b, a, b*center(1) + (1-a)*center(2) ]
+</code></pre>
+<p>where:</p>
+<pre class=" prettyprint lang-matlab"><code>a = scale * cos(angle)
+b = scale * sin(angle)
+</code></pre>
+<p>The transformation maps the rotation center to itself. If this is not the
+target, adjust the shift.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.getAffineTransform.html">cv.getAffineTransform</a>, <a href="cv.warpAffine.html">cv.warpAffine</a>, <a href="cv.transform.html">cv.transform</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

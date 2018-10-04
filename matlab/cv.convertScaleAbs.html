@@ -1,0 +1,50 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.convertScaleAbs - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.convertScaleAbs - Scales, calculates absolute values, and converts the result to 8-bit" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.convertScaleAbs - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.convertScaleAbs</div>
+      <div class="helpcontent"><p class=" h1line">Scales, calculates absolute values, and converts the result to 8-bit</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.convertScaleAbs.html">cv.convertScaleAbs</a>(src)
+dst = <a href="cv.convertScaleAbs.html">cv.convertScaleAbs</a>(src, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> input array.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> output 8-bit array.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Alpha</strong> optional scale factor. Default 1.0</li>
+<li><strong>Beta</strong> optional delta added to the scaled values. Default 0.0</li>
+</ul>
+<p>On each element of the input array, the function <a href="cv.convertScaleAbs.html">cv.convertScaleAbs</a> performs
+three operations sequentially: scaling, taking an absolute value, conversion
+to an unsigned 8-bit type:</p>
+<pre class=" prettyprint lang-matlab"><code>dst(I) = saturate_cast&lt;uchar&gt;(|src(I) * alpha + beta|)
+</code></pre>
+<p>In case of multi-channel arrays, the function processes each channel
+independently. When the output is not 8-bit, the operation can be emulated
+by calling the <a href="cv.convertTo.html">cv.convertTo</a> function (or by using matrix expressions) and
+then by calculating an absolute value of the result.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="https://www.mathworks.com/help/matlab/ref/abs.html" target="_blank">abs</a>, <a href="https://www.mathworks.com/help/matlab/ref/uint8.html" target="_blank">uint8</a>, <a href="https://www.mathworks.com/help/matlab/ref/cast.html" target="_blank">cast</a>, <a href="https://www.mathworks.com/help/images/ref/im2uint8.html" target="_blank">im2uint8</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

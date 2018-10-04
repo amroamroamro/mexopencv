@@ -1,0 +1,49 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.cornerMinEigenVal - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.cornerMinEigenVal - Calculates the minimal eigenvalue of gradient matrices for corner detection" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.cornerMinEigenVal - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.cornerMinEigenVal</div>
+      <div class="helpcontent"><p class=" h1line">Calculates the minimal eigenvalue of gradient matrices for corner detection</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.cornerMinEigenVal.html">cv.cornerMinEigenVal</a>(src)
+dst = <a href="cv.cornerMinEigenVal.html">cv.cornerMinEigenVal</a>(src, 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> Input single-channel 8-bit or floating-point image.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> Image to store the minimal eigenvalues. It has the same size as
+<code>src</code> and the <code>single</code> type (single-channel).</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>BlockSize</strong> Neighborhood size (see the details on
+<a href="cv.cornerEigenValsAndVecs.html">cv.cornerEigenValsAndVecs</a>). default 5.</li>
+<li><strong>KSize</strong> Aperture parameter for the <a href="cv.Sobel.html">cv.Sobel</a> operator. default 3.</li>
+<li><strong>BorderType</strong> Pixel extrapolation method. See <a href="cv.copyMakeBorder.html">cv.copyMakeBorder</a>.
+default 'Default'</li>
+</ul>
+<p>The function is similar to <a href="cv.cornerEigenValsAndVecs.html">cv.cornerEigenValsAndVecs</a> but it calculates and
+stores only the minimal eigenvalue of the covariance matrix of derivatives,
+that is, <code>min(lambda_1,lambda_2)</code> in terms of the formulae in the
+<a href="cv.cornerEigenValsAndVecs.html">cv.cornerEigenValsAndVecs</a> description.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.cornerEigenValsAndVecs.html">cv.cornerEigenValsAndVecs</a>, <a href="https://www.mathworks.com/help/vision/ref/detectmineigenfeatures.html" target="_blank">detectMinEigenFeatures</a>, <a href="https://www.mathworks.com/help/vision/ref/cornerpoints.html" target="_blank">cornerPoints</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

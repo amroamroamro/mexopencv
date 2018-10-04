@@ -1,0 +1,135 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.niBlackThreshold - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.niBlackThreshold - Performs thresholding on input images using Niblack's technique or some of the popular variations it inspired" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.niBlackThreshold - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.niBlackThreshold</div>
+      <div class="helpcontent"><p class=" h1line">Performs thresholding on input images using Niblack's technique or some of the popular variations it inspired</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.niBlackThreshold.html">cv.niBlackThreshold</a>(src, k)
+dst = <a href="cv.niBlackThreshold.html">cv.niBlackThreshold</a>(src, k, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> Source 8-bit single-channel image.</li>
+<li><strong>k</strong> The user-adjustable parameter used by Niblack and inspired
+techniques. For Niblack, this is normally a value between 0 and 1
+(its absolute value) that is multiplied with the standard deviation and
+subtracted from the mean (<code>mean + k * std</code>).</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> Destination image of the same size and the same type as <code>src</code>.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>MaxValue</strong> Non-zero value assigned to the pixels for which the condition
+is satisfied, used with the <code>Binary</code> and <code>BinaryInv</code> thresholding types.
+default 255</li>
+<li><strong>Type</strong> Thresholding type, default 'Binary'. One of:
+<ul>
+<li><strong>Binary</strong>    <code>dst(x,y) = (src(x,y) &gt; thresh) ? maxValue : 0</code></li>
+<li><strong>BinaryInv</strong> <code>dst(x,y) = (src(x,y) &gt; thresh) ? 0 : maxValue</code></li>
+<li><strong>Trunc</strong>     <code>dst(x,y) = (src(x,y) &gt; thresh) ? thresh : src(x,y)</code></li>
+<li><strong>ToZero</strong>    <code>dst(x,y) = (src(x,y) &gt; thresh) ? src(x,y) : 0</code></li>
+<li><strong>ToZeroInv</strong> <code>dst(x,y) = (src(x,y) &gt; thresh) ? 0 : src(x,y)</code></li>
+</ul>
+</li>
+<li><strong>BlockSize</strong> Size of a pixel neighborhood that is used to calculate a
+threshold value for the pixel: 3, 5, 7, and so on. default 5</li>
+<li><strong>Method</strong> Binarization method to use. By default, Niblack's technique is
+used. Other techniques can be specified:
+<ul>
+<li><strong>Niblack</strong> Classic Niblack binarization. See [Niblack1985].</li>
+<li><strong>Sauvola</strong> Sauvola's technique. See [Sauvola1997].</li>
+<li><strong>Wolf</strong> Wolf's technique. See [Wolf2004].</li>
+<li><strong>Nick</strong> NICK technique. See [Khurshid2009].</li>
+</ul>
+</li>
+</ul>
+<p>The function transforms a grayscale image to a binary image according to the
+formulae:</p>
+<ul>
+<li>
+<p><strong>Binary</strong></p>
+<pre class=" prettyprint lang-matlab"><code>           | maxValue, if src(x,y) &gt; T(x,y)
+dst(x,y) = |
+           | 0, otherwise
+</code></pre>
+</li>
+<li>
+<p><strong>BinaryInv</strong></p>
+<pre class=" prettyprint lang-matlab"><code>           | 0, if src(x,y) &gt; T(x,y)
+dst(x,y) = |
+           | maxValue, otherwise
+</code></pre>
+</li>
+<li>
+<p><strong>Trunc</strong></p>
+<pre class=" prettyprint lang-matlab"><code>           | T(x,y), if src(x,y) &gt; T(x,y)
+dst(x,y) = |
+           | src(x,y), otherwise
+</code></pre>
+</li>
+<li>
+<p><strong>ToZero</strong></p>
+<pre class=" prettyprint lang-matlab"><code>           | src(x,y), if src(x,y) &gt; T(x,y)
+dst(x,y) = |
+           | 0, otherwise
+</code></pre>
+</li>
+<li>
+<p><strong>ToZeroInv</strong></p>
+<pre class=" prettyprint lang-matlab"><code>           | 0, if src(x,y) &gt; T(x,y)
+dst(x,y) = |
+           | src(x,y), otherwise
+</code></pre>
+</li>
+</ul>
+<p>where <code>T(x,y)</code> is a local threshold calculated individually for each pixel.</p>
+<p>The threshold value <code>T(x,y)</code> is determined based on the binarization method
+chosen. For classic Niblack, it is the mean minus <code>k</code> times standard
+deviation of <code>BlockSize x BlockSize</code> neighborhood of <code>(x,y)</code>.</p>
+<h2>References</h2>
+<p>[Niblack1985]:</p>
+<blockquote>
+<p>Wayne Niblack. &quot;An introduction to digital image processing&quot;.
+Strandberg Publishing Company, 1985.</p>
+</blockquote>
+<p>[Sauvola1997]:</p>
+<blockquote>
+<p>Jaakko Sauvola, Tapio Seppanen, Sami Haapakoski, and Matti Pietikainen.
+&quot;Adaptive document binarization&quot;. In Document Analysis and Recognition,
+Proceedings of the Fourth International Conference on, volume 1,
+pages 147-152. IEEE, 1997.</p>
+</blockquote>
+<p>[Wolf2004]:</p>
+<blockquote>
+<p>Christian Wolf and J-M Jolion. &quot;Extraction and recognition of artificial
+text in multimedia documents&quot;. Pattern Analysis &amp; Applications,
+6(4):309-326, 2004.</p>
+</blockquote>
+<p>[Khurshid2009]:</p>
+<blockquote>
+<p>Khurram Khurshid, Imran Siddiqi, Claudie Faure, and Nicole Vincent.
+&quot;Comparison of niblack inspired binarization methods for ancient
+documents&quot;. In IS&amp;T/SPIE Electronic Imaging, pages 72470U-72470U.
+International Society for Optics and Photonics, 2009.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.threshold.html">cv.threshold</a>, <a href="cv.adaptiveThreshold.html">cv.adaptiveThreshold</a>, <a href="https://www.mathworks.com/help/images/ref/adaptthresh.html" target="_blank">adaptthresh</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

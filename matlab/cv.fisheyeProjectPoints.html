@@ -1,0 +1,61 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.fisheyeProjectPoints - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.fisheyeProjectPoints - Projects points using fisheye model" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.fisheyeProjectPoints - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.fisheyeProjectPoints</div>
+      <div class="helpcontent"><p class=" h1line">Projects points using fisheye model</p>
+<pre class=" prettyprint lang-matlab"><code>imagePoints = <a href="cv.fisheyeProjectPoints.html">cv.fisheyeProjectPoints</a>(objectPoints, rvec, tvec, K)
+[imagePoints, jacobian] = <a href="cv.fisheyeProjectPoints.html">cv.fisheyeProjectPoints</a>(...)
+[...] = <a href="cv.fisheyeProjectPoints.html">cv.fisheyeProjectPoints</a>(..., 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>objectPoints</strong> Array of object points, Nx3/Nx1x3/1xNx3 array or cell
+array of 3-element vectors <code>{[x,y,z],...}</code>, where <code>N</code> is the number of
+points in the view.</li>
+<li><strong>rvec</strong> Rotation vector or matrix (3x1/1x3 or 3x3). See <a href="cv.Rodrigues.html">cv.Rodrigues</a> for
+details.</li>
+<li><strong>tvec</strong> Translation vector (3x1/1x3).</li>
+<li><strong>K</strong> Camera matrix 3x3, <code>K = [fx 0 cx; 0 fy cy; 0 0 1]</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>imagePoints</strong> Output array of image points, Nx2/Nx1x2/1xNx2 array or
+cell array of 2-element vectors <code>{[x,y], ...}</code>.</li>
+<li><strong>jacobian</strong> Optional output <code>(2N)x(2+2+4+3+3+1)</code> jacobian matrix of
+derivatives of image points with respect to components of the
+focal lengths (2), coordinates of the principal point (2), distortion
+coefficients (4), rotation vector (3), translation vector (3), and the
+skew (1).</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>DistCoeffs</strong> Input vector of distortion coefficients <code>[k1,k2,k3,k4]</code>. If
+the vector is empty, the zero distortion coefficients are assumed.
+default empty</li>
+<li><strong>Alpha</strong> The skew coefficient. default 0</li>
+</ul>
+<p>The function computes projections of 3D points to the image plane given
+intrinsic and extrinsic camera parameters. Optionally, the function computes
+Jacobians - matrices of partial derivatives of image points coordinates
+(as functions of all the input parameters) with respect to the particular
+parameters, intrinsic and/or extrinsic.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.projectPoints.html">cv.projectPoints</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

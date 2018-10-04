@@ -1,0 +1,129 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.estimatePoseBoard - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.estimatePoseBoard - Pose estimation for a board of markers" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.estimatePoseBoard - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.estimatePoseBoard</div>
+      <div class="helpcontent"><p class=" h1line">Pose estimation for a board of markers</p>
+<pre class=" prettyprint lang-matlab"><code>[rvec, tvec, num] = <a href="cv.estimatePoseBoard.html">cv.estimatePoseBoard</a>(corners, ids, board, cameraMatrix, distCoeffs)
+[rvec, tvec, num] = <a href="cv.estimatePoseBoard.html">cv.estimatePoseBoard</a>(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>corners</strong> cell array of already detected markers corners. For each
+marker, its four corners are provided, (e.g <code>{{[x,y],..}, ..}</code>). The order
+of the corners should be clockwise.</li>
+<li><strong>ids</strong> list of identifiers for each marker in <code>corners</code> (0-based).</li>
+<li><strong>board</strong> layout of markers in the board. The layout is composed by the
+marker identifiers and the positions of each marker corner in the board
+reference system. You can specify the board as a cell-array that starts
+with the type name followed by option arguments <code>{Type, ...}</code>. There are
+three types of boards available:
+<ul>
+<li><strong>Board</strong> <code>{'Board', objPoints, dictionary, ids}</code>.
+Creates a board of markers.</li>
+<li><strong>GridBoard</strong> <code>{'GridBoard', markersX, markersY, markerLength, markerSeparation, dictionary, 'FirstMarker',firstMarker}</code>.
+Creates a a GridBoard object given the number of markers in each
+direction and the marker size and marker separation.</li>
+<li><strong>CharucoBoard</strong> <code>{'GridBoard', squaresX, squaresY, squareLength, markerLength, dictionary}</code>.
+Creates a CharucoBoard object given the number of squares in each
+direction and the size of the markers and chessboard squares.</li>
+</ul>
+</li>
+<li><strong>cameraMatrix</strong> input 3x3 floating-point camera matrix
+<code>A = [fx 0 cx; 0 fy cy; 0 0 1]</code>.</li>
+<li><strong>distCoeffs</strong> vector of distortion coefficients
+<code>[k1,k2,p1,p2,k3,k4,k5,k6,s1,s2,s3,s4]</code> of 4, 5, 8 or 12 elements.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>rvec</strong> Output vector <code>[x,y,z]</code> corresponding to the rotation vector of
+the board.</li>
+<li><strong>tvec</strong> Output vector <code>[x,y,z]</code> corresponding to the translation vector
+of the board.</li>
+<li><strong>num</strong> The number of markers from the input employed for the board pose
+estimation. Note that returning a 0 means the pose has not been estimated.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Rvec</strong>, <strong>Tvec</strong> Initial <code>rvec</code> and <code>tvec</code>. Used as initial guess if not
+empty. The function uses the provided values as initial approximations of
+the rotation and translation vectors, respectively, and further optimizes
+them. Not set by default.</li>
+<li><strong>UseExtrinsicGuess</strong> defines whether initial guess for <code>rvec</code> and <code>tvec</code>
+will be used or not. default false.</li>
+</ul>
+<h2>Inputs for Board</h2>
+<ul>
+<li><strong>objPoints</strong> array of object points of all the marker corners in the
+board, i.e. their coordinates with respect to the board system. Each
+marker include its 4 corners in CCW order
+<code>{{[x1,y1,z1],[x2,y2,z2],[x3,y3,z3],[x4,y4,z4]}, ..}</code>. Usually object
+points are planar with Z=0.</li>
+<li><strong>dictionary</strong> the dictionary of markers employed for this board. This is
+specified in the same format described in <a href="cv.detectMarkers.html">cv.detectMarkers</a>.</li>
+<li><strong>ids</strong> vector of the identifiers of the markers in the board (same size
+as <code>objPoints</code>). The identifiers refers to the board dictionary (0-based).</li>
+</ul>
+<h2>Inputs for GridBoard</h2>
+<ul>
+<li><strong>markersX</strong> number of markers in X direction.</li>
+<li><strong>markersY</strong> number of markers in Y direction.</li>
+<li><strong>markerLength</strong> marker side length (normally in meters).</li>
+<li><strong>markerSeparation</strong> separation between two markers in the grid (same unit
+as <code>markerLength</code>).</li>
+<li><strong>dictionary</strong> dictionary of markers indicating the type of markers. This
+is specified in the same format described in <a href="cv.detectMarkers.html">cv.detectMarkers</a>.</li>
+<li><strong>FirstMarker</strong> optional 0-based id of first marker in dictionary to use
+on board. default 0</li>
+</ul>
+<h2>Inputs for CharucoBoard</h2>
+<ul>
+<li><strong>squaresX</strong> number of chessboard squares in X direction.</li>
+<li><strong>squaresY</strong> number of chessboard squares in Y direction.</li>
+<li><strong>squareLength</strong> chessboard square side length (normally in meters).</li>
+<li><strong>markerLength</strong> marker side length (same unit as <code>squareLength</code>)</li>
+<li><strong>dictionary</strong> dictionary of markers indicating the type of markers. The
+first markers in the dictionary are used to fill the white chessboard
+squares. This is specified in the same format described in
+<a href="cv.detectMarkers.html">cv.detectMarkers</a>.</li>
+</ul>
+<p>The <a href="cv.estimatePoseBoard.html">cv.estimatePoseBoard</a> function receives the detected markers and returns
+the pose of a marker board composed by those markers. A board of marker has
+a single world coordinate system which is defined by the board layout. The
+returned transformation is the one that transforms points from the board
+coordinate system to the camera coordinate system. Input markers that are
+not included in the board layout are ignored.</p>
+<h1>Board of markers</h1>
+<p>A board is a set of markers in the 3D space with a common cordinate system.
+The common form of a board of marker is a planar (2D) board, however any 3D
+layout can be used.</p>
+<h1>Grid Board</h1>
+<p>A GridBoard is a special case of planar boards with grid arrangement of
+markers. It is the most common type of board. All markers are placed in the
+same plane in a grid arrangment.</p>
+<h1>ChArUco board</h1>
+<p>Specific class for ChArUco boards. A ChArUco board is a planar board where
+the markers are placed inside the white squares of a chessboard. The
+benefits of ChArUco boards is that they provide both, ArUco markers
+versatility and chessboard corner precision, which is important for
+calibration and pose estimation.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.detectMarkers.html">cv.detectMarkers</a>, <a href="cv.estimatePoseSingleMarkers.html">cv.estimatePoseSingleMarkers</a>, <a href="cv.Rodrigues.html">cv.Rodrigues</a>,
+   <a href="cv.solvePnP.html">cv.solvePnP</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

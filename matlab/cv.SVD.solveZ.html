@@ -1,0 +1,58 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>SolveZ (cv.SVD) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.SVD.SolveZ - Solves an under-determined singular linear system" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">SolveZ (cv.SVD) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.SVD.SolveZ</div>
+      <div class="helpcontent"><p class=" h1line">Solves an under-determined singular linear system</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.SVD.SolveZ.html">cv.SVD.SolveZ</a>(A)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>A</strong> Left-hand-side matrix (floating-point type).</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> Found solution <code>x</code>.</li>
+</ul>
+<p>The method finds a unit-length solution <code>x</code> of a singular
+linear system <code>A*x = 0</code>. Depending on the rank of <code>A</code>, there can
+be no solutions, a single solution or an infinite number of
+solutions. In general, the algorithm solves the following
+problem:</p>
+<pre class=" prettyprint lang-matlab"><code>dst = argmin_{x: ||x||=1} || A * x ||
+</code></pre>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.SVD.Compute.html">cv.SVD.Compute</a>, <a href="cv.SVD.BackSubst.html">cv.SVD.BackSubst</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>true</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

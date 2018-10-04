@@ -1,0 +1,88 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>detectAndCompute_elliptic (cv.AffineFeature2D) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.AffineFeature2D.detectAndCompute_elliptic - Detects keypoints and computes their descriptors" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">detectAndCompute_elliptic (cv.AffineFeature2D) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.AffineFeature2D/detectAndCompute_elliptic</div>
+      <div class="helpcontent"><p class=" h1line">Detects keypoints and computes their descriptors</p>
+<pre class=" prettyprint lang-matlab"><code>[keypoints, descriptors] = obj.detectAndCompute_elliptic(img)
+[...] = obj.detectAndCompute_elliptic(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>img</strong> Image, input 8-bit grayscale image.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>keypoints</strong> The detected keypoints (elliptic region around
+an interest point). A 1-by-N structure array with the
+following fields:
+<ul>
+<li><strong>pt</strong> coordinates of the keypoint <code>[x,y]</code></li>
+<li><strong>size</strong> diameter of the meaningful keypoint neighborhood</li>
+<li><strong>angle</strong> computed orientation of the keypoint (-1 if not
+applicable); it's in [0,360) degrees and measured relative
+to image coordinate system (y-axis is directed downward),
+i.e in clockwise.</li>
+<li><strong>response</strong> the response by which the most strong
+keypoints have been selected. Can be used for further
+sorting or subsampling.</li>
+<li><strong>octave</strong> octave (pyramid layer) from which the keypoint
+has been extracted.</li>
+<li><strong>class_id</strong> object class (if the keypoints need to be
+clustered by an object they belong to).</li>
+<li><strong>axes</strong> the lengths of the major and minor ellipse axes
+<code>[ax1,ax2]</code></li>
+<li><strong>si</strong> the integration scale at which the parameters were
+estimated.</li>
+<li><strong>transf</strong> the transformation between image space and local
+patch space, 2x3 matrix.</li>
+</ul>
+</li>
+<li><strong>descriptors</strong> Computed descriptors.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Mask</strong> optional mask specifying where to look for keypoints.
+Not set by default.</li>
+<li><strong>Keypoints</strong> If passed, then the method will use the provided
+vector of keypoints instead of detecting them, and the
+algorithm just computes their descriptors.</li>
+</ul>
+<p>Detects keypoints and computes descriptors for their surrounding
+regions, after warping them into circles.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.AffineFeature2D.detectAndCompute.html">cv.AffineFeature2D/detectAndCompute</a>,
+   <a href="cv.AffineFeature2D.detect_elliptic.html">cv.AffineFeature2D/detect_elliptic</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

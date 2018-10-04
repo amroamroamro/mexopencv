@@ -1,0 +1,85 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.fisheyeStereoCalibrate - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.fisheyeStereoCalibrate - Performs stereo calibration (fisheye)" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.fisheyeStereoCalibrate - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.fisheyeStereoCalibrate</div>
+      <div class="helpcontent"><p class=" h1line">Performs stereo calibration (fisheye)</p>
+<pre class=" prettyprint lang-matlab"><code>S = <a href="cv.fisheyeStereoCalibrate.html">cv.fisheyeStereoCalibrate</a>(objectPoints, imagePoints1, imagePoints2, imageSize)
+[...] = <a href="cv.fisheyeStereoCalibrate.html">cv.fisheyeStereoCalibrate</a>(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>objectPoints</strong> A cell array of cells of the calibration pattern points
+<code>{{[x,y,z], ..}, ...}</code>.</li>
+<li><strong>imagePoints1</strong> A cell array of cells of the projections of the
+calibration pattern points <code>{{[x,y], ..}, ...}</code>, observed by the first
+camera.</li>
+<li><strong>imagePoints2</strong> A cell array of cells of the projections of the
+calibration pattern points <code>{{[x,y], ..}, ...}</code>, observed by the second
+camera.</li>
+<li><strong>imageSize</strong> Size of the image used only to initialize intrinsic camera
+matrix <code>[w,h]</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>S</strong> scalar struct having the following fields:
+<ul>
+<li><strong>cameraMatrix1</strong> Output first camera matrix
+<code>[fx1 0 cx1; 0 fy1 cy1; 0 0 1]</code>.</li>
+<li><strong>distCoeffs1</strong> Output vector of distortion coefficients
+<code>[k1, k2, k3, k4]</code> of 4 elements.</li>
+<li><strong>cameraMatrix2</strong> Output second camera matrix
+<code>[fx2 0 cx2; 0 fy2 cy2; 0 0 1]</code>. The parameter is similar to <code>K1</code>.</li>
+<li><strong>distCoeffs2</strong> Output lens distortion coefficients for the second
+camera. The parameter is similar to <code>D1</code>.</li>
+<li><strong>R</strong> Output 3x3 rotation matrix between the 1st and the 2nd camera
+coordinate systems.</li>
+<li><strong>T</strong> Output 3x1 translation vector between the coordinate systems of
+the cameras.</li>
+<li><strong>reprojErr</strong> output final re-projection error (scalar).</li>
+</ul>
+</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>CameraMatrix1</strong>, <strong>CameraMatrix2</strong> Initial camera matrices. If any of
+<code>UseIntrinsicGuess</code>, <code>FixIntrinsic</code> (default) are specified, some or all
+of the matrix components must be initialized. See the flags description
+for details.</li>
+<li><strong>DistCoeffs1</strong>, <strong>DistCoeffs2</strong> Initial lens distortion coefficients.</li>
+<li><strong>FixIntrinsic</strong> Fix <code>K1</code>, <code>K2</code> and <code>D1</code>, <code>D2</code> so that only <code>R</code>, <code>T</code>
+matrices are estimated. default true</li>
+<li><strong>UseIntrinsicGuess</strong> <code>K1</code>, <code>K2</code> contains valid initial values of <code>fx</code>,
+<code>fy</code>, <code>cx</code>, <code>cy</code> that are optimized further. Otherwise, <code>(cx,cy)</code> is
+initially set to the image center (<code>imageSize</code> is used), and focal
+distances are computed in a least-squares fashion. default false</li>
+<li><strong>RecomputeExtrinsic</strong> Extrinsic will be recomputed after each iteration
+of intrinsic optimization. default false</li>
+<li><strong>CheckCond</strong> The functions will check validity of condition number.
+default false</li>
+<li><strong>FixSkew</strong> Skew coefficient (alpha) is set to zero and stay zero.
+default false</li>
+<li><strong>FixK1</strong>, ..., <strong>FixK4</strong> Selected distortion coefficients are set to
+zeros and stay zero. default false</li>
+<li><strong>Criteria</strong> Termination criteria for the iterative optimization algorithm.
+default <code>struct('type','Count+EPS', 'maxCount',100, 'epsilon',eps)</code></li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.fisheyeCalibrate.html">cv.fisheyeCalibrate</a>, <a href="cv.fisheyeStereoRectify.html">cv.fisheyeStereoRectify</a>, <a href="cv.stereoCalibrate.html">cv.stereoCalibrate</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

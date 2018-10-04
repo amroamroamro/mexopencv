@@ -1,0 +1,47 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.drawDetectedCornersCharuco - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.drawDetectedCornersCharuco - Draws a set of ChArUco corners" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.drawDetectedCornersCharuco - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.drawDetectedCornersCharuco</div>
+      <div class="helpcontent"><p class=" h1line">Draws a set of ChArUco corners</p>
+<pre class=" prettyprint lang-matlab"><code>img = <a href="cv.drawDetectedCornersCharuco.html">cv.drawDetectedCornersCharuco</a>(img, charucoCorners)
+img = <a href="cv.drawDetectedCornersCharuco.html">cv.drawDetectedCornersCharuco</a>(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>img</strong> input image. It must have 1 or 3 channels. In the output, the
+number of channels is not altered.</li>
+<li><strong>charucoCorners</strong> cell array of detected charuco corners <code>{[x,y], ..}</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>img</strong> output image.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>IDs</strong> Optional vector of identifiers for each corner in <code>charucoCorners</code>.</li>
+<li><strong>CornerColor</strong> color of the square surrounding each corner.
+default [255,0,0].</li>
+</ul>
+<p>This function draws a set of detected ChArUco corners. If identifiers
+vector is provided, it also draws the id of each corner.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.interpolateCornersCharuco.html">cv.interpolateCornersCharuco</a>, <a href="cv.drawDetectedMarkers.html">cv.drawDetectedMarkers</a>,
+   <a href="cv.rectangle.html">cv.rectangle</a>, <a href="cv.putText.html">cv.putText</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

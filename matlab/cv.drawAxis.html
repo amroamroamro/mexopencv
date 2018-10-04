@@ -1,0 +1,48 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.drawAxis - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.drawAxis - Draw coordinate system axis from pose estimation" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.drawAxis - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.drawAxis</div>
+      <div class="helpcontent"><p class=" h1line">Draw coordinate system axis from pose estimation</p>
+<pre class=" prettyprint lang-matlab"><code>img = <a href="cv.drawAxis.html">cv.drawAxis</a>(img, cameraMatrix, distCoeffs, rvec, tvec, length)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>img</strong> input image. It must have 1 or 3 channels. In the output, the
+number of channels is not altered.</li>
+<li><strong>cameraMatrix</strong> input 3x3 floating-point camera matrix
+<code>A = [fx 0 cx; 0 fy cy; 0 0 1]</code>.</li>
+<li><strong>distCoeffs</strong> vector of distortion coefficients
+<code>[k1,k2,p1,p2,k3,k4,k5,k6,s1,s2,s3,s4]</code> of 4, 5, 8 or 12 elements.</li>
+<li><strong>rvec</strong> rotation vector of the coordinate system that will be drawn.</li>
+<li><strong>tvec</strong> translation vector of the coordinate system that will be drawn.</li>
+<li><strong>length</strong> length of the painted axis in the same unit as <code>tvec</code>
+(usually in meters).</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>img</strong> output image.</li>
+</ul>
+<p>Given the pose estimation of a marker or board, this function draws the
+axis of the world coordinate system, i.e. the system centered on the
+marker/board. Useful for debugging purposes.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.estimatePoseBoard.html">cv.estimatePoseBoard</a>, <a href="cv.estimatePoseSingleMarkers.html">cv.estimatePoseSingleMarkers</a>,
+   <a href="cv.estimatePoseCharucoBoard.html">cv.estimatePoseCharucoBoard</a>, <a href="cv.Rodrigues.html">cv.Rodrigues</a>, <a href="cv.line.html">cv.line</a>, <a href="cv.projectPoints.html">cv.projectPoints</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

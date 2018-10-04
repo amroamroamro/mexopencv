@@ -1,0 +1,53 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.PCTSignaturesSQFD/PCTSignaturesSQFD - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.PCTSignaturesSQFD.PCTSignaturesSQFD - Creates the algorithm instance using selected distance function, similarity function and similarity function parameter" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.PCTSignaturesSQFD/PCTSignaturesSQFD - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.PCTSignaturesSQFD/PCTSignaturesSQFD</div>
+      <div class="helpcontent"><p class=" h1line">Creates the algorithm instance using selected distance function, similarity function and similarity function parameter</p>
+<pre class=" prettyprint lang-matlab"><code>obj = <a href="cv.PCTSignaturesSQFD.html">cv.PCTSignaturesSQFD</a>()
+obj = <a href="cv.PCTSignaturesSQFD.html">cv.PCTSignaturesSQFD</a>('OptionName',optionValue, ...)
+</code></pre>
+<h2>Options</h2>
+<ul>
+<li><strong>DistanceFunction</strong> Lp Distance function selector. Available:
+<ul>
+<li><strong>L0_25</strong></li>
+<li><strong>L0_5</strong></li>
+<li><strong>L1</strong></li>
+<li><strong>L2</strong> (default)</li>
+<li><strong>L2Squared</strong></li>
+<li><strong>L5</strong></li>
+<li><strong>L_Inf</strong></li>
+</ul>
+</li>
+<li><strong>SimilarityFunction</strong> Similarity function selector, for
+selected distance function <code>d(c_i, c_j)</code> and parameter
+<code>alpha</code>. Available:
+<ul>
+<li><strong>Minus</strong> <code>-d(c_i, c_j)</code></li>
+<li><strong>Gaussian</strong> <code>exp(-alpha * d^2(c_i, c_j))</code></li>
+<li><strong>Heuristic</strong> (default) <code>1/(alpha + d(c_i, c_j))</code></li>
+</ul>
+</li>
+<li><strong>SimilarityParameter</strong> Parameter of the similarity function.
+default 1.0</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.PCTSignaturesSQFD.computeQuadraticFormDistance.html">cv.PCTSignaturesSQFD/computeQuadraticFormDistance</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

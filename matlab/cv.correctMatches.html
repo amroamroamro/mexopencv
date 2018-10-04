@@ -1,0 +1,56 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.correctMatches - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.correctMatches - Refines coordinates of corresponding points" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.correctMatches - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.correctMatches</div>
+      <div class="helpcontent"><p class=" h1line">Refines coordinates of corresponding points</p>
+<pre class=" prettyprint lang-matlab"><code>[newPoints1, newPoints2] = <a href="cv.correctMatches.html">cv.correctMatches</a>(F, points1, points2)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>F</strong> 3x3 fundamental matrix.</li>
+<li><strong>points1</strong> first set of 2D points. A numeric Nx2/Nx1x2/1xNx2 array or a
+cell array of 2-element vectors <code>{[x,y], ...}</code> (floating-point precision).</li>
+<li><strong>points2</strong> second set of 2D points. Same size and type as <code>points1</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>newPoints1</strong> The optimized <code>points1</code>. Similar in shape to <code>points1</code>
+(either Nx2/1xNx2 numeric array or cell array of 2D points).</li>
+<li><strong>newPoints2</strong> The optimized <code>points2</code>.</li>
+</ul>
+<p>The function implements the Optimal Triangulation Method (see [Hartley2004]
+for details). For each given point correspondence <code>points1[i] &lt;-&gt; points2[i]</code>,
+and a fundamental matrix <code>F</code>, it computes the corrected correspondences
+<code>newPoints1[i] &lt;-&gt; newPoints2[i]</code> that minimize the geometric error:</p>
+<pre class=" prettyprint lang-matlab"><code>d(points1[i], newPoints1[i])^2 + d(points2[i], newPoints2[i])^2
+</code></pre>
+<p>(where <code>d(a,b)</code> is the geometric distance between points <code>a</code> and <code>b</code>)
+subject to the epipolar constraint</p>
+<pre class=" prettyprint lang-matlab"><code>newPoints2' * F * newPoints1 = 0
+</code></pre>
+<h2>References</h2>
+<p>[Hartley2004]:</p>
+<blockquote>
+<p>R.I. Hartley and A. Zisserman. &quot;Multiple View Geometry in Computer Vision&quot;
+Cambridge University Press, 2004.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.findFundamentalMat.html">cv.findFundamentalMat</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

@@ -1,0 +1,114 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>setupParameters (cv.Retina) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Retina.setupParameters - Pass retina parameters to adjust current retina instance setup" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">setupParameters (cv.Retina) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Retina/setupParameters</div>
+      <div class="helpcontent"><p class=" h1line">Pass retina parameters to adjust current retina instance setup</p>
+<pre class=" prettyprint lang-matlab"><code>obj.setupParameters('OptionName',optionValue, ...)
+</code></pre>
+<h2>Options</h2>
+<ul>
+<li><strong>OPLandIplParvo</strong> Outer Plexiform Layer (OPL) and Inner
+Plexiform Layer Parvocellular (IplParvo) parameters.</li>
+<li><strong>IplMagno</strong> Inner Plexiform Layer Magnocellular channel
+(IplMagno).</li>
+</ul>
+<h3><code>OPLandIplParvo</code> options</h3>
+<p>See <a href="cv.Retina.setupOPLandIPLParvoChannel.html">cv.Retina.setupOPLandIPLParvoChannel</a> options.</p>
+<h3><code>IplMagno</code> options</h3>
+<p>See <a href="cv.Retina.setupIPLMagnoChannel.html">cv.Retina.setupIPLMagnoChannel</a> options.</p>
+<p>Specify retina model parameters structure, with the new target
+configuration.</p>
+<p>For better clarity, check explenations on the comments of
+methods <code>setupOPLandIPLParvoChannel</code> and <code>setupIPLMagnoChannel</code>.</p>
+<p>Here is the default configuration file of the retina module. It
+gives results such as the first retina output shown on the top
+of this page.</p>
+<pre class=" prettyprint"><code class="language-xml">&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;opencv_storage&gt;
+&lt;OPLandIPLparvo&gt;
+    &lt;colorMode&gt;1&lt;/colorMode&gt;
+    &lt;normaliseOutput&gt;1&lt;/normaliseOutput&gt;
+    &lt;photoreceptorsLocalAdaptationSensitivity&gt;7.5e-01&lt;/photoreceptorsLocalAdaptationSensitivity&gt;
+    &lt;photoreceptorsTemporalConstant&gt;9.0e-01&lt;/photoreceptorsTemporalConstant&gt;
+    &lt;photoreceptorsSpatialConstant&gt;5.3e-01&lt;/photoreceptorsSpatialConstant&gt;
+    &lt;horizontalCellsGain&gt;0.01&lt;/horizontalCellsGain&gt;
+    &lt;hcellsTemporalConstant&gt;0.5&lt;/hcellsTemporalConstant&gt;
+    &lt;hcellsSpatialConstant&gt;7.&lt;/hcellsSpatialConstant&gt;
+    &lt;ganglionCellsSensitivity&gt;7.5e-01&lt;/ganglionCellsSensitivity&gt;
+&lt;/OPLandIPLparvo&gt;
+&lt;IPLmagno&gt;
+    &lt;normaliseOutput&gt;1&lt;/normaliseOutput&gt;
+    &lt;parasolCells_beta&gt;0.&lt;/parasolCells_beta&gt;
+    &lt;parasolCells_tau&gt;0.&lt;/parasolCells_tau&gt;
+    &lt;parasolCells_k&gt;7.&lt;/parasolCells_k&gt;
+    &lt;amacrinCellsTemporalCutFrequency&gt;2.0e+00&lt;/amacrinCellsTemporalCutFrequency&gt;
+    &lt;V0CompressionParameter&gt;9.5e-01&lt;/V0CompressionParameter&gt;
+    &lt;localAdaptintegration_tau&gt;0.&lt;/localAdaptintegration_tau&gt;
+    &lt;localAdaptintegration_k&gt;7.&lt;/localAdaptintegration_k&gt;
+&lt;/IPLmagno&gt;
+&lt;/opencv_storage&gt;
+</code></pre>
+<p>Here is the &quot;realistic&quot; setup used to obtain the second retina
+output shown on the top of this page.</p>
+<pre class=" prettyprint"><code class="language-xml">&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;opencv_storage&gt;
+&lt;OPLandIPLparvo&gt;
+    &lt;colorMode&gt;1&lt;/colorMode&gt;
+    &lt;normaliseOutput&gt;1&lt;/normaliseOutput&gt;
+    &lt;photoreceptorsLocalAdaptationSensitivity&gt;8.9e-01&lt;/photoreceptorsLocalAdaptationSensitivity&gt;
+    &lt;photoreceptorsTemporalConstant&gt;9.0e-01&lt;/photoreceptorsTemporalConstant&gt;
+    &lt;photoreceptorsSpatialConstant&gt;5.3e-01&lt;/photoreceptorsSpatialConstant&gt;
+    &lt;horizontalCellsGain&gt;0.3&lt;/horizontalCellsGain&gt;
+    &lt;hcellsTemporalConstant&gt;0.5&lt;/hcellsTemporalConstant&gt;
+    &lt;hcellsSpatialConstant&gt;7.&lt;/hcellsSpatialConstant&gt;
+    &lt;ganglionCellsSensitivity&gt;8.9e-01&lt;/ganglionCellsSensitivity&gt;
+&lt;/OPLandIPLparvo&gt;
+&lt;IPLmagno&gt;
+    &lt;normaliseOutput&gt;1&lt;/normaliseOutput&gt;
+    &lt;parasolCells_beta&gt;0.&lt;/parasolCells_beta&gt;
+    &lt;parasolCells_tau&gt;0.&lt;/parasolCells_tau&gt;
+    &lt;parasolCells_k&gt;7.&lt;/parasolCells_k&gt;
+    &lt;amacrinCellsTemporalCutFrequency&gt;2.0e+00&lt;/amacrinCellsTemporalCutFrequency&gt;
+    &lt;V0CompressionParameter&gt;9.5e-01&lt;/V0CompressionParameter&gt;
+    &lt;localAdaptintegration_tau&gt;0.&lt;/localAdaptintegration_tau&gt;
+    &lt;localAdaptintegration_k&gt;7.&lt;/localAdaptintegration_k&gt;
+&lt;/IPLmagno&gt;
+&lt;/opencv_storage&gt;
+</code></pre>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Retina.setup.html">cv.Retina/setup</a>, <a href="cv.Retina.setupOPLandIPLParvoChannel.html">cv.Retina/setupOPLandIPLParvoChannel</a>,
+   <a href="cv.Retina.setupIPLMagnoChannel.html">cv.Retina/setupIPLMagnoChannel</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

@@ -1,0 +1,49 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.drawChessboardCorners - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.drawChessboardCorners - Renders the detected chessboard corners" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.drawChessboardCorners - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.drawChessboardCorners</div>
+      <div class="helpcontent"><p class=" h1line">Renders the detected chessboard corners</p>
+<pre class=" prettyprint lang-matlab"><code>im = <a href="cv.drawChessboardCorners.html">cv.drawChessboardCorners</a>(im, patternSize, corners)
+im = <a href="cv.drawChessboardCorners.html">cv.drawChessboardCorners</a>(..., 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>im</strong> Source image. It must be an 8-bit color image.</li>
+<li><strong>patternSize</strong> Number of inner corners per a chessboard row and column
+(<code>patternSize = [points_per_row, points_per_column]</code>).</li>
+<li><strong>corners</strong> Array of detected corners, the output of
+<a href="cv.findChessboardCorners.html">cv.findChessboardCorners</a>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>im</strong> Destination image.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>PatternWasFound</strong> Parameter indicating whether the complete board was
+found or not. The return value of <a href="cv.findChessboardCorners.html">cv.findChessboardCorners</a> should be
+passed here. default true</li>
+</ul>
+<p>The function draws individual chessboard corners detected either as red
+circles if the board was not found, or as colored corners connected with
+lines if the board was found.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.findChessboardCorners.html">cv.findChessboardCorners</a>, <a href="cv.findCirclesGrid.html">cv.findCirclesGrid</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

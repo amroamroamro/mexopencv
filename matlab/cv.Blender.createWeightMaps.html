@@ -1,0 +1,55 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>createWeightMaps (cv.Blender) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Blender.createWeightMaps - Creates weight maps for fixed set of source images by their masks and top-left corners" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">createWeightMaps (cv.Blender) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Blender/createWeightMaps</div>
+      <div class="helpcontent"><p class=" h1line">Creates weight maps for fixed set of source images by their masks and top-left corners</p>
+<pre class=" prettyprint lang-matlab"><code>[weight_maps, dst_roi] = obj.createWeightMaps(masks, corners)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>masks</strong> Cell-array of image masks.</li>
+<li><strong>corners</strong> Cell-array of top-left corners <code>{[x,y],...}</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>weight_maps</strong> Cell-array of weight maps.</li>
+<li><strong>dst_roi</strong> ROI rectangle <code>[x,y,w,h]</code>.</li>
+</ul>
+<p>Final image can be obtained by simple weighting of the source
+images.</p>
+</div><!--after help -->
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

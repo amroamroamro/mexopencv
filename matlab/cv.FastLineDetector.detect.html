@@ -1,0 +1,63 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>detect (cv.FastLineDetector) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.FastLineDetector.detect - Finds lines in the input image" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">detect (cv.FastLineDetector) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.FastLineDetector/detect</div>
+      <div class="helpcontent"><p class=" h1line">Finds lines in the input image</p>
+<pre class=" prettyprint lang-matlab"><code>lines = obj.detect(img)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>img</strong> A grayscale (<code>uint8</code>) input image.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>lines</strong> A cell array of 4-elements vectors of the form
+<code>{[x1,y1, x2,y2], ..}</code> specifying the beginning and ending
+point of a line, where point 1 <code>[x1,y1]</code> is the start, point 2
+<code>[x2,y2]</code> the end. Returned lines are directed so that the
+brighter side is on their left.</li>
+</ul>
+<p>An example output of the default parameters of the algorithm can
+be seen here:</p>
+<p><img src="https://docs.opencv.org/3.3.1/corridor_fld.jpg" alt="image" /></p>
+<p>If only a ROI needs to be selected, use:</p>
+<pre class=" prettyprint lang-matlab"><code>lines = obj.detect(<a href="cv.Rect.crop.html">cv.Rect.crop</a>(image, roi));
+lines = cat(1, lines{:});
+lines = bsxfun(@plus, lines, roi);
+</code></pre>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.FastLineDetector.drawSegments.html">cv.FastLineDetector/drawSegments</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

@@ -1,0 +1,46 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.convexityDefects - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.convexityDefects - Finds the convexity defects of a contour" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.convexityDefects - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.convexityDefects</div>
+      <div class="helpcontent"><p class=" h1line">Finds the convexity defects of a contour</p>
+<pre class=" prettyprint lang-matlab"><code>defects = <a href="cv.convexityDefects.html">cv.convexityDefects</a>(contour, convexhull)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>contour</strong> Input contour. 2D point set, stored in numeric array
+(Nx2/Nx1x2/1xNx2) or cell array of 2-element vectors (<code>{[x,y], ...}</code>).</li>
+<li><strong>convexhull</strong> Corresponding convex hull obtained using <a href="cv.convexHull.html">cv.convexHull</a> that
+should contain indices of the contour points that make the hull. A numeric
+vector of 0-based indices.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>defects</strong> The output vector of convexity defects <code>{[v0,v1,v2,v3], ...}</code>.
+Each convexity defect is represented as 4-element integer vector
+<code>[start_index, end_index, farthest_pt_index, fixpt_depth]</code>, where indices
+are 0-based indices in the original contour of the convexity defect
+(beginning, end and the farthest point), and <code>fixpt_depth</code> is fixed-point
+approximation (with 8 fractional bits) of the distance between the
+farthest contour point and the hull. That is, to get the floating-point
+value of the depth will be <code>fixpt_depth/256.0</code>.</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.convexHull.html">cv.convexHull</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

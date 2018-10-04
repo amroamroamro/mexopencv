@@ -1,0 +1,94 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.phaseCorrelate - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.phaseCorrelate - Detect translational shifts that occur between two images" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.phaseCorrelate - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.phaseCorrelate</div>
+      <div class="helpcontent"><p class=" h1line">Detect translational shifts that occur between two images</p>
+<pre class=" prettyprint lang-matlab"><code>pshift = <a href="cv.phaseCorrelate.html">cv.phaseCorrelate</a>(src1, src2)
+[pshift,response] = <a href="cv.phaseCorrelate.html">cv.phaseCorrelate</a>(src1, src2)
+[...] = <a href="cv.phaseCorrelate.html">cv.phaseCorrelate</a>(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src1</strong> First source floating-point array (single-channel <code>single</code> or
+<code>double</code>).</li>
+<li><strong>src2</strong> Second source floating-point array (single-channel <code>single</code> or
+<code>double</code>), of same size and type as <code>src1</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>pshift</strong> detected phase shift (sub-pixel) between the two arrays <code>[x,y]</code></li>
+<li><strong>response</strong> Signal power within the 5x5 centroid around the peak, between
+0 and 1 (optional).</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Window</strong> Floating-point array with windowing coefficients to reduce edge
+effects (optional). Not set by default.</li>
+</ul>
+<p>The function is used to detect translational shifts that occur between two
+images.</p>
+<p>The operation takes advantage of the Fourier shift theorem for detecting the
+translational shift in the frequency domain. It can be used for fast image
+registration as well as motion estimation. For more information please see
+<a href="https://en.wikipedia.org/wiki/Phase_correlation" target="_blank">Phase correlation</a>.</p>
+<p>Calculates the cross-power spectrum of two supplied source arrays. The
+arrays are padded if needed with <a href="cv.getOptimalDFTSize.html">cv.getOptimalDFTSize</a>.</p>
+<p>The function performs the following equations:</p>
+<ul>
+<li>
+<p>First it applies a
+<a href="https://en.wikipedia.org/wiki/Hann_function" target="_blank">Hanning window</a> to each image
+to remove possible edge effects. This window is cached until the array
+size changes to speed up processing time.</p>
+</li>
+<li>
+<p>Next it computes the forward DFTs of each source array:</p>
+<pre class=" prettyprint lang-matlab"><code>G_a = F{src1}, G_b = F{src2}
+</code></pre>
+<p>where <code>F</code> is the forward DFT.</p>
+</li>
+<li>
+<p>It then computes the cross-power spectrum of each frequency domain array:</p>
+<pre class=" prettyprint lang-matlab"><code>R = G_a * G_b^(*) / |G_a * G_b^(*)|
+</code></pre>
+</li>
+<li>
+<p>Next the cross-correlation is converted back into the time domain via the
+inverse DFT:</p>
+<pre class=" prettyprint lang-matlab"><code>r = F^(-1){R}
+</code></pre>
+</li>
+<li>
+<p>Finally, it computes the peak location and computes a 5x5 weighted
+centroid around the peak to achieve sub-pixel accuracy.</p>
+<pre class=" prettyprint lang-matlab"><code>(\Delta{x}, \Delta{y}) = weightedCentroid{argmax_(x,y){r}}
+</code></pre>
+</li>
+<li>
+<p>If non-zero, the response parameter is computed as the sum of the elements
+of <code>r</code> within the 5x5 centroid around the peak location. It is normalized
+to a maximum of 1 (meaning there is a single peak) and will be smaller
+when there are multiple peaks.</p>
+</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.dft.html">cv.dft</a>, <a href="cv.getOptimalDFTSize.html">cv.getOptimalDFTSize</a>, cv.idft, <a href="cv.mulSpectrums.html">cv.mulSpectrums</a>,
+   <a href="cv.createHanningWindow.html">cv.createHanningWindow</a>, <a href="https://www.mathworks.com/help/images/ref/imregcorr.html" target="_blank">imregcorr</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

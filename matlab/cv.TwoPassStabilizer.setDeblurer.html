@@ -1,0 +1,61 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>setDeblurer (cv.TwoPassStabilizer) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.TwoPassStabilizer.setDeblurer - Set the deblurring algorithm for the video stabilizer" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">setDeblurer (cv.TwoPassStabilizer) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.TwoPassStabilizer/setDeblurer</div>
+      <div class="helpcontent"><p class=" h1line">Set the deblurring algorithm for the video stabilizer</p>
+<pre class=" prettyprint lang-matlab"><code>stab.setDeblurer(deblurerType, ...)
+
+stab.setDeblurer('NullDeblurer')
+stab.setDeblurer('WeightingDeblurer', 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>deblurerType</strong> Deblurring method. One of:
+<ul>
+<li><strong>NullDeblurer</strong></li>
+<li><strong>WeightingDeblurer</strong></li>
+</ul>
+</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Radius</strong> default 0</li>
+<li><strong>Sensitivity</strong> default 0.1</li>
+</ul>
+<p>The class uses <code>NullDeblurer</code> by default.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.TwoPassStabilizer.getDeblurer.html">cv.TwoPassStabilizer/getDeblurer</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

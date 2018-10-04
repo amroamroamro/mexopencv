@@ -1,0 +1,63 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>shrinkCaffeModel (cv.Net) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Net.shrinkCaffeModel - Convert all weights of Caffe network to half precision floating point" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">shrinkCaffeModel (cv.Net) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Net.shrinkCaffeModel</div>
+      <div class="helpcontent"><p class=" h1line">Convert all weights of Caffe network to half precision floating point</p>
+<pre class=" prettyprint lang-matlab"><code><a href="cv.Net.shrinkCaffeModel.html">cv.Net.shrinkCaffeModel</a>(src, dst)
+<a href="cv.Net.shrinkCaffeModel.html">cv.Net.shrinkCaffeModel</a>(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> Path to origin model from Caffe framework contains
+single precision floating point weights (usually has
+<code>.caffemodel</code> extension).</li>
+<li><strong>dst</strong> Path to destination model with updated weights.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>LayersTypes</strong> Set of layers types which parameters will be
+converted. By default (not set), converts only Convolutional
+and Fully-Connected layers' weights,
+i.e <code>{'Convolution', 'InnerProduct'}</code>.</li>
+</ul>
+<p>Note: Shrinked model has no origin <code>float32</code> weights so it can't
+be used in origin Caffe framework anymore. However the structure
+of data is taken from NVidia's
+&lt;https://github.com/NVIDIA/caffe Caffe fork&gt;. So the resulting
+model may be used there.</p>
+</div><!--after help -->
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>true</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

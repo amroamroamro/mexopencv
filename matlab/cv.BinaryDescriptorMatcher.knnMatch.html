@@ -1,0 +1,73 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>knnMatch (cv.BinaryDescriptorMatcher) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.BinaryDescriptorMatcher.knnMatch - For every input query descriptor, retrieve the best k matching ones from a dataset provided from user or from the one internal to class" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">knnMatch (cv.BinaryDescriptorMatcher) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.BinaryDescriptorMatcher/knnMatch</div>
+      <div class="helpcontent"><p class=" h1line">For every input query descriptor, retrieve the best k matching ones from a dataset provided from user or from the one internal to class</p>
+<pre class=" prettyprint lang-matlab"><code>matches = matcher.knnMatch(queryDescriptors, trainDescriptors, k)
+matches = matcher.knnMatch(queryDescriptors, k)
+[...] = matcher.knnMatch(..., 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>queryDescriptors</strong> query descriptors.</li>
+<li><strong>trainDescriptors</strong> dataset of descriptors furnished by user.</li>
+<li><strong>k</strong> number of the closest descriptors to be returned for
+every input query.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>matches</strong> vector to host retrieved matches.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Mask</strong> mask to select which input descriptors must be
+matched to ones in dataset. A vector of masks in the second
+variant (the i-th mask in vector indicates whether each input
+query can be matched with descriptors in dataset relative to
+i-th image). Not set by default.</li>
+<li><strong>CompactResult</strong> flag to obtain a compact result (if true, a
+vector that doesn't contain any matches for a given query is
+not inserted in final result). default false</li>
+</ul>
+<p>For every input descriptor, find the best k matching descriptors:</p>
+<ul>
+<li>in the first variant, for a pair of images</li>
+<li>in the second variant, from one image to a set</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.BinaryDescriptorMatcher.match.html">cv.BinaryDescriptorMatcher/match</a>,
+   <a href="cv.BinaryDescriptorMatcher.radiusMatch.html">cv.BinaryDescriptorMatcher/radiusMatch</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

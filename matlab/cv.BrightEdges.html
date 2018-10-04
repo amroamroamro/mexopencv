@@ -1,0 +1,54 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.BrightEdges - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.BrightEdges - Bright edges detector" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.BrightEdges - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.BrightEdges</div>
+      <div class="helpcontent"><p class=" h1line">Bright edges detector</p>
+<pre class=" prettyprint lang-matlab"><code>edge = <a href="cv.BrightEdges.html">cv.BrightEdges</a>(img)
+edge = <a href="cv.BrightEdges.html">cv.BrightEdges</a>(img, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>img</strong> input color image.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>edge</strong> output edge image.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Contrast</strong> default 1</li>
+<li><strong>ShortRange</strong> default 3</li>
+<li><strong>LongRange</strong> default 9</li>
+</ul>
+<p>The function implements a new way of detecting edges used is low resolution
+image object recognition in real projects (e.g. 50cm per pixel). It corrects
+surfaces for objects partially under a lighting shadow, and reveal low
+visibility edges. The result is used to feed further object detection
+processes particularly in context where small edges or details are important
+for object discrimination.</p>
+<p>The function provides an implementation of an equalized absolute difference
+of blurs, and an optional further treatment to contrast edges based on
+finding local minimum along at least two directions. The local minimum
+detection contrast is a parameter, using 10 as default (10 on 255 maximum).
+The kernel size for the gaussian and the average blur can be passed as
+parameters too.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Canny.html">cv.Canny</a>, <a href="cv.blur.html">cv.blur</a>, <a href="cv.GaussianBlur.html">cv.GaussianBlur</a>, <a href="cv.equalizeHist.html">cv.equalizeHist</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

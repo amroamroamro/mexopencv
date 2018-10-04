@@ -1,0 +1,230 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.dft - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.dft - Performs a forward or inverse Discrete Fourier transform of a 1D or 2D floating-point array" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.dft - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.dft</div>
+      <div class="helpcontent"><p class=" h1line">Performs a forward or inverse Discrete Fourier transform of a 1D or 2D floating-point array</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.dft.html">cv.dft</a>(src)
+dst = <a href="cv.dft.html">cv.dft</a>(src, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> input floating-point array that could be real or complex.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> output array whose size and type depends on the flags.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Inverse</strong> performs an inverse 1D or 2D transform instead of the default
+forward transform. default false</li>
+<li><strong>Scale</strong> scales the result: divide it by the number of array elements.
+Normally, it is combined with the <code>Inverse</code> flag, as it guarantees that
+the inverse of the inverse will have the correct normalization.
+default false</li>
+<li><strong>Rows</strong> performs a forward or inverse transform of every individual row
+of the input matrix; this flag enables you to transform multiple vectors
+simultaneously and can be used to decrease the overhead (which is sometimes
+several times larger than the processing itself) to perform 3D and
+higher-dimensional transformations and so forth. default false</li>
+<li><strong>ComplexOutput</strong> performs a forward transformation of 1D or 2D real
+array; the result, though being a complex array, has complex-conjugate
+symmetry (<em>CCS</em>, see the function description below for details), and such
+an array can be packed into a real array of the same size as input, which
+is the fastest option and which is what the function does by default;
+however, you may wish to get a full complex array (for simpler spectrum
+analysis, and so on), pass the flag to enable the function to produce a
+full-size complex output array. default false</li>
+<li><strong>RealOutput</strong> performs an inverse transformation of a 1D or 2D complex
+array; the result is normally a complex array of the same size, however,
+if the input array has conjugate-complex symmetry (for example, it is a
+result of forward transformation with <code>ComplexOutput</code> flag), the output is
+a real array; while the function itself does not check whether the input
+is symmetrical or not, you can pass the flag and then the function will
+assume the symmetry and produce the real output array (note that when the
+input is packed into a real array and inverse transformation is executed,
+the function treats the input as a packed complex-conjugate symmetrical
+array, and the output will also be a real array). default false</li>
+<li><strong>ComplexInput</strong> specifies that input is complex input. If this flag is
+set, the input must have 2 channels. On the other hand, for backwards
+compatibility reason, if input has 2 channels, input is already considered
+complex. default false</li>
+<li><strong>NonzeroRows</strong> when the parameter is not zero, the function assumes that
+only the first <code>NonzeroRows</code> rows of the input array (<code>Inverse</code> is not set)
+or only the first <code>NonzeroRows</code> of the output array (<code>Inverse</code> is set)
+contain non-zeros, thus, the function can handle the rest of the rows more
+efficiently and save some time; this technique is very useful for
+calculating array cross-correlation or convolution using dft. default 0</li>
+</ul>
+<p>The function <a href="cv.dft.html">cv.dft</a> performs one of the following:</p>
+<ul>
+<li>
+<p>Forward the Fourier transform of a 1D vector of N elements:</p>
+<pre class=" prettyprint lang-matlab"><code>Y = FN * X
+</code></pre>
+<p>where</p>
+<pre class=" prettyprint lang-matlab"><code>FN(j,k) = exp(-2*pi * 1i * j * k/N)
+</code></pre>
+<p>and <code>1i = sqrt(-1)</code></p>
+</li>
+<li>
+<p>Inverse the Fourier transform of a 1D vector of N elements:</p>
+<pre class=" prettyprint lang-matlab"><code>X'= inv(FN) * Y = ctranspose(FN) * Y
+X = (1/N) * X'
+</code></pre>
+<p>where <code>ctranspose(F) = transpose(conj(F)) = transpose(real(F) - 1i*imag(F))</code></p>
+</li>
+<li>
+<p>Forward the 2D Fourier transform of a MxN matrix:</p>
+<pre class=" prettyprint lang-matlab"><code>Y = FM * X * FN
+</code></pre>
+</li>
+<li>
+<p>Inverse the 2D Fourier transform of a MxN matrix:</p>
+<pre class=" prettyprint lang-matlab"><code>X'= ctranspose(FM) * Y * ctranspose(FN)
+X = (1/(M*N)) * X'
+</code></pre>
+</li>
+</ul>
+<p>In case of real (single-channel) data, the output spectrum of the forward
+Fourier transform or input spectrum of the inverse Fourier transform can be
+represented in a packed format called <em>CCS</em> (complex-conjugate-symmetrical).
+It was borrowed from IPL (Intel Image Processing Library). Here is how 2D
+<em>CCS</em> spectrum looks:</p>
+<pre class=" prettyprint lang-matlab"><code>CCS = [
+  ReY(0,0), ReY(0,1), ImY(0,1), ..., ReY(0,N/2-1), ImY(0,N/2-1), ReY(0,N/2)
+  ReY(1,0), ReY(1,1), ImY(1,1), ..., ReY(1,N/2-1), ImY(1,N/2-1), ReY(1,N/2)
+  ImY(1,0), ReY(2,1), ImY(2,1), ..., ReY(2,N/2-1), ImY(2,N/2-1), ImY(1,N/2)
+  ...
+  ReY(M/2-1,0), ReY(M-3,1), ImY(M-3,1), ..., ReY(M-3,N/2-1), ImY(M-3,N/2-1), ReY(M/2-1,N/2)
+  ImY(M/2-1,0), ReY(M-2,1), ImY(M-2,1), ..., ReY(M-2,N/2-1), ImY(M-2,N/2-1), ImY(M/2-1,N/2)
+  ReY(M/2,  0), ReY(M-1,1), ImY(M-1,1), ..., ReY(M-1,N/2-1), ImY(M-1,N/2-1), ReY(M/2,  N/2)
+]
+</code></pre>
+<p>In case of 1D transform of a real vector, the output looks like the first
+row of the matrix above.</p>
+<p>So, the function chooses an operation mode depending on the flags and size
+of the input array:</p>
+<ul>
+<li>If <code>Rows</code> is set or the input array has a single row or single column, the
+function performs a 1D forward or inverse transform of each row of a
+matrix when <code>Rows</code> is set. Otherwise, it performs a 2D transform.</li>
+<li>If the input array is real and <code>Inverse</code> is not set, the function performs
+a forward 1D or 2D transform:
+<ul>
+<li>When <code>ComplexOutput</code> is set, the output is a complex matrix of the same
+size as input.</li>
+<li>When <code>ComplexOutput</code> is not set, the output is a real matrix of the same
+size as input. In case of 2D transform, it uses the packed format as
+shown above. In case of a single 1D transform, it looks like the first
+row of the matrix above. In case of multiple 1D transforms (when using
+the <code>Rows</code> flag), each row of the output matrix looks like the first row
+of the matrix above.</li>
+</ul>
+</li>
+<li>If the input array is complex and either <code>Inverse</code> or <code>RealOutput</code> are not
+set, the output is a complex array of the same size as input. The function
+performs a forward or inverse 1D or 2D transform of the whole input array
+or each row of the input array independently, depending on the flags
+<code>Inverse</code> and <code>Rows</code>.</li>
+<li>When <code>Inverse</code> is set and the input array is real, or it is complex but
+<code>RealOutput</code> is set, the output is a real array of the same size as input.
+The function performs a 1D or 2D inverse transformation of the whole input
+array or each individual row, depending on the flags <code>Inverse</code> and <code>Rows</code>.</li>
+</ul>
+<p>If <code>Scale</code> is set, the scaling is done after the transformation.</p>
+<p>Unlike <a href="cv.dct.html">cv.dct</a>, the function supports arrays of arbitrary size. But only
+those arrays are processed efficiently, whose sizes can be factorized in a
+product of small prime numbers (2, 3, and 5 in the current implementation).
+Such an efficient dft size can be calculated using the <a href="cv.getOptimalDFTSize.html">cv.getOptimalDFTSize</a>
+method.</p>
+<p>Note: <a href="cv.idft.html">cv.idft</a> is equivalent to <code><a href="cv.dft.html">cv.dft</a>(..., 'Inverse',true)</code>.
+Also note that none of <a href="cv.dft.html">cv.dft</a> and <a href="cv.idft.html">cv.idft</a> scales the result by default. So,
+you should pass <code>Scale=true</code> to one of <a href="cv.dft.html">cv.dft</a> or <a href="cv.idft.html">cv.idft</a> explicitly to make
+these transforms mutually inverse.</p>
+<h2>Example</h2>
+<p>The sample below illustrates how to calculate a dft-based convolution of two
+2D real arrays:</p>
+<pre class=" prettyprint lang-matlab"><code>function C = convolveDFT(A, B)
+    % calculate the size of dft transform
+    dftSize = size(A) + size(B) - 1;
+    dftSize(1) = <a href="cv.getOptimalDFTSize.html">cv.getOptimalDFTSize</a>(dftSize(1));
+    dftSize(2) = <a href="cv.getOptimalDFTSize.html">cv.getOptimalDFTSize</a>(dftSize(2));
+
+    % allocate temporary buffers and initialize them with 0's
+    tempA = zeros(dftSize, class(A));
+    tempB = zeros(dftSize, class(B));
+
+    % copy A/B to the top-left corners of tempA/tempB respectively
+    tempA(1:size(A,1), 1:size(A,2)) = A;
+    tempB(1:size(B,1), 1:size(B,2)) = B;
+
+    % now transform the padded A &amp; B in-place;
+    % use 'NonzeroRows' hint for faster processing
+    tempA = <a href="cv.dft.html">cv.dft</a>(tempA, 'NonzeroRows',size(A,1));
+    tempB = <a href="cv.dft.html">cv.dft</a>(tempB, 'NonzeroRows',size(B,1));
+
+    % multiply the spectrums;
+    % the function handles packed spectrum representations well
+    C = <a href="cv.mulSpectrums.html">cv.mulSpectrums</a>(tempA, tempB);
+
+    % the output array size
+    sz = abs(size(A) - size(B)) + 1;
+
+    % transform the product back from the frequency domain.
+    % Even though all the result rows will be non-zero,
+    % you need only the first sz(1) of them
+    C = <a href="cv.dft.html">cv.dft</a>(C, 'Inverse',true, 'Scale',true, 'NonzeroRows',sz(1));
+
+    % now slice the result part from C
+    C = C(1:sz(1), 1:sz(2));
+end
+</code></pre>
+<p>To optimize this sample, consider the following approaches:</p>
+<ul>
+<li>Since <code>NonzeroRows ~= 0</code> is passed to the forward transform calls and
+since <code>A</code> and <code>B</code> are copied to the top-left corners of <code>tempA</code> and
+<code>tempB</code>, respectively, it is not necessary to clear the whole <code>tempA</code> and
+<code>tempB</code>. It is only necessary to clear the <code>size(tempA,2) - size(A,2)</code>
+(<code>size(tempB,2) - size(B,2)</code>) rightmost columns of the matrices.</li>
+<li>This dft-based convolution does not have to be applied to the whole big
+arrays, especially if <code>B</code> is significantly smaller than <code>A</code> or vice versa.
+Instead, you can calculate convolution by parts. To do this, you need to
+split the output array <code>C</code> into multiple tiles. For each tile, estimate
+which parts of <code>A</code> and <code>B</code> are required to calculate convolution in this
+tile. If the tiles in <code>C</code> are too small, the speed will decrease a lot
+because of repeated work. In the ultimate case, when each tile in <code>C</code> is a
+single pixel, the algorithm becomes equivalent to the naive convolution
+algorithm. If the tiles are too big, the temporary arrays <code>tempA</code> and
+<code>tempB</code> become too big and there is also a slowdown because of bad cache
+locality. So, there is an optimal tile size somewhere in the middle.</li>
+<li>If different tiles in <code>C</code> can be calculated in parallel and, thus, the
+convolution is done by parts, the loop can be threaded.</li>
+</ul>
+<p>All of the above improvements have been implemented in <code><a href="cv.matchTemplate.html">cv.matchTemplate</a></code>
+and <code><a href="cv.filter2D.html">cv.filter2D</a></code>. Therefore, by using them, you can get the performance
+even better than with the above theoretically optimal implementation.
+Though, those two functions actually calculate cross-correlation, not
+convolution, so you need to &quot;flip&quot; the second convolution operand <code>B</code>
+vertically and horizontally using <a href="cv.flip.html">cv.flip</a>.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.dct.html">cv.dct</a>, <a href="cv.getOptimalDFTSize.html">cv.getOptimalDFTSize</a>, <a href="cv.mulSpectrums.html">cv.mulSpectrums</a>, <a href="cv.cartToPolar.html">cv.cartToPolar</a>,
+   <a href="cv.magnitude.html">cv.magnitude</a>, <a href="cv.phase.html">cv.phase</a>, <a href="https://www.mathworks.com/help/matlab/ref/fft.html" target="_blank">fft</a>, <a href="https://www.mathworks.com/help/matlab/ref/fft2.html" target="_blank">fft2</a>, <a href="https://www.mathworks.com/help/matlab/ref/ifft.html" target="_blank">ifft</a>, <a href="https://www.mathworks.com/help/matlab/ref/ifft2.html" target="_blank">ifft2</a>, <a href="https://www.mathworks.com/help/matlab/ref/fftshift.html" target="_blank">fftshift</a>, <a href="https://www.mathworks.com/help/matlab/ref/unwrap.html" target="_blank">unwrap</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

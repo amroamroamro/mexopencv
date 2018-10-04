@@ -1,0 +1,74 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.RTrees/MaxCategories - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.RTrees.MaxCategories - Cluster possible values of a categorical variable into K &lt;= MaxCategories clusters to find a suboptimal split." />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.RTrees/MaxCategories - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.RTrees/MaxCategories</div>
+      <div class="helpcontent"><p class=" h1line">Cluster possible values of a categorical variable into
+<code>K &lt;= MaxCategories</code> clusters to find a suboptimal split.</p>
+<p>If a discrete variable, on which the training procedure tries to
+make a split, takes more than <code>MaxCategories</code> values, the precise
+best subset estimation may take a very long time because the
+algorithm is exponential. Instead, many decision trees engines
+(including our implementation) try to find sub-optimal split in this
+case by clustering all the samples into <code>MaxCategories</code> clusters
+that is some categories are merged together. The clustering is
+applied only in <code>n &gt; 2</code>-class classification problems for
+categorical variables with <code>N &gt; MaxCategories</code> possible values. In
+case of regression and 2-class classification the optimal split can
+be found efficiently without employing clustering, thus the
+parameter is not used in these cases. Default value is 10.</p>
+</div><!--after help -->
+      <!--Property-->
+      <div class="sectiontitle">Property Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Constant</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Dependent</td>
+            <td>true</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Transient</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">GetAccess</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">SetAccess</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">GetObservable</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">SetObservable</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

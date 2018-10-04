@@ -1,0 +1,77 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.DTrees/Priors - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.DTrees.Priors - The array of a priori class probabilities, sorted by the class label value." />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.DTrees/Priors - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.DTrees/Priors</div>
+      <div class="helpcontent"><p class=" h1line">The array of a priori class probabilities, sorted by the class label
+value.</p>
+<p>The parameter can be used to tune the decision tree preferences
+toward a certain class. For example, if you want to detect some rare
+anomaly occurrence, the training base will likely contain much more
+normal cases than anomalies, so a very good classification
+performance will be achieved just by considering every case as
+normal. To avoid this, the priors can be specified, where the
+anomaly probability is artificially increased (up to 0.5 or even
+greater), so the weight of the misclassified anomalies becomes much
+bigger, and the tree is adjusted properly.</p>
+<p>You can also think about this parameter as weights of prediction
+categories which determine relative weights that you give to
+misclassification. That is, if the weight of the first category is 1
+and the weight of the second category is 10, then each mistake in
+predicting the second category is equivalent to making 10 mistakes
+in predicting the first category. Default value is empty matrix.</p>
+</div><!--after help -->
+      <!--Property-->
+      <div class="sectiontitle">Property Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Constant</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Dependent</td>
+            <td>true</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Transient</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">GetAccess</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">SetAccess</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">GetObservable</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">SetObservable</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

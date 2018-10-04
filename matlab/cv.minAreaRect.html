@@ -1,0 +1,47 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.minAreaRect - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.minAreaRect - Finds a rotated rectangle of the minimum area enclosing the input 2D point set" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.minAreaRect - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.minAreaRect</div>
+      <div class="helpcontent"><p class=" h1line">Finds a rotated rectangle of the minimum area enclosing the input 2D point set</p>
+<pre class=" prettyprint lang-matlab"><code>rct = <a href="cv.minAreaRect.html">cv.minAreaRect</a>(points)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>points</strong> Input vector of 2D points, stored in numeric array
+(Nx2/Nx1x2/1xNx2) or cell array of 2-element vectors (<code>{[x,y], ...}</code>).</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>rct</strong> Output rotated rectangle struct with the following fields:
+<ul>
+<li><strong>center</strong> The rectangle mass center <code>[x,y]</code>.</li>
+<li><strong>size</strong> Width and height of the rectangle <code>[w,h]</code>.</li>
+<li><strong>angle</strong> The rotation angle in a clockwise direction. When the angle is
+0, 90, 180, 270 etc., the rectangle becomes an up-right rectangle.</li>
+</ul>
+</li>
+</ul>
+<p>The function calculates and returns the minimum-area bounding rectangle
+(possibly rotated) for a specified point set. Developer should keep in mind
+that the returned <code>rct</code> can contain negative indices when data is close to
+the containing Mat element boundary.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.fitEllipse.html">cv.fitEllipse</a>, <a href="cv.convexHull.html">cv.convexHull</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

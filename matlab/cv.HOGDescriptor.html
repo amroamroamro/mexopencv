@@ -1,0 +1,394 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.HOGDescriptor - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.HOGDescriptor - Histogram of Oriented Gaussian (HOG) descriptor and object detector" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.HOGDescriptor - MATLAB File Help</td>
+            <td class="subheader-left"></td>
+            <td class="subheader-right"><a href="cv.HOGDescriptor.html">Go to online doc for cv.HOGDescriptor</a></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.HOGDescriptor</div>
+      <div class="helpcontent"><p class=" h1line">Histogram of Oriented Gaussian (HOG) descriptor and object detector</p>
+<p>The HOG descriptor algorithm introduced by [Dalal2005].</p>
+<p>Useful links:</p>
+<ul>
+<li><a href="https://hal.inria.fr/inria-00548512/document/" target="_blank">PDF</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Histogram_of_oriented_gradients" target="_blank">Wikipedia</a></li>
+<li><a href="https://software.intel.com/en-us/ipp-dev-reference-histogram-of-oriented-gradients-hog-descriptor" target="_blank">IPP</a></li>
+<li><a href="http://www.learnopencv.com/histogram-of-oriented-gradients" target="_blank">LearnOpenCV</a></li>
+<li><a href="http://www.learnopencv.com/handwritten-digits-classification-an-opencv-c-python-tutorial" target="_blank">LearnOpenCV</a></li>
+</ul>
+<h2>Example</h2>
+<p>The basic usage is the following for computing HOG descriptors:</p>
+<pre class=" prettyprint lang-matlab"><code>hog = <a href="cv.HOGDescriptor.html">cv.HOGDescriptor</a>();
+descriptors = hog.compute(im);
+</code></pre>
+<p>This computes descriptors in a &quot;dense&quot; setting; Each row is a feature
+vector computed from a window of size <code>WinSize</code> slided across the input
+image gradient. Each vector element is a histogram of gradient
+orientations (quantized into <code>NBins</code> directions). The histogram is
+collected within a &quot;cell&quot; of pixels of size <code>CellSize</code>, and locally
+normalized (see <code>HistogramNormType</code> and <code>L2HysThreshold</code>) over larger
+spatial &quot;block&quot; regions of size <code>BlockSize</code> overlapped according to
+<code>BlockStride</code>. See <a href="cv.HOGDescriptor.getDescriptorSize.html">cv.HOGDescriptor.getDescriptorSize</a>.</p>
+<p>If you need to compute descriptors for a set of certain &quot;sparse&quot;
+keypoints (for example SIFT or SURF keypoints), use the <code>Locations</code>
+option of the compute method:</p>
+<pre class=" prettyprint lang-matlab"><code>keypoints = <a href="cv.FAST.html">cv.FAST</a>(im);
+descriptors = hog.compute(im, 'Locations', {keypoints.pt});
+</code></pre>
+<p>The next step in object recognition using HOG descriptors is to feed the
+descriptors computed from positive and negative images into a linear SVM
+classifier trained to classify whether a window is an object or not.
+This trained SVM model is represented by a set of coefficients for each
+element in the feature vector. This vector is assigned to the
+<a href="cv.HOGDescriptor.SvmDetector.html">cv.HOGDescriptor.SvmDetector</a> property.</p>
+<p>Alternatively, you can use the default built-in people detector which is
+accessible by name as:</p>
+<pre class=" prettyprint lang-matlab"><code>% detect and localize upright people in images
+hog.SVMDetector = 'DefaultPeopleDetector';
+boxes = hog.detectMultiScale(im);
+</code></pre>
+<p>In this case, there is no need to train an SVM model.</p>
+<p>Either way, you simply call the detect methods which use the saved
+coefficients on the input feature-vector to compute a weighted sum. If
+the sum is greater than a user-specified threshold <code>HitThreshold</code>, then
+it is classified an object (a pedestrian in the case of the builtin
+detectors).</p>
+<p>The <a href="cv.HOGDescriptor.detectMultiScale.html">cv.HOGDescriptor.detectMultiScale</a> method detects at multiple scales
+(see <code>NLevels</code> and <code>Scale</code>) and directly returns the bounding boxes. The
+<a href="cv.HOGDescriptor.detect.html">cv.HOGDescriptor.detect</a> method returns a list of top-left corner points,
+where the detected object size is the same as the detector's window
+size.</p>
+<h2>References</h2>
+<p>[Dalal2005]:</p>
+<blockquote>
+<p>Navneet Dalal and Bill Triggs. &quot;Histogram of oriented gradients for
+human detection&quot;. CVPR 2005.
+<a href="http://lear.inrialpes.fr/pubs/2005/DT05/" target="_blank">Link</a>.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.HOGDescriptor.HOGDescriptor.html">cv.HOGDescriptor/HOGDescriptor</a>, <a href="cv.HOGDescriptor.compute.html">cv.HOGDescriptor/compute</a>,
+   <a href="cv.HOGDescriptor.detect.html">cv.HOGDescriptor/detect</a>, <a href="cv.HOGDescriptor.detectMultiScale.html">cv.HOGDescriptor/detectMultiScale</a>,
+   <a href="https://www.mathworks.com/help/vision/ref/extracthogfeatures.html" target="_blank">extractHOGFeatures</a>, <a href="https://www.mathworks.com/help/vision/ref/vision.peopledetector.html" target="_blank">vision.PeopleDetector</a></div>
+      <!--Class-->
+      <div class="sectiontitle">Class Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Superclasses</td>
+            <td><a href="https://www.mathworks.com/help/matlab/ref/handle.html" target="_blank">handle</a></td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Construct on load</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+      <!--Constructors-->
+      <div class="sectiontitle"><a name="constructors"></a>Constructor Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.HOGDescriptor.HOGDescriptor.html">HOGDescriptor</a></td>
+            <td class="m-help">Create a new or load an existing HOG descriptor and detector&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Properties-->
+      <div class="sectiontitle"><a name="properties"></a>Property Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.HOGDescriptor.BlockSize.html">BlockSize</a></td>
+            <td class="m-help">Block size&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.HOGDescriptor.BlockStride.html">BlockStride</a></td>
+            <td class="m-help">Block stride of a grid&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.HOGDescriptor.CellSize.html">CellSize</a></td>
+            <td class="m-help">Cell size of a grid&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.HOGDescriptor.DerivAperture.html">DerivAperture</a></td>
+            <td class="m-help">Derivative of aperture&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.HOGDescriptor.GammaCorrection.html">GammaCorrection</a></td>
+            <td class="m-help">Gamma correction&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.HOGDescriptor.HistogramNormType.html">HistogramNormType</a></td>
+            <td class="m-help">Histogram normalization method&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.HOGDescriptor.L2HysThreshold.html">L2HysThreshold</a></td>
+            <td class="m-help">L2 Hysterisis threshold&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.HOGDescriptor.NBins.html">NBins</a></td>
+            <td class="m-help">Number of bins&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.HOGDescriptor.NLevels.html">NLevels</a></td>
+            <td class="m-help">Number of levels&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.HOGDescriptor.SignedGradient.html">SignedGradient</a></td>
+            <td class="m-help">Signed gradient&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.HOGDescriptor.SvmDetector.html">SvmDetector</a></td>
+            <td class="m-help">Coefficients for the linear SVM classifier.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.HOGDescriptor.WinSigma.html">WinSigma</a></td>
+            <td class="m-help">Window sigma&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.HOGDescriptor.WinSize.html">WinSize</a></td>
+            <td class="m-help">Window size&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.HOGDescriptor.id.html">id</a></td>
+            <td class="m-help">Object ID&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Methods-->
+      <div class="sectiontitle"><a name="methods"></a>Method Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">addlistener</a></td>
+            <td class="m-help">Add listener for event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.HOGDescriptor.checkDetectorSize.html">checkDetectorSize</a></td>
+            <td class="m-help">Checks the size of the detector is valid&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.HOGDescriptor.compute.html">compute</a></td>
+            <td class="m-help">Returns HOG block descriptors computed for the whole image&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.HOGDescriptor.computeGradient.html">computeGradient</a></td>
+            <td class="m-help">Computes gradients and quantized gradient orientations&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.HOGDescriptor.delete.html">delete</a></td>
+            <td class="m-help">Destructor&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.HOGDescriptor.detect.html">detect</a></td>
+            <td class="m-help">Performs object detection without a multi-scale window&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.HOGDescriptor.detectMultiScale.html">detectMultiScale</a></td>
+            <td class="m-help">Performs object detection with a multi-scale window&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.HOGDescriptor.detectMultiScaleROI.html">detectMultiScaleROI</a></td>
+            <td class="m-help">Evaluate specified ROI and return confidence value for each location in multiple scales&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.HOGDescriptor.detectROI.html">detectROI</a></td>
+            <td class="m-help">Evaluate specified ROI and return confidence value for each location&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">eq</a></td>
+            <td class="m-help">== (EQ)   Test handle equality.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findobj</a></td>
+            <td class="m-help">Find objects matching specified conditions.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findprop</a></td>
+            <td class="m-help">Find property of MATLAB handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ge</a></td>
+            <td class="m-help">&gt;= (GE)   Greater than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.HOGDescriptor.getDescriptorSize.html">getDescriptorSize</a></td>
+            <td class="m-help">Returns the number of coefficients required for the classification&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.HOGDescriptor.getWinSigma.html">getWinSigma</a></td>
+            <td class="m-help">Get window sigma&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.HOGDescriptor.groupRectangles.html">groupRectangles</a></td>
+            <td class="m-help">Groups the object candidate rectangles&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">gt</a></td>
+            <td class="m-help">&gt; (GT)   Greater than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">isvalid</a></td>
+            <td class="m-help">Test handle validity.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">le</a></td>
+            <td class="m-help">&lt;= (LE)   Less than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">listener</a></td>
+            <td class="m-help">Add listener for event without binding the listener to the source object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.HOGDescriptor.load.html">load</a></td>
+            <td class="m-help">Loads a HOG descriptor config from a file or a string&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">lt</a></td>
+            <td class="m-help">&lt; (LT)   Less than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ne</a></td>
+            <td class="m-help">~= (NE)   Not equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">notify</a></td>
+            <td class="m-help">Notify listeners of event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.HOGDescriptor.readALTModel.html">readALTModel</a></td>
+            <td class="m-help">Read model from SVMlight format&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.HOGDescriptor.save.html">save</a></td>
+            <td class="m-help">Saves a HOG descriptor config to a file&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Events-->
+      <div class="sectiontitle"><a name="events"></a>Event Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ObjectBeingDestroyed</a></td>
+            <td class="m-help">Notifies listeners that a particular object has been destroyed.&nbsp;</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

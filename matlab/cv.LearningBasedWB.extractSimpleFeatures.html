@@ -1,0 +1,67 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>extractSimpleFeatures (cv.LearningBasedWB) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.LearningBasedWB.extractSimpleFeatures - Implements the feature extraction part of the algorithm" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">extractSimpleFeatures (cv.LearningBasedWB) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.LearningBasedWB/extractSimpleFeatures</div>
+      <div class="helpcontent"><p class=" h1line">Implements the feature extraction part of the algorithm</p>
+<pre class=" prettyprint lang-matlab"><code>dst = obj.extractSimpleFeatures(src)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> Input 3-channel image (BGR color space is assumed).</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> An array of four (r,g) chromaticity tuples
+corresponding to the features listed below.</li>
+</ul>
+<p>In accordance with [Cheng2015], computes the following features
+for the input image:</p>
+<ol>
+<li>Chromaticity of an average (R,G,B) tuple</li>
+<li>Chromaticity of the brightest (R,G,B) tuple (while ignoring
+saturated pixels)</li>
+<li>Chromaticity of the dominant (R,G,B) tuple (the one that has
+the highest value in the RGB histogram)</li>
+<li>Mode of the chromaticity palette, that is constructed by
+taking 300 most common colors according to the RGB histogram
+and projecting them on the chromaticity plane. Mode is the
+most high-density point of the palette, which is computed by
+a straightforward fixed-bandwidth kernel density estimator
+with a Epanechnikov kernel function.</li>
+</ol>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.LearningBasedWB.balanceWhite.html">cv.LearningBasedWB/balanceWhite</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

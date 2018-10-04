@@ -1,0 +1,264 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.HfsSegment - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.HfsSegment - Hierarchical Feature Selection for Efficient Image Segmentation" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.HfsSegment - MATLAB File Help</td>
+            <td class="subheader-left"></td>
+            <td class="subheader-right"><a href="cv.HfsSegment.html">Go to online doc for cv.HfsSegment</a></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.HfsSegment</div>
+      <div class="helpcontent"><p class=" h1line">Hierarchical Feature Selection for Efficient Image Segmentation</p>
+<p>This class contains an efficient algorithm to segment an image. The
+implementation is based on the paper [cheng2016hfs],
+<a href="http://mmcheng.net/en/hfs/" target="_blank">Project page</a>,
+<a href="https://github.com/yun-liu/hfs" target="_blank">Code</a></p>
+<p>The HFS algorithm is executed in 3 stages:</p>
+<ol>
+<li>
+<p>In the first stage, the algorithm uses SLIC (simple linear iterative
+clustering) algorithm to obtain the superpixel of the input image.</p>
+</li>
+<li>
+<p>In the second stage, the algorithm views each superpixel as a node in
+the graph. It will calculate a feature vector for each edge of the
+graph. It then calculates a weight for each edge based on the feature
+vector and trained SVM parameters. After obtaining weight for each
+edge, it will exploit EGB (Efficient Graph-based Image Segmentation)
+algorithm to merge some nodes in the graph thus obtaining a coarser
+segmentation. After these operations, a post process will be executed
+to merge regions that are smaller than a specific number of pixels
+into their nearby region.</p>
+</li>
+<li>
+<p>In the third stage, the algorithm exploits the similar mechanism to
+further merge the small regions obtained in the second stage into
+even coarser segmentation.</p>
+</li>
+</ol>
+<p>After these three stages, we can obtain the final segmentation of the
+image. For further details about the algorithm, please refer to the
+original paper [cheng2016hfs].</p>
+<h2>Example</h2>
+<pre class=" prettyprint lang-matlab"><code>% read an image
+img = imread('image.jpg')
+
+% create engine
+seg = <a href="cv.HfsSegment.html">cv.HfsSegment</a>(size(img,1), size(img,2));
+
+% perform segmentation
+% (res is an RGB image by default,
+% change the second parameter to &quot;false&quot; to get a matrix of indices)
+res = seg.performSegment(img, 'Draw',true);
+</code></pre>
+<h2>References</h2>
+<p>[cheng2016hfs]:</p>
+<blockquote>
+<p>M. Cheng, Y. Liu, Q. Hou, J. Bian, P. Torr, S. Hu, Z. Tu.
+&quot;HFS: Hierarchical Feature Selection for Efficient Image Segmentation&quot;.
+European Conference on Computer Vision (ECCV) 2016, pp 867-882.
+<a href="http://mftp.mmcheng.net/Papers/HFS.pdf" target="_blank">PDF</a></p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.HfsSegment.HfsSegment.html">cv.HfsSegment/HfsSegment</a></div>
+      <!--Class-->
+      <div class="sectiontitle">Class Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Superclasses</td>
+            <td><a href="https://www.mathworks.com/help/matlab/ref/handle.html" target="_blank">handle</a></td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Construct on load</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+      <!--Constructors-->
+      <div class="sectiontitle"><a name="constructors"></a>Constructor Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.HfsSegment.HfsSegment.html">HfsSegment</a></td>
+            <td class="m-help">Creates an HFS object&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Properties-->
+      <div class="sectiontitle"><a name="properties"></a>Property Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.HfsSegment.MinRegionSizeI.html">MinRegionSizeI</a></td>
+            <td class="m-help">This parameter is used in the second stage mentioned above. After&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.HfsSegment.MinRegionSizeII.html">MinRegionSizeII</a></td>
+            <td class="m-help">This parameter is used in the third stage mentioned above. It serves&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.HfsSegment.NumSlicIter.html">NumSlicIter</a></td>
+            <td class="m-help">This parameter is used in the first stage. It describes how many&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.HfsSegment.SegEgbThresholdI.html">SegEgbThresholdI</a></td>
+            <td class="m-help">This parameter is used in the second stage mentioned above. It is a&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.HfsSegment.SegEgbThresholdII.html">SegEgbThresholdII</a></td>
+            <td class="m-help">This parameter is used in the third stage mentioned above. It serves&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.HfsSegment.SlicSpixelSize.html">SlicSpixelSize</a></td>
+            <td class="m-help">This parameter is used in the first stage mentioned above (the SLIC&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.HfsSegment.SpatialWeight.html">SpatialWeight</a></td>
+            <td class="m-help">This parameter is used in the first stage mentioned above (the SLIC&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.HfsSegment.id.html">id</a></td>
+            <td class="m-help">Object ID&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Methods-->
+      <div class="sectiontitle"><a name="methods"></a>Method Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">addlistener</a></td>
+            <td class="m-help">Add listener for event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.HfsSegment.delete.html">delete</a></td>
+            <td class="m-help">Destructor&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">eq</a></td>
+            <td class="m-help">== (EQ)   Test handle equality.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findobj</a></td>
+            <td class="m-help">Find objects matching specified conditions.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findprop</a></td>
+            <td class="m-help">Find property of MATLAB handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ge</a></td>
+            <td class="m-help">&gt;= (GE)   Greater than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">gt</a></td>
+            <td class="m-help">&gt; (GT)   Greater than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">isvalid</a></td>
+            <td class="m-help">Test handle validity.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">le</a></td>
+            <td class="m-help">&lt;= (LE)   Less than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">listener</a></td>
+            <td class="m-help">Add listener for event without binding the listener to the source object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">lt</a></td>
+            <td class="m-help">&lt; (LT)   Less than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ne</a></td>
+            <td class="m-help">~= (NE)   Not equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">notify</a></td>
+            <td class="m-help">Notify listeners of event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.HfsSegment.performSegment.html">performSegment</a></td>
+            <td class="m-help">Do segmentation&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Events-->
+      <div class="sectiontitle"><a name="events"></a>Event Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ObjectBeingDestroyed</a></td>
+            <td class="m-help">Notifies listeners that a particular object has been destroyed.&nbsp;</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

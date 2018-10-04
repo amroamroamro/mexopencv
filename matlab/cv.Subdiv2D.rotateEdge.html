@@ -1,0 +1,63 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>rotateEdge (cv.Subdiv2D) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Subdiv2D.rotateEdge - Returns another edge of the same quad-edge" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">rotateEdge (cv.Subdiv2D) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Subdiv2D/rotateEdge</div>
+      <div class="helpcontent"><p class=" h1line">Returns another edge of the same quad-edge</p>
+<pre class=" prettyprint lang-matlab"><code>e = obj.rotateEdge(edge, rotate)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>edge</strong> Subdivision edge ID.</li>
+<li><strong>rotate</strong> Parameter specifying which of the edges of the same
+quad-edge as the input one to return. The following values are
+possible:
+<ul>
+<li><strong>0</strong> the input edge (<code>e</code> on the picture shown if <code>e</code> is the
+input edge).</li>
+<li><strong>1</strong> the rotated edge (<code>eRot</code>).</li>
+<li><strong>2</strong> the reversed edge (reversed <code>e</code> (in green)).</li>
+<li><strong>3</strong> the reversed rotated edge (reversed <code>eRot</code> (in green)).</li>
+</ul>
+</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>e</strong> one of the edges ID of the same quad-edge as the input
+edge.</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Subdiv2D.getEdge.html">cv.Subdiv2D/getEdge</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

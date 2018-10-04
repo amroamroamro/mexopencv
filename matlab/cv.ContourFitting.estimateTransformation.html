@@ -1,0 +1,75 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>estimateTransformation (cv.ContourFitting) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.ContourFitting.estimateTransformation - Fits two closed curves using Fourier descriptors" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">estimateTransformation (cv.ContourFitting) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.ContourFitting/estimateTransformation</div>
+      <div class="helpcontent"><p class=" h1line">Fits two closed curves using Fourier descriptors</p>
+<pre class=" prettyprint lang-matlab"><code>[alphaPhiST, d] = obj.estimateTransformation(src, ref)
+[...] = obj.estimateTransformation(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> Contour defining first shape (source), or Fourier
+descriptors if <code>FD</code> is true.</li>
+<li><strong>ref</strong> Contour defining second shape (target), or Fourier
+descriptors if <code>FD</code> is true.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>alphaPhiST</strong> transformation as a 5-elements vector
+<code>[alpha, phi, s, Tx, Ty]</code>, where:
+<ul>
+<li><strong>alpha</strong> starting point factor adjustement</li>
+<li><strong>phi</strong> angle rotation in radian</li>
+<li><strong>s</strong> scaling factor</li>
+<li><strong>Tx</strong>, <strong>Ty</strong> the translation</li>
+</ul>
+</li>
+<li><strong>d</strong> distance between <code>src</code> and <code>ref</code> after matching.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>FD</strong> If false then <code>src</code> and <code>ref</code> are contours, and
+if true <code>src</code> and <code>ref</code> are Fourier descriptors. default false</li>
+</ul>
+<p>When <code>FD</code> is false, it applies <a href="cv.ContourFitting.contourSampling.html">cv.ContourFitting.contourSampling</a>
+and <a href="cv.ContourFitting.fourierDescriptor.html">cv.ContourFitting.fourierDescriptor</a> to compute Fourier
+descriptors.</p>
+<p>More details in [PersoonFu1977] and [BergerRaghunathan1998].</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.ContourFitting.transformFD.html">cv.ContourFitting.transformFD</a>,
+   <a href="cv.ContourFitting.contourSampling.html">cv.ContourFitting.contourSampling</a>,
+   <a href="cv.ContourFitting.fourierDescriptor.html">cv.ContourFitting.fourierDescriptor</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

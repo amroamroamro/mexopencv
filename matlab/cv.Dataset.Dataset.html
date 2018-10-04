@@ -1,0 +1,613 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.Dataset/Dataset - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Dataset.Dataset - Constructor" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.Dataset/Dataset - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Dataset/Dataset</div>
+      <div class="helpcontent"><p class=" h1line">Constructor</p>
+<pre class=" prettyprint lang-matlab"><code>ds = <a href="cv.Dataset.html">cv.Dataset</a>(dstype)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>dstype</strong> Dataset class implementation. One of:
+<ul>
+<li><strong>AR_hmdb</strong> HMDB: A Large Human Motion Database</li>
+<li><strong>AR_sports</strong> Sports-1M Dataset</li>
+<li><strong>FR_adience</strong> Adience</li>
+<li><strong>FR_lfw</strong> Labeled Faces in the Wild</li>
+<li><strong>GR_chalearn</strong> ChaLearn Looking at People</li>
+<li><strong>GR_skig</strong> Sheffield Kinect Gesture Dataset</li>
+<li><strong>HPE_humaneva</strong> HumanEva Dataset</li>
+<li><strong>HPE_parse</strong> PARSE Dataset</li>
+<li><strong>IR_affine</strong> Affine Covariant Regions Datasets</li>
+<li><strong>IR_robot</strong> Robot Data Set</li>
+<li><strong>IS_bsds</strong> The Berkeley Segmentation Dataset and Benchmark</li>
+<li><strong>IS_weizmann</strong> Weizmann Segmentation Evaluation Database</li>
+<li><strong>MSM_epfl</strong> EPFL Multi-View Stereo</li>
+<li><strong>MSM_middlebury</strong> Stereo - Middlebury Computer Vision</li>
+<li><strong>OR_imagenet</strong> ImageNet</li>
+<li><strong>OR_mnist</strong> MNIST</li>
+<li><strong>OR_pascal</strong> PASCAL Object Recognition Database</li>
+<li><strong>OR_sun</strong> SUN Database</li>
+<li><strong>PD_caltech</strong> Caltech Pedestrian Detection Benchmark</li>
+<li><strong>PD_inria</strong> INRIA Person Dataset</li>
+<li><strong>SLAM_kitti</strong> KITTI Vision Benchmark</li>
+<li><strong>SLAM_tumindoor</strong> TUMindoor Dataset</li>
+<li><strong>TR_chars</strong> The Chars74K Dataset</li>
+<li><strong>TR_icdar</strong> ICDAR</li>
+<li><strong>TR_svt</strong> The Street View Text Dataset</li>
+<li><strong>TRACK_vot</strong> VOT 2015 Database</li>
+<li><strong>TRACK_alov</strong> Amsterdam Library of Ordinary Videos (ALOV++)</li>
+</ul>
+</li>
+</ul>
+<h3>HMDB: A Large Human Motion Database</h3>
+<p>Implements loading dataset: &quot;HMDB: A Large Human Motion Database&quot;
+<a href="http://serre-lab.clps.brown.edu/resource/hmdb-a-large-human-motion-database/" target="_blank">Link</a></p>
+<p>Usage:</p>
+<ul>
+<li>
+<p>From link above download dataset files: <code>hmdb51_org.rar</code> &amp;
+<code>test_train_splits.rar</code>.</p>
+</li>
+<li>
+<p>Unpack them. Unpack all archives from directory: <code>hmdb51_org/</code>
+and remove them.</p>
+</li>
+<li>
+<p>To load data run:</p>
+<pre class=" prettyprint lang-matlab"><code>ds = <a href="cv.Dataset.html">cv.Dataset</a>('AR_hmdb');
+ds.load('/home/user/path_to_unpacked_folders/');
+</code></pre>
+</li>
+</ul>
+<p>Benchmark:</p>
+<ul>
+<li>For this dataset was implemented benchmark with accuracy:
+0.107407 (using precomputed HOG/HOF &quot;STIP&quot; features from site,
+averaging for 3 splits)</li>
+</ul>
+<p>Note:</p>
+<ul>
+<li>Precomputed features should be unpacked in the same folder:
+<code>/home/user/path_to_unpacked_folders/hmdb51_org_stips/</code>.</li>
+<li>Also unpack all archives from directory: <code>hmdb51_org_stips/</code>
+and remove them.</li>
+</ul>
+<h3>Sports-1M Dataset</h3>
+<p>Implements loading dataset: &quot;Sports-1M Dataset&quot;
+<a href="http://cs.stanford.edu/people/karpathy/deepvideo/" target="_blank">Link</a></p>
+<p>Usage:</p>
+<ul>
+<li>
+<p>From link above download dataset
+<a href="https://code.google.com/p/sports-1m-dataset/" target="_blank">files</a>.</p>
+</li>
+<li>
+<p>To load data run:</p>
+<pre class=" prettyprint lang-matlab"><code>ds = <a href="cv.Dataset.html">cv.Dataset</a>('AR_sports');
+ds.load('/home/user/path_to_downloaded_folders/');
+</code></pre>
+</li>
+</ul>
+<h3>Adience</h3>
+<p>Implements loading dataset: &quot;Adience&quot;
+<a href="http://www.openu.ac.il/home/hassner/Adience/data.html" target="_blank">Link</a></p>
+<p>Usage:</p>
+<ul>
+<li>
+<p>From link above download any dataset file:
+<code>faces.tar.gz\aligned.tar.gz</code> and files with splits:
+<code>fold_0_data.txt-fold_4_data.txt</code>,
+<code>fold_frontal_0_data.txt-fold_frontal_4_data.txt</code>. (For face
+recognition task another splits should be created)</p>
+</li>
+<li>
+<p>Unpack dataset file to some folder and place split files into
+the same folder.</p>
+</li>
+<li>
+<p>To load data run:</p>
+<pre class=" prettyprint lang-matlab"><code>ds = <a href="cv.Dataset.html">cv.Dataset</a>('FR_adience');
+ds.load('/home/user/path_to_created_folder/');
+</code></pre>
+</li>
+</ul>
+<h3>Labeled Faces in the Wild</h3>
+<p>Implements loading dataset: &quot;Labeled Faces in the Wild&quot;
+<a href="http://vis-www.cs.umass.edu/lfw/" target="_blank">Link</a></p>
+<p>Usage:</p>
+<ul>
+<li>
+<p>From link above download any dataset file:
+<code>lfw.tgz\lfwa.tar.gz\lfw-deepfunneled.tgz\lfw-funneled.tgz</code>
+and files with pairs: 10 test splits: <code>pairs.txt</code> and
+developer train split: <code>pairsDevTrain.txt</code>.</p>
+</li>
+<li>
+<p>Unpack dataset file and place <code>pairs.txt</code> and
+<code>pairsDevTrain.txt</code> in created folder.</p>
+</li>
+<li>
+<p>To load data run:</p>
+<pre class=" prettyprint lang-matlab"><code>ds = <a href="cv.Dataset.html">cv.Dataset</a>('FR_lfw');
+ds.load('/home/user/path_to_unpacked_folder/lfw2/');
+</code></pre>
+</li>
+</ul>
+<p>Benchmark:</p>
+<ul>
+<li>For this dataset was implemented benchmark with accuracy:
+0.623833 +/- 0.005223 (train split: <code>pairsDevTrain.txt</code>,
+dataset: lfwa)</li>
+</ul>
+<h3>ChaLearn Looking at People</h3>
+<p>Implements loading dataset: &quot;ChaLearn Looking at People&quot;
+<a href="http://gesture.chalearn.org/" target="_blank">Link</a></p>
+<p>Usage</p>
+<ul>
+<li>
+<p>Follow instruction from site above, download files for dataset
+&quot;Track 3: Gesture Recognition&quot;: <code>Train1.zip</code>-<code>Train5.zip</code>,
+<code>Validation1.zip</code>-<code>Validation3.zip</code> (Register on
+<a href="http://codalab.org/" target="_blank">site</a> and accept the
+<a href="http://www.codalab.org/competitions/991#learn_the_details" target="_blank">terms</a>
+and conditions of competition. There are three mirrors for
+downloading dataset files. When I downloaded data only mirror:
+&quot;Universitat Oberta de Catalunya&quot; works).</p>
+</li>
+<li>
+<p>Unpack train archives <code>Train1.zip</code>-<code>Train5.zip</code> to folder
+<code>Train/</code>, validation archives
+<code>Validation1.zip</code>-<code>Validation3.zip</code> to folder <code>Validation/</code></p>
+</li>
+<li>
+<p>Unpack all archives in <code>Train/</code> &amp; <code>Validation/</code> in the folders
+with the same names, for example: <code>Sample0001.zip</code> to
+<code>Sample0001/</code></p>
+</li>
+<li>
+<p>To load data run:</p>
+<pre class=" prettyprint lang-matlab"><code>ds = <a href="cv.Dataset.html">cv.Dataset</a>('GR_chalearn');
+ds.load('/home/user/path_to_unpacked_folders/');
+</code></pre>
+</li>
+</ul>
+<h3>Sheffield Kinect Gesture Dataset</h3>
+<p>Implements loading dataset: &quot;Sheffield Kinect Gesture Dataset&quot;
+<a href="http://lshao.staff.shef.ac.uk/data/SheffieldKinectGesture.htm" target="_blank">Link</a></p>
+<p>Usage:</p>
+<ul>
+<li>
+<p>From link above download dataset files:
+<code>subject1_dep.7z</code>-<code>subject6_dep.7z</code>,
+<code>subject1_rgb.7z</code>-<code>subject6_rgb.7z</code>.</p>
+</li>
+<li>
+<p>Unpack them.</p>
+</li>
+<li>
+<p>To load data run:</p>
+<pre class=" prettyprint lang-matlab"><code>ds = <a href="cv.Dataset.html">cv.Dataset</a>('GR_skig');
+ds.load('/home/user/path_to_unpacked_folders/');
+</code></pre>
+</li>
+</ul>
+<h3>HumanEva Dataset</h3>
+<p>Implements loading dataset: &quot;HumanEva Dataset&quot;
+<a href="http://humaneva.is.tue.mpg.de" target="_blank">Link</a></p>
+<p>Usage:</p>
+<ul>
+<li>
+<p>From link above download dataset files for <code>HumanEva-I</code> (tar)
+and <code>HumanEva-II</code>.</p>
+</li>
+<li>
+<p>Unpack them to <code>HumanEva_1</code> and <code>HumanEva_2</code> accordingly.</p>
+</li>
+<li>
+<p>To load data run:</p>
+<pre class=" prettyprint lang-matlab"><code>ds = <a href="cv.Dataset.html">cv.Dataset</a>('HPE_humaneva');
+ds.load('/home/user/path_to_unpacked_folders/');
+</code></pre>
+</li>
+</ul>
+<h3>PARSE Dataset</h3>
+<p>Implements loading dataset: &quot;PARSE Dataset&quot;
+<a href="http://www.ics.uci.edu/~dramanan/papers/parse/" target="_blank">Link</a></p>
+<p>Usage:</p>
+<ul>
+<li>
+<p>From link above download dataset file: <code>people.zip</code>.</p>
+</li>
+<li>
+<p>Unpack it.</p>
+</li>
+<li>
+<p>To load data run:</p>
+<pre class=" prettyprint lang-matlab"><code>ds = <a href="cv.Dataset.html">cv.Dataset</a>('HPE_parse');
+ds.load('/home/user/path_to_unpacked_folder/people_all/');
+</code></pre>
+</li>
+</ul>
+<h3>Affine Covariant Regions Datasets</h3>
+<p>Implements loading dataset: &quot;Affine Covariant Regions Datasets&quot;
+<a href="http://www.robots.ox.ac.uk/~vgg/data/data-aff.html" target="_blank">Link</a></p>
+<p>Usage:</p>
+<ul>
+<li>
+<p>From link above download dataset files:
+<code>bark\bikes\boat\graf\leuven\trees\ubc\wall.tar.gz</code>.</p>
+</li>
+<li>
+<p>Unpack them.</p>
+</li>
+<li>
+<p>To load data, for example, for &quot;bark&quot;, run:</p>
+<pre class=" prettyprint lang-matlab"><code>ds = <a href="cv.Dataset.html">cv.Dataset</a>('IR_affine');
+ds.load('/home/user/path_to_unpacked_folder/bark/');
+</code></pre>
+</li>
+</ul>
+<h3>Robot Data Set</h3>
+<p>Implements loading dataset: &quot;Robot Data Set, Point Feature Data Set - 2010&quot;
+<a href="http://roboimagedata.compute.dtu.dk/?page_id=24" target="_blank">Link</a></p>
+<p>Usage:</p>
+<ul>
+<li>
+<p>From link above download dataset files:
+<code>SET001_6.tar.gz</code>-<code>SET055_60.tar.gz</code></p>
+</li>
+<li>
+<p>Unpack them to one folder.</p>
+</li>
+<li>
+<p>To load data run:</p>
+<pre class=" prettyprint lang-matlab"><code>ds = <a href="cv.Dataset.html">cv.Dataset</a>('IR_robot');
+ds.load('/home/user/path_to_unpacked_folder/');
+</code></pre>
+</li>
+</ul>
+<h3>The Berkeley Segmentation Dataset and Benchmark</h3>
+<p>Implements loading dataset: &quot;The Berkeley Segmentation Dataset and Benchmark&quot;
+<a href="https://www.eecs.berkeley.edu/Research/Projects/CS/vision/bsds/" target="_blank">Link</a></p>
+<p>Usage:</p>
+<ul>
+<li>
+<p>From link above download dataset files:
+<code>BSDS300-human.tgz</code> &amp; <code>BSDS300-images.tgz</code>.</p>
+</li>
+<li>
+<p>Unpack them.</p>
+</li>
+<li>
+<p>To load data run:</p>
+<pre class=" prettyprint lang-matlab"><code>ds = <a href="cv.Dataset.html">cv.Dataset</a>('IS_bsds');
+ds.load('/home/user/path_to_unpacked_folder/BSDS300/');
+</code></pre>
+</li>
+</ul>
+<h3>Weizmann Segmentation Evaluation Database</h3>
+<p>Implements loading dataset: &quot;Weizmann Segmentation Evaluation Database&quot;
+<a href="http://www.wisdom.weizmann.ac.il/~vision/Seg_Evaluation_DB/" target="_blank">Link</a></p>
+<p>Usage:</p>
+<ul>
+<li>
+<p>From link above download dataset files:
+<code>Weizmann_Seg_DB_1obj.ZIP</code> &amp; <code>Weizmann_Seg_DB_2obj.ZIP</code>.</p>
+</li>
+<li>
+<p>Unpack them.</p>
+</li>
+<li>
+<p>To load data, for example, for <code>1 object</code> dataset, run:</p>
+<pre class=" prettyprint lang-matlab"><code>ds = <a href="cv.Dataset.html">cv.Dataset</a>('IS_weizmann');
+ds.load('/home/user/path_to_unpacked_folder/1obj/');
+</code></pre>
+</li>
+</ul>
+<h3>EPFL Multi-View Stereo</h3>
+<p>Implements loading dataset: &quot;EPFL Multi-View Stereo&quot;
+<a href="http://cvlab.epfl.ch/data/strechamvs" target="_blank">Link</a></p>
+<p>Usage:</p>
+<ul>
+<li>
+<p>From link above download dataset files:
+<code>castle_dense\castle_dense_large\castle_entry\fountain\herzjesu_dense\herzjesu_dense_large_bounding\cameras\images\p.tar.gz</code>.</p>
+</li>
+<li>
+<p>Unpack them in separate folder for each object. For example,
+for &quot;fountain&quot;, in folder <code>fountain/</code> :
+<code>fountain_dense_bounding.tar.gz -&gt; bounding/</code>,
+<code>fountain_dense_cameras.tar.gz -&gt; camera/</code>,
+<code>fountain_dense_images.tar.gz -&gt; png/</code>,
+<code>fountain_dense_p.tar.gz -&gt; P/</code></p>
+</li>
+<li>
+<p>To load data, for example, for &quot;fountain&quot;, run:</p>
+<pre class=" prettyprint lang-matlab"><code>ds = <a href="cv.Dataset.html">cv.Dataset</a>('MSM_epfl');
+ds.load('/home/user/path_to_unpacked_folder/fountain/');
+</code></pre>
+</li>
+</ul>
+<h3>Stereo - Middlebury Computer Vision</h3>
+<p>Implements loading dataset: &quot;Stereo - Middlebury Computer Vision&quot;
+<a href="http://vision.middlebury.edu/mview/" target="_blank">Link</a></p>
+<p>Usage:</p>
+<ul>
+<li>
+<p>From link above download dataset files:
+<code>dino\dinoRing\dinoSparseRing\temple\templeRing\templeSparseRing.zip</code></p>
+</li>
+<li>
+<p>Unpack them.</p>
+</li>
+<li>
+<p>To load data, for example &quot;temple&quot; dataset, run:</p>
+<pre class=" prettyprint lang-matlab"><code>ds = <a href="cv.Dataset.html">cv.Dataset</a>('MSM_middlebury');
+ds.load('/home/user/path_to_unpacked_folder/temple/');
+</code></pre>
+</li>
+</ul>
+<h3>ImageNet</h3>
+<p>Implements loading dataset: &quot;ImageNet&quot;
+<a href="http://www.image-net.org/" target="_blank">Link</a></p>
+<p>Usage:</p>
+<ul>
+<li>
+<p>From link above download dataset files:
+<code>ILSVRC2010_images_train.tar</code>, <code>ILSVRC2010_images_test.tar</code>,
+<code>ILSVRC2010_images_val.tar</code> &amp; devkit:
+<code>ILSVRC2010_devkit-1.0.tar.gz</code> (Implemented loading of 2010
+dataset as only this dataset has ground truth for test data,
+but structure for ILSVRC2014 is similar)</p>
+</li>
+<li>
+<p>Unpack them to: <code>some_folder/train/</code>, <code>some_folder/test/</code>,
+<code>some_folder/val</code> &amp;
+<code>some_folder/ILSVRC2010_validation_ground_truth.txt</code>,
+<code>some_folder/ILSVRC2010_test_ground_truth.txt</code>.</p>
+</li>
+<li>
+<p>Create file with labels: <code>some_folder/labels.txt</code>, for
+example, using python script below (each file's row format:
+<code>synset,labelID,description</code>. For example:
+&quot;n07751451,18,plum&quot;).</p>
+</li>
+<li>
+<p>Unpack all tar files in train.</p>
+</li>
+<li>
+<p>To load data run:</p>
+<pre class=" prettyprint lang-matlab"><code>ds = <a href="cv.Dataset.html">cv.Dataset</a>('OR_imagenet');
+ds.load('/home/user/some_folder/');
+</code></pre>
+</li>
+</ul>
+<p>Python script to parse <code>meta.mat</code>:</p>
+<pre class=" prettyprint"><code class="language-python">import scipy.io
+meta_mat = scipy.io.loadmat(&quot;devkit-1.0/data/meta.mat&quot;)
+ 
+labels_dic = dict((m[0][1][0], m[0][0][0][0]-1) for m in meta_mat['synsets']
+label_names_dic = dict((m[0][1][0], m[0][2][0]) for m in meta_mat['synsets']
+ 
+for label in labels_dic.keys():
+    print &quot;{0},{1},{2}&quot;.format(label, labels_dic[label], label_names_dic[label])
+</code></pre>
+<h3>MNIST</h3>
+<p>Implements loading dataset: &quot;MNIST&quot;
+<a href="http://yann.lecun.com/exdb/mnist/" target="_blank">Link</a></p>
+<p>Usage:</p>
+<ul>
+<li>
+<p>From link above download dataset files:
+<code>t10k-images-idx3-ubyte.gz</code>, <code>t10k-labels-idx1-ubyte.gz</code>,
+<code>train-images-idx3-ubyte.gz</code>, <code>train-labels-idx1-ubyte.gz</code>.</p>
+</li>
+<li>
+<p>Unpack them.</p>
+</li>
+<li>
+<p>To load data run:</p>
+<pre class=" prettyprint lang-matlab"><code>ds = <a href="cv.Dataset.html">cv.Dataset</a>('OR_mnist');
+ds.load('/home/user/path_to_unpacked_files/');
+</code></pre>
+</li>
+</ul>
+<h3>SUN Database</h3>
+<p>Implements loading dataset: &quot;SUN Database, Scene Recognition Benchmark. SUN397&quot;
+<a href="http://vision.cs.princeton.edu/projects/2010/SUN/" target="_blank">Link</a></p>
+<p>Usage:</p>
+<ul>
+<li>
+<p>From link above download dataset file: <code>SUN397.tar</code> &amp; file
+with splits: <code>Partitions.zip</code></p>
+</li>
+<li>
+<p>Unpack <code>SUN397.tar</code> into folder: <code>SUN397/</code> &amp; <code>Partitions.zip</code>
+into folder: <code>SUN397/Partitions/</code></p>
+</li>
+<li>
+<p>To load data run:</p>
+<pre class=" prettyprint lang-matlab"><code>ds = <a href="cv.Dataset.html">cv.Dataset</a>('OR_sun');
+ds.load('/home/user/path_to_unpacked_files/SUN397/');
+</code></pre>
+</li>
+</ul>
+<h3>Caltech Pedestrian Detection Benchmark</h3>
+<p>Implements loading dataset: &quot;Caltech Pedestrian Detection Benchmark&quot;
+<a href="http://www.vision.caltech.edu/Image_Datasets/CaltechPedestrians/" target="_blank">Link</a></p>
+<p>Usage:</p>
+<ul>
+<li>
+<p>From link above download dataset files:
+<code>set00.tar</code>-<code>set10.tar</code>.</p>
+</li>
+<li>
+<p>Unpack them to separate folder.</p>
+</li>
+<li>
+<p>To load data run:</p>
+<pre class=" prettyprint lang-matlab"><code>ds = <a href="cv.Dataset.html">cv.Dataset</a>('PD_caltech');
+ds.load('/home/user/path_to_unpacked_folders/');
+</code></pre>
+</li>
+</ul>
+<p>Note:</p>
+<ul>
+<li>First version of Caltech Pedestrian dataset loading. Code to
+unpack all frames from seq files commented as their number is
+huge! So currently load only meta information without data.</li>
+<li>Also ground truth isn't processed, as need to convert it from
+mat files first.</li>
+</ul>
+<h3>KITTI Vision Benchmark</h3>
+<p>Implements loading dataset: &quot;KITTI Vision Benchmark&quot;
+<a href="http://www.cvlibs.net/datasets/kitti/eval_odometry.php" target="_blank">Link</a></p>
+<p>Usage:</p>
+<ul>
+<li>
+<p>From link above download &quot;Odometry&quot; dataset files:
+<code>data_odometry_gray</code>, <code>data_odometry_color</code>,
+<code>data_odometry_velodyne</code>, <code>data_odometry_poses</code>,
+<code>data_odometry_calib.zip</code>.</p>
+</li>
+<li>
+<p>Unpack <code>data_odometry_poses.zip</code>, it creates folder
+<code>dataset/poses/</code>. After that unpack <code>data_odometry_gray.zip</code>,
+<code>data_odometry_color.zip</code>, <code>data_odometry_velodyne.zip</code>.
+Folder <code>dataset/sequences/</code> will be created with folders
+<code>00/..21/</code>. Each of these folders will contain: <code>image_0/</code>,
+<code>image_1/</code>, <code>image_2/</code>, <code>image_3/</code>, <code>velodyne/</code> and files
+<code>calib.txt</code> &amp; <code>times.txt</code>. These two last files will be
+replaced after unpacking <code>data_odometry_calib.zip</code> at the end.</p>
+</li>
+<li>
+<p>To load data run:</p>
+<pre class=" prettyprint lang-matlab"><code>ds = <a href="cv.Dataset.html">cv.Dataset</a>('SLAM_kitti');
+ds.load('/home/user/path_to_unpacked_folder/dataset/');
+</code></pre>
+</li>
+</ul>
+<h3>TUMindoor Dataset</h3>
+<p>Implements loading dataset: &quot;TUMindoor Dataset&quot;
+<a href="http://www.navvis.lmt.ei.tum.de/dataset/" target="_blank">Link</a></p>
+<p>Usage:</p>
+<ul>
+<li>
+<p>From link above download dataset files:
+<code>dslr\info\ladybug\pointcloud.tar.bz2</code> for each dataset:
+<code>11-11-28 (1st floor)</code>, <code>11-12-13 (1st floor N1)</code>,
+<code>11-12-17a (4th floor)</code>, <code>11-12-17b (3rd floor)</code>,
+<code>11-12-17c (Ground I)</code>, <code>11-12-18a (Ground II)</code>,
+<code>11-12-18b (2nd floor)</code></p>
+</li>
+<li>
+<p>Unpack them in separate folder for each dataset.
+<code>dslr.tar.bz2 -&gt; dslr/</code>, <code>info.tar.bz2 -&gt; info/</code>,
+<code>ladybug.tar.bz2 -&gt; ladybug/</code>,
+<code>pointcloud.tar.bz2 -&gt; pointcloud/</code>.</p>
+</li>
+<li>
+<p>To load each dataset run:</p>
+<pre class=" prettyprint lang-matlab"><code>ds = <a href="cv.Dataset.html">cv.Dataset</a>('SLAM_tumindoor');
+ds.load('/home/user/path_to_unpacked_folders/');
+</code></pre>
+</li>
+</ul>
+<h3>The Chars74K Dataset</h3>
+<p>Implements loading dataset: &quot;The Chars74K Dataset&quot;
+<a href="http://www.ee.surrey.ac.uk/CVSSP/demos/chars74k/" target="_blank">Link</a></p>
+<p>Usage:</p>
+<ul>
+<li>
+<p>From link above download dataset files:
+<code>EnglishFnt\EnglishHnd\EnglishImg\KannadaHnd\KannadaImg.tgz</code>,
+<code>ListsTXT.tgz</code>.</p>
+</li>
+<li>
+<p>Unpack them.</p>
+</li>
+<li>
+<p>Move <code>.m</code> files from folder <code>ListsTXT/</code> to appropriate folder.
+For example, <code>English/list_English_Img.m</code> for <code>EnglishImg.tgz</code>.</p>
+</li>
+<li>
+<p>To load data, for example &quot;EnglishImg&quot;, run:</p>
+<pre class=" prettyprint lang-matlab"><code>ds = <a href="cv.Dataset.html">cv.Dataset</a>('TR_chars');
+ds.load('/home/user/path_to_unpacked_folder/English/');
+</code></pre>
+</li>
+</ul>
+<h3>The Street View Text Dataset</h3>
+<p>Implements loading dataset: &quot;The Street View Text Dataset&quot;
+<a href="http://vision.ucsd.edu/~kai/svt/" target="_blank">Link</a></p>
+<p>Usage:</p>
+<ul>
+<li>
+<p>From link above download dataset file: <code>svt.zip</code>.</p>
+</li>
+<li>
+<p>Unpack it.</p>
+</li>
+<li>
+<p>To load data run:</p>
+<pre class=" prettyprint lang-matlab"><code>ds = <a href="cv.Dataset.html">cv.Dataset</a>('TR_svt');
+ds.load('/home/user/path_to_unpacked_folder/svt/svt1/');
+</code></pre>
+</li>
+</ul>
+<p>Benchmark:</p>
+<ul>
+<li>For this dataset was implemented benchmark with accuracy
+(mean f1): 0.217</li>
+</ul>
+<h3>VOT 2015 Database</h3>
+<p>Implements loading dataset: VOT 2015
+<a href="http://box.vicos.si/vot/vot2015.zip" target="_blank">Link</a></p>
+<p>VOT 2015 dataset comprises 60 short sequences showing various
+objects in challenging backgrounds. The sequences were chosen
+from a large pool of sequences including the ALOV dataset, OTB2
+dataset, non-tracking datasets, Computer Vision Online,
+Professor Bob Fisher's Image Database, Videezy, Center for
+Research in Computer Vision, University of Central Florida, USA,
+NYU Center for Genomics and Systems Biology, Data Wrangling,
+Open Access Directory and Learning and Recognition in Vision
+Group, INRIA, France. The VOT sequence selection protocol was
+applied to obtain a representative set of challenging sequences.</p>
+<p>Usage:</p>
+<ul>
+<li>
+<p>From link above download dataset file: <code>vot2015.zip</code></p>
+</li>
+<li>
+<p>Unpack <code>vot2015.zip</code> into folder: <code>VOT2015/</code></p>
+</li>
+<li>
+<p>To load data run:</p>
+<pre class=" prettyprint lang-matlab"><code>ds = <a href="cv.Dataset.html">cv.Dataset</a>('TRACK_vot');
+ds.load('/home/user/path_to_unpacked_files/VOT2015/');
+</code></pre>
+</li>
+</ul>
+<h3>Amsterdam Library of Ordinary Videos for tracking</h3>
+<p>Implements loading daataset: ALOV++
+<a href="http://www.alov300.org/" target="_blank">Link</a></p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Dataset.load.html">cv.Dataset/load</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

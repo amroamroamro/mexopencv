@@ -1,0 +1,79 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>setTrainMethod (cv.ANN_MLP) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.ANN_MLP.setTrainMethod - Sets training method and common parameters" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">setTrainMethod (cv.ANN_MLP) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.ANN_MLP/setTrainMethod</div>
+      <div class="helpcontent"><p class=" h1line">Sets training method and common parameters</p>
+<pre class=" prettyprint lang-matlab"><code>model.setTrainMethod(method)
+model.setTrainMethod(method, 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>method</strong> Available training methods:
+<ul>
+<li><strong>Backprop</strong> The back-propagation algorithm.</li>
+<li><strong>RProp</strong> (default) The RPROP algorithm. See [RPROP93] for
+details.</li>
+<li><strong>Anneal</strong> The simulated annealing algorithm. See
+[Kirkpatrick83] for details.</li>
+</ul>
+</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Param1</strong> sets <code>RpropDW0</code> property for 'RProp' and sets
+<code>BackpropWeightScale</code> property for 'Backprop' and sets
+<code>AnnealInitialT</code> for <code>Anneal</code>. default 0</li>
+<li><strong>Param2</strong> sets <code>RpropDWMin</code> property for 'RProp' and sets
+<code>BackpropMomentumScale</code> property for 'Backprop' and sets
+<code>AnnealFinalT</code> for <code>Anneal</code>. default 0</li>
+</ul>
+<h2>References</h2>
+<p>[RPROP93]:</p>
+<blockquote>
+<p>Martin Riedmiller and Heinrich Braun. &quot;A direct adaptive method
+for faster backpropagation learning: The rprop algorithm&quot;.
+In Neural Networks, 1993., IEEE International Conference on,
+pages 586-591. IEEE, 1993.</p>
+</blockquote>
+<p>[Kirkpatrick83]:</p>
+<blockquote>
+<p>S. Kirkpatrick, C. D. Jr Gelatt, and M. P. Vecchi.
+&quot;Optimization by simulated annealing&quot;. Science,
+220(4598):671-680, 1983.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.ANN_MLP.TrainMethod.html">cv.ANN_MLP/TrainMethod</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

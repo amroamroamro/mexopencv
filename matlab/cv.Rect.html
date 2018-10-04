@@ -1,0 +1,177 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.Rect - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Rect - Class for 2D rectangles" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.Rect - MATLAB File Help</td>
+            <td class="subheader-left"></td>
+            <td class="subheader-right"><a href="cv.Rect.html">Go to online doc for cv.Rect</a></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Rect</div>
+      <div class="helpcontent"><p class=" h1line">Class for 2D rectangles</p>
+<p>A rectangle <code>[x,y,w,h]</code> is described by the following parameters:</p>
+<ul>
+<li>Coordinates of the top-left corner. This is a default interpretation
+of <code>[x,y]</code> in OpenCV. Though, in your algorithms you may count <code>x</code> and
+<code>y</code> from the bottom-left corner.</li>
+<li>Rectangle width and height <code>[w h]</code>.</li>
+</ul>
+<p>OpenCV typically assumes that the top and left boundary of the rectangle
+are inclusive, while the right and bottom boundaries are not. For
+example, the method <a href="cv.Rect.contains.html">cv.Rect.contains</a> returns true if:</p>
+<pre class=" prettyprint lang-matlab"><code>x &lt;= pt.x &lt; x + width , y &lt;= pt.y &lt; y + height
+</code></pre>
+<p>Virtually every loop over an image ROI in OpenCV (where ROI is specified
+by an integer rectangle) is implemented as:</p>
+<pre class=" prettyprint lang-matlab"><code>roi = [x,y,w,h];
+for y=roi(2):(roi(2)+roi(4)-1)
+    for x=roi(1):(roi(1)+roi(3)-1)
+        %...
+    end
+end
+</code></pre>
+<p>In addition, the following operations on rectangles are implemented:</p>
+<ul>
+<li><strong>adjustPosition</strong> (<code>rect += point</code>): shifting a rectangle by a
+certain offset.</li>
+<li><strong>adjustSize</strong> (<code>rect += size</code>): expanding or shrinking a rectangle by
+a certain amount.</li>
+<li><strong>intersect</strong> (<code>rect1 &amp; rect2</code>): rectangle intersection.</li>
+<li><strong>union</strong> (<code>rect1 | rect2</code>): minimum area rectangle containing <code>rect1</code>
+and <code>rect2</code>.</li>
+</ul>
+<p>This is an example how the partial ordering on rectangles can be
+established (<code>rect1 \subseteq rect2</code>):</p>
+<pre class=" prettyprint lang-matlab"><code>function b = rect_le(r1, r2)
+    b = all(<a href="cv.Rect.intersect.html">cv.Rect.intersect</a>(r1,r2) == r1);
+end
+</code></pre>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.RotatedRect.html">cv.RotatedRect</a></div>
+      <!--Class-->
+      <div class="sectiontitle">Class Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Construct on load</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+      <!--Constructors-->
+      <div class="sectiontitle"><a name="constructors"></a>Constructor Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.Rect.Rect.html">Rect</a></td>
+            <td class="m-help">Class for 2D rectangles&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Methods-->
+      <div class="sectiontitle"><a name="methods"></a>Method Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Rect.adjustPosition.html">adjustPosition</a></td>
+            <td class="m-help">Shift a rectangle by a certain offset&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Rect.adjustSize.html">adjustSize</a></td>
+            <td class="m-help">Expand or shrink a rectangle by a certain amount&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Rect.area.html">area</a></td>
+            <td class="m-help">Area (width*height) of the rectangle&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Rect.br.html">br</a></td>
+            <td class="m-help">The bottom-right corner&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Rect.contains.html">contains</a></td>
+            <td class="m-help">Checks whether the rectangle contains the point&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Rect.crop.html">crop</a></td>
+            <td class="m-help">Extract region-of-interest from image&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Rect.from2points.html">from2points</a></td>
+            <td class="m-help">Create a rectangle from 2 points&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Rect.intersect.html">intersect</a></td>
+            <td class="m-help">Rectangle intersection&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Rect.size.html">size</a></td>
+            <td class="m-help">Size (width, height) of the rectangle&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Rect.tl.html">tl</a></td>
+            <td class="m-help">The top-left corner&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Rect.union.html">union</a></td>
+            <td class="m-help">Minimum area rectangle&nbsp;</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

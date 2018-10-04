@@ -1,0 +1,63 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>apply (cv.BackgroundSubtractorKNN) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.BackgroundSubtractorKNN.apply - Updates the background model and computes the foreground mask" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">apply (cv.BackgroundSubtractorKNN) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.BackgroundSubtractorKNN/apply</div>
+      <div class="helpcontent"><p class=" h1line">Updates the background model and computes the foreground mask</p>
+<pre class=" prettyprint lang-matlab"><code>fgmask = bs.apply(im)
+fgmask = bs.apply(im, 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>im</strong> Next video frame.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>fgmask</strong> The output foreground mask as an 8-bit binary image
+(0 for background, 255 for foregound, and <code>ShadowValue</code> for
+shadows if <code>DetectShadows</code> is true).</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>LearningRate</strong> The value between 0 and 1 that indicates how
+fast the background model is learnt. Negative parameter value
+makes the algorithm to use some automatically chosen learning
+rate. 0 means that the background model is not updated at all,
+1 means that the background model is completely reinitialized
+from the last frame. default -1</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.BackgroundSubtractorKNN.getBackgroundImage.html">cv.BackgroundSubtractorKNN/getBackgroundImage</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

@@ -1,0 +1,105 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.findCirclesGrid - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.findCirclesGrid - Finds the centers in the grid of circles" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.findCirclesGrid - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.findCirclesGrid</div>
+      <div class="helpcontent"><p class=" h1line">Finds the centers in the grid of circles</p>
+<pre class=" prettyprint lang-matlab"><code>centers = <a href="cv.findCirclesGrid.html">cv.findCirclesGrid</a>(im, patternSize)
+[centers,patternFound] = <a href="cv.findCirclesGrid.html">cv.findCirclesGrid</a>(im, patternSize)
+[...] = <a href="cv.findCirclesGrid.html">cv.findCirclesGrid</a>(..., 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>im</strong> Grid view of input circles. It must be an 8-bit grayscale or color
+image.</li>
+<li><strong>patternSize</strong> Number of circles per row and column
+(<code>patternSize = [points_per_row, points_per_colum]</code>).</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>centers</strong> Cell array of detected centers <code>{[x,y], ...}</code>.</li>
+<li><strong>patternFound</strong> logical return value, see below.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>SymmetricGrid</strong> Use symmetric or asymmetric pattern of circles. In an
+asymmetric grid, the circles in each row are staggered transverse to the
+row (important to remember how rows and columns are counted in this case).
+default true.</li>
+<li><strong>Clustering</strong> Use a special algorithm for grid detection. It is more
+robust to perspective distortions but much more sensitive to background
+clutter. This is a good choice when you are trying to calibrate a camera
+with an unusually wide field of view. default false.</li>
+<li><strong>BlobDetector</strong> feature detector that finds blobs like dark circles on
+light background. It can be specified as a string containing the type of
+feature detector, such as 'SimpleBlobDetector'. It can also be specified
+as a cell-array of the form <code>{fdetector, 'key',val, ...}</code>, where the first
+element is the type, and the remaining elements are optional parameters
+used to construct the specified feature detector. See <a href="cv.FeatureDetector.html">cv.FeatureDetector</a>
+for possible types. default is to use <a href="cv.SimpleBlobDetector.html">cv.SimpleBlobDetector</a> with its
+default parameters.</li>
+<li><strong>FinderParameters</strong> Parameters for finding circles in a grid pattern. You
+can specify the parameters as a cell-array that starts with the grid type
+followed by pairs of key-value options <code>{'Symmetric', 'key',val, ...}</code>, or
+as a structure where the fields are the options
+<code>struct('GridType','Symmetric', 'key',val, ...)</code>.
+<ul>
+<li><strong>GridType</strong> one of 'Symmetric' (default) or 'Asymmetric'</li>
+<li><strong>DensityNeighborhoodSize</strong> default [16,16]</li>
+<li><strong>MinDensity</strong> default 10.0</li>
+<li><strong>KmeansAttempts</strong> default 100</li>
+<li><strong>MinDistanceToAddKeypoint</strong> default 20</li>
+<li><strong>KeypointScale</strong> default 1</li>
+<li><strong>MinGraphConfidence</strong> default 9.0</li>
+<li><strong>VertexGain</strong> default 1.0</li>
+<li><strong>VertexPenalty</strong> default -0.6</li>
+<li><strong>ExistingVertexGain</strong> default 10000.0</li>
+<li><strong>EdgeGain</strong> default 1.0</li>
+<li><strong>EdgePenalty</strong> default -0.6</li>
+<li><strong>ConvexHullFactor</strong> default 1.1</li>
+<li><strong>MinRNGEdgeSwitchDist</strong> default 5.0</li>
+<li><strong>SquareSize</strong> Distance between two adjacent points. Used by
+'Clustering' algorithm. default 1.0</li>
+<li><strong>MaxRectifiedDistance</strong> Max deviation from predicion. Used by
+'Clustering' algorithm. default <code>SquareSize/2</code></li>
+</ul>
+</li>
+</ul>
+<p>The function attempts to determine whether the input image contains a grid
+of circles. If it is, the function locates centers of the circles. The
+function returns <code>true</code> if all of the centers have been found and they have
+been placed in a certain order (row by row, left to right in every row).
+Otherwise, if the function fails to find all the corners or reorder them,
+it returns <code>false</code>.</p>
+<h2>Example</h2>
+<p>Sample usage of detecting and drawing the centers of circles:</p>
+<pre class=" prettyprint lang-matlab"><code>patternSize = [7,7];   % number of centers
+gray = imread('...');  % source 8-bit image
+[centers,patternfound] = <a href="cv.findCirclesGrid.html">cv.findCirclesGrid</a>(gray, patternSize);
+img = <a href="cv.drawChessboardCorners.html">cv.drawChessboardCorners</a>(img, patternSize, cat(1,centers{:}), ...
+    'PatternWasFound',patternfound);
+imshow(img)
+</code></pre>
+<h3>Note</h3>
+<p>The function requires white space (like a square-thick border, the wider the
+better) around the board to make the detection more robust in various
+environments.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.findChessboardCorners.html">cv.findChessboardCorners</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

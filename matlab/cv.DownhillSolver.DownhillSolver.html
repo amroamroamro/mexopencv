@@ -1,0 +1,55 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.DownhillSolver/DownhillSolver - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.DownhillSolver.DownhillSolver - Creates a DownhillSolver object" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.DownhillSolver/DownhillSolver - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.DownhillSolver/DownhillSolver</div>
+      <div class="helpcontent"><p class=" h1line">Creates a DownhillSolver object</p>
+<pre class=" prettyprint lang-matlab"><code>solver = <a href="cv.DownhillSolver.html">cv.DownhillSolver</a>()
+solver = <a href="cv.DownhillSolver.html">cv.DownhillSolver</a>('OptionName', optionValue, ...)
+</code></pre>
+<h2>Options</h2>
+<ul>
+<li><strong>Function</strong> Objective function that will be minimized,
+specified as a structure with the following fields:
+<ul>
+<li><strong>dims</strong> Number of dimensions</li>
+<li><strong>fun</strong> string, name of M-file that implements the <code>calc</code>
+method. It should receive a vector of the specified
+dimension, and return a scalar value of the objective
+function evaluated at that point.</li>
+</ul>
+</li>
+<li><strong>InitStep</strong> Initial step, that will be used to construct the
+initial simplex. default <code>[1, 1, 0.0]</code>.</li>
+<li><strong>TermCriteria</strong> Terminal criteria to the algorithm. default
+<code>struct('type','Count+EPS', 'maxCount',5000, 'epsilon',1e-6)</code></li>
+</ul>
+<p>All the parameters are optional, so this procedure can be called
+even without parameters at all. In this case, the default values
+will be used. As default value for terminal criteria are the
+only sensible ones, <code>ObjectiveFunction</code> and <code>InitStep</code> should be
+set upon the obtained object, if the respective parameters were
+not given in the constructor. Otherwise, the two ways (give them
+to ctor or miss them out and set the <code>ObjectiveFunction</code> and
+<code>InitStep</code> properties) are absolutely equivalent (and will drop
+the same errors in the same way, should invalid input be
+detected).</p>
+</div><!--after help -->
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

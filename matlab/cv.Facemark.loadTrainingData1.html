@@ -1,0 +1,70 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>loadTrainingData1 (cv.Facemark) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Facemark.loadTrainingData1 - A utility to load facial landmark information from the dataset" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">loadTrainingData1 (cv.Facemark) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Facemark.loadTrainingData1</div>
+      <div class="helpcontent"><p class=" h1line">A utility to load facial landmark information from the dataset</p>
+<pre class=" prettyprint lang-matlab"><code>[imagesPaths, landmarks, success] = <a href="cv.Facemark.loadTrainingData1.html">cv.Facemark.loadTrainingData1</a>(imagesList, annotationsList)
+[...] = <a href="cv.Facemark.loadTrainingData1.html">cv.Facemark.loadTrainingData1</a>(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>imagesList</strong> A file contains the list of image filenames in
+the training dataset.</li>
+<li><strong>annotationsList</strong> A file contains the list of filenames where
+the ground-truth landmarks points information are stored. The
+content in each file should follow the standard format (see
+<a href="cv.Facemark.loadFacePoints.html">cv.Facemark.loadFacePoints</a>).</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>imagesPaths</strong> A cell-aray where each element represent the
+filename of image in the dataset. Images are not loaded by
+default to save memory.</li>
+<li><strong>landmarks</strong> The loaded landmark points for all training
+data <code>{{[x,y], ...}, ...}</code>.</li>
+<li><strong>success</strong> success flag.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Offset</strong> An offset value to adjust the loaded points.
+default 0.0</li>
+</ul>
+<p>The same dataset format described in <a href="cv.Facemark.loadDatasetList.html">cv.Facemark.loadDatasetList</a>
+function. However this function directly loads the annotation
+data instead of only returning their file paths.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Facemark.loadDatasetList.html">cv.Facemark.loadDatasetList</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>true</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

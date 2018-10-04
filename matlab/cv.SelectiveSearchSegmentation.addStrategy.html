@@ -1,0 +1,60 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>addStrategy (cv.SelectiveSearchSegmentation) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.SelectiveSearchSegmentation.addStrategy - Add a new strategy in the list of strategy to process" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">addStrategy (cv.SelectiveSearchSegmentation) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.SelectiveSearchSegmentation/addStrategy</div>
+      <div class="helpcontent"><p class=" h1line">Add a new strategy in the list of strategy to process</p>
+<pre class=" prettyprint lang-matlab"><code>obj.addStrategy(stype)
+obj.addStrategy('Multiple', stype, stype, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>stype</strong> The strategy type for the selective search
+segmentation algorithm, one of:
+<ul>
+<li><strong>Color</strong> Color-based strategy.</li>
+<li><strong>Size</strong> Size-based strategy.</li>
+<li><strong>Texture</strong> Texture-based strategy.</li>
+<li><strong>Fill</strong> Fill-based strategy.</li>
+<li><strong>Multiple</strong> Regroup multiple strategies, where all
+sub-strategies have equal weights.</li>
+</ul>
+</li>
+</ul>
+<p>The classes are implemented from the algorithm described in
+[uijlings2013selective].</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.SelectiveSearchSegmentation.clearStrategies.html">cv.SelectiveSearchSegmentation/clearStrategies</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

@@ -1,0 +1,77 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.matchShapes - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.matchShapes - Compares two shapes" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.matchShapes - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.matchShapes</div>
+      <div class="helpcontent"><p class=" h1line">Compares two shapes</p>
+<pre class=" prettyprint lang-matlab"><code>result = <a href="cv.matchShapes.html">cv.matchShapes</a>(contour1, contour2)
+result = <a href="cv.matchShapes.html">cv.matchShapes</a>(..., 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>contour1</strong> First contour or grayscale image. If it's contour, a cell
+array of 2-element vectors (of <code>int32</code> or <code>single</code> type) of the form
+<code>{[x,y], ...}</code>. In case of image, a single-channel 8-bit or floating-point
+2D matrix.</li>
+<li><strong>contour2</strong> Second contour or grayscale image, with a similar type as the
+first contour.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>result</strong> Output score.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Method</strong> Comparison method, default 'I1'. One of:
+<ul>
+<li><strong>I1</strong></li>
+<li><strong>I2</strong></li>
+<li><strong>I3</strong></li>
+</ul>
+</li>
+<li><strong>Parameter</strong> Method-specific parameter (not supported now). default 0</li>
+</ul>
+<p>The function compares two shapes. All three implemented methods use the
+Hu invariants (see <a href="cv.HuMoments.html">cv.HuMoments</a>).</p>
+<p>The following shape matching methods are available:</p>
+<ul>
+<li>
+<p><strong>I1</strong>:</p>
+<pre class=" prettyprint lang-matlab"><code>I_1(A,B) = sum_{i=1,...,7} | 1/m_i^A - 1/m_i^B |
+</code></pre>
+</li>
+<li>
+<p><strong>I2</strong>:</p>
+<pre class=" prettyprint lang-matlab"><code>I_2(A,B) = sum_{i=1,...,7} | m_i^A - m_i^B |
+</code></pre>
+</li>
+<li>
+<p><strong>I3</strong>:</p>
+<pre class=" prettyprint lang-matlab"><code>I_3(A,B) = max_{i=1,...,7} | m_i^A - m_i^B | / | m_i^A |
+</code></pre>
+</li>
+</ul>
+<p>where <code>A</code> denotes <code>contour1</code>, <code>B</code> denotes <code>contour2</code>, and:</p>
+<pre class=" prettyprint lang-matlab"><code>m_i^A = sign(h_i^A) * log(h_i^A)
+m_i^B = sign(h_i^B) * log(h_i^B)
+</code></pre>
+<p>and <code>h_i^A</code>, <code>h_i^B</code> are the Hu moments of <code>A</code> and <code>B</code>, respectively.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.moments.html">cv.moments</a>, <a href="cv.HuMoments.html">cv.HuMoments</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

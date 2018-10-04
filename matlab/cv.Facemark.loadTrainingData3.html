@@ -1,0 +1,66 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>loadTrainingData3 (cv.Facemark) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Facemark.loadTrainingData3 - Extracts the data for training from .txt files which contains the corresponding image name and landmarks" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">loadTrainingData3 (cv.Facemark) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Facemark.loadTrainingData3</div>
+      <div class="helpcontent"><p class=" h1line">Extracts the data for training from .txt files which contains the corresponding image name and landmarks</p>
+<pre class=" prettyprint lang-matlab"><code>[imagesPaths, landmarks, success] = <a href="cv.Facemark.loadTrainingData3.html">cv.Facemark.loadTrainingData3</a>(filenames)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>filenames</strong> A cell-array of strings containing names of the
+text files.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>imagesPaths</strong> A cell-array of strings which stores the
+filenames of images whose landmarks are tracked.</li>
+<li><strong>landmarks</strong> A cell-array of cell-array of points that would
+store shape or landmarks of all images <code>{{[x,y],...}, ...}</code>.</li>
+<li><strong>success</strong> success flag. It returns true when it reads the
+data successfully and false otherwise.</li>
+</ul>
+<p>An alternative dataset format. Similar to the one described in
+<a href="cv.Facemark.loadTrainingData2.html">cv.Facemark.loadTrainingData2</a>, but with separate files for each
+sample.</p>
+<p>The training data consists of |.txt| files whose first line
+contains the image name, followed by the annotations. Example:</p>
+<p>/path/to/image1.jpg
+565.86 , 758.98
+564.27 , 781.14
+...</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Facemark.loadTrainingData2.html">cv.Facemark.loadTrainingData2</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>true</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

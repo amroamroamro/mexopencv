@@ -1,0 +1,135 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.imwrite - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.imwrite - Saves an image to a specified file" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.imwrite - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.imwrite</div>
+      <div class="helpcontent"><p class=" h1line">Saves an image to a specified file</p>
+<pre class=" prettyprint lang-matlab"><code><a href="cv.imwrite.html">cv.imwrite</a>(filename, img)
+<a href="cv.imwrite.html">cv.imwrite</a>(filename, imgs)
+<a href="cv.imwrite.html">cv.imwrite</a>(filename, img, 'OptionName', optionValue, ...)
+success = <a href="cv.imwrite.html">cv.imwrite</a>(...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>filename</strong> Name of the file.</li>
+<li><strong>img</strong> Image to be saved.</li>
+<li><strong>imgs</strong> A cell-array of images, to be saved as one multi-page image
+(currently only supported by Tiff encoder).</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>success</strong> optional output flag, true on success, false otherwise. If not
+requested, the function throws an error on fail.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>FlipChannels</strong> in case the input is color image, flips the color order
+from MATLAB's RGB/RGBA to OpenCV's BGR/BGRA order. default true</li>
+</ul>
+<p>The following format-specific save parameters are currently supported:</p>
+<ul>
+<li><strong>JpegQuality</strong> For JPEG, it can be a quality from 0 to 100 (the higher is
+the better). Default value is 95.</li>
+<li><strong>JpegProgressive</strong> Enable JPEG features, 0 or 1, default is false.</li>
+<li><strong>JpegOptimize</strong> Enable JPEG features, 0 or 1, default is false.</li>
+<li><strong>JpegResetInterval</strong> JPEG restart interval, 0 - 65535, default is 0
+(no restart).</li>
+<li><strong>JpegLumaQuality</strong> Separate luma quality level, 0 - 100, default is 0
+(don't use).</li>
+<li><strong>JpegChromaQuality</strong> Separate chroma quality level, 0 - 100, default is 0
+(don't use).</li>
+<li><strong>PngCompression</strong> For PNG, it can be the compression level from 0 to 9.
+A higher value means a smaller size and longer compression time. If
+specified, <code>PngStrategy</code> is changed to <code>Default</code>. Default value is 1
+(best speed setting).</li>
+<li><strong>PngStrategy</strong> For PNG; used to tune the compression algorithm. These
+flags will be modify the way of PNG image compression and will be passed
+to the underlying zlib processing stage. The strategy parameter only
+affects the compression ratio but not the correctness of the compressed
+output even if it is not set appropriately. One of:
+<ul>
+<li><strong>Default</strong> Use this value for normal data.</li>
+<li><strong>Filtered</strong> Use this value for data produced by a filter (or predictor).
+Filtered data consists mostly of small values with a somewhat random
+distribution. In this case, the compression algorithm is tuned to
+compress them better. The effect of <code>Filtered</code> is to force more Huffman
+coding and less string matching; it is somewhat intermediate between
+<code>Default</code> and <code>HuffmanOnly</code>.</li>
+<li><strong>HuffmanOnly</strong> Use this value to force Huffman encoding only
+(no string match).</li>
+<li><strong>RLE</strong> (default) Use this value to limit match distances to one
+(run-length encoding). <code>RLE</code> is designed to be almost as fast as
+<code>HuffmanOnly</code>, but give better compression for PNG image data.</li>
+<li><strong>Fixed</strong> Using this value prevents the use of dynamic Huffman codes,
+allowing for a simpler decoder for special applications.</li>
+</ul>
+</li>
+<li><strong>PngBilevel</strong> Binary level PNG, 0 or 1, controls packing of pixels per
+bytes. If false, PNG files pack pixels of bit-depths 1, 2, and 4 into
+bytes as small as possible. default is false.</li>
+<li><strong>PxmBinary</strong> For PPM, PGM, or PBM, it can be a binary format flag, 0 or 1,
+to specify ASCII or binary encoding. default is true.</li>
+<li><strong>ExrType</strong> override EXR storage type. Note that the EXR encoder only
+accepts <code>single</code> images. One of:
+<ul>
+<li><strong>Half</strong> store as half precision (FP16), see <a href="cv.convertFp16.html">cv.convertFp16</a></li>
+<li><strong>Float</strong> store as single precision (FP32), this is the default.</li>
+</ul>
+</li>
+<li><strong>WebpQuality</strong> For WEBP, it can be a quality from 1 to 100 (the higher is
+the better). By default (without any parameter) and for quality above 100
+the lossless compression is used.</li>
+<li><strong>PamTupleType</strong> For PAM, sets the TUPLETYPE field to the corresponding
+string value that is defined for the format. One of:
+<ul>
+<li><strong>Null</strong></li>
+<li><strong>BlackWhite</strong></li>
+<li><strong>Grayscale</strong></li>
+<li><strong>GrayscaleAlpha</strong></li>
+<li><strong>RGB</strong></li>
+<li><strong>RGBA</strong></li>
+</ul>
+</li>
+</ul>
+<p>For advanced uses, you can directly pass a vector of parameters:</p>
+<ul>
+<li><strong>Params</strong> Format-specific save parameters encoded as pairs:
+<code>[paramId_1, paramValue_1, paramId_2, paramValue_2, ...]</code>.</li>
+</ul>
+<p>The function <a href="cv.imwrite.html">cv.imwrite</a> saves the image to the specified file. The image
+format is chosen based on the filename extension (see <a href="cv.imread.html">cv.imread</a> for the list
+of extensions). Only 8-bit (or 16-bit unsigned <code>uint16</code> in case of PNG,
+JPEG 2000, and TIFF) single-channel or 3-channel (with RGB channel order)
+images can be saved using this function. If the format, depth or channel
+order is different, use <a href="cv.cvtColor.html">cv.cvtColor</a> to convert it before saving. Or, use the
+universal <a href="cv.FileStorage.html">cv.FileStorage</a> I/O functions to save the image to XML or YAML
+format.</p>
+<p>(If the chosen encoder does not support the depth of the input image, the
+image will be implicitly cast to 8-bit).</p>
+<p>If the image cannot be saved (because of IO errors, improper permissions,
+unsupported or invalid format), the function throws an error.</p>
+<p>It is possible to store PNG images with an alpha channel using this function.
+To do this, create 8-bit (or 16-bit) 4-channel image RGBA, where the alpha
+channel goes last. Fully transparent pixels should have alpha set to 0,
+fully opaque pixels should have alpha set to 255/65535.
+Note: WEBP format can also store images with alpha channel.
+See <code>rgba_png_demo.m</code> sample for an example.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.imread.html">cv.imread</a>, <a href="cv.imencode.html">cv.imencode</a>, <a href="https://www.mathworks.com/help/matlab/ref/imwrite.html" target="_blank">imwrite</a>, <a href="https://www.mathworks.com/help/images/ref/dicomwrite.html" target="_blank">dicomwrite</a>, <a href="https://www.mathworks.com/help/images/ref/hdrwrite.html" target="_blank">hdrwrite</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

@@ -1,0 +1,88 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>addLayer (cv.Net) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Net.addLayer - Adds new layer to the net" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">addLayer (cv.Net) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Net/addLayer</div>
+      <div class="helpcontent"><p class=" h1line">Adds new layer to the net</p>
+<pre class=" prettyprint lang-matlab"><code>id = net.addLayer(name, layerType, params)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>name</strong> unique name of the adding layer.</li>
+<li><strong>layerType</strong> typename of the adding layer (type must be
+registered).</li>
+<li><strong>params</strong> parameters which will be used to initialize the
+creating layer. Scalar structure with the following fields:
+<ul>
+<li><strong>dict</strong> name-value dictionary as struct, values are scalar
+values (or arrays) of one of the following type: double,
+integer, or string.</li>
+<li><strong>blobs</strong> List of learned parameters stored as blobs.</li>
+<li><strong>name</strong> Name of the layer instance (optional, can be used
+internal purposes).</li>
+<li><strong>type</strong> Type name which was used for creating layer by
+layer factory (optional).</li>
+</ul>
+</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>id</strong> unique identifier of created layer, or -1 if a failure
+will happen.</li>
+</ul>
+<p>A LayerParams provides all data needed to initialize layer. It
+includes dictionary with scalar params (<code>params.dict</code> struct),
+blob params <code>params.blobs</code> and optional meta information
+<code>params.name</code> and <code>params.type</code> of layer instance.</p>
+<p>Built-in layers listed below partially reproduce functionality
+of corresponding Caffe and Torch7 layers. In partuclar, the
+following layers and Caffe importer were tested to reproduce
+<a href="http://caffe.berkeleyvision.org/tutorial/layers.html" target="_blank">Caffe</a>
+functionality:</p>
+<ul>
+<li>Convolution</li>
+<li>Deconvolution</li>
+<li>Pooling</li>
+<li>InnerProduct</li>
+<li>TanH, ReLU, Sigmoid, BNLL, Power, AbsVal</li>
+<li>Softmax</li>
+<li>Reshape, Flatten, Slice, Split</li>
+<li>LRN</li>
+<li>MVN</li>
+<li>Dropout (since it does nothing on forward pass)</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Net.addLayerToPrev.html">cv.Net/addLayerToPrev</a>, <a href="cv.Net.deleteLayer.html">cv.Net/deleteLayer</a>, <a href="cv.Net.connect.html">cv.Net/connect</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

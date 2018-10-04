@@ -1,0 +1,54 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.pyrUp - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.pyrUp - Upsamples an image and then blurs it" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.pyrUp - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.pyrUp</div>
+      <div class="helpcontent"><p class=" h1line">Upsamples an image and then blurs it</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.pyrUp.html">cv.pyrUp</a>(src)
+dst = <a href="cv.pyrUp.html">cv.pyrUp</a>(src, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> Input image; <code>uint8</code>, <code>uint16</code>, <code>int16</code>, <code>single</code>, or <code>double</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> Destination image. It has the specified size and the same type as
+<code>src</code>.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>DstSize</strong> Size of the output image <code>[w,h]</code>. default [0,0], see below.</li>
+<li><strong>BorderType</strong> Pixel extrapolation method, see <a href="cv.copyMakeBorder.html">cv.copyMakeBorder</a>
+('Constant' isn't supported). Default 'Default'</li>
+</ul>
+<p>By default, size of the output image is computed as
+<code>[size(src,2)*2 size(src,1)*2]</code>, but in any case, the following conditions
+should be satisfied:</p>
+<pre class=" prettyprint lang-matlab"><code>abs(DstSize(2) - size(src,2)*2) &lt;= mod(DstSize(2),2)
+abs(DstSize(1) - size(src,1)*2) &lt;= mod(DstSize(1),2)
+</code></pre>
+<p>The function performs the upsampling step of the Gaussian pyramid
+construction, though it can actually be used to construct the Laplacian
+pyramid. First, it upsamples the source image by injecting even zero rows
+and columns and then convolves the result with the same kernel as in
+<a href="cv.pyrDown.html">cv.pyrDown</a> multiplied by 4.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.pyrDown.html">cv.pyrDown</a>, <a href="cv.buildPyramid.html">cv.buildPyramid</a>, <a href="https://www.mathworks.com/help/images/ref/impyramid.html" target="_blank">impyramid</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

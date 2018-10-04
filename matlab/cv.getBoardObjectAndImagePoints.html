@@ -1,0 +1,40 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.getBoardObjectAndImagePoints - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.getBoardObjectAndImagePoints - Given a board configuration and a set of detected markers, returns the corresponding image points and object points to call solvePnP" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.getBoardObjectAndImagePoints - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.getBoardObjectAndImagePoints</div>
+      <div class="helpcontent"><p class=" h1line">Given a board configuration and a set of detected markers, returns the corresponding image points and object points to call solvePnP</p>
+<pre class=" prettyprint lang-matlab"><code>[objPoints, imgPoints] = <a href="cv.getBoardObjectAndImagePoints.html">cv.getBoardObjectAndImagePoints</a>(board, corners, ids)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>board</strong> Marker board layout.</li>
+<li><strong>corners</strong> List of detected marker corners of the board.</li>
+<li><strong>ids</strong> list of identifiers for each marker in <code>corners</code> (0-based).</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>objPoints</strong> Cell array of board marker points in the board coordinate
+space <code>{[x y z], ...}</code></li>
+<li><strong>imgPoints</strong> Cell array of the projections of board marker corner points
+<code>{[x y], ...}</code></li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.estimatePoseBoard.html">cv.estimatePoseBoard</a>, <a href="cv.solvePnP.html">cv.solvePnP</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

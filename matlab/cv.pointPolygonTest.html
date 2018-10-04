@@ -1,0 +1,50 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.pointPolygonTest - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.pointPolygonTest - Performs a point-in-contour test" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.pointPolygonTest - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.pointPolygonTest</div>
+      <div class="helpcontent"><p class=" h1line">Performs a point-in-contour test</p>
+<pre class=" prettyprint lang-matlab"><code>d = <a href="cv.pointPolygonTest.html">cv.pointPolygonTest</a>(contour, pt)
+d = <a href="cv.pointPolygonTest.html">cv.pointPolygonTest</a>(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>contour</strong> Input contour, stored in numeric array (Nx2/Nx1x2/1xNx2) or
+cell array of 2-element vectors (<code>{[x,y], ...}</code>).</li>
+<li><strong>pt</strong> Point tested against the contour <code>[x,y]</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>d</strong> Output value (See below).</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>MeasureDist</strong> If true, the function estimates the signed distance from
+the point to the nearest contour edge. Otherwise, the function only checks
+if the point is inside a contour or not. default false</li>
+</ul>
+<p>The function determines whether the point is inside a contour, outside, or
+lies on an edge (or coincides with a vertex). It returns positive (inside),
+negative (outside), or zero (on an edge) value, correspondingly. When
+<code>MeasureDist=false</code>, the return value is +1, -1, and 0, respectively.
+Otherwise, the return value is a signed distance between the point and the
+nearest contour edge.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.distanceTransform.html">cv.distanceTransform</a>, <a href="https://www.mathworks.com/help/matlab/ref/inpolygon.html" target="_blank">inpolygon</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

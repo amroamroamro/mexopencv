@@ -1,0 +1,64 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.StructuredEdgeDetection/StructuredEdgeDetection - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.StructuredEdgeDetection.StructuredEdgeDetection - The only constructor" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.StructuredEdgeDetection/StructuredEdgeDetection - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.StructuredEdgeDetection/StructuredEdgeDetection</div>
+      <div class="helpcontent"><p class=" h1line">The only constructor</p>
+<pre class=" prettyprint lang-matlab"><code>obj = <a href="cv.StructuredEdgeDetection.html">cv.StructuredEdgeDetection</a>(model)
+obj = <a href="cv.StructuredEdgeDetection.html">cv.StructuredEdgeDetection</a>(model, howToGetFeatures)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>model</strong> name of the file where the model is stored.</li>
+<li><strong>howToGetFeatures</strong> optional name of MATLAB M-function that
+implements custom feature extractor. A helper function for
+training part of: &quot;P. Dollar and C. L. Zitnick. Structured
+Forests for Fast Edge Detection, 2013&quot;. You need it only if
+you would like to train your own forest, otherwise leave it
+unspecified for the default implementation. See example below.</li>
+</ul>
+<h2>Example</h2>
+<p>The following is an example of a custom feature extractor
+MATLAB function:</p>
+<pre class=" prettyprint lang-matlab"><code>% This function extracts feature channels from src. The
+% StructureEdgeDetection uses this feature space to detect
+% edges.
+function features = myRFFeatureGetter(src, opts)
+    % src: source image to extract features
+    % features: output n-channel floating-point feature matrix
+    % opts: struct of options
+    gnrmRad = opts.normRad;    % gradientNormalizationRadius
+    gsmthRad = opts.grdSmooth; % gradientSmoothingRadius
+    shrink = opts.shrink;      % shrinkNumber
+    outNum = opts.nChns;       % numberOfOutputChannels
+    gradNum = opts.nOrients;   % numberOfGradientOrientations
+
+    nsize = [size(src,1) size(src,2)] ./ shrink;
+    features = zeros([nsize outNum], 'single');
+    % ... here your feature extraction code
+end
+</code></pre>
+<p>TODO: Custom extractor is not internally used in the current
+<a href="cv.StructuredEdgeDetection.html">cv.StructuredEdgeDetection</a> implementation. See this
+<a href="https://docs.opencv.org/3.3.1/d2/d59/tutorial_ximgproc_training.html" target="_blank">tutorial</a>
+for more information about training your own structured forest
+(it uses an external MATLAB toolbox for the training part).</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.StructuredEdgeDetection.detectEdges.html">cv.StructuredEdgeDetection/detectEdges</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

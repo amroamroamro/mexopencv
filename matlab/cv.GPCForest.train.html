@@ -1,0 +1,70 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>train (cv.GPCForest) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.GPCForest.train - Train the forest using individual samples for each tree" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">train (cv.GPCForest) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.GPCForest/train</div>
+      <div class="helpcontent"><p class=" h1line">Train the forest using individual samples for each tree</p>
+<pre class=" prettyprint lang-matlab"><code>obj.train(imagesFrom, imagesTo, groundTruths)
+obj.train(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>imagesFrom</strong> First sequence of images, a cell array of
+either filenames or 3-channel color images.</li>
+<li><strong>imagesTo</strong> Second sequence of images, same size and format
+as <code>imagesFrom</code>.</li>
+<li><strong>groundTruth</strong> Ground thruth flows, either flow fields or
+filenames (see <a href="cv.readOpticalFlow.html">cv.readOpticalFlow</a>).</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>MaxTreeDepth</strong> Maximum tree depth to stop partitioning.
+default 20</li>
+<li><strong>MinNumberOfSamples</strong> Minimum number of samples in the node
+to stop partitioning. default 3</li>
+<li><strong>DescriptorType</strong> Type of descriptors to use. One of:
+<ul>
+<li><strong>DCT</strong> (default) Better quality but slow.</li>
+<li><strong>WHT</strong> Worse quality but much faster.</li>
+</ul>
+</li>
+<li><strong>PrintProgress</strong> Print progress to stdout. default false</li>
+</ul>
+<p>Inputs form the training samples (pairs of images and ground
+truth flows). Sizes of all the provided vectors must be equal.
+Options are the training parameters.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.GPCForest.findCorrespondences.html">cv.GPCForest/findCorrespondences</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

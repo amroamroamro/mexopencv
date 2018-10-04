@@ -1,0 +1,97 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.Net/Net - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Net.Net - Constructor and importer of trained serialized models from different dnn-frameworks" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.Net/Net - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Net/Net</div>
+      <div class="helpcontent"><p class=" h1line">Constructor and importer of trained serialized models from different dnn-frameworks</p>
+<pre class=" prettyprint lang-matlab"><code>net = <a href="cv.Net.html">cv.Net</a>()
+
+net = <a href="cv.Net.html">cv.Net</a>('Caffe', prototxt)
+net = <a href="cv.Net.html">cv.Net</a>('Caffe', prototxt, caffeModel)
+
+net = <a href="cv.Net.html">cv.Net</a>('Tensorflow', modelmodel)
+net = <a href="cv.Net.html">cv.Net</a>('Tensorflow', model, config)
+
+net = <a href="cv.Net.html">cv.Net</a>('Torch', filename)
+net = <a href="cv.Net.html">cv.Net</a>('Torch', filename, isBinary)
+
+net = <a href="cv.Net.html">cv.Net</a>('Darknet', cfgFile)
+net = <a href="cv.Net.html">cv.Net</a>('Darknet', cfgFile, darknetModel)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>prototxt</strong> path to the <code>.prototxt</code> file with text
+description of the network architecture.</li>
+<li><strong>caffeModel</strong> (optional) path to the <code>.caffemodel</code> file with
+learned network. Empty by default.</li>
+<li><strong>model</strong> path to the <code>.pb</code> file with binary protobuf
+description of the network architecture. Binary serialized
+TensorFlow graph includes weights.</li>
+<li><strong>config</strong> Optional path to the <code>.pbtxt</code> file that contains
+text graph definition in protobuf format. Resulting net is
+built by text graph using weights from a binary one. This is
+more flexible than binary format and may be used to build the
+network using binary format only as a weights storage. This
+approach is similar to Caffe's <code>.prorotxt</code> and <code>.caffemodel</code>.</li>
+<li><strong>filename</strong> path to the file, dumped from Torch by using
+<code>torch.save()</code> function.</li>
+<li><strong>isBinary</strong> specifies whether the network was serialized in
+ascii mode or binary. default true.</li>
+<li><strong>cfgFile</strong> path to the <code>.cfg</code> file with text description of
+the network architecture.</li>
+<li><strong>darknetModel</strong> (optional) path to the <code>.weights</code> file with
+learned network.</li>
+</ul>
+<p>The first variant creates an empty network.</p>
+<p>The second variant reads a network model stored in
+<a href="http://caffe.berkeleyvision.org" target="_blank">Caffe</a> framework's format.</p>
+<p>The third variant reads a network model stored in
+<a href="https://www.tensorflow.org/" target="_blank">TensorFlow</a> framework's format.</p>
+<p>The fourth variant reads a network model stored in
+<a href="http://torch.ch" target="_blank">Torch7</a> framework's format.</p>
+<p>The fifth variant reads a network model stored in
+<a href="https://pjreddie.com/darknet/" target="_blank">Darknet</a> model files.</p>
+<p>The importers first create a net, add loaded layers into it, and
+set connections between them.</p>
+<h3>Notes for Torch</h3>
+<p>NOTE: ASCII mode of Torch serializer is more preferable, because
+binary mode extensively use <code>long</code> type of C language, which has
+various bit-length on different systems.</p>
+<p>The loading file must contain serialized
+<a href="https://github.com/torch/nn/blob/master/doc/module.md" target="_blank"><code>nn.Module</code></a>
+object with importing network. Try to eliminate a custom objects
+from serialazing data to avoid importing errors.</p>
+<p>List of supported layers (i.e. object instances derived from
+Torch <code>nn.Module</code> class):</p>
+<ul>
+<li><code>nn.Sequential</code></li>
+<li><code>nn.Parallel</code></li>
+<li><code>nn.Concat</code></li>
+<li><code>nn.Linear</code></li>
+<li><code>nn.SpatialConvolution</code></li>
+<li><code>nn.SpatialMaxPooling</code>, <code>nn.SpatialAveragePooling</code></li>
+<li><code>nn.ReLU</code>, <code>nn.TanH</code>, <code>nn.Sigmoid</code></li>
+<li><code>nn.Reshape</code></li>
+<li><code>nn.SoftMax</code>, <code>nn.LogSoftMax</code></li>
+</ul>
+<p>Also some equivalents of these classes from cunn, cudnn, and
+fbcunn may be successfully imported.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Net.html">cv.Net</a>, <a href="cv.Net.forward.html">cv.Net/forward</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

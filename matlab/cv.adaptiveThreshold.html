@@ -1,0 +1,83 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.adaptiveThreshold - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.adaptiveThreshold - Applies an adaptive threshold to an array" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.adaptiveThreshold - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.adaptiveThreshold</div>
+      <div class="helpcontent"><p class=" h1line">Applies an adaptive threshold to an array</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.adaptiveThreshold.html">cv.adaptiveThreshold</a>(src)
+dst = <a href="cv.adaptiveThreshold.html">cv.adaptiveThreshold</a>(src, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> Source 8-bit single-channel <code>uint8</code> image.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> Destination image of the same size and the same type as <code>src</code>.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>MaxValue</strong> Non-zero value assigned to the pixels for which the condition
+is satisfied. See the details below. default 255</li>
+<li><strong>Method</strong> Adaptive thresholding algorithm to use, default 'Mean'. One of:
+<ul>
+<li><strong>Mean</strong> the threshold value <code>T(x,y)</code> is a mean of the
+<code>BlockSize x BlockSize</code> neighborhood of <code>(x,y)</code> minus <code>C</code></li>
+<li><strong>Gaussian</strong> the threshold value <code>T(x,y)</code> is a weighted sum
+(cross-correlation with a Gaussian window) of the <code>BlockSize x BlockSize</code>
+neighborhood of <code>(x,y)</code> minus <code>C</code>. The default sigma (standard deviation)
+is used for the specified <code>BlockSize</code>. See <a href="cv.getGaussianKernel.html">cv.getGaussianKernel</a></li>
+</ul>
+</li>
+<li><strong>Type</strong> Thresholding type, default 'Binary'. One of:
+<ul>
+<li><strong>Binary</strong>    <code>dst(x,y) = (src(x,y) &gt; thresh) ? maxValue : 0</code></li>
+<li><strong>BinaryInv</strong> <code>dst(x,y) = (src(x,y) &gt; thresh) ? 0 : maxValue</code></li>
+</ul>
+</li>
+<li><strong>BlockSize</strong> Size of a pixel neighborhood that is used to calculate a
+threshold value for the pixel: 3, 5, 7, and so on. Default 3</li>
+<li><strong>C</strong> Constant subtracted from the mean or weighted mean. Normally, it is
+positive but may be zero or negative as well. Default 5</li>
+</ul>
+<p>The function transforms a grayscale image to a binary image according to
+the formulae:</p>
+<ul>
+<li>
+<p><strong>Binary</strong></p>
+<pre class=" prettyprint lang-matlab"><code>           | maxValue, if src(x,y) &gt; T(x,y)
+dst(x,y) = |
+           | 0, otherwise
+</code></pre>
+</li>
+<li>
+<p><strong>BinaryInv</strong></p>
+<pre class=" prettyprint lang-matlab"><code>           | 0, if src(x,y) &gt; T(x,y)
+dst(x,y) = |
+           | maxValue, otherwise
+</code></pre>
+</li>
+</ul>
+<p>where <code>T(x,y)</code> is a threshold calculated individually for each pixel (see
+<code>Method</code> parameter).</p>
+<p>Note: Internally the options <code>'BorderType','Replicate', 'Isolated',true</code> are
+used to process boundaries (see <a href="cv.copyMakeBorder.html">cv.copyMakeBorder</a>).</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.threshold.html">cv.threshold</a>, <a href="cv.blur.html">cv.blur</a>, <a href="cv.GaussianBlur.html">cv.GaussianBlur</a>, <a href="https://www.mathworks.com/help/images/ref/adaptthresh.html" target="_blank">adaptthresh</a>, <a href="https://www.mathworks.com/help/images/ref/imbinarize.html" target="_blank">imbinarize</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

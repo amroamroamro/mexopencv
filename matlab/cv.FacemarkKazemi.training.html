@@ -1,0 +1,68 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>training (cv.FacemarkKazemi) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.FacemarkKazemi.training - Trains a facemark model" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">training (cv.FacemarkKazemi) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.FacemarkKazemi/training</div>
+      <div class="helpcontent"><p class=" h1line">Trains a facemark model</p>
+<pre class=" prettyprint lang-matlab"><code>success = obj.training(images, landmarks, configFile, scale)
+success = obj.training(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>images</strong> cell-array of images which are used in training
+samples.</li>
+<li><strong>landmarks</strong> cell-array of cell-array of points which stores
+the landmarks detected in a particular image.</li>
+<li><strong>configFile</strong> name of the file storing parameters for
+training the model. For an example, see the
+|facemark_kazemi_train_config_demo.m| sample.</li>
+<li><strong>scale</strong> size to which all images and landmarks have to be
+scaled to <code>[w,h]</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>success</strong> returns true if the model is trained properly or
+false if it is not trained.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>ModelFilename</strong> name of the trained model file that has to
+be saved. default 'face_landmarks.dat'</li>
+</ul>
+<p>Trains a facemark model using gradient boosting to get a cascade
+of regressors which can then be used to predict shape.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.FacemarkKazemi.loadModel.html">cv.FacemarkKazemi/loadModel</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

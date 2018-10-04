@@ -1,0 +1,49 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.rotate - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.rotate - Rotates a 2D array in multiples of 90 degrees" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.rotate - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.rotate</div>
+      <div class="helpcontent"><p class=" h1line">Rotates a 2D array in multiples of 90 degrees</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.rotate.html">cv.rotate</a>(src, rotateCode)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> input array.</li>
+<li><strong>rotateCode</strong> an enum to specify how to rotate the array:
+<ul>
+<li><strong>90CW</strong> Rotate 90 degrees clockwise</li>
+<li><strong>180</strong> Rotate 180 degrees clockwise</li>
+<li><strong>90CCW</strong> Rotate 270 degrees clockwise</li>
+</ul>
+</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> output array of the same type as <code>src</code>. The size is the same with
+'180', and the rows and cols are switched for '90CW' and '90CCW'.</li>
+</ul>
+<p>The function <a href="cv.rotate.html">cv.rotate</a> rotates the array in one of three different ways:</p>
+<ul>
+<li>Rotate by 90 degrees clockwise (<code>rotateCode = '90CW'</code>).</li>
+<li>Rotate by 180 degrees clockwise (<code>rotateCode = '180'</code>).</li>
+<li>Rotate by 270 degrees clockwise (<code>rotateCode = '90CCW'</code>).</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.flip.html">cv.flip</a>, <a href="https://www.mathworks.com/help/matlab/ref/transpose.html" target="_blank">transpose</a>, <a href="https://www.mathworks.com/help/matlab/ref/rot90.html" target="_blank">rot90</a>, <a href="cv.flip.html">flip</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

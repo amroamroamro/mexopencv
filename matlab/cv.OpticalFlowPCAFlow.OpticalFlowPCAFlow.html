@@ -1,0 +1,46 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.OpticalFlowPCAFlow/OpticalFlowPCAFlow - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.OpticalFlowPCAFlow.OpticalFlowPCAFlow - Creates an instance of PCAFlow" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.OpticalFlowPCAFlow/OpticalFlowPCAFlow - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.OpticalFlowPCAFlow/OpticalFlowPCAFlow</div>
+      <div class="helpcontent"><p class=" h1line">Creates an instance of PCAFlow</p>
+<pre class=" prettyprint lang-matlab"><code>obj = <a href="cv.OpticalFlowPCAFlow.html">cv.OpticalFlowPCAFlow</a>()
+obj = <a href="cv.OpticalFlowPCAFlow.html">cv.OpticalFlowPCAFlow</a>('OptionName',optionValue, ...)
+</code></pre>
+<h2>Options</h2>
+<ul>
+<li><strong>Prior</strong> Learned prior or no prior (default). Specified as a
+path to prior. This instantiates a class used for imposing a
+learned prior on the resulting optical flow. Solution will be
+regularized according to this prior. You need to generate
+appropriate prior file with &quot;learn_prior.py&quot; script beforehand.</li>
+<li><strong>BasisSize</strong> Number of basis vectors. default [18,14]</li>
+<li><strong>SparseRate</strong> Controls density of sparse matches.
+default 0.024</li>
+<li><strong>RetainedCornersFraction</strong> Retained corners fraction.
+default 0.2</li>
+<li><strong>OcclusionsThreshold</strong> Occlusion threshold. default 0.0003</li>
+<li><strong>DampingFactor</strong> Regularization term for solving
+least-squares. It is not related to the prior regularization.
+default 0.00002</li>
+<li><strong>ClaheClip</strong> Clip parameter for CLAHE. default 14</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.OpticalFlowPCAFlow.calc.html">cv.OpticalFlowPCAFlow/calc</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

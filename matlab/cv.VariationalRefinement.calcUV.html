@@ -1,0 +1,63 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>calcUV (cv.VariationalRefinement) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.VariationalRefinement.calcUV - calc function overload to handle separate horizontal (u) and vertical (v) flow components (to avoid extra splits/merges)" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">calcUV (cv.VariationalRefinement) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.VariationalRefinement/calcUV</div>
+      <div class="helpcontent"><p class=" h1line">calc function overload to handle separate horizontal (u) and vertical (v) flow components (to avoid extra splits/merges)</p>
+<pre class=" prettyprint lang-matlab"><code>[flow_u, flow_v] = obj.calcUV(I0, I1)
+[flow_u, flow_v] = obj.calcUV(I0, I1, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>I0</strong> first 8-bit single-channel input image.</li>
+<li><strong>I1</strong> second input image of the same size and the same type
+as <code>I0</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>flow_u</strong> computed horizontal flow image that has the same
+size as <code>I0</code> and type <code>single</code> (1-channel1).</li>
+<li><strong>flow_v</strong> computed vertical flow image that has the same size
+as <code>I0</code> and type <code>single</code> (1-channel1).</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>InitialFlowU</strong> specify initial U-flow. Not set by default.</li>
+<li><strong>InitialFlowV</strong> specify initial V-flow. Not set by default.</li>
+</ul>
+<p>Note that <code>flow(:,:,1)==flow_u</code>, and <code>flow(:,:,2)==flow_v</code>.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.VariationalRefinement.calc.html">cv.VariationalRefinement/calc</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

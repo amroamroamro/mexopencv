@@ -1,0 +1,58 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>findNearest (cv.Subdiv2D) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Subdiv2D.findNearest - Finds the subdivision vertex closest to the given point" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">findNearest (cv.Subdiv2D) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Subdiv2D/findNearest</div>
+      <div class="helpcontent"><p class=" h1line">Finds the subdivision vertex closest to the given point</p>
+<pre class=" prettyprint lang-matlab"><code>[vertex, nearestPt] = obj.findNearest(pt)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>pt</strong> Input point <code>[x,y]</code></li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>vertex</strong> vertex ID.</li>
+<li><strong>nearestPt</strong> Output subdivision vertex point <code>[x,y]</code>.</li>
+</ul>
+<p>The function is another function that locates the input point
+within the subdivision. It finds the subdivision vertex that is
+the closest to the input point. It is not necessarily one of
+vertices of the facet containing the input point, though the
+facet (located using <a href="cv.Subdiv2D.locate.html">cv.Subdiv2D.locate</a>) is used as a starting
+point.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Subdiv2D.locate.html">cv.Subdiv2D/locate</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

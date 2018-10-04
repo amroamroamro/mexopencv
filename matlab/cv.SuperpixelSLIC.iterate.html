@@ -1,0 +1,57 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>iterate (cv.SuperpixelSLIC) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.SuperpixelSLIC.iterate - Calculates the superpixel segmentation on a given image with the initialized parameters in the object" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">iterate (cv.SuperpixelSLIC) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.SuperpixelSLIC/iterate</div>
+      <div class="helpcontent"><p class=" h1line">Calculates the superpixel segmentation on a given image with the initialized parameters in the object</p>
+<pre class=" prettyprint lang-matlab"><code>obj.iterate()
+obj.iterate('OptionName',optionValue, ...)
+</code></pre>
+<h2>Options</h2>
+<ul>
+<li><strong>NumIterations</strong> Number of iterations. Higher number improves
+the result. default 10</li>
+</ul>
+<p>The function computes the superpixels segmentation of an image
+with the parameters initialized with the constructor. The
+algorithms starts from a grid of superpixels and then refines
+the boundaries by proposing updates of edges boundaries.</p>
+<p>This function can be called again without the need of
+initializing the algorithm with the constructor This save the
+computational cost of allocating memory for all the structures
+of the algorithm.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.SuperpixelSLIC.getLabels.html">cv.SuperpixelSLIC/getLabels</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

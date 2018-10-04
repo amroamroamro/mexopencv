@@ -1,0 +1,83 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.solvePnPRansac - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.solvePnPRansac - Finds an object pose from 3D-2D point correspondences using the RANSAC scheme" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.solvePnPRansac - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.solvePnPRansac</div>
+      <div class="helpcontent"><p class=" h1line">Finds an object pose from 3D-2D point correspondences using the RANSAC scheme</p>
+<pre class=" prettyprint lang-matlab"><code>[rvec, tvec, success, inliers] = <a href="cv.solvePnPRansac.html">cv.solvePnPRansac</a>(objectPoints, imagePoints, cameraMatrix)
+[...] = <a href="cv.solvePnPRansac.html">cv.solvePnPRansac</a>(..., 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>objectPoints</strong> Array of object points in the object coordinate space,
+1xNx3/Nx1x3 or Nx3 array, where <code>N</code> is the number of points, or cell
+array of length <code>N</code> of 3-element vectors can be also passed here
+<code>{[x,y,z], ...}</code>.</li>
+<li><strong>imagePoints</strong> Array of corresponding image points, 1xNx2/Nx1x2 or Nx2
+array, where <code>N</code> is the number of points, or cell array of length <code>N</code> of
+2-element vectors can be also passed here <code>{[x,y], ...}</code>.</li>
+<li><strong>cameraMatrix</strong> Input camera matrix <code>A = [fx 0 cx; 0 fy cy; 0 0 1]</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>rvec</strong> Output rotation vector (see <a href="cv.Rodrigues.html">cv.Rodrigues</a>) that, together with
+<code>tvec</code>, brings points from the model coordinate system to the camera
+coordinate system.</li>
+<li><strong>tvec</strong> Output translation vector.</li>
+<li><strong>success</strong> success logical flag.</li>
+<li><strong>inliers</strong> Output vector that contains indices (zero-based) of inliers in
+<code>objectPoints</code> and <code>imagePoints</code>.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>DistCoeffs</strong> Input vector of distortion coefficients
+<code>[k1,k2,p1,p2,k3,k4,k5,k6,s1,s2,s3,s4,taux,tauy]</code> of 4, 5, 8, 12 or 14
+elements. If the vector is empty, the zero distortion coefficients are
+assumed. default empty.</li>
+<li><strong>Rvec</strong> Initial <code>rvec</code>. Not set by default.</li>
+<li><strong>Tvec</strong> Initial <code>tvec</code>. Not set by default.</li>
+<li><strong>UseExtrinsicGuess</strong> Parameter used for <code>Method='Iterative'</code>. If true,
+the function uses the provided <code>rvec</code> and <code>tvec</code> values as initial
+approximations of the rotation and translation vectors, respectively, and
+further optimizes them. default false.</li>
+<li><strong>IterationsCount</strong> Number of iterations. default 100.</li>
+<li><strong>ReprojectionError</strong> Inlier threshold value used by the RANSAC procedure.
+The parameter value is the maximum allowed distance between the observed
+and computed point projections to consider it an inlier. default 8.0.</li>
+<li><strong>Confidence</strong> The probability that the algorithm produces a useful result.
+default 0.99</li>
+<li><strong>Method</strong> Method for solving the PnP problem. See <a href="cv.solvePnP.html">cv.solvePnP</a>.
+default 'Iterative'</li>
+</ul>
+<p>The function estimates an object pose given a set of object points, their
+corresponding image projections, as well as the camera matrix and the
+distortion coefficients. This function finds such a pose that minimizes
+reprojection error, that is, the sum of squared distances between the
+observed projections <code>imagePoints</code> and the projected (using <a href="cv.projectPoints.html">cv.projectPoints</a>)
+<code>objectPoints</code>. The use of RANSAC makes the function resistant to outliers.</p>
+<p>Note: The default method used to estimate the camera pose for the Minimal
+Sample Sets step is <code>EPnP</code>. Exceptions: if you choose <code>P3P</code> or <code>AP3P</code>, these
+methods will be used; if the number of input points is equal to 4, <code>P3P</code> is
+used.</p>
+<p>The method used to estimate the camera pose using all the inliers is defined
+by the flags parameters unless it is equal to <code>P3P</code> or <code>AP3P</code>. In this case,
+the method <code>EPnP</code> will be used instead.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.solvePnP.html">cv.solvePnP</a>, <a href="https://www.mathworks.com/help/vision/ref/estimateworldcamerapose.html" target="_blank">estimateWorldCameraPose</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

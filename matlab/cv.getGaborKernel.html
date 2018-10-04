@@ -1,0 +1,48 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.getGaborKernel - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.getGaborKernel - Returns Gabor filter coefficients" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.getGaborKernel - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.getGaborKernel</div>
+      <div class="helpcontent"><p class=" h1line">Returns Gabor filter coefficients</p>
+<pre class=" prettyprint lang-matlab"><code>kernel = <a href="cv.getGaborKernel.html">cv.getGaborKernel</a>('OptionName',optionValue, ...)
+</code></pre>
+<h2>Output</h2>
+<ul>
+<li><strong>kernel</strong> output kernel of the specified size and type.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>KSize</strong> Size of the filter returned <code>[w,h]</code>. default [21,21]</li>
+<li><strong>Sigma</strong> Standard deviation of the gaussian envelope. default 5.0</li>
+<li><strong>Theta</strong> Orientation of the normal to the parallel stripes of a Gabor
+function. default pi/4</li>
+<li><strong>Lambda</strong> Wavelength of the sinusoidal factor. default 10.0</li>
+<li><strong>Gamma</strong> Spatial aspect ratio. default 0.75</li>
+<li><strong>Psi</strong> Phase offset. default pi/2</li>
+<li><strong>KType</strong> Type of filter coefficients. It can be <code>single</code> or <code>double</code>.
+default <code>double</code>.</li>
+</ul>
+<p>For more details about gabor filter equations and parameters, see
+<a href="https://en.wikipedia.org/wiki/Gabor_filter" target="_blank">Gabor filter</a>.</p>
+<h2>Example</h2>
+<p>Try the <code>gabor_filter_gui.m</code> sample file to interact with the various
+parameters of the Gabor filter and visualize the result.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="https://www.mathworks.com/help/images/ref/gabor.html" target="_blank">gabor</a>, <a href="https://www.mathworks.com/help/images/ref/imgaborfilt.html" target="_blank">imgaborfilt</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

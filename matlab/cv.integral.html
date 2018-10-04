@@ -1,0 +1,65 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.integral - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.integral - Calculates the integral of an image" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.integral - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.integral</div>
+      <div class="helpcontent"><p class=" h1line">Calculates the integral of an image</p>
+<pre class=" prettyprint lang-matlab"><code>s = <a href="cv.integral.html">cv.integral</a>(src)
+[s, sqsum, tilted] = <a href="cv.integral.html">cv.integral</a>(src)
+[...] = <a href="cv.integral.html">cv.integral</a>(src, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> Source image as <code>W x H</code>, 8-bit, 16-bit or floating-point
+(<code>single</code> or <code>double</code>).</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>s</strong> Integral image as <code>(W+1) x (H+1)</code>, 32-bit integer or floating-point
+(<code>single</code> or <code>double</code>).</li>
+<li><strong>sqsum</strong> Integral image for squared pixel values. It is <code>(W+1) x (H+1)</code>,
+double-precision floating-point array.</li>
+<li><strong>tilted</strong> Integral for the image rotated by 45 degrees. It is
+<code>(W+1) x (H+1)</code> array with the same data type as <code>s</code>.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>SDepth</strong> desired depth of the integral and the tilted integral images,
+<code>int32</code>, <code>single</code>, or <code>double</code>. default -1</li>
+<li><strong>SQDepth</strong> desired depth of the integral image of squared pixel values,
+<code>single</code> or <code>double</code>. default -1</li>
+</ul>
+<p>The function calculates one or more integral images for the source image as
+follows:</p>
+<pre class=" prettyprint lang-matlab"><code>s(X,Y) = sum_{x&lt;X,y&lt;Y} src(x,y)
+sqsum(X,Y) = sum_{x&lt;X,y&lt;Y} src(x,y)^2
+tilted(X,Y) = sum_{y&lt;Y,abs(x-X+1)&lt;=Y-y-1} src(x,y)
+</code></pre>
+<p>Using these integral images, you can calculate sum, mean, and standard
+deviation over a specific up-right or rotated rectangular region of the
+image in a constant time, for example:</p>
+<pre class=" prettyprint lang-matlab"><code>sum_{x_1 &lt;= x &lt; x_2, y_1 &lt;= y &lt; y_2} src(x,y)
+    = s(x_2, y_2) - s(x_1, y_2) - s(x_2, y_1) + s(x_1, y_1)
+</code></pre>
+<p>It makes possible to do a fast blurring or fast block correlation with a
+variable window size, for example. In case of multi-channel images, sums for
+each channel are accumulated independently.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="https://www.mathworks.com/help/images/ref/integralimage.html" target="_blank">integralImage</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

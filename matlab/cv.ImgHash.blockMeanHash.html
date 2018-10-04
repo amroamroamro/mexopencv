@@ -1,0 +1,65 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>blockMeanHash (cv.ImgHash) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.ImgHash.blockMeanHash - Computes block mean hash of the input image" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">blockMeanHash (cv.ImgHash) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.ImgHash.blockMeanHash</div>
+      <div class="helpcontent"><p class=" h1line">Computes block mean hash of the input image</p>
+<pre class=" prettyprint lang-matlab"><code>hash = <a href="cv.ImgHash.blockMeanHash.html">cv.ImgHash.blockMeanHash</a>(img)
+hash = <a href="cv.ImgHash.blockMeanHash.html">cv.ImgHash.blockMeanHash</a>(img, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>img</strong> input image want to compute hash value, type should be
+<code>uint8</code> with 1/3/4 channels.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>hash</strong> Hash value of input, it will contain 16 hex decimal
+number, return type is <code>uint8</code>.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Mode</strong> block mean hash mode, one of:
+<ul>
+<li><strong>Mode0</strong> (default) use fewer blocks and generates 16*16/8
+<code>uint8</code> hash values.</li>
+<li><strong>Mode1</strong> use block blocks (step_sizes/2) and generates
+<code>fix(31*31/8)+1</code> <code>uint8</code> hash values.</li>
+</ul>
+</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.ImgHash.ImgHash.html">cv.ImgHash/ImgHash</a>, <a href="cv.ImgHash.compute.html">cv.ImgHash/compute</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>true</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

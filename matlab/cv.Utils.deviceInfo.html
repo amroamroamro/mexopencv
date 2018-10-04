@@ -1,0 +1,161 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>deviceInfo (cv.Utils) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Utils.deviceInfo - Return CUDA device info" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">deviceInfo (cv.Utils) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Utils.deviceInfo</div>
+      <div class="helpcontent"><p class=" h1line">Return CUDA device info</p>
+<pre class=" prettyprint lang-matlab"><code>dinfo = <a href="cv.Utils.deviceInfo.html">cv.Utils.deviceInfo</a>(device)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>device</strong> System index of a CUDA device starting with 0.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dinfo</strong> scalar struct of information about CUDA device:
+<ul>
+<li><strong>deviceID</strong> system index of the CUDA device starting with 0</li>
+<li><strong>name</strong> ASCII string identifying device</li>
+<li><strong>totalGlobalMem</strong> global memory available on device in bytes</li>
+<li><strong>sharedMemPerBlock</strong> shared memory available per block in
+bytes</li>
+<li><strong>regsPerBlock</strong> 32-bit registers available per block</li>
+<li><strong>warpSize</strong> warp size in threads</li>
+<li><strong>memPitch</strong> maximum pitch in bytes allowed by memory copies</li>
+<li><strong>maxThreadsPerBlock</strong> maximum number of threads per block</li>
+<li><strong>maxThreadsDim</strong> maximum size of each dimension of a block</li>
+<li><strong>maxGridSize</strong> maximum size of each dimension of a grid</li>
+<li><strong>clockRate</strong> clock frequency in kilohertz</li>
+<li><strong>totalConstMem</strong> constant memory available on device in
+bytes</li>
+<li><strong>majorVersion</strong> major compute capability</li>
+<li><strong>minorVersion</strong> minor compute capability</li>
+<li><strong>textureAlignment</strong> alignment requirement for textures</li>
+<li><strong>texturePitchAlignment</strong> pitch alignment requirement for
+texture references bound to pitched memory</li>
+<li><strong>multiProcessorCount</strong> number of multiprocessors on device</li>
+<li><strong>kernelExecTimeoutEnabled</strong> specified whether there is a
+run time limit on kernels</li>
+<li><strong>integrated</strong> device is integrated as opposed to discrete</li>
+<li><strong>canMapHostMemory</strong> device can map host memory with
+<code>cudaHostAlloc</code>/<code>cudaHostGetDevicePointer</code></li>
+<li><strong>computeMode</strong> compute mode, one of:
+<ul>
+<li><strong>Default</strong> default compute mode (Multiple threads can use
+<code>cudaSetDevice</code> with this device)</li>
+<li><strong>Exclusive</strong> compute-exclusive-thread mode (Only one
+thread in one process will be able to use <code>cudaSetDevice</code>
+with this device)</li>
+<li><strong>Prohibited</strong> compute-prohibited mode (No threads can use
+<code>cudaSetDevice</code> with this device)</li>
+<li><strong>ExclusiveProcess</strong> compute-exclusive-process mode (Many
+threads in one process will be able to use <code>cudaSetDevice</code>
+with this device)</li>
+</ul>
+</li>
+<li><strong>maxTexture1D</strong> maximum 1D texture size</li>
+<li><strong>maxTexture1DMipmap</strong> maximum 1D mipmapped texture size</li>
+<li><strong>maxTexture1DLinear</strong> maximum size for 1D textures bound to
+linear memory</li>
+<li><strong>maxTexture2D</strong> maximum 2D texture dimensions</li>
+<li><strong>maxTexture2DMipmap</strong> maximum 2D mipmapped texture
+dimensions</li>
+<li><strong>maxTexture2DLinear</strong> maximum dimensions (width, height,
+pitch) for 2D textures bound to pitched memory</li>
+<li><strong>maxTexture2DGather</strong> maximum 2D texture dimensions if
+texture gather operations have to be performed</li>
+<li><strong>maxTexture3D</strong> maximum 3D texture dimensions</li>
+<li><strong>maxTextureCubemap</strong> maximum Cubemap texture dimensions</li>
+<li><strong>maxTexture1DLayered</strong> maximum 1D layered texture dimensions</li>
+<li><strong>maxTexture2DLayered</strong> maximum 2D layered texture dimensions</li>
+<li><strong>maxTextureCubemapLayered</strong> maximum Cubemap layered texture
+dimensions</li>
+<li><strong>maxSurface1D</strong> maximum 1D surface size</li>
+<li><strong>maxSurface2D</strong> maximum 2D surface dimensions</li>
+<li><strong>maxSurface3D</strong> maximum 3D surface dimensions</li>
+<li><strong>maxSurface1DLayered</strong> maximum 1D layered surface dimensions</li>
+<li><strong>maxSurface2DLayered</strong> maximum 2D layered surface dimensions</li>
+<li><strong>maxSurfaceCubemap</strong> maximum Cubemap surface dimensions</li>
+<li><strong>maxSurfaceCubemapLayered</strong> maximum Cubemap layered surface
+dimensions</li>
+<li><strong>surfaceAlignment</strong> alignment requirements for surfaces</li>
+<li><strong>concurrentKernels</strong> device can possibly execute multiple
+kernels concurrently</li>
+<li><strong>ECCEnabled</strong> device has ECC support enabled</li>
+<li><strong>pciBusID</strong> PCI bus ID of the device</li>
+<li><strong>pciDeviceID</strong> PCI device ID of the device</li>
+<li><strong>pciDomainID</strong> PCI domain ID of the device</li>
+<li><strong>tccDriver</strong> true if device is a Tesla device using TCC
+driver, false otherwise</li>
+<li><strong>asyncEngineCount</strong> number of asynchronous engines</li>
+<li><strong>unifiedAddressing</strong> device shares a unified address space
+with the host</li>
+<li><strong>memoryClockRate</strong> peak memory clock frequency in kilohertz</li>
+<li><strong>memoryBusWidth</strong> global memory bus width in bits</li>
+<li><strong>l2CacheSize</strong> size of L2 cache in bytes</li>
+<li><strong>maxThreadsPerMultiProcessor</strong> maximum resident threads per
+multiprocessor</li>
+<li><strong>freeMemory</strong> gets free memory</li>
+<li><strong>totalMemory</strong> gets total device memory</li>
+<li><strong>supports</strong> Struct which provides information on CUDA
+feature support. Is true if the device has the specified
+CUDA feature. Otherwise, it is false:
+<ul>
+<li><strong>Compute10</strong> Compute Capability 1.0</li>
+<li><strong>Compute11</strong> Compute Capability 1.1</li>
+<li><strong>Compute12</strong> Compute Capability 1.2</li>
+<li><strong>Compute13</strong> Compute Capability 1.3</li>
+<li><strong>Compute20</strong> Compute Capability 2.0</li>
+<li><strong>Compute21</strong> Compute Capability 2.1</li>
+<li><strong>Compute30</strong> Compute Capability 3.0</li>
+<li><strong>Compute32</strong> Compute Capability 3.2</li>
+<li><strong>Compute35</strong> Compute Capability 3.5</li>
+<li><strong>Compute50</strong> Compute Capability 5.0</li>
+<li><strong>GlobalAtomics</strong> same as 'Compute11'</li>
+<li><strong>SharedAtomics</strong> same as 'Compute12'</li>
+<li><strong>NativeDouble</strong> same as 'Compute13'</li>
+<li><strong>WarpShuffleFunctions</strong> same as 'Compute30'</li>
+<li><strong>DynamicParallelism</strong> same as 'Compute35'</li>
+</ul>
+</li>
+<li><strong>isCompatible</strong> Checks the CUDA module and device
+compatibility. Is true if the CUDA module can be run on the
+specified device. Otherwise, it is false.</li>
+</ul>
+</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Utils.printCudaDeviceInfo.html">cv.Utils.printCudaDeviceInfo</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>true</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

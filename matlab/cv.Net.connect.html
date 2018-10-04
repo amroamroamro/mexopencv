@@ -1,0 +1,66 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>connect (cv.Net) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Net.connect - Connects output of the first layer to input of the second layer" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">connect (cv.Net) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Net/connect</div>
+      <div class="helpcontent"><p class=" h1line">Connects output of the first layer to input of the second layer</p>
+<pre class=" prettyprint lang-matlab"><code>net.connect(outPin, inpPin)
+net.connect(outLayerId, outNum, inpLayerId, inpNum)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>outPin</strong> descriptor of the first layer output. See below.</li>
+<li><strong>inpPin</strong> descriptor of the second layer input. See below.</li>
+</ul>
+<h2>Input</h2>
+<ul>
+<li><strong>outLayerId</strong> identifier of the first layer.</li>
+<li><strong>outNum</strong> number of the first layer output.</li>
+<li><strong>inpLayerId</strong> identifier of the second layer.</li>
+<li><strong>inpNum</strong> number of the second layer input.</li>
+</ul>
+<p>Descriptors have the following template
+<code>&lt;layer_name&gt;[.input_number]</code>:</p>
+<ul>
+<li>the first part of the template <code>layer_name</code> is sting name of
+the added layer. If this part is empty then the network input
+pseudo layer will be used;</li>
+<li>the second optional part of the template <code>input_number</code> is
+either number of the layer input, either label one. If this
+part is omitted then the first layer input will be used.</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Net.setInputsNames.html">cv.Net/setInputsNames</a>, <a href="cv.Net.addLayer.html">cv.Net/addLayer</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

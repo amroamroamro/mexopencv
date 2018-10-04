@@ -1,0 +1,79 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>setupIPLMagnoChannel (cv.Retina) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Retina.setupIPLMagnoChannel - Set parameters values for the Inner Plexiform Layer (IPL) magnocellular channel" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">setupIPLMagnoChannel (cv.Retina) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Retina/setupIPLMagnoChannel</div>
+      <div class="helpcontent"><p class=" h1line">Set parameters values for the Inner Plexiform Layer (IPL) magnocellular channel</p>
+<pre class=" prettyprint lang-matlab"><code>obj.setupIPLMagnoChannel('OptionName',optionValue, ...)
+</code></pre>
+<h2>Options</h2>
+<ul>
+<li><strong>NormaliseOutput</strong> specifies if (true) output is rescaled
+between 0 and 255 of not (false). default true</li>
+<li><strong>ParasolCellsBeta</strong> the low pass filter gain used for local
+contrast adaptation at the IPL level of the retina (for
+ganglion cells local adaptation), typical value is 0.
+default 0.0</li>
+<li><strong>ParasolCellsTau</strong> the low pass filter time constant used for
+local contrast adaptation at the IPL level of the retina (for
+ganglion cells local adaptation), unit is frame, typical value
+is 0 (immediate response). default 0.0</li>
+<li><strong>ParasolCellsK</strong> the low pass filter spatial constant used
+for local contrast adaptation at the IPL level of the retina
+(for ganglion cells local adaptation), unit is pixels, typical
+value is 5. default 7.0</li>
+<li><strong>AmacrinCellsTemporalCutFrequency</strong> the time constant of the
+first order high pass fiter of the magnocellular way (motion
+information channel), unit is frames, typical value is 1.2.
+default 1.2</li>
+<li><strong>V0CompressionParameter</strong> the compression strengh of the
+ganglion cells local adaptation output, set a value between
+0.6 and 1 for best results, a high value increases more the
+low value sensitivity and the output saturates faster,
+recommended value: 0.95. default 0.95</li>
+<li><strong>LocalAdaptintegrationTau</strong> specifies the temporal constant
+of the low pas filter involved in the computation of the local
+&quot;motion mean&quot; for the local adaptation computation. default 0.0</li>
+<li><strong>LocalAdaptintegrationK</strong> specifies the spatial constant of
+the low pas filter involved in the computation of the local
+&quot;motion mean&quot; for the local adaptation computation. default 7.0</li>
+</ul>
+<p>This channel processes signals output from OPL processing stage
+in peripheral vision, it allows motion information enhancement.
+It is decorrelated from the details channel. See reference
+papers for more details.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Retina.setupOPLandIPLParvoChannel.html">cv.Retina/setupOPLandIPLParvoChannel</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

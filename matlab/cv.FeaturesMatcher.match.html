@@ -1,0 +1,70 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>match (cv.FeaturesMatcher) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.FeaturesMatcher.match - Performs images matching" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">match (cv.FeaturesMatcher) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.FeaturesMatcher/match</div>
+      <div class="helpcontent"><p class=" h1line">Performs images matching</p>
+<pre class=" prettyprint lang-matlab"><code>matches_info = obj.match(features1, features2)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>features1</strong> First image features. See <a href="cv.FeaturesFinder.html">cv.FeaturesFinder</a>.</li>
+<li><strong>features2</strong> Second image features. See <a href="cv.FeaturesFinder.html">cv.FeaturesFinder</a>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>matches_info</strong> Found matches. Structure containing
+information about matches between two images. It's assumed
+that there is a transformation between those images.
+Transformation may be homography or affine transformation
+based on selected matcher. Struct with the following fields:
+<ul>
+<li><strong>src_img_idx</strong> Images indices (optional).</li>
+<li><strong>dst_img_idx</strong> Images indices (optional).</li>
+<li><strong>matches</strong> Matches. A 1-by-N structure array with the
+following fields:
+<code>{'queryIdx', 'trainIdx', 'imgIdx', 'distance'}</code></li>
+<li><strong>inliers_mask</strong> Geometrically consistent matches mask.</li>
+<li><strong>num_inliers</strong> Number of geometrically consistent matches.</li>
+<li><strong>H</strong> Estimated transformation.</li>
+<li><strong>confidence</strong> Confidence two images are from the same
+panorama.</li>
+</ul>
+</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.FeaturesMatcher.match_pairwise.html">cv.FeaturesMatcher/match_pairwise</a>,
+   <a href="cv.FeaturesFinder.find.html">cv.FeaturesFinder/find</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

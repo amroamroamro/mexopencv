@@ -1,0 +1,62 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.ConjGradSolver/ConjGradSolver - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.ConjGradSolver.ConjGradSolver - Creates an ConjGradSolver object" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.ConjGradSolver/ConjGradSolver - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.ConjGradSolver/ConjGradSolver</div>
+      <div class="helpcontent"><p class=" h1line">Creates an ConjGradSolver object</p>
+<pre class=" prettyprint lang-matlab"><code>solver = <a href="cv.ConjGradSolver.html">cv.ConjGradSolver</a>()
+solver = <a href="cv.ConjGradSolver.html">cv.ConjGradSolver</a>('OptionName', optionValue, ...)
+</code></pre>
+<h2>Options</h2>
+<ul>
+<li><strong>Function</strong> Objective function that will be minimized,
+specified as a structure with the following fields (<code>gradfun</code>
+and <code>gradeps</code> are optional fields):
+<ul>
+<li><strong>dims</strong> Number of dimensions</li>
+<li><strong>fun</strong> string, name of M-file that implements the <code>calc</code>
+method. It should receive a vector of the specified
+dimension, and return a scalar value of the objective
+function evaluated at that point.</li>
+<li><strong>gradfun</strong> string, name of M-file that implements the
+<code>getGradient</code> method. It should receive an <code>ndims</code> vector,
+and return a vector of partial derivatives. If an empty
+string is specified (default), the gradient is approximated
+using finite difference method as:
+<code>F'(x) = (F(x+h) - F(x-h)) / 2*h</code> (at the cost of exta
+function evaluations and less accuracy).</li>
+<li><strong>gradeps</strong> gradient step <code>h</code> used in finite difference
+method. default 1e-3</li>
+</ul>
+</li>
+<li><strong>TermCriteria</strong> Terminal criteria to the algorithm. default
+<code>struct('type','Count+EPS', 'maxCount',5000, 'epsilon',1e-6)</code></li>
+</ul>
+<p>All the parameters are optional, so this procedure can be called
+even without parameters at all. In this case, the default values
+will be used. As default value for terminal criteria are the
+only sensible ones, <code>ObjectiveFunction</code> should be set upon the
+obtained object, if the function was not given in the constructor.
+Otherwise, the two ways (submit it to ctor or miss it out and
+set the <code>ObjectiveFunction</code> property) are absolutely equivalent
+(and will drop the same errors in the same way, should invalid
+input be detected).</p>
+</div><!--after help -->
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

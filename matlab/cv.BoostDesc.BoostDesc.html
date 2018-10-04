@@ -1,0 +1,75 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.BoostDesc/BoostDesc - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.BoostDesc.BoostDesc - Constructor" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.BoostDesc/BoostDesc - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.BoostDesc/BoostDesc</div>
+      <div class="helpcontent"><p class=" h1line">Constructor</p>
+<pre class=" prettyprint lang-matlab"><code>obj = <a href="cv.BoostDesc.html">cv.BoostDesc</a>()
+obj = <a href="cv.BoostDesc.html">cv.BoostDesc</a>('OptionName',optionValue, ...)
+</code></pre>
+<h2>Options</h2>
+<ul>
+<li><strong>Desc</strong> Type of descriptor to use, 'BinBoost256' is default
+(256 bit long dimension). Available types are:
+<ul>
+<li><strong>BGM</strong></li>
+<li><strong>BGMHard</strong></li>
+<li><strong>BGMBilinear</strong></li>
+<li><strong>LBGM</strong></li>
+<li><strong>BinBoost64</strong></li>
+<li><strong>BinBoost128</strong></li>
+<li><strong>BinBoost256</strong></li>
+</ul>
+</li>
+<li><strong>UseScaleOrientation</strong> Sample patterns using keypoints
+orientation. default true</li>
+<li><strong>ScaleFactor</strong> Adjust the sampling window of detected
+keypoints.
+<ul>
+<li>6.25 is default and fits for <a href="cv.KAZE.html">cv.KAZE</a>, <a href="cv.SURF.html">cv.SURF</a> detected
+keypoints window ratio</li>
+<li>6.75 should be the scale for <a href="cv.SIFT.html">cv.SIFT</a> detected keypoints
+window ratio</li>
+<li>5.00 should be the scale for <a href="cv.AKAZE.html">cv.AKAZE</a>, <a href="cv.MSDDetector.html">cv.MSDDetector</a>,
+<a href="cv.AgastFeatureDetector.html">cv.AgastFeatureDetector</a>, <a href="cv.FastFeatureDetector.html">cv.FastFeatureDetector</a>, <a href="cv.BRISK.html">cv.BRISK</a>
+keypoints window ratio</li>
+<li>0.75 should be the scale for <a href="cv.ORB.html">cv.ORB</a> keypoints ratio</li>
+<li>1.50 was the default in original implementation</li>
+</ul>
+</li>
+</ul>
+<h3>Note</h3>
+<p><code>BGM</code> is the base descriptor where each binary dimension is
+computed as the output of a single weak learner. <code>BGMHard</code> and
+<code>BGMBilinear</code> refer to same <code>BGM</code> but use different type of
+gradient binning. In the <code>BGMHard</code> that use <code>ASSIGN_HARD</code>
+binning type the gradient is assigned to the nearest orientation
+bin. In the <code>BGMBilinear</code> that use <code>ASSIGN_BILINEAR</code> binning
+type the gradient is assigned to the two neighbouring bins. In
+the <code>BGM</code> and all other modes that use <code>ASSIGN_SOFT</code> binning
+type the gradient is assigned to 8 nearest bins according to the
+cosine value between the gradient angle and the bin center.
+<code>LBGM</code> (alias <code>FP-Boost</code>) is the floating point extension where
+each dimension is computed as a linear combination of the weak
+learner responses. <code>BinBoost</code> and subvariants are the binary
+extensions of <code>LBGM</code> where each bit is computed as a thresholded
+linear combination of a set of weak learners.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.BoostDesc.compute.html">cv.BoostDesc/compute</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

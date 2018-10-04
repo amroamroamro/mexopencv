@@ -1,0 +1,50 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.illuminationChange - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.illuminationChange - Illumination Change" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.illuminationChange - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.illuminationChange</div>
+      <div class="helpcontent"><p class=" h1line">Illumination Change</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.illuminationChange.html">cv.illuminationChange</a>(src, mask)
+dst = <a href="cv.illuminationChange.html">cv.illuminationChange</a>(src, mask, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> Input 8-bit 3-channel image.</li>
+<li><strong>mask</strong> Input 8-bit 1 or 3-channel image.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> Output image with the same size and type as <code>src</code>.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Alpha</strong> Value ranges between 0-2. default 0.2</li>
+<li><strong>Beta</strong> Value ranges between 0-2. default 0.4</li>
+<li><strong>FlipChannels</strong> whether to flip the order of color channels in inputs
+<code>src</code> and <code>mask</code> and output <code>dst</code>, between MATLAB's RGB order and OpenCV's
+BGR (input: RGB-&gt;BGR, output: BGR-&gt;RGB). default false</li>
+</ul>
+<p>Applying an appropriate non-linear transformation to the gradient field
+inside the selection and then integrating back with a Poisson solver,
+modifies locally the apparent illumination of an image.</p>
+<p>This is useful to highlight under-exposed foreground objects or to reduce
+specular reflections.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.textureFlattening.html">cv.textureFlattening</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

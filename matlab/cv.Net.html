@@ -1,0 +1,423 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.Net - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Net - Create and manipulate comprehensive artificial neural networks" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.Net - MATLAB File Help</td>
+            <td class="subheader-left"></td>
+            <td class="subheader-right"><a href="cv.Net.html">Go to online doc for cv.Net</a></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Net</div>
+      <div class="helpcontent"><p class=" h1line">Create and manipulate comprehensive artificial neural networks</p>
+<p>This module contains:</p>
+<ul>
+<li>API for new layers creation, layers are building bricks of neural
+networks;</li>
+<li>set of built-in most-useful Layers;</li>
+<li>API to constuct and modify comprehensive neural networks from layers;</li>
+<li>functionality for loading serialized networks models from different
+frameworks.</li>
+</ul>
+<p>Functionality of this module is designed only for forward pass
+computations (i. e. network testing). A network training is in principle
+not supported.</p>
+<p><a href="https://github.com/opencv/opencv/wiki/Deep-Learning-in-OpenCV" target="_blank">Wiki</a></p>
+<h2>Net class</h2>
+<p>Neural network is presented as directed acyclic graph (DAG), where
+vertices are Layer instances, and edges specify relationships between
+layers inputs and outputs.</p>
+<p>Each network layer has unique integer id and unique string name inside
+its network. LayerId can store either layer name or layer id.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Net.Net.html">cv.Net/Net</a>, <a href="https://www.mathworks.com/help/nnet/ref/nnet.cnn.layer.layer.html" target="_blank">nnet.cnn.layer.Layer</a>, <a href="https://www.mathworks.com/help/nnet/ref/trainnetwork.html" target="_blank">trainNetwork</a>,
+   <a href="https://www.mathworks.com/help/nnet/ref/seriesnetwork.html" target="_blank">SeriesNetwork</a>, <a href="https://www.mathworks.com/help/nnet/ref/importcaffenetwork.html" target="_blank">importCaffeNetwork</a>, <a href="https://www.mathworks.com/help/nnet/ref/importcaffelayers.html" target="_blank">importCaffeLayers</a>, <a href="https://www.mathworks.com/help/nnet/ref/alexnet.html" target="_blank">alexnet</a>, <a href="https://www.mathworks.com/help/nnet/ref/vgg16.html" target="_blank">vgg16</a>,
+   <a href="https://www.mathworks.com/help/nnet/ref/vgg19.html" target="_blank">vgg19</a></div>
+      <!--Class-->
+      <div class="sectiontitle">Class Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Superclasses</td>
+            <td><a href="https://www.mathworks.com/help/matlab/ref/handle.html" target="_blank">handle</a></td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Construct on load</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+      <!--Constructors-->
+      <div class="sectiontitle"><a name="constructors"></a>Constructor Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.Net.Net.html">Net</a></td>
+            <td class="m-help">Constructor and importer of trained serialized models from different dnn-frameworks&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Properties-->
+      <div class="sectiontitle"><a name="properties"></a>Property Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.Net.id.html">id</a></td>
+            <td class="m-help">Object ID&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Methods-->
+      <div class="sectiontitle"><a name="methods"></a>Method Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Net.NMSBoxes.html">NMSBoxes</a></td>
+            <td class="m-help">Performs non-maximum suppression given boxes and corresponding scores&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Net.addLayer.html">addLayer</a></td>
+            <td class="m-help">Adds new layer to the net&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Net.addLayerToPrev.html">addLayerToPrev</a></td>
+            <td class="m-help">Adds new layer and connects its first input to the first output of previously added layer&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">addlistener</a></td>
+            <td class="m-help">Add listener for event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Net.blobFromImages.html">blobFromImages</a></td>
+            <td class="m-help">Creates 4-dimensional blob from image or series of images&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Net.connect.html">connect</a></td>
+            <td class="m-help">Connects output of the first layer to input of the second layer&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Net.delete.html">delete</a></td>
+            <td class="m-help">Destructor&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Net.deleteLayer.html">deleteLayer</a></td>
+            <td class="m-help">Delete layer for the network&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Net.empty.html">empty</a></td>
+            <td class="m-help">Returns true if there are no layers in the network.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Net.enableFusion.html">enableFusion</a></td>
+            <td class="m-help">Enables or disables layer fusion in the network&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">eq</a></td>
+            <td class="m-help">== (EQ)   Test handle equality.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findobj</a></td>
+            <td class="m-help">Find objects matching specified conditions.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findprop</a></td>
+            <td class="m-help">Find property of MATLAB handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Net.forward.html">forward</a></td>
+            <td class="m-help">Runs forward pass&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Net.forwardAndRetrieve.html">forwardAndRetrieve</a></td>
+            <td class="m-help">Runs forward pass&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ge</a></td>
+            <td class="m-help">&gt;= (GE)   Greater than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Net.getLayer.html">getLayer</a></td>
+            <td class="m-help">Returns layer with specified id or name which the network use&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Net.getLayerId.html">getLayerId</a></td>
+            <td class="m-help">Converts string name of the layer to the integer identifier&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Net.getLayerInputs.html">getLayerInputs</a></td>
+            <td class="m-help">Returns input layers of specific layer&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Net.getLayerNames.html">getLayerNames</a></td>
+            <td class="m-help">Get layer names&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Net.getLayerTypes.html">getLayerTypes</a></td>
+            <td class="m-help">Returns list of types for layer used in model&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Net.getLayersCount.html">getLayersCount</a></td>
+            <td class="m-help">Returns count of layers of specified type&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Net.getParam.html">getParam</a></td>
+            <td class="m-help">Returns parameter blob of the layer&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Net.getPerfProfile.html">getPerfProfile</a></td>
+            <td class="m-help">Returns overall time for inference and timings (in ticks) for layers&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Net.getUnconnectedOutLayers.html">getUnconnectedOutLayers</a></td>
+            <td class="m-help">Returns indexes of layers with unconnected outputs&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">gt</a></td>
+            <td class="m-help">&gt; (GT)   Greater than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Net.imagesFromBlob.html">imagesFromBlob</a></td>
+            <td class="m-help">Parse a 4D blob and output the images it contains&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">isvalid</a></td>
+            <td class="m-help">Test handle validity.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">le</a></td>
+            <td class="m-help">&lt;= (LE)   Less than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">listener</a></td>
+            <td class="m-help">Add listener for event without binding the listener to the source object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">lt</a></td>
+            <td class="m-help">&lt; (LT)   Less than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ne</a></td>
+            <td class="m-help">~= (NE)   Not equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">notify</a></td>
+            <td class="m-help">Notify listeners of event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Net.readTorchBlob.html">readTorchBlob</a></td>
+            <td class="m-help">Loads blob which was serialized as torch.Tensor object of Torch7 framework&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Net.setHalideScheduler.html">setHalideScheduler</a></td>
+            <td class="m-help">Compile Halide layers&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Net.setInput.html">setInput</a></td>
+            <td class="m-help">Sets the new value for the layer output blob&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Net.setInputsNames.html">setInputsNames</a></td>
+            <td class="m-help">Sets outputs names of the network input pseudo layer&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Net.setParam.html">setParam</a></td>
+            <td class="m-help">Sets the new value for the learned param of the layer&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Net.setPreferableBackend.html">setPreferableBackend</a></td>
+            <td class="m-help">Ask network to use specific computation backend where it supported&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Net.setPreferableTarget.html">setPreferableTarget</a></td>
+            <td class="m-help">Ask network to make computations on specific target device&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.Net.shrinkCaffeModel.html">shrinkCaffeModel</a></td>
+            <td class="m-help">Convert all weights of Caffe network to half precision floating point&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Events-->
+      <div class="sectiontitle"><a name="events"></a>Event Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ObjectBeingDestroyed</a></td>
+            <td class="m-help">Notifies listeners that a particular object has been destroyed.&nbsp;</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

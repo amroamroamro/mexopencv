@@ -1,0 +1,392 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.BasicFaceRecognizer - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.BasicFaceRecognizer - Face Recognition based on Eigen-/Fisher-faces" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.BasicFaceRecognizer - MATLAB File Help</td>
+            <td class="subheader-left"></td>
+            <td class="subheader-right"><a href="cv.BasicFaceRecognizer.html">Go to online doc for cv.BasicFaceRecognizer</a></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.BasicFaceRecognizer</div>
+      <div class="helpcontent"><p class=" h1line">Face Recognition based on Eigen-/Fisher-faces</p>
+<p>All face recognition models in OpenCV are derived from the abstract base
+class <code>FaceRecognizer</code>, which provides a unified access to all face
+recongition algorithms in OpenCV.</p>
+<h3>Description</h3>
+<p>Every <code>FaceRecognizer</code> supports the:</p>
+<ul>
+<li><strong>Training</strong> of a face recognizer with <code>train</code> on a given set of
+images (your face database!).</li>
+<li><strong>Prediction</strong> of a given sample image, that means a face. The image
+is given as a matrix.</li>
+<li><strong>Loading/Saving</strong> the model state from/to a given XML or YAML.</li>
+<li><strong>Setting/Getting labels info</strong>, that is stored as a string. String
+labels info is useful for keeping names of the recognized people.</li>
+</ul>
+<h3>Setting the Thresholds</h3>
+<p>Sometimes you run into the situation, when you want to apply a threshold
+on the prediction. A common scenario in face recognition is to tell,
+whether a face belongs to the training dataset or if it is unknown.
+You can set the thresholds in the constructor. You can also get/set the
+thresholds at runtime!</p>
+<p>Here is an example of setting a threshold for the Eigenfaces method,
+when creating the model:</p>
+<pre class=" prettyprint lang-matlab"><code>% Let's say we want to keep 10 Eigenfaces and have a threshold value of 10.0
+num_components = 10;
+threshold = 10.0;
+% Then if you want to have a face recognizer with a confidence threshold,
+% create the concrete implementation with the appropiate parameters:
+model = <a href="cv.BasicFaceRecognizer.html">cv.BasicFaceRecognizer</a>('Eigenfaces', ...
+    'NumComponents',num_components, 'Threshold',threshold);
+</code></pre>
+<p>Sometimes it's impossible to train the model, just to experiment with
+threshold values. It's possible to set model thresholds during runtime.
+Let's see how we would set/get the prediction for the Eigenface model,
+we've created above:</p>
+<pre class=" prettyprint lang-matlab"><code>% The following line reads the threshold from the Eigenfaces model:
+current_threshold = model.Threshold;
+% And this line sets the threshold to 0.0:
+model.Threshold = 0.0;
+</code></pre>
+<p>If you've set the threshold to 0.0 as we did above, then:</p>
+<pre class=" prettyprint lang-matlab"><code>img = <a href="cv.imread.html">cv.imread</a>('person1/3.jpg', 'Grayscale',true);
+% Get a prediction from the model. Note: We've set a threshold of 0.0 above,
+% since the distance is almost always larger than 0.0, you'll get -1 as
+% label, which indicates, this face is unknown
+predicted_label = model.predict(img);
+% ...
+</code></pre>
+<p>is going to yield -1 as predicted label, which states this face is
+unknown.</p>
+<h2>References</h2>
+<p>[TP91]:</p>
+<blockquote>
+<p>Turk, M., and Pentland, A. &quot;Eigenfaces for recognition&quot;.
+Journal of Cognitive Neuroscience 3 (1991), 71-86.</p>
+</blockquote>
+<p>[BHK97]:</p>
+<blockquote>
+<p>Belhumeur, P. N., Hespanha, J., and Kriegman, D. &quot;Eigenfaces vs.
+Fisherfaces: Recognition using class specific linear projection&quot;.
+IEEE Transactions on Pattern Analysis and Machine Intelligence 19,
+7 (1997), 711-720.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.LBPHFaceRecognizer.html">cv.LBPHFaceRecognizer</a>, <a href="cv.PCA.html">cv.PCA</a>, <a href="cv.LDA.html">cv.LDA</a></div>
+      <!--Class-->
+      <div class="sectiontitle">Class Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Superclasses</td>
+            <td><a href="https://www.mathworks.com/help/matlab/ref/handle.html" target="_blank">handle</a></td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Construct on load</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+      <!--Constructors-->
+      <div class="sectiontitle"><a name="constructors"></a>Constructor Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.BasicFaceRecognizer.BasicFaceRecognizer.html">BasicFaceRecognizer</a></td>
+            <td class="m-help">Constructor&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Properties-->
+      <div class="sectiontitle"><a name="properties"></a>Property Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.BasicFaceRecognizer.NumComponents.html">NumComponents</a></td>
+            <td class="m-help">The number of components kept by the PCA/LDA transformations.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.BasicFaceRecognizer.Threshold.html">Threshold</a></td>
+            <td class="m-help">parameter, required for default BestMinDist collector.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.BasicFaceRecognizer.id.html">id</a></td>
+            <td class="m-help">Object ID&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Methods-->
+      <div class="sectiontitle"><a name="methods"></a>Method Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">addlistener</a></td>
+            <td class="m-help">Add listener for event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BasicFaceRecognizer.clear.html">clear</a></td>
+            <td class="m-help">Clears the algorithm state&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BasicFaceRecognizer.delete.html">delete</a></td>
+            <td class="m-help">Destructor&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BasicFaceRecognizer.empty.html">empty</a></td>
+            <td class="m-help">Checks if detector object is empty&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">eq</a></td>
+            <td class="m-help">== (EQ)   Test handle equality.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findobj</a></td>
+            <td class="m-help">Find objects matching specified conditions.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findprop</a></td>
+            <td class="m-help">Find property of MATLAB handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ge</a></td>
+            <td class="m-help">&gt;= (GE)   Greater than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BasicFaceRecognizer.getDefaultName.html">getDefaultName</a></td>
+            <td class="m-help">Returns the algorithm string identifier&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BasicFaceRecognizer.getEigenValues.html">getEigenValues</a></td>
+            <td class="m-help">Get PCA/LDA eigenvalues&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BasicFaceRecognizer.getEigenVectors.html">getEigenVectors</a></td>
+            <td class="m-help">Get PCA/LDA eigenvectors&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BasicFaceRecognizer.getLabelInfo.html">getLabelInfo</a></td>
+            <td class="m-help">Gets string information by label&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BasicFaceRecognizer.getLabels.html">getLabels</a></td>
+            <td class="m-help">Get labels&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BasicFaceRecognizer.getLabelsByString.html">getLabelsByString</a></td>
+            <td class="m-help">Gets vector of labels by string&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BasicFaceRecognizer.getMean.html">getMean</a></td>
+            <td class="m-help">Get sample mean&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BasicFaceRecognizer.getProjections.html">getProjections</a></td>
+            <td class="m-help">Get training data projections&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">gt</a></td>
+            <td class="m-help">&gt; (GT)   Greater than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">isvalid</a></td>
+            <td class="m-help">Test handle validity.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">le</a></td>
+            <td class="m-help">&lt;= (LE)   Less than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">listener</a></td>
+            <td class="m-help">Add listener for event without binding the listener to the source object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BasicFaceRecognizer.load.html">load</a></td>
+            <td class="m-help">Loads a FaceRecognizer and its model state&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">lt</a></td>
+            <td class="m-help">&lt; (LT)   Less than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ne</a></td>
+            <td class="m-help">~= (NE)   Not equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">notify</a></td>
+            <td class="m-help">Notify listeners of event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BasicFaceRecognizer.predict.html">predict</a></td>
+            <td class="m-help">Predicts a label and associated confidence (e.g. distance) for a given input image&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BasicFaceRecognizer.predict_collect.html">predict_collect</a></td>
+            <td class="m-help">send all result of prediction to collector for custom result handling&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BasicFaceRecognizer.save.html">save</a></td>
+            <td class="m-help">Saves a FaceRecognizer and its model state&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BasicFaceRecognizer.setLabelInfo.html">setLabelInfo</a></td>
+            <td class="m-help">Sets string info for the specified model's label&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BasicFaceRecognizer.train.html">train</a></td>
+            <td class="m-help">Trains a FaceRecognizer with given data and associated labels&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BasicFaceRecognizer.typeid.html">typeid</a></td>
+            <td class="m-help">Name of the C++ type (RTTI)&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BasicFaceRecognizer.update.html">update</a></td>
+            <td class="m-help">Updates a FaceRecognizer with given data and associated labels&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Events-->
+      <div class="sectiontitle"><a name="events"></a>Event Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ObjectBeingDestroyed</a></td>
+            <td class="m-help">Notifies listeners that a particular object has been destroyed.&nbsp;</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

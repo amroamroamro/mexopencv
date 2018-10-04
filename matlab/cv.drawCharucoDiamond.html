@@ -1,0 +1,47 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.drawCharucoDiamond - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.drawCharucoDiamond - Draw a ChArUco Diamond marker" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.drawCharucoDiamond - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.drawCharucoDiamond</div>
+      <div class="helpcontent"><p class=" h1line">Draw a ChArUco Diamond marker</p>
+<pre class=" prettyprint lang-matlab"><code>img = <a href="cv.drawCharucoDiamond.html">cv.drawCharucoDiamond</a>(dictionary, ids, squareLength, markerLength)
+img = <a href="cv.drawCharucoDiamond.html">cv.drawCharucoDiamond</a>(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>dictionary</strong> dictionary of markers indicating the type of markers.</li>
+<li><strong>ids</strong> vector of 4 ids for each ArUco marker in the ChArUco marker.</li>
+<li><strong>squareLength</strong> size of the chessboard squares in pixels.</li>
+<li><strong>markerLength</strong> size of the markers in pixels.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>img</strong> output image with the marker. The size of this image will be
+<code>3*squareLength + 2*marginSize</code>.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>MarginSize</strong> minimum margins (in pixels) of the marker in the output
+image. default 0</li>
+<li><strong>BorderBits</strong> width of the marker borders. default 1</li>
+</ul>
+<p>This function return the image of a ChArUco marker, ready to be printed.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.detectCharucoDiamond.html">cv.detectCharucoDiamond</a>, <a href="cv.drawCharucoBoard.html">cv.drawCharucoBoard</a>, <a href="cv.drawMarkerAruco.html">cv.drawMarkerAruco</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

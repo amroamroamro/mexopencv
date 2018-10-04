@@ -1,0 +1,54 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.drawLineMatches - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.drawLineMatches - Draws the found matches of keylines from two images" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.drawLineMatches - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.drawLineMatches</div>
+      <div class="helpcontent"><p class=" h1line">Draws the found matches of keylines from two images</p>
+<pre class=" prettyprint lang-matlab"><code>outImg = <a href="cv.drawLineMatches.html">cv.drawLineMatches</a>(img1, keypoints1, img2, keypoints2, matches1to2)
+outImg = <a href="cv.drawLineMatches.html">cv.drawLineMatches</a>(..., 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>img1</strong> First image.</li>
+<li><strong>keypoints1</strong> keylines extracted from first image.</li>
+<li><strong>img2</strong> Second image.</li>
+<li><strong>keypoints2</strong> keylines extracted from second image.</li>
+<li><strong>matches1to2</strong> vector of matches.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>outImg</strong> output matrix to draw on.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>MatchColor</strong> drawing color for matches (chosen randomly in case of
+default value). default [-1,-1,-1,-1].</li>
+<li><strong>SingleLineColor</strong> drawing color for keylines (chosen randomly in case of
+default value). default [-1,-1,-1,-1].</li>
+<li><strong>MatchesMask</strong> mask to indicate which matches must be drawn.
+default empty.</li>
+<li><strong>NotDrawSingleLines</strong> Single keylines will not be drawn. default false</li>
+<li><strong>OutImage</strong> If set, matches will be drawn on existing content of output
+image, otherwise source images are used instead. Not set by default.</li>
+</ul>
+<p>If both <code>MatchColor</code> and <code>SingleLineColor</code> are set to their default values,
+function draws matched lines and line connecting them with same color.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.drawMatches.html">cv.drawMatches</a>, <a href="cv.drawKeylines.html">cv.drawKeylines</a>, <a href="cv.BinaryDescriptor.html">cv.BinaryDescriptor</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

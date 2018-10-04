@@ -1,0 +1,82 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>setBlender (cv.Stitcher) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Stitcher.setBlender - Set the blender" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">setBlender (cv.Stitcher) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Stitcher/setBlender</div>
+      <div class="helpcontent"><p class=" h1line">Set the blender</p>
+<pre class=" prettyprint lang-matlab"><code>obj.setBlender(blenderType)
+obj.setBlender(blenderType, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>blenderType</strong> image blender type. One of:
+<ul>
+<li><strong>NoBlender</strong> Simple blender which puts one image over
+another.</li>
+<li><strong>FeatherBlender</strong> Simple blender which mixes images at its
+borders.</li>
+<li><strong>MultiBandBlender</strong> Blender which uses multi-band blending
+algorithm (see [BA83]).</li>
+</ul>
+</li>
+</ul>
+<h2>Options</h2>
+<p>The following are options for the various blenders:</p>
+<h3><code>FeatherBlender</code></h3>
+<ul>
+<li><strong>Sharpness</strong> default 0.02</li>
+</ul>
+<h3><code>MultiBandBlender</code></h3>
+<ul>
+<li><strong>TryGPU</strong> default false</li>
+<li><strong>NumBands</strong> default 5</li>
+<li><strong>WeightType</strong> One of:
+<ul>
+<li><strong>single</strong> (default)</li>
+<li><strong>int16</strong></li>
+</ul>
+</li>
+</ul>
+<p>The class uses <code>MultiBandBlender</code> by default.</p>
+<h2>References</h2>
+<p>[BA83]:</p>
+<blockquote>
+<p>Peter J Burt and Edward H Adelson.
+&quot;A multiresolution spline with application to image mosaics&quot;.
+ACM Transactions on Graphics (TOG), 2(4):217-236, 1983.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Stitcher.getBlender.html">cv.Stitcher/getBlender</a>, <a href="cv.Blender.html">cv.Blender</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

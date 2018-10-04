@@ -1,0 +1,445 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.ANN_MLP - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.ANN_MLP - Artificial Neural Networks - Multi-Layer Perceptrons" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.ANN_MLP - MATLAB File Help</td>
+            <td class="subheader-left"></td>
+            <td class="subheader-right"><a href="cv.ANN_MLP.html">Go to online doc for cv.ANN_MLP</a></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.ANN_MLP</div>
+      <div class="helpcontent"><p class=" h1line">Artificial Neural Networks - Multi-Layer Perceptrons</p>
+<p>Unlike many other models in ML that are constructed and trained at once,
+in the MLP model these steps are separated. First, a network with the
+specified topology is created. All the weights are set to zeros. Then,
+the network is trained using a set of input and output vectors. The
+training procedure can be repeated more than once, that is, the weights
+can be adjusted based on the new training data.</p>
+<h2>Neural Networks</h2>
+<p>ML implements feed-forward artificial neural networks or, more
+particularly, multi-layer perceptrons (MLP), the most commonly used type
+of neural networks. MLP consists of the input layer, output layer, and
+one or more hidden layers. Each layer of MLP includes one or more
+neurons directionally linked with the neurons from the previous and the
+next layer. The example below represents a 3-layer perceptron with three
+inputs, two outputs, and the hidden layer including five neurons:</p>
+<p><img src="https://docs.opencv.org/3.3.1/mlp.png" alt="image" /></p>
+<p>All the neurons in MLP are similar. Each of them has several input links
+(it takes the output values from several neurons in the previous layer
+as input) and several output links (it passes the response to several
+neurons in the next layer). The values retrieved from the previous layer
+are summed up with certain weights, individual for each neuron, plus the
+bias  term. The sum is transformed using the activation function <code>f</code>
+that may be also different for different neurons.</p>
+<p><img src="https://docs.opencv.org/3.3.1/neuron_model.png" alt="image" /></p>
+<p>In other words, given the outputs <code>x_j</code> of the layer <code>n</code>, the outputs
+<code>y_i</code> of the layer <code>n+1</code> are computed as:</p>
+<pre class=" prettyprint lang-matlab"><code>u_i = sum_j (w_{i,j}^{n+1} * x_j) + w_{i,bias}^{n+1}
+y_i = f(u_i)
+</code></pre>
+<p>Different activation functions may be used. ML implements three standard
+functions:</p>
+<ul>
+<li><strong>Identity</strong>: Identity function <code>f(x) = y</code></li>
+<li><strong>Sigmoid</strong>: Symmetrical sigmoid, which is the default choice for MLP
+<code>f(x) = beta * (1-exp(-alpha*x)) / (1+exp(-alpha*x))</code></li>
+<li><strong>Gaussian</strong>: Gaussian function, which is not completely supported at
+the moment <code>f(x) = beta * exp(-alpha*x*x)</code></li>
+</ul>
+<p><img src="https://docs.opencv.org/3.3.1/sigmoid_bipolar.png" alt="image" /></p>
+<p>In ML, all the neurons have the same activation functions, with the
+same free parameters (<code>alpha</code>, <code>beta</code>) that are specified by user and
+are not altered by the training algorithms.</p>
+<p>So, the whole trained network works as follows:</p>
+<ol>
+<li>Take the feature vector as input. The vector size is equal to the
+size of the input layer.</li>
+<li>Pass values as input to the first hidden layer.</li>
+<li>Compute outputs of the hidden layer using the weights and the
+activation functions.</li>
+<li>Pass outputs further downstream until you compute the output layer.</li>
+</ol>
+<p>So, to compute the network, you need to know all the weights
+<code>w_{i,j}^{n+1}</code>. The weights are computed by the training algorithm. The
+algorithm takes a training set, multiple input vectors with the
+corresponding output vectors, and iteratively adjusts the weights to
+enable the network to give the desired response to the provided input
+vectors.</p>
+<p>The larger the network size (the number of hidden layers and their
+sizes) is, the more the potential network flexibility is. The error on
+the training set could be made arbitrarily small. But at the same time
+the learned network also learn the noise present in the training set, so
+the error on the test set usually starts increasing after the network
+size reaches a limit. Besides, the larger networks are trained much
+longer than the smaller ones, so it is reasonable to pre-process the
+data, using <a href="cv.PCA.html">cv.PCA</a> or similar technique, and train a smaller network on
+only essential features.</p>
+<p>Another MPL feature is an inability to handle categorical data as is.
+However, there is a workaround. If a certain feature in the input or
+output (in case of n-class classifier for <code>n&gt;2</code>) layer is categorical
+and can take <code>M&gt;2</code> different values, it makes sense to represent it as a
+binary tuple of <code>M</code> elements, where the i-th element is 1 if and only if
+the feature is equal to the i-th value out of <code>M</code> possible. It increases
+the size of the input/output layer but speeds up the training algorithm
+convergence and at the same time enables fuzzy values of such variables,
+that is, a tuple of probabilities instead of a fixed value.</p>
+<p>ML implements two algorithms for training MLP's.The first algorithm
+is a classical random sequential back-propagation algorithm. The second
+(default) one is a batch RPROP algorithm.</p>
+<h2>References</h2>
+<p>[BackPropWikipedia]:</p>
+<blockquote>
+<p><a href="https://en.wikipedia.org/wiki/Backpropagation" target="_blank">Back-propagation algorithm</a></p>
+</blockquote>
+<p>[LeCun98]:</p>
+<blockquote>
+<p>LeCun, L. Bottou, G.B. Orr and K.-R. Muller, &quot;Efficient backprop&quot;,
+in Neural Networks Tricks of the Trade, Springer Lecture Notes in
+Computer Sciences 1524, pp.5-50, 1998.</p>
+</blockquote>
+<p>[RPROP93]:</p>
+<blockquote>
+<p>M. Riedmiller and H. Braun, &quot;A Direct Adaptive Method for Faster
+Backpropagation Learning: The RPROP Algorithm&quot;, Proc. ICNN, San
+Francisco (1993).</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.ANN_MLP.ANN_MLP.html">cv.ANN_MLP/ANN_MLP</a>, <a href="cv.ANN_MLP.train.html">cv.ANN_MLP/train</a>, <a href="cv.ANN_MLP.predict.html">cv.ANN_MLP/predict</a>,
+   <a href="https://www.mathworks.com/help/nnet/ref/nnstart.html" target="_blank">nnstart</a>, <a href="https://www.mathworks.com/help/nnet/ref/nprtool.html" target="_blank">nprtool</a>, <a href="https://www.mathworks.com/help/nnet/ref/nftool.html" target="_blank">nftool</a></div>
+      <!--Class-->
+      <div class="sectiontitle">Class Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Superclasses</td>
+            <td><a href="https://www.mathworks.com/help/matlab/ref/handle.html" target="_blank">handle</a></td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Construct on load</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+      <!--Constructors-->
+      <div class="sectiontitle"><a name="constructors"></a>Constructor Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.ANN_MLP.ANN_MLP.html">ANN_MLP</a></td>
+            <td class="m-help">Creates an empty ANN-MLP model&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Properties-->
+      <div class="sectiontitle"><a name="properties"></a>Property Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.ANN_MLP.ActivationFunction.html">ActivationFunction</a></td>
+            <td class="m-help">Activation function for all neurons.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.ANN_MLP.AnnealCoolingRatio.html">AnnealCoolingRatio</a></td>
+            <td class="m-help">ANNEAL: cooling ratio. It must be &gt; 0 and less than 1. Default value&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.ANN_MLP.AnnealFinalT.html">AnnealFinalT</a></td>
+            <td class="m-help">ANNEAL: final temperature. It must be &gt;= 0 and less than&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.ANN_MLP.AnnealInitialT.html">AnnealInitialT</a></td>
+            <td class="m-help">ANNEAL: initial temperature. It must be &gt;= 0. Default value is 10.0.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.ANN_MLP.AnnealItePerStep.html">AnnealItePerStep</a></td>
+            <td class="m-help">ANNEAL: iteration per step. It must be &gt; 0. Default value is 10.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.ANN_MLP.BackpropMomentumScale.html">BackpropMomentumScale</a></td>
+            <td class="m-help">BPROP: Strength of the momentum term (the difference between weights&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.ANN_MLP.BackpropWeightScale.html">BackpropWeightScale</a></td>
+            <td class="m-help">BPROP: Strength of the weight gradient term.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.ANN_MLP.LayerSizes.html">LayerSizes</a></td>
+            <td class="m-help">Integer vector specifying the number of neurons in each layer&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.ANN_MLP.RpropDW0.html">RpropDW0</a></td>
+            <td class="m-help">RPROP: Initial value `delta_0` of update-values `delta_ij`.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.ANN_MLP.RpropDWMax.html">RpropDWMax</a></td>
+            <td class="m-help">RPROP: Update-values upper limit `delta_max`.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.ANN_MLP.RpropDWMin.html">RpropDWMin</a></td>
+            <td class="m-help">RPROP: Update-values lower limit `delta_min`.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.ANN_MLP.RpropDWMinus.html">RpropDWMinus</a></td>
+            <td class="m-help">RPROP: Decrease factor `eta_minus`.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.ANN_MLP.RpropDWPlus.html">RpropDWPlus</a></td>
+            <td class="m-help">RPROP: Increase factor `eta_plus`.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.ANN_MLP.TermCriteria.html">TermCriteria</a></td>
+            <td class="m-help">Termination criteria of the training algorithm.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.ANN_MLP.TrainMethod.html">TrainMethod</a></td>
+            <td class="m-help">Training method of the MLP.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.ANN_MLP.id.html">id</a></td>
+            <td class="m-help">Object ID&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Methods-->
+      <div class="sectiontitle"><a name="methods"></a>Method Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">addlistener</a></td>
+            <td class="m-help">Add listener for event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.ANN_MLP.calcError.html">calcError</a></td>
+            <td class="m-help">Computes error on the training or test dataset&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.ANN_MLP.clear.html">clear</a></td>
+            <td class="m-help">Clears the algorithm state&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.ANN_MLP.delete.html">delete</a></td>
+            <td class="m-help">Destructor&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.ANN_MLP.empty.html">empty</a></td>
+            <td class="m-help">Returns true if the algorithm is empty&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">eq</a></td>
+            <td class="m-help">== (EQ)   Test handle equality.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findobj</a></td>
+            <td class="m-help">Find objects matching specified conditions.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findprop</a></td>
+            <td class="m-help">Find property of MATLAB handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ge</a></td>
+            <td class="m-help">&gt;= (GE)   Greater than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.ANN_MLP.getDefaultName.html">getDefaultName</a></td>
+            <td class="m-help">Returns the algorithm string identifier&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.ANN_MLP.getVarCount.html">getVarCount</a></td>
+            <td class="m-help">Returns the number of variables in training samples&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.ANN_MLP.getWeights.html">getWeights</a></td>
+            <td class="m-help">Returns neurons weights of the particular layer&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">gt</a></td>
+            <td class="m-help">&gt; (GT)   Greater than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.ANN_MLP.isClassifier.html">isClassifier</a></td>
+            <td class="m-help">Returns true if the model is a classifier&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.ANN_MLP.isTrained.html">isTrained</a></td>
+            <td class="m-help">Returns true if the model is trained&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">isvalid</a></td>
+            <td class="m-help">Test handle validity.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">le</a></td>
+            <td class="m-help">&lt;= (LE)   Less than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">listener</a></td>
+            <td class="m-help">Add listener for event without binding the listener to the source object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.ANN_MLP.load.html">load</a></td>
+            <td class="m-help">Loads algorithm from a file or a string&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">lt</a></td>
+            <td class="m-help">&lt; (LT)   Less than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ne</a></td>
+            <td class="m-help">~= (NE)   Not equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">notify</a></td>
+            <td class="m-help">Notify listeners of event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.ANN_MLP.predict.html">predict</a></td>
+            <td class="m-help">Predicts response(s) for the provided sample(s)&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.ANN_MLP.save.html">save</a></td>
+            <td class="m-help">Saves the algorithm parameters to a file or a string&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.ANN_MLP.setActivationFunction.html">setActivationFunction</a></td>
+            <td class="m-help">Initialize the activation function for each neuron&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.ANN_MLP.setTrainMethod.html">setTrainMethod</a></td>
+            <td class="m-help">Sets training method and common parameters&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.ANN_MLP.train.html">train</a></td>
+            <td class="m-help">Trains/updates the MLP&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Events-->
+      <div class="sectiontitle"><a name="events"></a>Event Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ObjectBeingDestroyed</a></td>
+            <td class="m-help">Notifies listeners that a particular object has been destroyed.&nbsp;</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

@@ -1,0 +1,60 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>crop (cv.Rect) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Rect.crop - Extract region-of-interest from image" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">crop (cv.Rect) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Rect.crop</div>
+      <div class="helpcontent"><p class=" h1line">Extract region-of-interest from image</p>
+<pre class=" prettyprint lang-matlab"><code>roi = <a href="cv.Rect.crop.html">cv.Rect.crop</a>(img, r)
+img = <a href="cv.Rect.crop.html">cv.Rect.crop</a>(img, r, roi)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>img</strong> input image.</li>
+<li><strong>r</strong> ROI rectangle <code>[x,y,w,h]</code>.</li>
+<li><strong>roi</strong> input cropped image, of size <code>[h,w]</code>, and same type
+and channels as input image <code>img</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>roi</strong> output cropped image.</li>
+<li><strong>img</strong> output image with updated ROI region.</li>
+</ul>
+<p>In the first variant, the function gets ROI region from image,
+i.e: <code>roi = img(r(2)+1:r(2)+r(4), r(1)+1:r(1)+r(3), :)</code>.</p>
+<p>In the second variant, the function sets ROI region inside image,
+i.e: <code>img(r(2)+1:r(2)+r(4), r(1)+1:r(1)+r(3), :) = roi</code></p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.getRectSubPix.html">cv.getRectSubPix</a>, <a href="https://www.mathworks.com/help/images/ref/imcrop.html" target="_blank">imcrop</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>true</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

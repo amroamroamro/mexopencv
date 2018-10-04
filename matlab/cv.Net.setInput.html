@@ -1,0 +1,57 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>setInput (cv.Net) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Net.setInput - Sets the new value for the layer output blob" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">setInput (cv.Net) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Net/setInput</div>
+      <div class="helpcontent"><p class=" h1line">Sets the new value for the layer output blob</p>
+<pre class=" prettyprint lang-matlab"><code>net.setInput(blob)
+net.setInput(blob, name)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>blob</strong> new blob, constructed from an image or an array of
+images.</li>
+<li><strong>name</strong> descriptor of the updating layer output blob. See
+<a href="cv.Net.connect.html">cv.Net.connect</a> to know format of the descriptor.</li>
+</ul>
+<p>NOTE: If updating blob is not empty then <code>blob</code> must have the
+same shape, because network reshaping is not implemented yet.</p>
+<p>The blob (4-dimensional blob, so-called batch) is constructed
+from image or array of images. Image is a 2-dimensional
+multi-channel or 3-dimensional single-channel image (or array of
+such images).</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Net.forward.html">cv.Net/forward</a>, <a href="cv.Net.blobFromImages.html">cv.Net.blobFromImages</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

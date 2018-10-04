@@ -1,0 +1,55 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.cornerHarris - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.cornerHarris - Harris corner detector" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.cornerHarris - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.cornerHarris</div>
+      <div class="helpcontent"><p class=" h1line">Harris corner detector</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.cornerHarris.html">cv.cornerHarris</a>(src)
+dst = <a href="cv.cornerHarris.html">cv.cornerHarris</a>(src, 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> Input single-channel 8-bit or floating-point image.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> Image to store the Harris detector responses. It has the type
+<code>single</code> and the same size as <code>src</code> (single-channel).</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>BlockSize</strong> Neighborhood size (see the details on
+<a href="cv.cornerEigenValsAndVecs.html">cv.cornerEigenValsAndVecs</a>). default 5.</li>
+<li><strong>KSize</strong> Aperture parameter for the <a href="cv.Sobel.html">cv.Sobel</a> operator. default 3.</li>
+<li><strong>K</strong> Harris detector free parameter. See the formula below. default 0.04</li>
+<li><strong>BorderType</strong> Pixel extrapolation method. See <a href="cv.copyMakeBorder.html">cv.copyMakeBorder</a>.
+default 'Default'</li>
+</ul>
+<p>The function runs the Harris corner detector on the image. Similarly to
+<a href="cv.cornerMinEigenVal.html">cv.cornerMinEigenVal</a> and <a href="cv.cornerEigenValsAndVecs.html">cv.cornerEigenValsAndVecs</a>, for each pixel <code>(x,y)</code>
+it calculates a <code>2 x 2</code> gradient covariance matrix <code>M(x,y)</code> over a
+<code>BlockSize x BlockSize</code> neighborhood. Then, it computes the following
+characteristic:</p>
+<pre class=" prettyprint lang-matlab"><code>dst(x,y) = det(M(x,y)) - k * (trace(M(x,y)))^2
+</code></pre>
+<p>Corners in the image can be found as the local maxima of this response map.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.cornerEigenValsAndVecs.html">cv.cornerEigenValsAndVecs</a>, <a href="cv.cornerMinEigenVal.html">cv.cornerMinEigenVal</a>,
+   <a href="https://www.mathworks.com/help/images/ref/corner.html" target="_blank">corner</a>, <a href="https://www.mathworks.com/help/images/ref/cornermetric.html" target="_blank">cornermetric</a>, <a href="https://www.mathworks.com/help/vision/ref/detectharrisfeatures.html" target="_blank">detectHarrisFeatures</a>, <a href="https://www.mathworks.com/help/vision/ref/cornerpoints.html" target="_blank">cornerPoints</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

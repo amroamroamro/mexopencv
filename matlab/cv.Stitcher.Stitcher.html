@@ -1,0 +1,48 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.Stitcher/Stitcher - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Stitcher.Stitcher - Creates a Stitcher configured in one of the stitching modes" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.Stitcher/Stitcher - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Stitcher/Stitcher</div>
+      <div class="helpcontent"><p class=" h1line">Creates a Stitcher configured in one of the stitching modes</p>
+<pre class=" prettyprint lang-matlab"><code>obj = <a href="cv.Stitcher.html">cv.Stitcher</a>()
+obj = <a href="cv.Stitcher.html">cv.Stitcher</a>('OptionName',optionValue, ...)
+</code></pre>
+<h2>Options</h2>
+<ul>
+<li><strong>Mode</strong> Scenario for stitcher operation. This is usually
+determined by source of images to stitch and their
+transformation. Default parameters will be chosen for
+operation in given scenario. Default 'Panorama'. One of:
+<ul>
+<li><strong>Panorama</strong> Mode for creating photo panoramas. Expects
+images under perspective transformation and projects
+resulting pano to sphere. See also <code>BestOf2NearestMatcher</code>,
+<code>SphericalWarper</code>.</li>
+<li><strong>Scans</strong> Mode for composing scans. Expects images under
+affine transformation does not compensate exposure by
+default. See also <code>AffineBestOf2NearestMatcher</code>,
+<code>AffineWarper</code></li>
+</ul>
+</li>
+<li><strong>TryUseGPU</strong> Flag indicating whether GPU should be used
+whenever it's possible. default false</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Stitcher.stitch.html">cv.Stitcher/stitch</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

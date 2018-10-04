@@ -1,0 +1,58 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.calcMotionGradient - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.calcMotionGradient - Calculates a gradient orientation of a motion history image" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.calcMotionGradient - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.calcMotionGradient</div>
+      <div class="helpcontent"><p class=" h1line">Calculates a gradient orientation of a motion history image</p>
+<pre class=" prettyprint lang-matlab"><code>[mask, orientation] = <a href="cv.calcMotionGradient.html">cv.calcMotionGradient</a>(mhi, delta1, delta2)
+[...] = <a href="cv.calcMotionGradient.html">cv.calcMotionGradient</a>(..., 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>mhi</strong> Motion history single-channel floating-point image.</li>
+<li><strong>delta1</strong> Minimal (or maximal) allowed difference between <code>mhi</code> values
+within a pixel neighorhood.</li>
+<li><strong>delta2</strong> Maximal (or minimal) allowed difference between <code>mhi</code> values
+within a pixel neighorhood. That is, the function finds the minimum
+(<code>m(x,y)</code>) and maximum (<code>M(x,y)</code>) <code>mhi</code> values over 3x3 neighborhood of
+each pixel and marks the motion orientation at <code>(x,y)</code> as valid only if:
+<code>min(delta1,delta2) &lt;= M(x,y) - m(x,y) &lt;= max(delta1,delta2)</code></li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>mask</strong> Output mask image that has the type <code>uint8</code> and the same size a
+<code>mhi</code>. Its non-zero elements mark pixels where the motion gradient data is
+correct.</li>
+<li><strong>orientation</strong> Output motion gradient orientation image that has the same
+type and the same size as <code>mhi</code>. Each pixel of the image is a motion
+orientation, from 0 to 360 degrees.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>ApertureSize</strong> Aperture size of the <a href="cv.Sobel.html">cv.Sobel</a> operator.</li>
+</ul>
+<p>The function calculates a gradient orientation at each pixel <code>(x,y)</code> as:</p>
+<pre class=" prettyprint lang-matlab"><code>orientation(x,y) = arctan((dmhi / dy) / (dmhi / dx))
+</code></pre>
+<p>In fact, <code>fastAtan2</code> and <code>phase</code> are used so that the computed angle is
+measured in degrees and covers the full range 0..360. Also, the mask is
+filled to indicate pixels where the computed angle is valid.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.updateMotionHistory.html">cv.updateMotionHistory</a>, <a href="cv.calcGlobalOrientation.html">cv.calcGlobalOrientation</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

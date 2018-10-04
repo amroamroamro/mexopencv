@@ -1,0 +1,67 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>getFacesHAAR (cv.Facemark) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Facemark.getFacesHAAR - Default face detector" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">getFacesHAAR (cv.Facemark) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Facemark.getFacesHAAR</div>
+      <div class="helpcontent"><p class=" h1line">Default face detector</p>
+<pre class=" prettyprint lang-matlab"><code>[faces, success] = <a href="cv.Facemark.getFacesHAAR.html">cv.Facemark.getFacesHAAR</a>(img, faceCascadeName)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>img</strong> The input image to be processed.</li>
+<li><strong>faceCascadeName</strong> Name of the XML file from which a trained
+cascade classifier is loaded. See <a href="cv.CascadeClassifier.load.html">cv.CascadeClassifier.load</a></li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>faces</strong> Output of the function which represent region of
+interest of the detected faces <code>{[x,y,w,h], ...}</code>. Each face
+is stored as rect.</li>
+<li><strong>success</strong> success flag.</li>
+</ul>
+<p>This function is mainly utilized by the implementation of a
+Facemark algorithm. End users are advised to use function
+<a href="cv.Facemark.getFaces.html">cv.Facemark.getFaces</a> which can be manually defined and
+circumvented to the algorithm by <a href="cv.Facemark.setFaceDetector.html">cv.Facemark.setFaceDetector</a>.</p>
+<h3>Example</h3>
+<pre class=" prettyprint lang-matlab"><code>faces = <a href="cv.Facemark.getFacesHAAR.html">cv.Facemark.getFacesHAAR</a>(img, 'haarcascade_frontalface_alt.xml');
+for i=1:numel(faces)
+    img = <a href="cv.rectangle.html">cv.rectangle</a>(img, faces{i}, 'Color',[0 255 0]);
+end
+imshow(img)
+</code></pre>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Facemark.setFaceDetector.html">cv.Facemark/setFaceDetector</a>, <a href="cv.CascadeClassifier.html">cv.CascadeClassifier</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>true</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

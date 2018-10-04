@@ -1,0 +1,44 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.FastLineDetector/FastLineDetector - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.FastLineDetector.FastLineDetector - Creates a FastLineDetector object and initializes it" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.FastLineDetector/FastLineDetector - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.FastLineDetector/FastLineDetector</div>
+      <div class="helpcontent"><p class=" h1line">Creates a FastLineDetector object and initializes it</p>
+<pre class=" prettyprint lang-matlab"><code>obj = <a href="cv.FastLineDetector.html">cv.FastLineDetector</a>()
+obj = <a href="cv.FastLineDetector.html">cv.FastLineDetector</a>('OptionName',optionValue, ...)
+</code></pre>
+<h2>Options</h2>
+<ul>
+<li><strong>LengthThreshold</strong> Segment shorter than this will be
+discarded. default 10</li>
+<li><strong>DistanceThreshold</strong> A point placed from a hypothesis line
+segment farther than this will be regarded as an outlier.
+default 1.41421356</li>
+<li><strong>CannyThreshold1</strong> First threshold for hysteresis procedure
+in <a href="cv.Canny.html">cv.Canny</a>. default 50</li>
+<li><strong>CannyThreshold2</strong> Second threshold for hysteresis procedure
+in <a href="cv.Canny.html">cv.Canny</a>. default 50</li>
+<li><strong>CannyApertureSize</strong> Aperturesize for the sobel operator in
+<a href="cv.Canny.html">cv.Canny</a>. default 3</li>
+<li><strong>DoMerge</strong> If true, incremental merging of segments will be
+perfomred. default false</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.FastLineDetector.detect.html">cv.FastLineDetector/detect</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

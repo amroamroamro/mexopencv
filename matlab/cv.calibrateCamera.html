@@ -1,0 +1,197 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.calibrateCamera - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.calibrateCamera - Finds the camera intrinsic and extrinsic parameters from several views of a calibration pattern" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.calibrateCamera - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.calibrateCamera</div>
+      <div class="helpcontent"><p class=" h1line">Finds the camera intrinsic and extrinsic parameters from several views of a calibration pattern</p>
+<pre class=" prettyprint lang-matlab"><code>[cameraMatrix, distCoeffs, reprojErr] = <a href="cv.calibrateCamera.html">cv.calibrateCamera</a>(objectPoints, imagePoints, imageSize)
+[cameraMatrix, distCoeffs, reprojErr, rvecs, tvecs, stdDevsIntrinsics, stdDevsExtrinsics, perViewErrors] = <a href="cv.calibrateCamera.html">cv.calibrateCamera</a>(...)
+[...] = <a href="cv.calibrateCamera.html">cv.calibrateCamera</a>(..., 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>objectPoints</strong> A cell array of cells of calibration pattern points in
+the calibration pattern coordinate space <code>{{[x,y,z], ..}, ...}</code>. The outer
+vector contains as many elements as the number of the pattern views. If
+the same calibration pattern is shown in each view and it is fully
+visible, all the vectors will be the same. Although, it is possible to use
+partially occluded patterns, or even different patterns in different
+views. Then, the vectors will be different. The points are 3D, but since
+they are in a pattern coordinate system, then, if the rig is planar, it
+may make sense to put the model to a XY coordinate plane so that
+Z-coordinate of each input object point is 0. Requires at least 4 points
+per view.</li>
+<li><strong>imagePoints</strong> A cell array of cells of the projections of calibration
+pattern points <code>{{[x,y], ..}, ...}</code>. <code>numel(imagePoints)</code> and
+<code>numel(objectPoints)</code> must be equal, and <code>numel(imagePoints{i})</code> must be
+equal to <code>numel(objectPoints{i})</code> for each <code>i</code>.</li>
+<li><strong>imageSize</strong> Size of the image used only to initialize the intrinsic
+camera matrix <code>[w,h]</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>cameraMatrix</strong> Output 3x3 floating-point camera matrix
+<code>A = [fx 0 cx; 0 fy cy; 0 0 1]</code></li>
+<li><strong>distCoeffs</strong> Output vector of distortion coefficients
+<code>[k1,k2,p1,p2,k3,k4,k5,k6,s1,s2,s3,s4,taux,tauy]</code> of 4, 5, 8, 12 or 14
+elements.</li>
+<li><strong>reprojErr</strong> the overall RMS re-projection error.</li>
+<li><strong>rvecs</strong> Output cell array of rotation vectors (see <a href="cv.Rodrigues.html">cv.Rodrigues</a>)
+estimated for each pattern view (cell array of 3-element vectors). That
+is,  each k-th rotation vector together with the corresponding k-th
+translation vector (see the next output parameter description) brings the
+calibration pattern from the model coordinate space (in which object
+points are specified) to the world coordinate space, that is, a real
+position of the calibration pattern in the k-th pattern view (<code>k=1:M</code>)</li>
+<li><strong>tvecs</strong> Output cell array of translation vectors estimated for each
+pattern view (cell array of 3-element vectors).</li>
+<li><strong>stdDevsIntrinsics</strong> Output vector of standard deviations estimated for
+intrinsic parameters. Order of deviations values:
+<code>(fx,fy,cx,cy,k1,k2,p1,p2,k3,k4,k5,k6,s1,s2,s3,s4,taux,tauy)</code>. If one of
+parameters is not estimated, its deviation is equals to zero.</li>
+<li><strong>stdDevsExtrinsics</strong> Output vector of standard deviations estimated for
+extrinsic parameters. Order of deviations values: <code>(R1, T1, ..., RM, TM)</code>
+where <code>M</code> is number of pattern views, <code>Ri, Ti</code> are concatenated 1x3
+vectors.</li>
+<li><strong>perViewErrors</strong> Output vector of the RMS re-projection error estimated
+for each pattern view.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>CameraMatrix</strong> Input 3x3 camera matrix used as initial value for
+<code>cameraMatrix</code>. If any of <code>UseIntrinsicGuess</code>, <code>FixAspectRatio</code>, or
+<code>FixFocalLength</code> are specified, some or all of <code>fx</code>, <code>fy</code>, <code>cx</code>, <code>cy</code> must
+be initialized before calling the function. Not set by default (uses
+<code>eye(3)</code>).</li>
+<li><strong>DistCoeffs</strong> Input 4, 5, 8, 12 or 14 elements vector used as an initial
+values of <code>distCoeffs</code>. Not set by default (uses <code>zeros(1,14)</code>).</li>
+<li><strong>UseIntrinsicGuess</strong> When true, <code>CameraMatrix</code> contains valid initial
+values of <code>fx</code>, <code>fy</code>, <code>cx</code>, <code>cy</code> that are optimized further. Otherwise,
+<code>(cx,cy)</code> is initially set to the image center (<code>imageSize</code> is used), and
+focal distances are computed in a least-squares fashion. Note, that if
+intrinsic parameters are known, there is no need to use this function just
+to estimate extrinsic parameters. Use <a href="cv.solvePnP.html">cv.solvePnP</a> instead. default false.</li>
+<li><strong>FixPrincipalPoint</strong> The principal point is not changed during the global
+optimization. It stays at the image center or at a different location
+specified when <code>UseIntrinsicGuess</code> is set too. default false.</li>
+<li><strong>FixFocalLength</strong> Fix <code>fx</code> and <code>fy</code>, as specified in the input
+<code>CameraMatrix</code>. default false.</li>
+<li><strong>FixAspectRatio</strong> The functions considers only <code>fy</code> as a free parameter.
+The ratio <code>fx/fy</code> stays the same as in the input <code>CameraMatrix</code>. When
+<code>UseIntrinsicGuess</code> is not set, the actual input values of <code>fx</code> and <code>fy</code>
+are ignored, only their ratio is computed and used further. default false.</li>
+<li><strong>ZeroTangentDist</strong> Tangential distortion coefficients <code>p1</code> and <code>p2</code> are
+set to zeros and stay fixed. default false.</li>
+<li><strong>FixTangentDist</strong> The tangential distortion coefficients are not changed
+during the optimization. If <code>UseIntrinsicGuess</code> is set, the coefficient
+from the supplied <code>DistCoeffs</code> matrix is used. Otherwise, it is set to 0.
+default false.</li>
+<li><strong>FixK1</strong>, ..., <strong>FixK6</strong> The corresponding radial distortion coefficient
+is not changed during the optimization. If <code>UseIntrinsicGuess</code> is set, the
+coefficient from the supplied <code>DistCoeffs</code> matrix is used. Otherwise, it
+is set to 0. default false.</li>
+<li><strong>RationalModel</strong> Coefficients <code>k4</code>, <code>k5</code>, and <code>k6</code> are enabled. To
+provide the backward compatibility, this extra flag should be explicitly
+specified to make the calibration function use the rational model and
+return 8 coefficients. If the flag is not set, the function computes and
+returns only 5 distortion coefficients. default false. (<code>RationalModel</code> as
+false implies <code>FixK4</code>,<code>FixK5</code>,<code>FixK6</code> as true).</li>
+<li><strong>ThinPrismModel</strong> Coefficients <code>s1</code>, <code>s2</code>, <code>s3</code> and <code>s4</code> are enabled. To
+provide the backward compatibility, this extra flag should be explicitly
+specified to make the calibration function use the thin prism model and
+return 12 coefficients. If the flag is not set, the function computes and
+returns only 5 distortion coefficients. default false. (<code>ThinPrismModel</code>
+as false implies <code>FixS1S2S3S4</code> as true).</li>
+<li><strong>FixS1S2S3S4</strong> The thin prism distortion coefficients are not changed
+during the optimization. If <code>UseIntrinsicGuess</code> is set, the coefficient
+from the supplied <code>DistCoeffs</code> matrix is used. Otherwise, it is set to 0.
+default false.</li>
+<li><strong>TiltedModel</strong> Coefficients <code>tauX</code> and <code>tauY</code> are enabled. To provide the
+backward compatibility, this extra flag should be explicitly specified to
+make the calibration function use the tilted sensor model and return 14
+coefficients. If the flag is not set, the function computes and returns
+only 5 distortion coefficients. default false. (<code>TiltedModel</code> as false
+implies <code>FixTauXTauY</code> as true).</li>
+<li><strong>FixTauXTauY</strong> The coefficients of the tilted sensor model are not
+changed during the optimization. If <code>UseIntrinsicGuess</code> is set, the
+coefficient from the supplied <code>DistCoeffs</code> matrix is used. Otherwise, it
+is set to 0. default false.</li>
+<li><strong>UseLU</strong> Use LU instead of SVD decomposition for solving. Much faster but
+potentially less precise. default false.</li>
+<li><strong>UseQR</strong> Use QR instead of SVD decomposition for solving. Faster but
+potentially less precise. default false.</li>
+<li><strong>Criteria</strong> Termination criteria for the iterative optimization algorithm.
+default <code>struct('type','Count+EPS', 'maxCount',30, 'epsilon',eps)</code></li>
+</ul>
+<p>The function estimates the intrinsic camera parameters and extrinsic
+parameters for each of the views. The algorithm is based on [Zhang2000] and
+[BoughuetMCT]. The coordinates of 3D object points and their corresponding
+2D projections in each view must be specified. That may be achieved by using
+an object with a known geometry and easily detectable feature points. Such
+an object is called a calibration rig or calibration pattern, and OpenCV has
+built-in support for a chessboard as a calibration rig (see
+<a href="cv.findChessboardCorners.html">cv.findChessboardCorners</a>). Currently, initialization of intrinsic parameters
+(when <code>UseIntrinsicGuess</code> is not set) is only implemented for planar
+calibration patterns (where Z-coordinates of the object points must be all
+zeros). 3D calibration rigs can also be used as long as initial
+<code>CameraMatrix</code> is provided.</p>
+<p>The algorithm performs the following steps:</p>
+<ol>
+<li>Compute the initial intrinsic parameters (the option only available for
+planar calibration patterns) or read them from the input parameters.
+The distortion coefficients are all set to zeros initially unless some
+of 'FixK?' are specified.</li>
+<li>Estimate the initial camera pose as if the intrinsic parameters have
+been already known. This is done using <a href="cv.solvePnP.html">cv.solvePnP</a>.</li>
+<li>Run the global Levenberg-Marquardt optimization algorithm to minimize
+the reprojection error, that is, the total sum of squared distances
+between the observed feature points <code>imagePoints</code> and the projected
+(using the current estimates for camera parameters and the poses)
+object points <code>objectPoints</code>. See <a href="cv.projectPoints.html">cv.projectPoints</a> for details.</li>
+</ol>
+<h3>Note</h3>
+<p>If you use a non-square (=non-NxN) grid and <a href="cv.findChessboardCorners.html">cv.findChessboardCorners</a> for
+calibration, and <a href="cv.calibrateCamera.html">cv.calibrateCamera</a> returns bad values (zero distortion
+coefficients, an image center very far from <code>(w/2-0.5,h/2-0.5)</code>, and/or
+large differences between <code>fx</code> and <code>fy</code> (ratios of 10:1 or more), then you
+have probably used <code>patternSize=[rows,cols]</code> instead of using
+<code>patternSize=[cols,rows]</code> in <a href="cv.findChessboardCorners.html">cv.findChessboardCorners</a>.</p>
+<h2>References</h2>
+<p>[Zhang2000]:</p>
+<blockquote>
+<p>Zhengyou Zhang. &quot;A flexible new technique for camera calibration&quot;.
+IEEE Transactions on Pattern Analysis and Machine Intelligence,
+22(11):1330-1334, 2000.</p>
+</blockquote>
+<p>[BoughuetMCT]:</p>
+<blockquote>
+<p>Jean-Yves Bouguet. &quot;Camera Calibration Toolbox for MATLAB&quot; [eb/ol], 2004.
+<a href="http://www.vision.caltech.edu/bouguetj/calib_doc/" target="_blank">Camera Calibration Toolbox</a></p>
+</blockquote>
+<p>[Brown71]:</p>
+<blockquote>
+<p>Brown, D. C. &quot;Close-range camera calibration&quot;,
+Photogrammetric Engineering 37 (1971): 855-866.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.findChessboardCorners.html">cv.findChessboardCorners</a>, <a href="cv.solvePnP.html">cv.solvePnP</a>, <a href="cv.initCameraMatrix2D.html">cv.initCameraMatrix2D</a>,
+   <a href="cv.stereoCalibrate.html">cv.stereoCalibrate</a>, <a href="cv.undistort.html">cv.undistort</a>, <a href="https://www.mathworks.com/help/vision/ref/estimatecameraparameters.html" target="_blank">estimateCameraParameters</a>,
+   <a href="https://www.mathworks.com/help/vision/ref/cameraparameters.html" target="_blank">cameraParameters</a>, <a href="https://www.mathworks.com/help/vision/ref/extrinsics.html" target="_blank">extrinsics</a>, <a href="https://www.mathworks.com/help/vision/ref/plotcamera.html" target="_blank">plotCamera</a>, <a href="https://www.mathworks.com/help/vision/ref/showextrinsics.html" target="_blank">showExtrinsics</a>,
+   <a href="https://www.mathworks.com/help/vision/ref/showreprojectionerrors.html" target="_blank">showReprojectionErrors</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

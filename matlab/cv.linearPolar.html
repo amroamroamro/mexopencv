@@ -1,0 +1,78 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.linearPolar - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.linearPolar - Remaps an image to polar coordinates space" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.linearPolar - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.linearPolar</div>
+      <div class="helpcontent"><p class=" h1line">Remaps an image to polar coordinates space</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.linearPolar.html">cv.linearPolar</a>(src, center, maxRadius)
+dst = <a href="cv.linearPolar.html">cv.linearPolar</a>(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> Source image.</li>
+<li><strong>center</strong> The transformation center.</li>
+<li><strong>maxRadius</strong> The radius of the bounding circle to transform. It
+determines the inverse magnitude scale parameter too.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> Destination image. It will have same size and type as <code>src</code>.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Interpolation</strong> Interpolation method, default 'Linear'. One of:
+<ul>
+<li><strong>Nearest</strong> nearest neighbor interpolation</li>
+<li><strong>Linear</strong> bilinear interpolation</li>
+<li><strong>Cubic</strong> bicubic interpolation</li>
+<li><strong>Lanczos4</strong> Lanczos interpolation over 8x8 neighborhood</li>
+</ul>
+</li>
+<li><strong>FillOutliers</strong> flag, fills all of the destination image pixels. If some
+of them correspond to outliers in the source image, they are set to zero.
+default true</li>
+<li><strong>InverseMap</strong> flag, inverse transformation, default false. For example,
+polar transforms:
+<ul>
+<li>flag is not set: Forward transformation <code>dst(rho,phi) = src(x,y)</code></li>
+<li>flag is set: Inverse transformation <code>dst(x,y) = src(rho,phi)</code></li>
+</ul>
+</li>
+</ul>
+<p>Transform the source image using the following transformation:</p>
+<pre class=" prettyprint lang-matlab"><code>dst(rho,phi) = src(x,y)
+size(dst) &lt;- size(src)
+</code></pre>
+<p>where:</p>
+<pre class=" prettyprint lang-matlab"><code>I = (dx,dy) = (x-center(2), y-center(1))
+rho = Kx * magnitude(I)
+phi = Ky * angle(I)_{0..360 deg}
+</code></pre>
+<p>and:</p>
+<pre class=" prettyprint lang-matlab"><code>Kx = size(src,2) / maxRadius
+Ky = size(src,1) / 360
+</code></pre>
+<p>Polar remaps reference:</p>
+<p><img src="https://docs.opencv.org/3.3.1/polar_remap_doc.png" alt="image" /></p>
+<p>Note: To calculate magnitude and angle in degrees, <a href="cv.cartToPolar.html">cv.cartToPolar</a> is used
+internally thus angles are measured from 0 to 360 with accuracy about 0.3
+degrees.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.logPolar.html">cv.logPolar</a>, <a href="cv.remap.html">cv.remap</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

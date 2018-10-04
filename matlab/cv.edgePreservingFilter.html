@@ -1,0 +1,60 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.edgePreservingFilter - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.edgePreservingFilter - Edge-preserving smoothing filter" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.edgePreservingFilter - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.edgePreservingFilter</div>
+      <div class="helpcontent"><p class=" h1line">Edge-preserving smoothing filter</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.edgePreservingFilter.html">cv.edgePreservingFilter</a>(src)
+dst = <a href="cv.edgePreservingFilter.html">cv.edgePreservingFilter</a>(src, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> Input 8-bit 3-channel image.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> Output 8-bit 3-channel image.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Filter</strong> Edge preserving filters, one of:
+<ul>
+<li><strong>Recursive</strong> (default)</li>
+<li><strong>NormConv</strong></li>
+</ul>
+</li>
+<li><strong>SigmaS</strong> Range between 0 to 200. default 60</li>
+<li><strong>SigmaR</strong> Range between 0 to 1. default 0.4</li>
+<li><strong>FlipChannels</strong> whether to flip the order of color channels in input
+<code>src</code> and output <code>dst</code>, between MATLAB's RGB order and OpenCV's BGR
+(input: RGB-&gt;BGR, output: BGR-&gt;RGB). default false</li>
+</ul>
+<p>Filtering is the fundamental operation in image and video processing.
+Edge-preserving smoothing filters are used in many different applications
+[EM11].</p>
+<h2>References</h2>
+<p>[EM11]:</p>
+<blockquote>
+<p>Eduardo SL Gastal and Manuel M Oliveira.
+&quot;Domain transform for edge-aware image and video processing&quot;.
+In ACM Transactions on Graphics (TOG), volume 30, page 69. ACM, 2011.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.detailEnhance.html">cv.detailEnhance</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

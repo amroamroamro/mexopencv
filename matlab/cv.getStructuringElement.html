@@ -1,0 +1,53 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.getStructuringElement - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.getStructuringElement - Returns a structuring element of the specified size and shape for morphological operations" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.getStructuringElement - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.getStructuringElement</div>
+      <div class="helpcontent"><p class=" h1line">Returns a structuring element of the specified size and shape for morphological operations</p>
+<pre class=" prettyprint lang-matlab"><code>elem = <a href="cv.getStructuringElement.html">cv.getStructuringElement</a>('OptionName', optionValue, ...)
+</code></pre>
+<h2>Output</h2>
+<ul>
+<li><strong>elem</strong> Output structuring element of specified shape and size.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Shape</strong> Element shape, default 'Rect'. Could be one of:
+<ul>
+<li><strong>Rect</strong> a rectangular structuring element: <code>E(i,j)=1</code></li>
+<li><strong>Cross</strong> a cross-shaped structuring element: <code>E(i,j)=1</code> if
+<code>i=Anchor(2)</code> or <code>j=Anchor(1)</code>, <code>E(i,j)=0</code> otherwise.</li>
+<li><strong>Ellipse</strong> an elliptic structuring element, that is, a filled ellipse
+inscribed into the rectangle <code>[0, 0, KSize(1), KSize(2)]</code>.</li>
+</ul>
+</li>
+<li><strong>KSize</strong> Size of the structuring element <code>[w,h]</code>. default [3,3].</li>
+<li><strong>Anchor</strong> Anchor position within the element. The default value (-1,-1)
+means that the anchor is at the center. Note that only the shape of a
+cross-shaped element depends on the anchor position. In other cases the
+anchor just regulates how much the result of the morphological operation
+is shifted.</li>
+</ul>
+<p>The function constructs and returns the structuring element that can be
+further passed to <a href="cv.erode.html">cv.erode</a>, <a href="cv.dilate.html">cv.dilate</a> or <a href="cv.morphologyEx.html">cv.morphologyEx</a>. But you can also
+construct an arbitrary binary mask yourself and use it as the structuring
+element.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.sepFilter2D.html">cv.sepFilter2D</a>, <a href="cv.getDerivKernels.html">cv.getDerivKernels</a>, <a href="cv.getGaussianKernel.html">cv.getGaussianKernel</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

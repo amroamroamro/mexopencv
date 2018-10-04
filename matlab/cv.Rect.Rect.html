@@ -1,0 +1,62 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.Rect/Rect - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Rect.Rect - Class for 2D rectangles" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.Rect/Rect - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Rect/Rect</div>
+      <div class="helpcontent"><p class=" h1line">Class for 2D rectangles</p>
+<p>A rectangle <code>[x,y,w,h]</code> is described by the following parameters:</p>
+<ul>
+<li>Coordinates of the top-left corner. This is a default interpretation
+of <code>[x,y]</code> in OpenCV. Though, in your algorithms you may count <code>x</code> and
+<code>y</code> from the bottom-left corner.</li>
+<li>Rectangle width and height <code>[w h]</code>.</li>
+</ul>
+<p>OpenCV typically assumes that the top and left boundary of the rectangle
+are inclusive, while the right and bottom boundaries are not. For
+example, the method <a href="cv.Rect.contains.html">cv.Rect.contains</a> returns true if:</p>
+<pre class=" prettyprint lang-matlab"><code>x &lt;= pt.x &lt; x + width , y &lt;= pt.y &lt; y + height
+</code></pre>
+<p>Virtually every loop over an image ROI in OpenCV (where ROI is specified
+by an integer rectangle) is implemented as:</p>
+<pre class=" prettyprint lang-matlab"><code>roi = [x,y,w,h];
+for y=roi(2):(roi(2)+roi(4)-1)
+    for x=roi(1):(roi(1)+roi(3)-1)
+        %...
+    end
+end
+</code></pre>
+<p>In addition, the following operations on rectangles are implemented:</p>
+<ul>
+<li><strong>adjustPosition</strong> (<code>rect += point</code>): shifting a rectangle by a
+certain offset.</li>
+<li><strong>adjustSize</strong> (<code>rect += size</code>): expanding or shrinking a rectangle by
+a certain amount.</li>
+<li><strong>intersect</strong> (<code>rect1 &amp; rect2</code>): rectangle intersection.</li>
+<li><strong>union</strong> (<code>rect1 | rect2</code>): minimum area rectangle containing <code>rect1</code>
+and <code>rect2</code>.</li>
+</ul>
+<p>This is an example how the partial ordering on rectangles can be
+established (<code>rect1 \subseteq rect2</code>):</p>
+<pre class=" prettyprint lang-matlab"><code>function b = rect_le(r1, r2)
+    b = all(<a href="cv.Rect.intersect.html">cv.Rect.intersect</a>(r1,r2) == r1);
+end
+</code></pre>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.RotatedRect.html">cv.RotatedRect</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

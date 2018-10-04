@@ -1,0 +1,369 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.BinaryDescriptor - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.BinaryDescriptor - Class implements both functionalities for detection of lines and computation of their binary descriptor" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.BinaryDescriptor - MATLAB File Help</td>
+            <td class="subheader-left"></td>
+            <td class="subheader-right"><a href="cv.BinaryDescriptor.html">Go to online doc for cv.BinaryDescriptor</a></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.BinaryDescriptor</div>
+      <div class="helpcontent"><p class=" h1line">Class implements both functionalities for detection of lines and computation of their binary descriptor</p>
+<p>Class' interface is mainly based on the ones of classical detectors and
+extractors, such as Feature2d's Feature Detection and Description and
+Descriptor Matchers. Retrieved information about lines is stored in
+<code>KeyLine</code> objects.</p>
+<h2>Introduction</h2>
+<p>One of the most challenging activities in computer vision is the
+extraction of useful information from a given image. Such information,
+usually comes in the form of points that preserve some kind of property
+(for instance, they are scale-invariant) and are actually representative
+of input image.</p>
+<p>The goal of this module is seeking a new kind of representative
+information inside an image and providing the functionalities for its
+extraction and representation. In particular, differently from previous
+methods for detection of relevant elements inside an image, lines are
+extracted in place of points; a new class is defined ad hoc to summarize
+a line's properties, for reuse and plotting purposes.</p>
+<h2>Computation of binary descriptors</h2>
+<p>To obtatin a binary descriptor representing a certain line detected from
+a certain octave of an image, we first compute a non-binary descriptor
+as described in [LBD]. Such algorithm works on lines extracted using
+<code>EDLine</code> detector, as explained in [EDL]. Given a line, we consider a
+rectangular region centered at it and called <em>line support region (LSR)</em>.
+Such region is divided into a set of bands <code>{B_1, B_2, ..., B_m}</code>,
+whose length equals the one of line.</p>
+<p>If we indicate with <code>d_L</code> the direction of line, the orthogonal and
+clockwise direction to line <code>d_perp</code> can be determined; these two
+directions, are used to construct a reference frame centered in the
+middle point of line. The gradients of pixels <code>g'</code> inside LSR can be
+projected to the newly determined frame, obtaining their local equivalent
+<code>g' = (g^T * d_perp, g^T * d_L)^T &lt;=&gt; (g'_{d_perp}, g'_{d_L})^T</code>.</p>
+<p>Later on, a Gaussian function is applied to all LSR's pixels along
+<code>d_perp</code> direction; first, we assign a global weighting coefficient
+<code>f_g(i) = (1/sqrt(2*pi)*sigma_g)*exp(-d_i^2/2*sigma_g^2)</code> to <code>i</code>-th row
+in LSR, where <code>d_i</code> is the distance of <code>i</code>-th row from the center row in
+LSR, <code>sigma_g = 0.5(m * w - 1)</code> and <code>w</code> is the width of bands (the same
+for every band). Secondly, considering a band <code>B_j</code> and its neighbor
+bands <code>B_{j-1}, B_{j+1}</code>, we assign a local weighting
+<code>F_l(k) = (1/sqrt(2*pi)*sigma_l)*exp(-d_k'^2/2*sigma_l^2)</code>, where <code>d_k'</code>
+is the distance of <code>k</code>-th row from the center row in <code>B_j</code> and
+<code>sigma_l = w</code>. Using the global and local weights, we obtain, at the
+same time, the reduction of role played by gradients far from line and
+of boundary effect, respectively.</p>
+<p>Each band <code>B_j</code> in LSR has an associated <em>band descriptor(BD)</em> which is
+computed considering previous and next band (top and bottom bands are
+ignored when computing descriptor for first and last band). Once each
+band has been assignen its BD, the LBD descriptor of line is simply
+given by:</p>
+<pre class=" prettyprint lang-matlab"><code>LBD = (BD_1^T, BD_2^T, ... , BD_m^T)^T
+</code></pre>
+<p>To compute a band descriptor <code>B_j</code>, each <code>k</code>-th row in it is considered
+and the gradients in such row are accumulated:</p>
+<pre class=" prettyprint lang-matlab"><code>V1_j^k = lambda * sum[g'_{d_perp} &gt; 0] (  g'_{d_perp} )
+V2_j^k = lambda * sum[g'_{d_perp} &lt; 0] ( -g'_{d_perp} )
+V3_j^k = lambda * sum[g'_{d_L}    &gt; 0] (  g'_{d_L}    )
+V4_j^k = lambda * sum[g'_{d_L}    &lt; 0] ( -g'_{d_L}    )
+</code></pre>
+<p>with <code>\lambda = f_g(k) * f_l(k)</code></p>
+<p>By stacking previous results, we obtain the
+<em>band description matrix (BDM)</em></p>
+<pre class=" prettyprint lang-matlab"><code>BDM_j = [V1_j^1, V1_j^2, ..., V1_j^n ;
+         V2_j^1, V2_j^2, ..., V2_j^n ;
+         V3_j^1, V3_j^2, ..., V3_j^n ;
+         V4_j^1, V4_j^2, ..., V4_j^n ] in R^(4xn)
+</code></pre>
+<p>with <code>n</code> the number of rows in band <code>B_j</code>:</p>
+<pre class=" prettyprint lang-matlab"><code>n = {2w, j = 1||m;
+    {3w, else.
+</code></pre>
+<p>Each <code>BD_j</code> can be obtained using the standard deviation vector <code>S_j</code>
+and mean vector <code>M_j</code> of <code>BDM_J</code>. Thus, finally:</p>
+<pre class=" prettyprint lang-matlab"><code>LBD = (M_1^T, S_1^T, M_2^T, S_2^T, ..., M_m^T, S_m^T)^T in R^(8m)
+</code></pre>
+<p>Once the LBD has been obtained, it must be converted into a binary form.
+For such purpose, we consider 32 possible pairs of BD inside it; each
+couple of BD is compared bit by bit and comparison generates an 8 bit
+string. Concatenating 32 comparison strings, we get the 256-bit final
+binary representation of a single LBD.</p>
+<h2>References</h2>
+<p>[LBD]:</p>
+<blockquote>
+<p>HK Yuen, John Princen, John Illingworth, and Josef Kittler.
+&quot;Comparative study of hough transform methods for circle finding&quot;.
+Image and Vision Computing, 8(1):71-77, 1990.</p>
+</blockquote>
+<p>[EDL]:</p>
+<blockquote>
+<p>R Grompone Von Gioi, Jeremie Jakubowicz, Jean-Michel Morel, and
+Gregory Randall. &quot;LSD: A fast line segment detector with a false
+detection control&quot;. IEEE Transactions on Pattern Analysis and
+Machine Intelligence, 32(4):722-732, 2010.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.LSDDetector.html">cv.LSDDetector</a>, <a href="cv.BinaryDescriptorMatcher.html">cv.BinaryDescriptorMatcher</a></div>
+      <!--Class-->
+      <div class="sectiontitle">Class Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Superclasses</td>
+            <td><a href="https://www.mathworks.com/help/matlab/ref/handle.html" target="_blank">handle</a></td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Construct on load</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+      <!--Constructors-->
+      <div class="sectiontitle"><a name="constructors"></a>Constructor Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.BinaryDescriptor.BinaryDescriptor.html">BinaryDescriptor</a></td>
+            <td class="m-help">Create a BinaryDescriptor object with default parameters (or with the ones provided)&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Properties-->
+      <div class="sectiontitle"><a name="properties"></a>Property Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="cv.BinaryDescriptor.NumOfOctaves.html">NumOfOctaves</a></td>
+            <td class="m-help">Number of octaves&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.BinaryDescriptor.ReductionRatio.html">ReductionRatio</a></td>
+            <td class="m-help">Reduction ratio (used in Gaussian pyramids)&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.BinaryDescriptor.WidthOfBand.html">WidthOfBand</a></td>
+            <td class="m-help">Width of bands&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="cv.BinaryDescriptor.id.html">id</a></td>
+            <td class="m-help">Object ID&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Methods-->
+      <div class="sectiontitle"><a name="methods"></a>Method Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">addlistener</a></td>
+            <td class="m-help">Add listener for event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BinaryDescriptor.clear.html">clear</a></td>
+            <td class="m-help">Clears the algorithm state&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BinaryDescriptor.compute.html">compute</a></td>
+            <td class="m-help">Requires descriptors computation&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BinaryDescriptor.defaultNorm.html">defaultNorm</a></td>
+            <td class="m-help">Returns the default norm type&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BinaryDescriptor.delete.html">delete</a></td>
+            <td class="m-help">Destructor&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BinaryDescriptor.descriptorSize.html">descriptorSize</a></td>
+            <td class="m-help">Returns the descriptor size&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BinaryDescriptor.descriptorType.html">descriptorType</a></td>
+            <td class="m-help">Returns the descriptor type&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BinaryDescriptor.detect.html">detect</a></td>
+            <td class="m-help">Requires line detection&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BinaryDescriptor.detectAndCompute.html">detectAndCompute</a></td>
+            <td class="m-help">Define operator to perform detection of KeyLines and computation of descriptors in a row&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BinaryDescriptor.empty.html">empty</a></td>
+            <td class="m-help">Checks if detector object is empty&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">eq</a></td>
+            <td class="m-help">== (EQ)   Test handle equality.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findobj</a></td>
+            <td class="m-help">Find objects matching specified conditions.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">findprop</a></td>
+            <td class="m-help">Find property of MATLAB handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ge</a></td>
+            <td class="m-help">&gt;= (GE)   Greater than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BinaryDescriptor.getDefaultName.html">getDefaultName</a></td>
+            <td class="m-help">Returns the algorithm string identifier&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">gt</a></td>
+            <td class="m-help">&gt; (GT)   Greater than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">isvalid</a></td>
+            <td class="m-help">Test handle validity.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">le</a></td>
+            <td class="m-help">&lt;= (LE)   Less than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">listener</a></td>
+            <td class="m-help">Add listener for event without binding the listener to the source object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BinaryDescriptor.load.html">load</a></td>
+            <td class="m-help">Loads algorithm from a file or a string&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">lt</a></td>
+            <td class="m-help">&lt; (LT)   Less than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ne</a></td>
+            <td class="m-help">~= (NE)   Not equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">notify</a></td>
+            <td class="m-help">Notify listeners of event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="cv.BinaryDescriptor.save.html">save</a></td>
+            <td class="m-help">Saves the algorithm parameters to a file&nbsp;</td>
+         </tr>
+      </tbody></table>
+      <!--Events-->
+      <div class="sectiontitle"><a name="events"></a>Event Summary
+      </div>
+      <table class="summary-list">
+         <tbody><tr class="summary-item">
+            <td class="name"><a href="https://www.mathworks.com/help/matlab/ref/handle-class.html" target="_blank">ObjectBeingDestroyed</a></td>
+            <td class="m-help">Notifies listeners that a particular object has been destroyed.&nbsp;</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

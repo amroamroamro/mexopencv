@@ -1,0 +1,81 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.Facemark/Facemark - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Facemark.Facemark - Constructor" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.Facemark/Facemark - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Facemark/Facemark</div>
+      <div class="helpcontent"><p class=" h1line">Constructor</p>
+<pre class=" prettyprint lang-matlab"><code>obj = <a href="cv.Facemark.html">cv.Facemark</a>(ftype)
+obj = <a href="cv.Facemark.html">cv.Facemark</a>(ftype, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>ftype</strong> Facemark algorithm, one of:
+<ul>
+<li><strong>LBF</strong> regressed local binary features (LBF).</li>
+<li><strong>AAM</strong> active appearance model (AAM).</li>
+</ul>
+</li>
+</ul>
+<h2>Options for LBF</h2>
+<ul>
+<li><strong>ShapeOffset</strong> offset for the loaded face landmark points.
+default 0.0</li>
+<li><strong>CascadeFace</strong> filename of the face detector model. default ''</li>
+<li><strong>Verbose</strong> show the training print-out. default true</li>
+<li><strong>NLandmarks</strong> number of landmark points. default 68</li>
+<li><strong>InitShapeN</strong> multiplier for augment the training data.
+default 10</li>
+<li><strong>StagesN</strong> number of refinement stages. default 5</li>
+<li><strong>TreeN</strong> number of tree in the model for each landmark point
+refinement. default 6</li>
+<li><strong>TreeDepth</strong> the depth of decision tree, defines the size of
+feature. default 5</li>
+<li><strong>BaggingOverlap</strong> overlap ratio for training the LBF feature.
+default 0.4</li>
+<li><strong>ModelFilename</strong> filename where the trained model will be
+saved (Base64 encoded). default ''</li>
+<li><strong>SaveModel</strong> flag to save the trained model or not.
+default true</li>
+<li><strong>Seed</strong> seed for shuffling the training data. default 0</li>
+<li><strong>FeatsM</strong> default <code>[500,500,500,300,300,300,200,200,200,100]</code></li>
+<li><strong>RadiusM</strong>
+default <code>[0.3,0.2,0.15,0.12,0.10,0.10,0.08,0.06,0.06,0.05]</code></li>
+<li><strong>Pupils</strong> index of facemark points on pupils of left and
+right eye. default <code>{[36,37,38,39,40,41], [42,43,44,45,46,47]}</code></li>
+<li><strong>DetectROI</strong> default <code>[-1,-1,-1,-1]</code></li>
+</ul>
+<h2>Options for AAM</h2>
+<ul>
+<li><strong>ModelFilename</strong> filename where the trained model will be
+saved (Base64 encoded). default ''</li>
+<li><strong>SaveModel</strong> flag to save the trained model or not.
+default true</li>
+<li><strong>M</strong> default 200</li>
+<li><strong>N</strong> default 10</li>
+<li><strong>NIter</strong> default 50</li>
+<li><strong>Verbose</strong> show the training print-out. default true</li>
+<li><strong>MaxM</strong> default 550</li>
+<li><strong>MaxN</strong> default 136</li>
+<li><strong>TextureMaxM</strong> default 145</li>
+<li><strong>Scales</strong> the scales considered to build the model.
+default <code>[1.0,]</code></li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Facemark.loadModel.html">cv.Facemark/loadModel</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

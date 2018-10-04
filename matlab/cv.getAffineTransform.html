@@ -1,0 +1,46 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.getAffineTransform - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.getAffineTransform - Calculates an affine transform from three pairs of corresponding points" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.getAffineTransform - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.getAffineTransform</div>
+      <div class="helpcontent"><p class=" h1line">Calculates an affine transform from three pairs of corresponding points</p>
+<pre class=" prettyprint lang-matlab"><code>T = <a href="cv.getAffineTransform.html">cv.getAffineTransform</a>(src, dst)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> Coordinates of triangle vertices in the source image. A numeric
+3-by-2 row vectors or a cell-array of 2-element vectors of length 3
+<code>{[x,y], [x,y], [x,y]}</code></li>
+<li><strong>dst</strong> Coordinates of the corresponding triangle vertices in the
+destination image. Same type and size as <code>src</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>T</strong> 2-by-3 affine transformation matrix</li>
+</ul>
+<p>The function calculates the 2x3 matrix of an affine transform so that:</p>
+<pre class=" prettyprint lang-matlab"><code>[X_i; X_i] = T * [x_i; y_i; 1]
+</code></pre>
+<p>where:</p>
+<pre class=" prettyprint lang-matlab"><code>dst(i,:) = [X_i, Y_i], src(i,:) = [x_i, y_i]  for i=1,2,3
+</code></pre>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.warpAffine.html">cv.warpAffine</a>, <a href="cv.transform.html">cv.transform</a>, <a href="https://www.mathworks.com/help/images/ref/cp2tform.html" target="_blank">cp2tform</a>, <a href="https://www.mathworks.com/help/images/ref/fitgeotrans.html" target="_blank">fitgeotrans</a>,
+   <a href="https://www.mathworks.com/help/vision/ref/estimategeometrictransform.html" target="_blank">estimateGeometricTransform</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

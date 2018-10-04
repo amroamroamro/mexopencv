@@ -1,0 +1,48 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.spatialGradient - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.spatialGradient - Calculates the first order image derivative in both x and y using a Sobel operator" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.spatialGradient - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.spatialGradient</div>
+      <div class="helpcontent"><p class=" h1line">Calculates the first order image derivative in both x and y using a Sobel operator</p>
+<pre class=" prettyprint lang-matlab"><code>[dx, dy] = <a href="cv.spatialGradient.html">cv.spatialGradient</a>(src)
+[...] = <a href="cv.spatialGradient.html">cv.spatialGradient</a>(..., 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> input image, 8-bit single-channel.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dx</strong> output <code>int16</code> image with first-order derivative in x.</li>
+<li><strong>dy</strong> output <code>int16</code> image with first-order derivative in y.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>KSize</strong> size of Sobel kernel. It must be 3 in the current implementation.
+default 3</li>
+<li><strong>BorderType</strong> Pixel extrapolation method, see <a href="cv.copyMakeBorder.html">cv.copyMakeBorder</a>. Only
+'Default', 'Reflect101', and 'Replicate' are supported. default 'Default'</li>
+</ul>
+<p>Equivalent to calling:</p>
+<pre class=" prettyprint lang-matlab"><code>dx = <a href="cv.Sobel.html">cv.Sobel</a>(src, 'DDepth','int16', 'XOrder',1, 'YOrder',0, 'KSize',3);
+dy = <a href="cv.Sobel.html">cv.Sobel</a>(src, 'DDepth','int16', 'XOrder',0, 'YOrder',1, 'KSize',3);
+</code></pre>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Sobel.html">cv.Sobel</a>, <a href="https://www.mathworks.com/help/images/ref/imgradientxy.html" target="_blank">imgradientxy</a>, <a href="https://www.mathworks.com/help/images/ref/imgradient.html" target="_blank">imgradient</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

@@ -1,0 +1,77 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>loadDatasetList (cv.Facemark) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Facemark.loadDatasetList - A utility to load list of paths to training images and annotation files" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">loadDatasetList (cv.Facemark) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Facemark.loadDatasetList</div>
+      <div class="helpcontent"><p class=" h1line">A utility to load list of paths to training images and annotation files</p>
+<pre class=" prettyprint lang-matlab"><code>[imagesPaths, annotationsPaths, success] = <a href="cv.Facemark.loadDatasetList.html">cv.Facemark.loadDatasetList</a>(imagesList, annotationsList)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>imagesList</strong> The specified file contains paths to the
+training images.</li>
+<li><strong>annotationsList</strong> The specified file contains paths to the
+training annotations.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>imagesPaths</strong> The loaded paths of training images.</li>
+<li><strong>annotationsPaths</strong> The loaded paths of annotation files.</li>
+<li><strong>success</strong> success flag.</li>
+</ul>
+<p>This format is utilized in most facial point annotation datasets
+(IBUG, HELEN, LPWF, etc.). There are two kinds of files provided
+in the dataset, images and their corresponding facial point data.
+The user provides the list of image files and annotations in two
+separate files. These files can be generated easily using <code>dir</code>
+or <code>ls</code> commands from the terminal.</p>
+<p>The contents of the list files follow a standard format with one
+path per line.</p>
+<p>Example contents of images list file:</p>
+<pre class=" prettyprint lang-matlab"><code>/path/to/image1.jpg
+/path/to/image2.jpg
+...
+</code></pre>
+<p>and contents of corresponding landmarks list file:</p>
+<pre class=" prettyprint lang-matlab"><code>/path/to/image1.pts
+/path/to/image2.pts
+...
+</code></pre>
+<p>where the format of |.pts| files is described in
+<a href="cv.Facemark.loadFacePoints.html">cv.Facemark.loadFacePoints</a> function.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Facemark.loadFacePoints.html">cv.Facemark.loadFacePoints</a>,
+   <a href="cv.Facemark.loadTrainingData1.html">cv.Facemark.loadTrainingData1</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>true</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

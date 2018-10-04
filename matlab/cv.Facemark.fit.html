@@ -1,0 +1,70 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>fit (cv.Facemark) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Facemark.fit - Detect landmarks in faces" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">fit (cv.Facemark) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Facemark/fit</div>
+      <div class="helpcontent"><p class=" h1line">Detect landmarks in faces</p>
+<pre class=" prettyprint lang-matlab"><code>[landmarks, success] = obj.fit(img, faces)
+[...] = obj.fit(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>img</strong> Input image.</li>
+<li><strong>faces</strong> Detected faces <code>{[x,y,w,h], ...}</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>landmarks</strong> The detected landmark points for each face
+<code>{{[x,y], ...}, ...}</code>.</li>
+<li><strong>success</strong> success flag.</li>
+</ul>
+<h2>Options for AAM</h2>
+<ul>
+<li><strong>Configs</strong> Optional runtime parameter for fitting process,
+only supported for AAM algorithm. A struct-array of the same
+length as <code>faces</code> with the following fields:
+<ul>
+<li><strong>R</strong> 2x2 rotation matrix. default <code>eye(2,'single')</code></li>
+<li><strong>t</strong> 2-elements translation vector.
+default <code>[size(img,2) size(img,1)] / 2</code></li>
+<li><strong>scale</strong> scaling factor. default 1.0</li>
+<li><strong>scaleIdx</strong> 0-based model scale index (into <code>Scales</code> vector
+from the constructor options). default 0</li>
+</ul>
+</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Facemark.loadModel.html">cv.Facemark/loadModel</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

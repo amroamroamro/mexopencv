@@ -1,0 +1,70 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>detect (cv.LineSegmentDetector) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.LineSegmentDetector.detect - Finds lines in the input image" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">detect (cv.LineSegmentDetector) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.LineSegmentDetector/detect</div>
+      <div class="helpcontent"><p class=" h1line">Finds lines in the input image</p>
+<pre class=" prettyprint lang-matlab"><code>lines = lsd.detect(img)
+[lines, width, prec, nfa] = lsd.detect(img)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>img</strong> A grayscale (<code>uint8</code>) input image.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>lines</strong> A cell-array of 4-element vectors of the form
+<code>{[x1, y1, x2, y2], ..}</code> specifying the beginning and ending
+point of a line. Where point 1 <code>[x1,y1]</code> is the start, point 2
+`[x2,y2] the end. Returned lines are strictly oriented
+depending on the gradient.</li>
+<li><strong>width</strong> Vector of widths of the regions, where the lines are
+found. E.g. Width of line.</li>
+<li><strong>prec</strong> Vector of precisions with which the lines are found.</li>
+<li><strong>nfa</strong> Vector containing number of false alarms in the line
+region, with precision of 10%. The bigger the value,
+logarithmically better the detection. This vector will be
+calculated only when the object refine type is 'Advanced',
+empty otherwise.
+<ul>
+<li>-1 corresponds to 10 mean false alarms</li>
+<li>0 corresponds to 1 mean false alarm</li>
+<li>1 corresponds to 0.1 mean false alarms</li>
+</ul>
+</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.LineSegmentDetector.drawSegments.html">cv.LineSegmentDetector/drawSegments</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

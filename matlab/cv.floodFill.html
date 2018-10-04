@@ -1,0 +1,131 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.floodFill - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.floodFill - Fills a connected component with the given color" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.floodFill - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.floodFill</div>
+      <div class="helpcontent"><p class=" h1line">Fills a connected component with the given color</p>
+<pre class=" prettyprint lang-matlab"><code>[dst, rect, area] = <a href="cv.floodFill.html">cv.floodFill</a>(src, seed, newVal)
+[dst, rect, area, mask] = <a href="cv.floodFill.html">cv.floodFill</a>(..., 'Mask',mask, 'MaskOnly',true)
+[...] = <a href="cv.floodFill.html">cv.floodFill</a>(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> Input 1- or 3-channel, 8-bit, or floating-point image.</li>
+<li><strong>seed</strong> Starting seed point <code>[x,y]</code>.</li>
+<li><strong>newVal</strong> New value of the repainted domain pixels. It should match the
+range and dimensions of the input image: 1-element vector (brightness)
+for grayscale images, and 3-element vector (color) for RGB images.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> Destination image of the same size and the same type as <code>src</code>.
+Contains the modified input unless the <code>MaskOnly</code> flag is set in the
+second variant of the function, in which case <code>dst</code> is the same as the
+input <code>src</code> unmodified. See the details below.</li>
+<li><strong>rect</strong> Optional output parameter set by the function to the minimum
+bounding rectangle of the repainted domain <code>[x,y,w,h]</code>.</li>
+<li><strong>area</strong> Optional output parameter set by the function to the number of
+filled pixels.</li>
+<li><strong>mask</strong> Optional output containing the updated input <code>Mask</code>. Populated in
+the second variant of the function with the <code>Mask</code> option. On output,
+pixels in the mask corresponding to filled pixels in the image are set
+to 1 or to the value specified in <code>MaskFillValue</code> option as described
+below. Additionally, the function fills the border of the mask with ones
+to simplify internal processing. It is therefore possible to use the same
+mask in multiple calls to the function to make sure the filled areas do
+not overlap.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>LoDiff</strong> Maximal lower brightness/color difference between the currently
+observed pixel and one of its neighbors belonging to the component, or a
+seed pixel being added to the component. default zeros</li>
+<li><strong>UpDiff</strong> Maximal upper brightness/color difference between the currently
+observed pixel and one of its neighbors belonging to the component, or a
+seed pixel being added to the component. default zeros</li>
+<li><strong>Connectivity</strong> Connectivity value, 4 or 8. The default value of 4 means
+that only the four nearest neighbor pixels (those that share an edge are
+considered. A connectivity value of 8 means that the eight nearest
+neighbor pixels (those that share a corner) will be considered. default 4</li>
+<li><strong>FixedRange</strong> If set, the difference between the current pixel and seed
+pixel is considered. Otherwise, the difference between neighbor pixels is
+considered (that is, the range is floating). This determines whether to
+fill relative to the seed point pixel, or to fill relative the neighbor's
+value). default false</li>
+<li><strong>Mask</strong> Operation mask that should be a single-channel 8-bit image, 2
+pixels wider and 2 pixels taller than image. Flood-filling cannot go
+across non-zero pixels in the input mask. For example, an edge detector
+output can be used as a mask to stop filling at edges. Not set by default.</li>
+<li><strong>MaskOnly</strong> If set, the function does not change the image in the output
+(<code>newVal</code> is ignored), and only fills the output <code>mask</code> with the value
+specified in <code>MaskFillValue</code> as described. This option only make sense in
+function variants that have the mask parameter. default false</li>
+<li><strong>MaskFillValue</strong> Value between 1 and 255 with which to fill the output
+<code>Mask</code>. This option only make sense in function variants that have the
+mask parameter. default 0 (which effectively flood-fills the mask by the
+default filling value of 1)</li>
+</ul>
+<p>The function <a href="cv.floodFill.html">cv.floodFill</a> fills a connected component starting from the seed
+point with the specified color. The connectivity is determined by the
+color/brightness closeness of the neighbor pixels.</p>
+<p>The pixel at <code>(x,y)</code> is considered to belong to the repainted domain if:</p>
+<ul>
+<li>
+<p>in case of a grayscale image and floating range:</p>
+<pre class=" prettyprint lang-matlab"><code>src(x',y') - LoDiff &lt;= src(x,y) &lt;= src(x',y') + UpDiff
+</code></pre>
+</li>
+<li>
+<p>in case of a grayscale image and fixed range:</p>
+<pre class=" prettyprint lang-matlab"><code>src(seed.x,seed.y) - LoDiff &lt;= src(x,y) &lt;= src(seed.x,seed.y) + UpDiff
+</code></pre>
+</li>
+<li>
+<p>in case of a color image and floating range:
+(a conjuction over all channels of the same condition as before)</p>
+<pre class=" prettyprint lang-matlab"><code>src(x',y',1) - LoDiff(1) &lt;= src(x,y,1) &lt;= src(x',y',1) + UpDiff(1), and
+src(x',y',2) - LoDiff(2) &lt;= src(x,y,2) &lt;= src(x',y',2) + UpDiff(2), and
+src(x',y',3) - LoDiff(3) &lt;= src(x,y,3) &lt;= src(x',y',3) + UpDiff(3)
+</code></pre>
+</li>
+<li>
+<p>in case of a color image and fixed range:
+(a conjuction over all channels of the same condition as before)</p>
+<pre class=" prettyprint lang-matlab"><code>src(seed.x,seed.y,1) - LoDiff(1) &lt;= src(x,y,1) &lt;= src(seed.x,seed.y,1) + UpDiff(1),
+src(seed.x,seed.y,2) - LoDiff(2) &lt;= src(x,y,2) &lt;= src(seed.x,seed.y,2) + UpDiff(2),
+src(seed.x,seed.y,3) - LoDiff(3) &lt;= src(x,y,3) &lt;= src(seed.x,seed.y,3) + UpDiff(3)
+</code></pre>
+</li>
+</ul>
+<p>where <code>src(x',y')</code> is the value of one of pixel neighbors that is already
+known to belong to the component. That is, to be added to the connected
+component, a color/brightness of the pixel should be close enough to:</p>
+<ul>
+<li>Color/brightness of one of its neighbors that already belong to the
+connected component in case of a floating range.</li>
+<li>Color/brightness of the seed point in case of a fixed range.</li>
+</ul>
+<p>Use this function to either mark a connected component with the specified
+color, or build a mask and then extract the contour, or copy the region to
+another image, and so on.</p>
+<p><strong>Note:</strong> Since the mask is larger than the filled image, a pixel <code>(x,y)</code> in
+image corresponds to the pixel <code>(x+1,y+1)</code> in the mask.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.findContours.html">cv.findContours</a>, <a href="https://www.mathworks.com/help/images/ref/imfill.html" target="_blank">imfill</a>, <a href="https://www.mathworks.com/help/images/ref/grayconnected.html" target="_blank">grayconnected</a>, <a href="https://www.mathworks.com/help/images/ref/bwselect.html" target="_blank">bwselect</a>, <a href="https://www.mathworks.com/help/images/ref/roicolor.html" target="_blank">roicolor</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

@@ -1,0 +1,63 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.detectCharucoDiamond - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.detectCharucoDiamond - Detect ChArUco Diamond markers" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.detectCharucoDiamond - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.detectCharucoDiamond</div>
+      <div class="helpcontent"><p class=" h1line">Detect ChArUco Diamond markers</p>
+<pre class=" prettyprint lang-matlab"><code>[diamondCorners, diamondIds] = <a href="cv.detectCharucoDiamond.html">cv.detectCharucoDiamond</a>(img, markerCorners, markerIds, squareMarkerLengthRate)
+[...] = <a href="cv.detectCharucoDiamond.html">cv.detectCharucoDiamond</a>(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>img</strong> input image necessary for corner subpixel (8-bit grayscale or
+color).</li>
+<li><strong>markerCorners</strong> cell array of detected marker corners from
+<a href="cv.detectMarkers.html">cv.detectMarkers</a> function <code>{{[x,y],..}, ..}</code>.</li>
+<li><strong>markerIds</strong> vector of marker ids in <code>markerCorners</code> (0-based).</li>
+<li><strong>squareMarkerLengthRate</strong> rate between square and marker length:
+<code>squareMarkerLengthRate = squareLength/markerLength</code>. The real units are
+not necessary.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>diamondCorners</strong> output list of detected diamond corners (4 corners per
+diamond). The order is the same than in marker corners: top left, top
+right, bottom right and bottom left. Similar format than the corners
+returned by <a href="cv.detectMarkers.html">cv.detectMarkers</a> (e.g <code>{{[x y],..}, ..}</code>).</li>
+<li><strong>diamondIds</strong> ids of the diamonds in <code>diamondCorners</code> (0-based). The id
+of each diamond is in fact a vector of four integers, so each diamond has
+4 ids, which are the ids of the aruco markers composing the diamond.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>CameraMatrix</strong> Optional 3x3 camera calibration matrix
+<code>A = [fx 0 cx; 0 fy cy; 0 0 1]</code>.</li>
+<li><strong>DistCoeffs</strong> Optional vector of camera distortion coefficients
+<code>[k1,k2,p1,p2,k3,k4,k5,k6,s1,s2,s3,s4]</code> of 4, 5, 8 or 12 elements.</li>
+</ul>
+<p>This function detects Diamond markers from the previous detected ArUco
+markers. The diamonds are returned in the <code>diamondCorners</code> and <code>diamondIds</code>
+parameters. If camera calibration parameters are provided, the diamond
+search is based on reprojection. If not, diamond search is based on
+homography. Homography is faster than reprojection but can slightly reduce
+the detection rate.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.detectMarkers.html">cv.detectMarkers</a>, <a href="cv.interpolateCornersCharuco.html">cv.interpolateCornersCharuco</a>,
+   <a href="cv.drawDetectedDiamonds.html">cv.drawDetectedDiamonds</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

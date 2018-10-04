@@ -1,0 +1,66 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>setWobbleSuppressor (cv.TwoPassStabilizer) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.TwoPassStabilizer.setWobbleSuppressor - Set the wobble suppressing algorithm for the video stabilizer" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">setWobbleSuppressor (cv.TwoPassStabilizer) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.TwoPassStabilizer/setWobbleSuppressor</div>
+      <div class="helpcontent"><p class=" h1line">Set the wobble suppressing algorithm for the video stabilizer</p>
+<pre class=" prettyprint lang-matlab"><code>stab.setWobbleSuppressor(wobbleSuppressType, ...)
+
+stab.setWobbleSuppressor('NullWobbleSuppressor')
+stab.setWobbleSuppressor('MoreAccurateMotionWobbleSuppressor', 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>wobbleSuppressType</strong> wobble suppressing method. One of:
+<ul>
+<li><strong>NullWobbleSuppressor</strong></li>
+<li><strong>MoreAccurateMotionWobbleSuppressor</strong></li>
+</ul>
+</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>MotionEstimator</strong> Global 2D motion estimation method which
+take frames as input, specified as:
+<code>{motionEstType, {estType, 'key',val, ...}, 'OptionName',optionVal, ...}</code>.
+See <a href="cv.TwoPassStabilizer.setMotionEstimator.html">cv.TwoPassStabilizer.setMotionEstimator</a> for details.
+Default is
+<code>{'KeypointBasedMotionEstimator', {'MotionEstimatorRansacL2', 'MotionModel','Homography'}}</code></li>
+<li><strong>Period</strong> default 30</li>
+</ul>
+<p>The class uses <code>NullWobbleSuppressor</code> by default.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.TwoPassStabilizer.getWobbleSuppressor.html">cv.TwoPassStabilizer/getWobbleSuppressor</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

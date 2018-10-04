@@ -1,0 +1,49 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.triangulatePoints - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.triangulatePoints - Reconstructs points by triangulation" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.triangulatePoints - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.triangulatePoints</div>
+      <div class="helpcontent"><p class=" h1line">Reconstructs points by triangulation</p>
+<pre class=" prettyprint lang-matlab"><code>points4D = <a href="cv.triangulatePoints.html">cv.triangulatePoints</a>(projMatr1, projMatr2, projPoints1, projPoints2)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>projMatr1</strong> 3x4 projection matrix of the first camera.</li>
+<li><strong>projMatr2</strong> 3x4 projection matrix of the second camera.</li>
+<li><strong>projPoints1</strong> 2xN array of feature points in the first image. It can be
+also a cell array of feature points <code>{[x,y], ...}</code> or two-channel array of
+size 1xNx2 or Nx1x2.</li>
+<li><strong>projPoints2</strong> 2xN array of corresponding points in the second image. It
+can be also a cell array of feature points <code>{[x,y], ...}</code> or two-channel
+array of size 1xNx2 or Nx1x2.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>points4D</strong> 4xN array of reconstructed points in homogeneous coordinates
+<code>[[x;y;z;w], ...]</code></li>
+</ul>
+<p>The function reconstructs 3-dimensional points (in homogeneous coordinates)
+by using their observations with a stereo camera. Projections matrices can
+be obtained from <a href="cv.stereoRectify.html">cv.stereoRectify</a>.</p>
+<h3>Note</h3>
+<p>Keep in mind that all input data should be of float type in order for
+this function to work (<code>single</code> or <code>double</code>).</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.reprojectImageTo3D.html">cv.reprojectImageTo3D</a>, <a href="https://www.mathworks.com/help/vision/ref/triangulate.html" target="_blank">triangulate</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

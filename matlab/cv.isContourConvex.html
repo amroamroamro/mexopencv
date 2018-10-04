@@ -1,0 +1,39 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.isContourConvex - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.isContourConvex - Tests a contour convexity" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.isContourConvex - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.isContourConvex</div>
+      <div class="helpcontent"><p class=" h1line">Tests a contour convexity</p>
+<pre class=" prettyprint lang-matlab"><code>status = <a href="cv.isContourConvex.html">cv.isContourConvex</a>(contour)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>contour</strong> Input vector of 2D points, stored in numeric array
+(Nx2/Nx1x2/1xNx2) or cell array of 2-element vectors (<code>{[x,y], ...}</code>).</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>status</strong> Output logical value.</li>
+</ul>
+<p>The function tests whether the input contour is convex or not. The contour
+must be simple, that is, without self-intersections. Otherwise, the function
+output is undefined.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.convexityDefects.html">cv.convexityDefects</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

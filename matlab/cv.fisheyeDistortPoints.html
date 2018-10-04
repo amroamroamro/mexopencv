@@ -1,0 +1,46 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.fisheyeDistortPoints - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.fisheyeDistortPoints - Distorts 2D points using fisheye model" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.fisheyeDistortPoints - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.fisheyeDistortPoints</div>
+      <div class="helpcontent"><p class=" h1line">Distorts 2D points using fisheye model</p>
+<pre class=" prettyprint lang-matlab"><code>distorted = <a href="cv.fisheyeDistortPoints.html">cv.fisheyeDistortPoints</a>(undistorted, K, D);
+[...] = <a href="cv.fisheyeDistortPoints.html">cv.fisheyeDistortPoints</a>(..., 'OptionName',optionValue, ...);
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>undistorted</strong> Object points. A Nx2, 1xNx2, or Nx1x2 array, where N is
+the number of points in the view.</li>
+<li><strong>K</strong> Camera matrix 3x3, <code>K = [fx 0 cx; 0 fy cy; 0 0 1]</code>.</li>
+<li><strong>D</strong> Input vector of distortion coefficients <code>[k1,k2,k3,k4]</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>distorted</strong> Output array of image points.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Alpha</strong> The skew coefficient. default 0</li>
+</ul>
+<p>Note that the function assumes the camera matrix of the undistorted points
+to be identity. This means if you want to transform back points undistorted
+with <a href="cv.fisheyeUndistortPoints.html">cv.fisheyeUndistortPoints</a> you have to multiply them with <code>inv(P)</code>.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.fisheyeUndistortPoints.html">cv.fisheyeUndistortPoints</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

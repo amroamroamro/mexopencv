@@ -1,0 +1,72 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>setCostExtractor (cv.ShapeContextDistanceExtractor) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.ShapeContextDistanceExtractor.setCostExtractor - Set the algorithm used for building the shape context descriptor cost matrix" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">setCostExtractor (cv.ShapeContextDistanceExtractor) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.ShapeContextDistanceExtractor/setCostExtractor</div>
+      <div class="helpcontent"><p class=" h1line">Set the algorithm used for building the shape context descriptor cost matrix</p>
+<pre class=" prettyprint lang-matlab"><code>obj.setCostExtractor(comparerType)
+obj.setCostExtractor(comparerType, 'OptionName',optionValue,...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>comparerType</strong> an algorithm that defines the cost matrix
+between descriptors. One of:
+<ul>
+<li><strong>NormHistogramCostExtractor</strong> A norm based cost extraction.
+See <a href="cv.norm.html">cv.norm</a></li>
+<li><strong>EMDHistogramCostExtractor</strong> An EMD based cost extraction.
+See <a href="cv.EMD.html">cv.EMD</a></li>
+<li><strong>ChiHistogramCostExtractor</strong> An Chi based cost extraction.</li>
+<li><strong>EMDL1HistogramCostExtractor</strong> An EMD-L1 based cost
+extraction. See <a href="cv.EMDL1.html">cv.EMDL1</a></li>
+</ul>
+</li>
+</ul>
+<h2>Options</h2>
+<p>The following are options accepted by all algorithms:</p>
+<ul>
+<li><strong>NDummies</strong> default 25</li>
+<li><strong>DefaultCost</strong> default 0.2</li>
+</ul>
+<p>The following are options for the various algorithms:</p>
+<h3><code>NormHistogramCostExtractor</code>, <code>EMDHistogramCostExtractor</code></h3>
+<ul>
+<li><strong>NormFlag</strong> default 'L2'. This parameter matches the
+<code>NormType</code> and <code>DistType</code> flags of <a href="cv.norm.html">cv.norm</a> and <a href="cv.EMD.html">cv.EMD</a>
+respectively.</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.ShapeContextDistanceExtractor.getCostExtractor.html">cv.ShapeContextDistanceExtractor/getCostExtractor</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

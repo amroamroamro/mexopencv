@@ -1,0 +1,59 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.watershed - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.watershed - Performs a marker-based image segmentation using the watershed algorithm" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.watershed - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.watershed</div>
+      <div class="helpcontent"><p class=" h1line">Performs a marker-based image segmentation using the watershed algorithm</p>
+<pre class=" prettyprint lang-matlab"><code>marker = <a href="cv.watershed.html">cv.watershed</a>(image, marker)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>image</strong> Input 8-bit 3-channel image.</li>
+<li><strong>marker</strong> Input 32-bit single-channel image (map) of markers. It should
+have the same size as <code>image</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>marker</strong> Output 32-bit single-channel image (map) of markers. It has the
+same size as <code>image</code>.</li>
+</ul>
+<p>The function implements one of the variants of watershed, non-parametric
+marker-based segmentation algorithm, described in [Meyer92].</p>
+<p>Before passing the image to the function, you have to roughly outline the
+desired regions in the image markers with positive (&gt;0) indices. So, every
+region is represented as one or more connected components with the pixel
+values 1, 2, 3, and so on. Such markers can be retrieved from a binary mask
+using <a href="cv.findContours.html">cv.findContours</a> and <a href="cv.drawContours.html">cv.drawContours</a>. The markers are &quot;seeds&quot; of the
+future image regions. All the other pixels in markers, whose relation to the
+outlined regions is not known and should be defined by the algorithm, should
+be set to 0's. In the function output, each pixel in markers is set to a
+value of the &quot;seed&quot; components or to -1 at boundaries between the regions.</p>
+<h3>Note</h3>
+<p>Any two neighbor connected components are not necessarily separated by
+a watershed boundary (-1 pixels); for example, they can touch each other in
+the initial marker image passed to the function.</p>
+<h2>References</h2>
+<p>[Meyer92]:</p>
+<blockquote>
+<p>Fernand Meyer. &quot;Color image segmentation&quot;. In Image Processing and its
+Applications, 1992, International Conference on, pages 303-306. IET, 1992.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.grabCut.html">cv.grabCut</a>, <a href="cv.findContours.html">cv.findContours</a>, <a href="https://www.mathworks.com/help/images/ref/watershed.html" target="_blank">watershed</a>, <a href="https://www.mathworks.com/help/images/ref/boundarymask.html" target="_blank">boundarymask</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

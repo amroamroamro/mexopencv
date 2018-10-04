@@ -1,0 +1,45 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.find4QuadCornerSubpix - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.find4QuadCornerSubpix - Finds subpixel-accurate positions of the chessboard corners" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.find4QuadCornerSubpix - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.find4QuadCornerSubpix</div>
+      <div class="helpcontent"><p class=" h1line">Finds subpixel-accurate positions of the chessboard corners</p>
+<pre class=" prettyprint lang-matlab"><code>[corners,success] = <a href="cv.find4QuadCornerSubpix.html">cv.find4QuadCornerSubpix</a>(img, corners)
+[...] = <a href="cv.find4QuadCornerSubpix.html">cv.find4QuadCornerSubpix</a>(img, corners, 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>img</strong> Input single-channel 8-bit image.</li>
+<li><strong>corners</strong> Initial coordinates of the input corners, stored in numeric
+array (Nx2/Nx1x2/1xNx2) or cell array of 2-element vectors <code>{[x,y], ...}</code>.
+Supports single floating-point class.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>corners</strong> Output refined coordinates, of the same size and type as the
+input <code>corners</code> (numeric or cell matching the input format).</li>
+<li><strong>success</strong> boolean success value.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>RegionSize</strong> region size <code>[w,h]</code>. default [3,3]</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.cornerSubPix.html">cv.cornerSubPix</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

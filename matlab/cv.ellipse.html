@@ -1,0 +1,82 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.ellipse - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.ellipse - Draws a simple or thick elliptic arc or fills an ellipse sector" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.ellipse - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.ellipse</div>
+      <div class="helpcontent"><p class=" h1line">Draws a simple or thick elliptic arc or fills an ellipse sector</p>
+<pre class=" prettyprint lang-matlab"><code>img = <a href="cv.ellipse.html">cv.ellipse</a>(img, center, axes)
+img = <a href="cv.ellipse.html">cv.ellipse</a>(img, box)
+[...] = <a href="cv.ellipse.html">cv.ellipse</a>(..., 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>img</strong> Image where the ellipse is drawn.</li>
+<li><strong>center</strong> Center of the ellipse <code>[x,y]</code>.</li>
+<li><strong>axes</strong> Half of the size of the ellipse main axes <code>[a,b]</code>.</li>
+<li><strong>box</strong> Alternative ellipse representation via a rotated rectangle box.
+This means that the function draws an ellipse inscribed in the rotated
+rectangle. A scalar structure with the following fields:
+<ul>
+<li><strong>center</strong> The rectangle mass center <code>[x,y]</code>.</li>
+<li><strong>size</strong> Width and height of the rectangle <code>[w,h]</code>.</li>
+<li><strong>angle</strong> The rotation angle in a clockwise direction. When the angle is
+0, 90, 180, 270 etc., the rectangle becomes an up-right rectangle.</li>
+</ul>
+</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>img</strong> Output image, same size and type as input <code>img</code>.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Angle</strong> Ellipse rotation angle in degrees. default 0.</li>
+<li><strong>StartAngle</strong> Starting angle of the elliptic arc in degrees. default 0</li>
+<li><strong>EndAngle</strong> Ending angle of the elliptic arc in degrees. default 360</li>
+<li><strong>Color</strong> 3-element floating-point vector specifying ellipse color.</li>
+<li><strong>Thickness</strong> Thickness of the ellipse arc outline, if positive.
+Otherwise, this indicates that a filled ellipse sector is to be drawn
+(-1 or the string 'Filled'). default 1.</li>
+<li><strong>LineType</strong> Type of the ellipse boundary. One of:
+<ul>
+<li><strong>4</strong> 4-connected line</li>
+<li><strong>8</strong> 8-connected line (default)</li>
+<li><strong>AA</strong> anti-aliased line</li>
+</ul>
+</li>
+<li><strong>Shift</strong> Number of fractional bits in the coordinates of the center and
+values of axes. default 0.</li>
+</ul>
+<p>The first variant of the <a href="cv.ellipse.html">cv.ellipse</a> function draws an ellipse outline, a
+filled ellipse, an elliptic arc, or a filled ellipse sector. The drawing
+code uses general parametric form. A piecewise-linear curve is used to
+approximate the elliptic arc boundary. If you need more control of the
+ellipse rendering, you can retrieve the curve using <a href="cv.ellipse2Poly.html">cv.ellipse2Poly</a> and then
+render it with <a href="cv.polylines.html">cv.polylines</a> or fill it with <a href="cv.fillPoly.html">cv.fillPoly</a>. If you use the
+first variant of the function and want to draw the whole ellipse, not an
+arc, pass <code>StartAngle=0</code> and <code>EndAngle=360</code>. If <code>StartAngle</code> is greater than
+<code>EndAngle</code>, they are swapped. The figure below explains the meaning of the
+parameters to draw the blue arc.</p>
+<p><img src="https://docs.opencv.org/3.3.1/ellipse.svg" alt="Parameters of Elliptic Arc" /></p>
+<p>The second variant of the function (with rotated rectange as input) does not
+support the <code>Angle</code>, <code>StartAngle</code>, <code>EndAngle</code>, and <code>Shift</code> parameters
+(always draw a whole ellipse, not an arc).</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.line.html">cv.line</a>, <a href="cv.circle.html">cv.circle</a>, <a href="cv.rectangle.html">cv.rectangle</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

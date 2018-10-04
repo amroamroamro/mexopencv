@@ -1,0 +1,61 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>load (cv.GrayworldWB) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.GrayworldWB.load - Loads algorithm from a file or a string" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">load (cv.GrayworldWB) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.GrayworldWB/load</div>
+      <div class="helpcontent"><p class=" h1line">Loads algorithm from a file or a string</p>
+<pre class=" prettyprint lang-matlab"><code>obj.load(fname)
+obj.load(str, 'FromString',true)
+obj.load(..., 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>fname</strong> Name of the file to read.</li>
+<li><strong>str</strong> String containing the serialized model you want to
+load.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>ObjName</strong> The optional name of the node to read (if empty,
+the first top-level node will be used). default empty</li>
+<li><strong>FromString</strong> Logical flag to indicate whether the input is a
+filename or a string containing the serialized model.
+default false</li>
+</ul>
+<p>This method reads algorithm parameters from a file storage.
+The previous model state is discarded.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.GrayworldWB.save.html">cv.GrayworldWB/save</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

@@ -1,0 +1,69 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>backSubst (cv.SVD) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.SVD.backSubst - Performs a singular value back substitution" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">backSubst (cv.SVD) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.SVD/backSubst</div>
+      <div class="helpcontent"><p class=" h1line">Performs a singular value back substitution</p>
+<pre class=" prettyprint lang-matlab"><code>dst = svd.backSubst(src)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> right-hand side of a linear system <code>(u*w*v')*dst = src</code>
+to be solved, where <code>A</code> has been previously decomposed into
+<code>u</code>, <code>w</code>, and <code>vt</code> (stored in class).</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> found solution of the system.</li>
+</ul>
+<p>The method calculates a back substitution for the specified
+right-hand side.</p>
+<pre class=" prettyprint lang-matlab"><code>x = vt^T * diag(w)^-1 * u^T * src
+  ~ A^-1* src
+</code></pre>
+<p>Using this technique you can either get a very accurate
+solution of the convenient linear system, or the best (in the
+least-squares terms) pseudo-solution of an overdetermined
+linear system.</p>
+<h3>Note</h3>
+<p>Explicit SVD with the further back substitution only
+makes sense if you need to solve many linear systems with the
+same left-hand side (for example, <code>src</code>). If all you need is to
+solve a single system (possibly with multiple <code>rhs</code> immediately
+available), simply call <code>solve</code> add pass 'SVD' there. It does
+absolutely the same thing.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.SVD.compute.html">cv.SVD/compute</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

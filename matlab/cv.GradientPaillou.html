@@ -1,0 +1,56 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.GradientPaillou - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.GradientPaillou - Applies Paillou filter to an image" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.GradientPaillou - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.GradientPaillou</div>
+      <div class="helpcontent"><p class=" h1line">Applies Paillou filter to an image</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.GradientPaillou.html">cv.GradientPaillou</a>(op, dir)
+dst = <a href="cv.GradientPaillou.html">cv.GradientPaillou</a>(op, dir, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>op</strong> Source 8-bit or 16-bit image, 1-channel or 3-channel image.</li>
+<li><strong>dir</strong> Gradient direction. One of:
+<ul>
+<li><strong>X</strong></li>
+<li><strong>Y</strong></li>
+</ul>
+</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> result <code>single</code> image with same number of channel than <code>op</code>.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Alpha</strong> double see paper. default 1.0</li>
+<li><strong>Omega</strong> double see paper. default 0.1</li>
+</ul>
+<p>For more details about this implementation, please see
+[paillou1997detecting].</p>
+<h2>References</h2>
+<p>[paillou1997detecting]:</p>
+<blockquote>
+<p>Philippe Paillou. &quot;Detecting step edges in noisy SAR images: a new linear
+operator&quot;. IEEE transactions on geoscience and remote sensing,
+35(1):191-196, 1997.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="https://www.mathworks.com/help/images/ref/imgradientxy.html" target="_blank">imgradientxy</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

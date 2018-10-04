@@ -1,0 +1,90 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.Sobel - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Sobel - Calculates the first, second, third, or mixed image derivatives using an extended Sobel operator" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.Sobel - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Sobel</div>
+      <div class="helpcontent"><p class=" h1line">Calculates the first, second, third, or mixed image derivatives using an extended Sobel operator</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.Sobel.html">cv.Sobel</a>(src)
+dst = <a href="cv.Sobel.html">cv.Sobel</a>(..., 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> input image.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> output image of the same size and the same number of channels as
+<code>src</code>.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>KSize</strong> size of the extended Sobel kernel. Aperture size used to compute
+the second-derivative filters. The size must be positive and odd; it must
+be 1, 3, 5, or 7. default 3</li>
+<li><strong>XOrder</strong> Order of the derivative x. default 1</li>
+<li><strong>YOrder</strong> Order of the derivative y. default 1</li>
+<li><strong>Scale</strong> Optional scale factor for the computed derivative values. By
+default, no scaling is applied (see <a href="cv.getDerivKernels.html">cv.getDerivKernels</a> for details).
+default 1</li>
+<li><strong>Delta</strong> Optional delta value that is added to the results prior to
+storing them in <code>dst</code>. default 0</li>
+<li><strong>BorderType</strong> Pixel extrapolation method. See <a href="cv.copyMakeBorder.html">cv.copyMakeBorder</a>.
+default 'Default'</li>
+<li><strong>DDepth</strong> output image depth, see combinations below; in the case of
+8-bit input images it will result in truncated derivatives. When
+<code>DDepth=-1</code> (default), the output image will have the same depth as the
+source.
+<ul>
+<li><code>SDepth = uint8 --&gt; DDepth = -1, int16, single, double</code></li>
+<li><code>SDepth = uint16, int16 --&gt; DDepth = -1, single, double</code></li>
+<li><code>SDepth = single --&gt; DDepth = -1, single, double</code></li>
+<li><code>SDepth = double --&gt; DDepth = -1, double</code></li>
+</ul>
+</li>
+</ul>
+<p>In all cases except one, the <code>KSize x KSize</code> separable kernel is used to
+calculate the derivative. When <code>KSize=1</code>, the <code>3x1</code> or <code>1x3</code> kernel is used
+(that is, no Gaussian smoothing is done). <code>KSize=1</code> can only be used for the
+first or the second x- or y- derivatives.</p>
+<p>There is also the special value <code>KSize=-1</code> or <code>KSize='Scharr'</code> that
+corresponds to the <code>3x3</code> Scharr filter that may give more accurate results
+than the <code>3x3</code> Sobel. The Scharr aperture is:</p>
+<pre class=" prettyprint lang-matlab"><code>[-3 0 3; -10 0 10; -3 0 3]
+</code></pre>
+<p>for the x-derivative, or transposed for the y-derivative.</p>
+<p>The function calculates an image derivative by convolving the image with the
+appropriate kernel:</p>
+<pre class=" prettyprint lang-matlab"><code>            partial^(XOrder+YOrder) src
+dst = ---------------------------------------
+       partial x^(XOrder) partial y^(YOrder)
+</code></pre>
+<p>The Sobel operators combine Gaussian smoothing and differentiation, so the
+result is more or less resistant to the noise. Most often, the function is
+called with (<code>XOrder = 1</code>, <code>YOrder = 0</code>, <code>KSize = 3</code>) or (<code>XOrder = 0</code>,
+<code>YOrder = 1</code>, <code>KSize = 3</code>) to calculate the first x- or y- image derivative.
+The first case corresponds to a kernel of:</p>
+<pre class=" prettyprint lang-matlab"><code>[-1 0 1; -2 0 2; -1 0 1]
+</code></pre>
+<p>The second case corresponds to a kernel of:</p>
+<pre class=" prettyprint lang-matlab"><code>[-1 -2 -1; 0 0 0; 1 2 1]
+</code></pre>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Scharr.html">cv.Scharr</a>, <a href="cv.Laplacian.html">cv.Laplacian</a>, <a href="cv.sepFilter2D.html">cv.sepFilter2D</a>, <a href="cv.filter2D.html">cv.filter2D</a>,
+   <a href="cv.GaussianBlur.html">cv.GaussianBlur</a>, <a href="cv.cartToPolar.html">cv.cartToPolar</a>, <a href="https://www.mathworks.com/help/images/ref/edge.html" target="_blank">edge</a>, <a href="https://www.mathworks.com/help/images/ref/imfilter.html" target="_blank">imfilter</a>, <a href="https://www.mathworks.com/help/images/ref/fspecial.html" target="_blank">fspecial</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

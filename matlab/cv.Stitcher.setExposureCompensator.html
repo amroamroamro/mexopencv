@@ -1,0 +1,90 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>setExposureCompensator (cv.Stitcher) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.Stitcher.setExposureCompensator - Set the exposure compensator" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">setExposureCompensator (cv.Stitcher) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.Stitcher/setExposureCompensator</div>
+      <div class="helpcontent"><p class=" h1line">Set the exposure compensator</p>
+<pre class=" prettyprint lang-matlab"><code>obj.setExposureCompensator(compensatorType)
+obj.setExposureCompensator(compensatorType, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>compensatorType</strong> exposure compensator type. One of:
+<ul>
+<li><strong>NoExposureCompensator</strong> Stub exposure compensator which
+does nothing.</li>
+<li><strong>GainCompensator</strong> Exposure compensator which tries to
+remove exposure related artifacts by adjusting image
+intensities, see [BL07] and [WJ10] for details.</li>
+<li><strong>BlocksGainCompensator</strong> Exposure compensator which tries
+to remove exposure related artifacts by adjusting image
+block intensities, see [UES01] for details.</li>
+</ul>
+</li>
+</ul>
+<h2>Options</h2>
+<p>The following are options for the various compensators:</p>
+<h3><code>BlocksGainCompensator</code></h3>
+<ul>
+<li><strong>Width</strong> Block width. default 32</li>
+<li><strong>Heigth</strong> Block height. default 32</li>
+</ul>
+<p>The class uses <code>BlocksGainCompensator</code> by default.</p>
+<h2>References</h2>
+<p>[BL07]:</p>
+<blockquote>
+<p>Matthew Brown and David G Lowe.
+&quot;Automatic panoramic image stitching using invariant features&quot;.
+International journal of computer vision, 74(1):59-73, 2007.</p>
+</blockquote>
+<p>[WJ10]:</p>
+<blockquote>
+<p>Wei Xu and Jane Mulligan. &quot;Performance evaluation of color
+correction approaches for automatic multi-view image and video
+stitching&quot;. In Computer Vision and Pattern Recognition (CVPR),
+2010 IEEE Conference on, pages 263-270. IEEE, 2010.</p>
+</blockquote>
+<p>[UES01]:</p>
+<blockquote>
+<p>Matthew Uyttendaele, Ashley Eden, and R Skeliski.
+&quot;Eliminating ghosting and exposure artifacts in image mosaics&quot;.
+In Computer Vision and Pattern Recognition, 2001. CVPR 2001.
+Proceedings of the 2001 IEEE Computer Society Conference on,
+volume 2, pages II-509. IEEE, 2001.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.Stitcher.getExposureCompensator.html">cv.Stitcher/getExposureCompensator</a>,
+   <a href="cv.ExposureCompensator.html">cv.ExposureCompensator</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

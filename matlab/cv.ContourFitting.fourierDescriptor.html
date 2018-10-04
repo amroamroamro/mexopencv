@@ -1,0 +1,64 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>fourierDescriptor (cv.ContourFitting) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.ContourFitting.fourierDescriptor - Fourier descriptors for planed closed curves" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">fourierDescriptor (cv.ContourFitting) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.ContourFitting.fourierDescriptor</div>
+      <div class="helpcontent"><p class=" h1line">Fourier descriptors for planed closed curves</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.ContourFitting.fourierDescriptor.html">cv.ContourFitting.fourierDescriptor</a>(src)
+dst = <a href="cv.ContourFitting.fourierDescriptor.html">cv.ContourFitting.fourierDescriptor</a>(src, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> input contour, vector of 2D points stored in numeric
+array Nx2/Nx1x2/1xNx2 or cell array of 2-element vectors
+<code>{[x,y], ...}</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> 2-channel array of type <code>single</code> and length <code>NumElt</code>.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>NumElt</strong> number of rows in <code>dst</code> or <a href="cv.getOptimalDFTSize.html">cv.getOptimalDFTSize</a>
+rows if <code>NumElt=-1</code>. default -1</li>
+<li><strong>NumFD</strong> number of FD to return in <code>dst</code>,
+<code>dst = [FD(1...NumFD/2) FD(NumFD/2-NumElt+1...:NumElt)]</code>.
+default -1 (return all of FD as is).</li>
+</ul>
+<p>For more details about this implementation, please see
+[PersoonFu1977].</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.dft.html">cv.dft</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>true</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

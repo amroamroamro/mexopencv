@@ -1,0 +1,63 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.estimatePoseSingleMarkers - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.estimatePoseSingleMarkers - Pose estimation for single markers" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.estimatePoseSingleMarkers - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.estimatePoseSingleMarkers</div>
+      <div class="helpcontent"><p class=" h1line">Pose estimation for single markers</p>
+<pre class=" prettyprint lang-matlab"><code>[rvecs, tvecs] = <a href="cv.estimatePoseSingleMarkers.html">cv.estimatePoseSingleMarkers</a>(corners, markerLength, cameraMatrix, distCoeffs)
+[rvecs, tvecs, objPoints] = <a href="cv.estimatePoseSingleMarkers.html">cv.estimatePoseSingleMarkers</a>(...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>corners</strong> cell array of already detected markers corners. For each
+marker, its four corners are provided, (e.g <code>{{[x,y],..}, ..}</code>). The order
+of the corners should be clockwise.</li>
+<li><strong>markerLength</strong> the length of the markers' side. The returning
+translation vectors will be in the same unit. Normally, unit is meters.</li>
+<li><strong>cameraMatrix</strong> input 3x3 floating-point camera matrix
+<code>A = [fx 0 cx; 0 fy cy; 0 0 1]</code>.</li>
+<li><strong>distCoeffs</strong> vector of distortion coefficients
+<code>[k1,k2,p1,p2,k3,k4,k5,k6,s1,s2,s3,s4]</code> of 4, 5, 8 or 12 elements.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>rvecs</strong> cell array of output rotation vectors (e.g. <code>{[x,y,z], ...}</code>).
+Each element in <code>rvecs</code> corresponds to the specific marker in <code>corners</code>.</li>
+<li><strong>tvecs</strong> cell array of output translation vectors (e.g. <code>{[x,y,z], ...}</code>).
+Each element in <code>tvecs</code> corresponds to the specific marker in <code>corners</code>.</li>
+<li><strong>objPoints</strong> optional output, array of object points of the marker four
+corners (object points for the system centered in a single marker given
+the marker length, see explanation below).</li>
+</ul>
+<p>This function receives the detected markers and returns their pose
+estimation respect to the camera individually. So for each marker, one
+rotation and translation vector is returned. The returned transformation is
+the one that transforms points from each marker coordinate system to the
+camera coordinate system. The marker corrdinate system is centered on the
+middle of the marker, with the Z axis perpendicular to the marker plane.
+The coordinates of the four corners of the marker in its own coordinate
+system are:</p>
+<pre class=" prettyprint lang-matlab"><code>(-markerLength/2,  markerLength/2, 0),
+( markerLength/2,  markerLength/2, 0),
+( markerLength/2, -markerLength/2, 0),
+(-markerLength/2, -markerLength/2, 0)
+</code></pre>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.detectMarkers.html">cv.detectMarkers</a>, <a href="cv.estimatePoseBoard.html">cv.estimatePoseBoard</a>, <a href="cv.Rodrigues.html">cv.Rodrigues</a>, <a href="cv.solvePnP.html">cv.solvePnP</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

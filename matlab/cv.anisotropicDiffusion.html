@@ -1,0 +1,66 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.anisotropicDiffusion - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.anisotropicDiffusion - Performs anisotropic diffusion on an image" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.anisotropicDiffusion - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.anisotropicDiffusion</div>
+      <div class="helpcontent"><p class=" h1line">Performs anisotropic diffusion on an image</p>
+<pre class=" prettyprint lang-matlab"><code>dst = <a href="cv.anisotropicDiffusion.html">cv.anisotropicDiffusion</a>(src)
+dst = <a href="cv.anisotropicDiffusion.html">cv.anisotropicDiffusion</a>(src, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src</strong> 8-bit 3-channel source image.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> Destination image of the same size and the same number of channels
+as <code>src</code>.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Alpha</strong> The amount of time to step forward by on each iteration
+(normally, it's between 0 and 1). default 1.0</li>
+<li><strong>K</strong> sensitivity to the edges. default 0.02</li>
+<li><strong>Iterations</strong> The number of iterations. default 10</li>
+</ul>
+<p>The function applies Perona-Malik anisotropic diffusion to an image. This is
+the solution to the partial differential equation:</p>
+<pre class=" prettyprint lang-matlab"><code>dI/dt = div(c(x,y,t) * nabla_I) = nabla_c * nabla_I + c(x,y,t) * delta_I
+</code></pre>
+<p>where <code>delta</code> denotes the Laplacian, <code>nabla</code> denotes the gradient, <code>div</code> is
+the divergence operator and <code>c(x,y,t)</code> is the diffusion coefficient (usually
+chosen as a function of the image gradient so as to preserve edges in the
+image).</p>
+<p>Suggested functions for <code>c(x,y,t)</code> are:</p>
+<ul>
+<li>Exponential Flux: <code>c(||nabla_I||) = exp(-(||nabla_I||/K)^2)</code></li>
+<li>Inverse Quadratic Flux: <code>c(||nabla_I||) = 1 / (1 + (||nabla_I||/K)^2)</code></li>
+</ul>
+<p>OpenCV implements the first option.
+The constant <code>K</code> controls the sensitivity to edges.</p>
+<h2>References</h2>
+<blockquote>
+<p>[PeronaMalik90]:
+P. Perona and J. Malik, &quot;Scale-space and edge detection using anisotropic
+diffusion&quot;, in IEEE Transactions on Pattern Analysis and Machine
+Intelligence, vol. 12, no. 7, pp. 629-639, Jul 1990.</p>
+</blockquote>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.bilateralFilter.html">cv.bilateralFilter</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

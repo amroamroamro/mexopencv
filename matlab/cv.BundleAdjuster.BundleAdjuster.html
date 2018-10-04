@@ -1,0 +1,71 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.BundleAdjuster/BundleAdjuster - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.BundleAdjuster.BundleAdjuster - Construct a bundle adjuster instance" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.BundleAdjuster/BundleAdjuster - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.BundleAdjuster/BundleAdjuster</div>
+      <div class="helpcontent"><p class=" h1line">Construct a bundle adjuster instance</p>
+<pre class=" prettyprint lang-matlab"><code>obj = <a href="cv.BundleAdjuster.html">cv.BundleAdjuster</a>(adjusterType)
+obj = <a href="cv.BundleAdjuster.html">cv.BundleAdjuster</a>(adjusterType, 'OptionName',optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>adjusterType</strong> Bundle adjustment cost function. One of:
+<ul>
+<li><strong>NoBundleAdjuster</strong> Stub bundle adjuster that does nothing.</li>
+<li><strong>BundleAdjusterRay</strong> Implementation of the camera
+parameters refinement algorithm which minimizes sum of the
+distances between the rays passing through the camera center
+and a feature. It can estimate focal length. It ignores the
+refinement mask for now.</li>
+<li><strong>BundleAdjusterReproj</strong> Implementation of the camera
+parameters refinement algorithm which minimizes sum of the
+reprojection error squares. It can estimate focal length,
+aspect ratio, principal point. You can affect only on them
+via the refinement mask.</li>
+<li><strong>BundleAdjusterAffine</strong> Bundle adjuster that expects affine
+transformation represented in homogeneous coordinates in R
+for each camera param. Implements camera parameters
+refinement algorithm which minimizes sum of the reprojection
+error squares. It estimates all transformation parameters.
+Refinement mask is ignored. See also <a href="cv.AffineBasedEstimator.html">cv.AffineBasedEstimator</a>
+and <code>AffineBestOf2NearestMatcher</code>.</li>
+<li><strong>BundleAdjusterAffinePartial</strong> Bundle adjuster that expects
+affine transformation with 4 DOF represented in homogeneous
+coordinates in R for each camera param. Implements camera
+parameters refinement algorithm which minimizes sum of the
+the reprojection error squares. It estimates all
+transformation parameters. Refinement mask is ignored.</li>
+</ul>
+</li>
+</ul>
+<h2>Options</h2>
+<p>The following are options accepted by all adjusters:</p>
+<ul>
+<li><strong>ConfThresh</strong> Threshold to filter out poorly matched image
+pairs. default 1</li>
+<li><strong>RefinementMask</strong> 3x3 8-bit mask, where 0 means don't refine
+respective parameter, non-zero means refine.
+default <code>eye(3,'uint8')</code></li>
+<li><strong>TermCriteria</strong> Levenberg-Marquardt algorithm termination
+criteria. default
+<code>struct('type','Count+EPS', 'maxCount',1000, 'epsilon',eps)</code></li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> cv.BundleAdjuster.estimate</div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

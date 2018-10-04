@@ -1,0 +1,61 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.LBPHFaceRecognizer/LBPHFaceRecognizer - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.LBPHFaceRecognizer.LBPHFaceRecognizer - Constructor" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.LBPHFaceRecognizer/LBPHFaceRecognizer - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.LBPHFaceRecognizer/LBPHFaceRecognizer</div>
+      <div class="helpcontent"><p class=" h1line">Constructor</p>
+<pre class=" prettyprint lang-matlab"><code>obj = <a href="cv.LBPHFaceRecognizer.html">cv.LBPHFaceRecognizer</a>('OptionName',optionValue, ...)
+</code></pre>
+<h2>Options</h2>
+<ul>
+<li><strong>Radius</strong> The radius used for building the Circular Local
+Binary Pattern. The greater the radius, the smoother the image
+but more spatial information you can get. default 1</li>
+<li><strong>Neighbors</strong> The number of sample points to build a Circular
+Local Binary Pattern from. An appropriate value is to use 8
+sample points. Keep in mind: the more sample points you
+include, the higher the computational cost. default 8</li>
+<li><strong>GridX</strong> The number of cells in the horizontal direction, 8
+is a common value used in publications. The more cells, the
+finer the grid, the higher the dimensionality of the resulting
+feature vector. default 8</li>
+<li><strong>GridY</strong> The number of cells in the vertical direction, 8 is
+a common value used in publications. The more cells, the finer
+the grid, the higher the dimensionality of the resulting
+feature vector. default 8</li>
+<li><strong>Threshold</strong> The threshold applied in the prediction. If the
+distance to the nearest neighbor is larger than the threshold,
+the prediction returns -1. default <code>realmax</code></li>
+</ul>
+<p>Initializes this LBPH Model. The current implementation is
+rather fixed as it uses the Extended Local Binary Patterns per
+default.</p>
+<p><code>Radius</code> and <code>Neighbors</code> are used in the local binary patterns
+creation. <code>GridX</code> and <code>GridY</code> control the grid size of the
+spatial histograms.</p>
+<h3>Notes</h3>
+<ul>
+<li>The Circular Local Binary Patterns (used in training and
+prediction) expect the data given as grayscale images, use
+<a href="cv.cvtColor.html">cv.cvtColor</a> to convert between the color spaces.</li>
+<li>This model supports updating.</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.LBPHFaceRecognizer.train.html">cv.LBPHFaceRecognizer/train</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

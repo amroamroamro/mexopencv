@@ -1,0 +1,53 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>estimateTransformation (cv.ShapeTransformer) - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.ShapeTransformer.estimateTransformation - Estimate the transformation parameters of the current transformer algorithm, based on point matches" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">estimateTransformation (cv.ShapeTransformer) - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.ShapeTransformer/estimateTransformation</div>
+      <div class="helpcontent"><p class=" h1line">Estimate the transformation parameters of the current transformer algorithm, based on point matches</p>
+<pre class=" prettyprint lang-matlab"><code>obj.estimateTransformation(transformingShape, targetShape, matches)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>transformingShape</strong> Contour defining first shape. A numeric
+Nx2/Nx1x2/1xNx2 array or a cell-array of 2D points
+<code>{[x,y], ...}</code></li>
+<li><strong>targetShape</strong> Contour defining second shape (target). Same
+format as <code>transformingShape</code>.</li>
+<li><strong>matches</strong> Standard vector of matches between points.</li>
+</ul>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.ShapeTransformer.applyTransformation.html">cv.ShapeTransformer/applyTransformation</a>,
+   <a href="cv.ShapeTransformer.warpImage.html">cv.ShapeTransformer/warpImage</a></div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tbody><tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </tbody></table>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

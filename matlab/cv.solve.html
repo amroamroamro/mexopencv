@@ -1,0 +1,71 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.solve - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.solve - Solves one or more linear systems or least-squares problems" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.solve - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.solve</div>
+      <div class="helpcontent"><p class=" h1line">Solves one or more linear systems or least-squares problems</p>
+<pre class=" prettyprint lang-matlab"><code>[dst,ret] = <a href="cv.solve.html">cv.solve</a>(src1, src2)
+[...] = <a href="cv.solve.html">cv.solve</a>(..., 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>src1</strong> input matrix on the left-hand side of the system.</li>
+<li><strong>src2</strong> input matrix on the right-hand side of the system.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>dst</strong> output solution.</li>
+<li><strong>ret</strong> Logical return value, see below.</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>Method</strong> solution (matrix inversion) method, default 'LU'. One of the
+following matrix decomposition types:
+<ul>
+<li><strong>LU</strong> Gaussian elimination with the optimal pivot element chosen.</li>
+<li><strong>SVD</strong> singular value decomposition (SVD) method; the system can be
+over-defined and/or the matrix <code>src1</code> can be singular.</li>
+<li><strong>EIG</strong> eigenvalue decomposition; the matrix <code>src1</code> must be symmetrical.</li>
+<li><strong>Cholesky</strong> Cholesky LLT factorization; the matrix <code>src1</code> must be
+symmetrical and positively defined.</li>
+<li><strong>QR</strong> QR factorization; the system can be over-defined and/or the
+matrix <code>src1</code> can be singular.</li>
+</ul>
+</li>
+<li><strong>IsNormal</strong> this flag can be used together with any of the previous
+methods; it means that the normal equations
+<code>src1' * src1 * dst = src1' * src2</code> are solved instead of the original
+system <code>src1 * dst = src2</code>. defaul false</li>
+</ul>
+<p>The function <a href="cv.solve.html">cv.solve</a> solves a linear system or least-squares problem (the
+latter is possible with 'SVD' or 'QR' methods, or by specifying the flag
+'IsNormal'):</p>
+<pre class=" prettyprint lang-matlab"><code>dst = argmin_{X} ||src1*X - src2||
+</code></pre>
+<p>If 'LU' or 'Cholesky' method is used, the function returns 1 if <code>src1</code>
+(or <code>src1'*src1</code>) is non-singular. Otherwise, it returns 0. In the latter
+case, <code>dst</code> is not valid. Other methods find a pseudo-solution in case of a
+singular left-hand side part.</p>
+<h3>Note</h3>
+<p>If you want to find a unity-norm solution of an under-defined singular
+system <code>src1 * dst = 0</code>, the function <a href="cv.solve.html">cv.solve</a> will not do the work.
+Use <a href="cv.SVD.SolveZ.html">cv.SVD.SolveZ</a> instead.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.invert.html">cv.invert</a>, <a href="cv.SVD.html">cv.SVD</a>, <a href="cv.eigen.html">cv.eigen</a>, <a href="https://www.mathworks.com/help/matlab/ref/mldivide.html" target="_blank">mldivide</a>, <a href="https://www.mathworks.com/help/matlab/ref/inv.html" target="_blank">inv</a>, <a href="https://www.mathworks.com/help/matlab/ref/svd.html" target="_blank">svd</a>, <a href="https://www.mathworks.com/help/matlab/ref/eig.html" target="_blank">eig</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>

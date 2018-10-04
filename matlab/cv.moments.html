@@ -1,0 +1,75 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   
+      <link rel="stylesheet" href="helpwin.css" />
+      <title>cv.moments - mexopencv</title>
+   <link rel="stylesheet" type="text/css" href="helpwin_custom.css" />
+<meta name="generator" content="MATLAB 9.4.0.902940 (R2018a) Update 4" />
+<meta name="description" content="cv.moments - Calculates all of the moments up to the third order of a polygon or rasterized shape" />
+<link rel="stylesheet" type="text/css" href="matlab.min.css" />
+</head>
+   <body onload="PR.prettyPrint();">
+      <!--Single-page help-->
+      <table border="0" cellspacing="0" width="100%">
+         <tbody><tr class="subheader">
+            <td class="headertitle">cv.moments - MATLAB File Help</td>
+            <td class="subheader-right"></td>
+         </tr>
+      </tbody></table>
+      <div class="title">cv.moments</div>
+      <div class="helpcontent"><p class=" h1line">Calculates all of the moments up to the third order of a polygon or rasterized shape</p>
+<pre class=" prettyprint lang-matlab"><code>mo = <a href="cv.moments.html">cv.moments</a>(array)
+mo = <a href="cv.moments.html">cv.moments</a>(array, 'OptionName', optionValue, ...)
+</code></pre>
+<h2>Input</h2>
+<ul>
+<li><strong>array</strong> Raster image (single-channel, 8-bit or floating-point 2D array),
+or a cell array of 2D points (of <code>int32</code> or <code>single</code> type) of the form
+<code>{[x,y], ...}</code>.</li>
+</ul>
+<h2>Output</h2>
+<ul>
+<li><strong>mo</strong> Output moments. A structure with the following fields:
+<ul>
+<li>Spatial moments: <strong>m00</strong>, <strong>m10</strong>, <strong>m01</strong>, <strong>m20</strong>, <strong>m11</strong>, <strong>m02</strong>,
+<strong>m30</strong>, <strong>m21</strong>, <strong>m12</strong>, <strong>m03</strong></li>
+<li>Central moments: <strong>mu20</strong>, <strong>mu11</strong>, <strong>mu02</strong>, <strong>mu30</strong>, <strong>mu21</strong>,
+<strong>mu12</strong>, <strong>mu03</strong></li>
+<li>Central normalized moments: <strong>nu20</strong>, <strong>nu11</strong>, <strong>nu02</strong>, <strong>nu30</strong>,
+<strong>nu21</strong>, <strong>nu12</strong>, <strong>nu03</strong></li>
+</ul>
+</li>
+</ul>
+<h2>Options</h2>
+<ul>
+<li><strong>BinaryImage</strong> If it is true, all non-zero image pixels are treated as
+1's. The parameter is used for images only. default false</li>
+</ul>
+<p>The function computes moments, up to the 3rd order, of a vector shape or a
+rasterized shape. The results are returned in the moments struct <code>mo</code>.</p>
+<p>The spatial moments <code>m_ji</code> are computed as:</p>
+<pre class=" prettyprint lang-matlab"><code>m_ji = sum_{x,y} (array(x,y) * x^j * y^i)
+</code></pre>
+<p>The central moments <code>mu_ji</code> are computed as:</p>
+<pre class=" prettyprint lang-matlab"><code>mu_ji = sum_{x,y} (array(x,y) * (x - xbar)^j * (y - ybar)^i)
+</code></pre>
+<p>where <code>(xbar, ybar)</code> is the mass center:</p>
+<pre class=" prettyprint lang-matlab"><code>xbar = m10/m00, ybar = m01/m00
+</code></pre>
+<p>The normalized central moments <code>nu_ji</code> are computed as:</p>
+<pre class=" prettyprint lang-matlab"><code>nu_ji = mu_ji / m00^((i+j)/2+1)
+</code></pre>
+<p>NOTE: <code>mu00 = m00</code>, <code>nu00 = 1</code>, <code>nu10 = mu10 = mu01 = mu10 = 0</code>, hence the
+values are not stored.</p>
+<p>The moments of a contour are defined in the same way but computed using the
+<a href="https://en.wikipedia.org/wiki/Green_theorem" target="_blank">Green's formula</a>. So, due to
+a limited raster resolution, the moments computed for a contour are slightly
+different from the moments computed for the same rasterized contour.</p>
+<p>NOTE: Since the contour moments are computed using Green formula, you may
+get seemingly odd results for contours with self-intersections, e.g. a zero
+area (<code>m00</code>) for butterfly-shaped contours.</p>
+</div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> <a href="cv.HuMoments.html">cv.HuMoments</a>, <a href="cv.contourArea.html">cv.contourArea</a>, <a href="cv.arcLength.html">cv.arcLength</a></div>
+   
+<script type="text/javascript" src="prettify.js"></script>
+<script type="text/javascript" src="lang-matlab.min.js"></script>
+</body></html>
