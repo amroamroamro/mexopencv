@@ -1,0 +1,27 @@
+var searchData=
+[
+  ['kalmanfilter',['KalmanFilter',['https://docs.opencv.org/3.4.1/dd/d6a/classcv_1_1KalmanFilter.html',1,'cv']]],
+  ['kaze',['KAZE',['https://docs.opencv.org/3.4.1/d3/d61/classcv_1_1KAZE.html',1,'cv']]],
+  ['kdtreeindex',['KDTreeIndex',['https://docs.opencv.org/3.4.1/df/d36/classcvflann_1_1KDTreeIndex.html',1,'cvflann']]],
+  ['kdtreeindexparams',['KDTreeIndexParams',['https://docs.opencv.org/3.4.1/d7/d99/structcvflann_1_1KDTreeIndexParams.html',1,'cvflann::KDTreeIndexParams'],['https://docs.opencv.org/3.4.1/d0/d99/structcv_1_1flann_1_1KDTreeIndexParams.html',1,'cv::flann::KDTreeIndexParams']]],
+  ['kdtreesingleindex',['KDTreeSingleIndex',['https://docs.opencv.org/3.4.1/db/d92/classcvflann_1_1KDTreeSingleIndex.html',1,'cvflann']]],
+  ['kdtreesingleindexparams',['KDTreeSingleIndexParams',['https://docs.opencv.org/3.4.1/d5/d2d/structcvflann_1_1KDTreeSingleIndexParams.html',1,'cvflann']]],
+  ['kernel',['Kernel',['https://docs.opencv.org/3.4.1/d7/db8/classcv_1_1ml_1_1SVM_1_1Kernel.html',1,'cv::ml::SVM::Kernel'],['https://docs.opencv.org/3.4.1/dd/d4c/classcv_1_1ocl_1_1Kernel.html',1,'cv::ocl::Kernel']]],
+  ['kernelarg',['KernelArg',['https://docs.opencv.org/3.4.1/d3/d17/classcv_1_1ocl_1_1KernelArg.html',1,'cv::ocl']]],
+  ['keyboardevent',['KeyboardEvent',['https://docs.opencv.org/3.4.1/d3/d06/classcv_1_1viz_1_1KeyboardEvent.html',1,'cv::viz']]],
+  ['keyline',['KeyLine',['https://docs.opencv.org/3.4.1/d1/dd7/structcv_1_1line__descriptor_1_1KeyLine.html',1,'cv::line_descriptor']]],
+  ['keypoint',['KeyPoint',['https://docs.opencv.org/3.4.1/d2/d29/classcv_1_1KeyPoint.html',1,'cv']]],
+  ['keypointbasedmotionestimator',['KeypointBasedMotionEstimator',['https://docs.opencv.org/3.4.1/d5/dec/classcv_1_1videostab_1_1KeypointBasedMotionEstimator.html',1,'cv::videostab']]],
+  ['keypointsfilter',['KeyPointsFilter',['https://docs.opencv.org/3.4.1/de/db2/classcv_1_1KeyPointsFilter.html',1,'cv']]],
+  ['kilo',['kilo',['http://en.cppreference.com/w/cpp/numeric/ratio/ratio.html',1,'std']]],
+  ['kl_5fdivergence',['KL_Divergence',['https://docs.opencv.org/3.4.1/d2/dc2/structcvflann_1_1KL__Divergence.html',1,'cvflann']]],
+  ['kmeansdistancecomputer',['KMeansDistanceComputer',['https://docs.opencv.org/3.4.1/d7/d6e/classcvflann_1_1KMeansIndex_1_1KMeansDistanceComputer.html',1,'cvflann::KMeansIndex']]],
+  ['kmeansindex',['KMeansIndex',['https://docs.opencv.org/3.4.1/df/d1f/classcvflann_1_1KMeansIndex.html',1,'cvflann']]],
+  ['kmeansindexparams',['KMeansIndexParams',['https://docs.opencv.org/3.4.1/de/dff/structcvflann_1_1KMeansIndexParams.html',1,'cvflann::KMeansIndexParams'],['https://docs.opencv.org/3.4.1/df/d7a/structcv_1_1flann_1_1KMeansIndexParams.html',1,'cv::flann::KMeansIndexParams']]],
+  ['knearest',['KNearest',['https://docs.opencv.org/3.4.1/dd/de1/classcv_1_1ml_1_1KNearest.html',1,'cv::ml']]],
+  ['knnradiusuniqueresultset',['KNNRadiusUniqueResultSet',['https://docs.opencv.org/3.4.1/d3/dd8/classcvflann_1_1KNNRadiusUniqueResultSet.html',1,'cvflann']]],
+  ['knnresultset',['KNNResultSet',['https://docs.opencv.org/3.4.1/d5/db2/classcvflann_1_1KNNResultSet.html',1,'cvflann']]],
+  ['knnsimpleresultset',['KNNSimpleResultSet',['https://docs.opencv.org/3.4.1/d8/daa/classcvflann_1_1KNNSimpleResultSet.html',1,'cvflann']]],
+  ['knnuniqueresultset',['KNNUniqueResultSet',['https://docs.opencv.org/3.4.1/d0/d5d/classcvflann_1_1KNNUniqueResultSet.html',1,'cvflann']]],
+  ['knuth_5fb',['knuth_b',['http://en.cppreference.com/w/cpp/numeric/random/shuffle_order_engine.html',1,'std']]]
+];

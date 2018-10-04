@@ -1,0 +1,26 @@
+var searchData=
+[
+  ['warp_2ehpp',['warp.hpp',['https://docs.opencv.org/3.4.1/d3/d85/core_2include_2opencv2_2core_2cuda_2warp_8hpp.html',1,'(Global Namespace)'],['https://docs.opencv.org/3.4.1/df/d40/cudev_2include_2opencv2_2cudev_2warp_2warp_8hpp.html',1,'(Global Namespace)']]],
+  ['warp_5faffine_2emarkdown',['warp_affine.markdown',['https://docs.opencv.org/3.4.1/d8/db4/warp__affine_8markdown.html',1,'']]],
+  ['warp_5freduce_2ehpp',['warp_reduce.hpp',['https://docs.opencv.org/3.4.1/d4/d42/warp__reduce_8hpp.html',1,'']]],
+  ['warp_5fshuffle_2ehpp',['warp_shuffle.hpp',['https://docs.opencv.org/3.4.1/d9/daf/warp__shuffle_8hpp.html',1,'']]],
+  ['warpaffine_2ecpp',['warpAffine.cpp',['../warp_affine_8cpp.html',1,'']]],
+  ['warpers_2ehpp',['warpers.hpp',['https://docs.opencv.org/3.4.1/dc/de7/detail_2warpers_8hpp.html',1,'(Global Namespace)'],['https://docs.opencv.org/3.4.1/da/d64/warpers_8hpp.html',1,'(Global Namespace)']]],
+  ['warpers_5finl_2ehpp',['warpers_inl.hpp',['https://docs.opencv.org/3.4.1/d4/d82/warpers__inl_8hpp.html',1,'']]],
+  ['warping_2ehpp',['warping.hpp',['https://docs.opencv.org/3.4.1/d7/d51/expr_2warping_8hpp.html',1,'(Global Namespace)'],['https://docs.opencv.org/3.4.1/db/ddb/ptr2d_2warping_8hpp.html',1,'(Global Namespace)']]],
+  ['warpperspective_2ecpp',['warpPerspective.cpp',['../warp_perspective_8cpp.html',1,'']]],
+  ['watershed_2ecpp',['watershed.cpp',['../watershed_8cpp.html',1,'']]],
+  ['wbdetector_5f_2ecpp',['WBDetector_.cpp',['../_w_b_detector___8cpp.html',1,'']]],
+  ['weighted_5fmedian_5ffilter_2ehpp',['weighted_median_filter.hpp',['https://docs.opencv.org/3.4.1/df/de9/weighted__median__filter_8hpp.html',1,'']]],
+  ['weightedmedianfilter_2ecpp',['weightedMedianFilter.cpp',['../weighted_median_filter_8cpp.html',1,'']]],
+  ['white_5fbalance_2ehpp',['white_balance.hpp',['https://docs.opencv.org/3.4.1/d9/dcd/white__balance_8hpp.html',1,'']]],
+  ['widget_5faccessor_2ehpp',['widget_accessor.hpp',['https://docs.opencv.org/3.4.1/d7/d5d/widget__accessor_8hpp.html',1,'']]],
+  ['widget_5fpose_2emarkdown',['widget_pose.markdown',['https://docs.opencv.org/3.4.1/d6/d3c/widget__pose_8markdown.html',1,'']]],
+  ['widgets_2ehpp',['widgets.hpp',['https://docs.opencv.org/3.4.1/d0/dd3/widgets_8hpp.html',1,'']]],
+  ['wimage_2ehpp',['wimage.hpp',['https://docs.opencv.org/3.4.1/d1/dab/wimage_8hpp.html',1,'']]],
+  ['windows_5finstall_2emarkdown',['windows_install.markdown',['https://docs.opencv.org/3.4.1/d6/dd0/windows__install_8markdown.html',1,'']]],
+  ['windows_5fvisual_5fstudio_5fimage_5fwatch_2emarkdown',['windows_visual_studio_image_watch.markdown',['https://docs.opencv.org/3.4.1/d0/d08/windows__visual__studio__image__watch_8markdown.html',1,'']]],
+  ['windows_5fvisual_5fstudio_5fopencv_2emarkdown',['windows_visual_studio_opencv.markdown',['https://docs.opencv.org/3.4.1/db/d7c/windows__visual__studio__opencv_8markdown.html',1,'']]],
+  ['wobble_5fsuppression_2ehpp',['wobble_suppression.hpp',['https://docs.opencv.org/3.4.1/d0/df9/wobble__suppression_8hpp.html',1,'']]],
+  ['writeopticalflow_2ecpp',['writeOpticalFlow.cpp',['../write_optical_flow_8cpp.html',1,'']]]
+];

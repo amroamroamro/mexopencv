@@ -1,0 +1,25 @@
+var searchData=
+[
+  ['singular_20value_20matrix_20decomposition',['Singular value matrix decomposition',['https://docs.opencv.org/3.4.1/dd/d2a/group__core__hal__interface__decomp__svd.html',1,'']]],
+  ['square_20root_20calculation',['Square root calculation',['https://docs.opencv.org/3.4.1/d5/dc3/group__core__hal__interface__sqrt.html',1,'']]],
+  ['softfloat_20support',['Softfloat support',['https://docs.opencv.org/3.4.1/d7/dcc/group__core__utils__softfloat.html',1,'']]],
+  ['sse_20utilities',['SSE utilities',['https://docs.opencv.org/3.4.1/d6/d06/group__core__utils__sse.html',1,'']]],
+  ['stereo_20correspondence',['Stereo Correspondence',['https://docs.opencv.org/3.4.1/dd/d47/group__cudastereo.html',1,'']]],
+  ['slam',['SLAM',['https://docs.opencv.org/3.4.1/dc/dfb/group__datasets__slam.html',1,'']]],
+  ['structural_20analysis_20and_20shape_20descriptors',['Structural Analysis and Shape Descriptors',['https://docs.opencv.org/3.4.1/d3/dc0/group__imgproc__shape.html',1,'']]],
+  ['seamless_20cloning',['Seamless Cloning',['https://docs.opencv.org/3.4.1/df/da0/group__photo__clone.html',1,'']]],
+  ['saliency_3a_20saliency_20api',['saliency: Saliency API',['../group__saliency.html',1,'']]],
+  ['sfm_3a_20structure_20from_20motion',['sfm: Structure From Motion',['../group__sfm.html',1,'']]],
+  ['shape_3a_20shape_20distance_20and_20matching',['shape: Shape Distance and Matching',['../group__shape.html',1,'']]],
+  ['simple_20pipeline',['Simple Pipeline',['https://docs.opencv.org/3.4.1/d7/de2/group__simple__pipeline.html',1,'']]],
+  ['stereo_3a_20stereo_20correspondance_20algorithms',['stereo: Stereo Correspondance Algorithms',['../group__stereo.html',1,'']]],
+  ['stitching_3a_20images_20stitching',['stitching: Images Stitching',['../group__stitching.html',1,'']]],
+  ['seam_20estimation',['Seam Estimation',['https://docs.opencv.org/3.4.1/d9/d24/group__stitching__seam.html',1,'']]],
+  ['structured_5flight_3a_20structured_20light_20api',['structured_light: Structured Light API',['../group__structured__light.html',1,'']]],
+  ['superres_3a_20super_20resolution',['superres: Super Resolution',['../group__superres.html',1,'']]],
+  ['surface_5fmatching_3a_20surface_20matching',['surface_matching: Surface Matching',['../group__surface__matching.html',1,'']]],
+  ['scene_20text_20detection',['Scene Text Detection',['https://docs.opencv.org/3.4.1/da/d56/group__text__detect.html',1,'']]],
+  ['scene_20text_20recognition',['Scene Text Recognition',['https://docs.opencv.org/3.4.1/d8/df2/group__text__recognize.html',1,'']]],
+  ['structured_20forests_20for_20fast_20edge_20detection',['Structured forests for fast edge detection',['https://docs.opencv.org/3.4.1/de/d51/group__ximgproc__edge.html',1,'']]],
+  ['superpixels',['Superpixels',['https://docs.opencv.org/3.4.1/df/d6c/group__ximgproc__superpixel.html',1,'']]]
+];

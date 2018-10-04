@@ -1,0 +1,26 @@
+var searchData=
+[
+  ['mxcell_5fclass',['mxCELL_CLASS',['../matrix_8h.html#a69d5dab490f8282848511f473aad3c5dad65308073dc47ac3b4295ce54e5956b3',1,'matrix.h']]],
+  ['mxchar_5fclass',['mxCHAR_CLASS',['../matrix_8h.html#a69d5dab490f8282848511f473aad3c5dabc763f28a6cb0c75be83d9adabff63c7',1,'matrix.h']]],
+  ['mxcomplex',['mxCOMPLEX',['../matrix_8h.html#aac0311ae518c6036714cc3f027383affadfa3707198d2c01891bb5ca657729fc1',1,'matrix.h']]],
+  ['mxdouble_5fclass',['mxDOUBLE_CLASS',['../matrix_8h.html#a69d5dab490f8282848511f473aad3c5daad30814246f746b8359ee49370147ac6',1,'matrix.h']]],
+  ['mxfunction_5fclass',['mxFUNCTION_CLASS',['../matrix_8h.html#a69d5dab490f8282848511f473aad3c5da2f38d0c79c843bfa51e32de12546838b',1,'matrix.h']]],
+  ['mxindex_5fclass',['mxINDEX_CLASS',['../matrix_8h.html#a69d5dab490f8282848511f473aad3c5da70ccc901129a01046ea71eeefbf26298',1,'matrix.h']]],
+  ['mxint16_5fclass',['mxINT16_CLASS',['../matrix_8h.html#a69d5dab490f8282848511f473aad3c5daf17396197229deef150a2846137979a2',1,'matrix.h']]],
+  ['mxint32_5fclass',['mxINT32_CLASS',['../matrix_8h.html#a69d5dab490f8282848511f473aad3c5da9cfc5051bbe89892736196f5a9f5cf1b',1,'matrix.h']]],
+  ['mxint64_5fclass',['mxINT64_CLASS',['../matrix_8h.html#a69d5dab490f8282848511f473aad3c5da55b5875aef051779654195f989c95f84',1,'matrix.h']]],
+  ['mxint8_5fclass',['mxINT8_CLASS',['../matrix_8h.html#a69d5dab490f8282848511f473aad3c5da4200b42a90aa256249b777512f06d2c6',1,'matrix.h']]],
+  ['mxlogical_5fclass',['mxLOGICAL_CLASS',['../matrix_8h.html#a69d5dab490f8282848511f473aad3c5da957465c0f355812d03c4635bdb149ed2',1,'matrix.h']]],
+  ['mxobject_5fclass',['mxOBJECT_CLASS',['../matrix_8h.html#a69d5dab490f8282848511f473aad3c5da4d113f80f8408d5948f47088d3ca6a7e',1,'matrix.h']]],
+  ['mxopaque_5fclass',['mxOPAQUE_CLASS',['../matrix_8h.html#a69d5dab490f8282848511f473aad3c5da845f5b7ac522bed822149744ec645da5',1,'matrix.h']]],
+  ['mxreal',['mxREAL',['../matrix_8h.html#aac0311ae518c6036714cc3f027383affacfc9355fa8a6957aa7e33fffca4a242a',1,'matrix.h']]],
+  ['mxsingle_5fclass',['mxSINGLE_CLASS',['../matrix_8h.html#a69d5dab490f8282848511f473aad3c5da9dca5dfa97bc641ac5452256a4f01c0c',1,'matrix.h']]],
+  ['mxsparse_5fclass',['mxSPARSE_CLASS',['../matrix_8h.html#a69d5dab490f8282848511f473aad3c5da88abc65214b33742bc2a4ea53ec39ee2',1,'matrix.h']]],
+  ['mxstruct_5fclass',['mxSTRUCT_CLASS',['../matrix_8h.html#a69d5dab490f8282848511f473aad3c5da9b1955f0e748be4489e727b2762b3361',1,'matrix.h']]],
+  ['mxuint16_5fclass',['mxUINT16_CLASS',['../matrix_8h.html#a69d5dab490f8282848511f473aad3c5dac8477dd73fd0a7097e25e3826ccd4a7e',1,'matrix.h']]],
+  ['mxuint32_5fclass',['mxUINT32_CLASS',['../matrix_8h.html#a69d5dab490f8282848511f473aad3c5dad7a46d0e1baabf49f8afdff06b68801a',1,'matrix.h']]],
+  ['mxuint64_5fclass',['mxUINT64_CLASS',['../matrix_8h.html#a69d5dab490f8282848511f473aad3c5dab9284dd9ec799c3cb01e73d4c7787836',1,'matrix.h']]],
+  ['mxuint8_5fclass',['mxUINT8_CLASS',['../matrix_8h.html#a69d5dab490f8282848511f473aad3c5da7b10b269d32150c72397d9a5b09dbcc7',1,'matrix.h']]],
+  ['mxunknown_5fclass',['mxUNKNOWN_CLASS',['../matrix_8h.html#a69d5dab490f8282848511f473aad3c5da80ca54cf2f985ed6ff20df432d9cceb3',1,'matrix.h']]],
+  ['mxvoid_5fclass',['mxVOID_CLASS',['../matrix_8h.html#a69d5dab490f8282848511f473aad3c5da9f2f08b4fdd2ac7c3e67ae27867b16f1',1,'matrix.h']]]
+];
