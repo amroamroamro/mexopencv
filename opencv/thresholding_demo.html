@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Image Thresholding</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="thresholding_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Image Thresholding</h1>
+         <!--introduction-->
+         <p>In this demo, we will learn about Simple thresholding, Adaptive thresholding, Otsu's thresholding, and how to use corresponding
+            OpenCV functions: <tt>cv.threshold</tt>, <tt>cv.adaptiveThreshold</tt>, etc.
+         </p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://docs.opencv.org/3.2.0/d7/d4d/tutorial_py_thresholding.html">https://docs.opencv.org/3.2.0/d7/d4d/tutorial_py_thresholding.html</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Simple Thresholding</a></li>
+               <li><a href="#5">Otsu's Binarization</a></li>
+               <li><a href="#8">Adaptive Thresholding</a></li>
+               <li><a href="#9">References</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Simple Thresholding</h2>
+         <p>Here, the matter is straight forward. If pixel value is greater than a threshold value, it is assigned one value (may be white),
+            else it is assigned another value (may be black). The function used is <tt>cv.threshold</tt>. First argument is the source image, which <b>should be a grayscale image</b>. Second argument is the threshold value which is used to classify the pixel values. Third argument is the <tt>maxVal</tt> which represents the value to be given if pixel value is more than (sometimes less than) the threshold value. OpenCV provides
+            different styles of thresholding and it is decided by the fourth parameter of the function. The different types are:
+         </p>
+         <div>
+            <ul>
+               <li>Binary</li>
+               <li>BinaryInv</li>
+               <li>Trunc</li>
+               <li>ToZero</li>
+               <li>ToZeroInv</li>
+            </ul>
+         </div>
+         <p>Documentation clearly explain what each type is meant for. Please check out the documentation.</p>
+         <p>The output obtained is our <b>thresholded image</b>.
+         </p>
+         <p>create a gradient grayscale image</p><pre class="codeinput">img = repmat(uint8(0:255), 256, 1);</pre><p>threshold image using the various types</p><pre class="codeinput">types = {<span class="string">'Original'</span>, <span class="string">'Binary'</span>, <span class="string">'BinaryInv'</span>, <span class="string">'Trunc'</span>, <span class="string">'ToZero'</span>, <span class="string">'ToZeroInv'</span>};
+figure(1)
+<span class="keyword">for</span> i=1:6
+    <span class="keyword">if</span> i==1
+        out = img;
+    <span class="keyword">else</span>
+        out = cv.threshold(img, 127, <span class="string">'MaxValue'</span>,255, <span class="string">'Type'</span>,types{i});
+    <span class="keyword">end</span>
+    subplot(2,3,i), imshow(out), title(types{i})
+<span class="keyword">end</span></pre><img src="thresholding_demo_01.png"><h2 id="5">Otsu's Binarization</h2>
+         <p>In global thresholding, we used an arbitrary value for threshold value, right? So, how can we know a value we selected is
+            good or not? Answer is, trial and error method. But consider a <b>bimodal image</b> (In simple words, bimodal image is an image whose histogram has two peaks). For that image, we can approximately take a value
+            in the middle of those peaks as threshold value, right? That is what Otsu binarization does. So in simple words, it automatically
+            calculates a threshold value from image histogram for a bimodal image. (For images which are not bimodal, binarization won't
+            be accurate.)
+         </p>
+         <p>Since we are working with bimodal images, Otsu's algorithm tries to find a threshold value (<img src="thresholding_demo_eq12656067504604335951.png" alt="$t$" class="equation" width="5" height="10">) which minimizes the <b>weighted within-class variance</b> given by the relation :
+         </p>
+         <p><img src="thresholding_demo_eq09989939764065486944.png" alt="$$\sigma_w^2(t) = q_1(t)\sigma_1^2(t)+q_2(t)\sigma_2^2(t)$$" class="equation" width="191" height="18"></p>
+         <p>where</p>
+         <p><img src="thresholding_demo_eq16565692662498528124.png" alt="$$q_1(t) = \sum_{i=1}^{t} P(i) \quad \&amp; \quad q_1(t) = \sum_{i=t+1}^{I} P(i)$$" class="equation" width="247" height="44"></p>
+         <p><img src="thresholding_demo_eq01471829079876190878.png" alt="$$\mu_1(t) = \sum_{i=1}^{t} \frac{iP(i)}{q_1(t)} \quad \&amp;&#xA;  \quad \mu_2(t) = \sum_{i=t+1}^{I} \frac{iP(i)}{q_2(t)}$$" class="equation" width="269" height="44"></p>
+         <p><img src="thresholding_demo_eq00303516842437596470.png" alt="$$\sigma_1^2(t) = \sum_{i=1}^{t} [i-\mu_1(t)]^2 \frac{P(i)}{q_1(t)} \quad \&amp;&#xA;  \quad \sigma_2^2(t) = \sum_{i=t+1}^{I} [i-\mu_1(t)]^2 \frac{P(i)}{q_2(t)}$$" class="equation" width="392" height="44"></p>
+         <p>It actually finds a value of <img src="thresholding_demo_eq12656067504604335951.png" alt="$t$" class="equation" width="5" height="10"> which lies in between two peaks such that variances to both classes are minimum.
+         </p>
+         <p>In OpenCV, the <tt>cv.threshold</tt> function is used, but pass the string <tt>Otsu</tt> instead of the threshold value. Then the algorithm finds the optimal threshold value and returns it as the second output.
+            If Otsu thresholding is not used, this value is same as the threshold value you used.
+         </p>
+         <p>Check out below example. Input image is a noisy image. In first case, I applied global thresholding for a value of 200. In
+            second case, I applied Otsu's thresholding directly. In third case, I filtered image with a 5x5 Gaussian kernel to remove
+            the noise, then applied Otsu thresholding. See how noise filtering improves the result.
+         </p>
+         <p>create a noisy image</p><pre class="codeinput">img = 55 * ones(400,600,<span class="string">'uint8'</span>);
+img = cv.rectangle(img, [150 110 300 180], <span class="string">'Color'</span>,200, <span class="string">'Thickness'</span>,<span class="string">'Filled'</span>);
+<span class="keyword">if</span> mexopencv.require(<span class="string">'images'</span>)
+    img = imnoise(img, <span class="string">'gaussian'</span>, 0, 0.02);
+<span class="keyword">else</span>
+    img = uint8(double(img) + randn(size(img)) * sqrt(0.02) * 255);
+<span class="keyword">end</span></pre><p>threshold it three different ways</p><pre class="codeinput">figure(2)
+<span class="keyword">for</span> i=1:3
+    <span class="keyword">switch</span> i
+        <span class="keyword">case</span> 1
+            <span class="comment">% global thresholding with a fixed value</span>
+            [bw,thresh] = cv.threshold(img, 200);
+            str1 = <span class="string">'Noisy Image'</span>;
+            str2 = sprintf(<span class="string">'Global Thresh (%d)'</span>, thresh);
+        <span class="keyword">case</span> 2
+            <span class="comment">% global thresholding using Otsu's method to find optimal value</span>
+            [bw,thresh] = cv.threshold(img, <span class="string">'Otsu'</span>);
+            str1 = <span class="string">'Noisy Image'</span>;
+            str2 = sprintf(<span class="string">'Otsu Thresh (%d)'</span>, thresh);
+        <span class="keyword">case</span> 3
+            <span class="comment">% global thresholding on smoothed image</span>
+            img = cv.GaussianBlur(img, <span class="string">'KSize'</span>,[5 5]);
+            [bw,thresh] = cv.threshold(img, <span class="string">'Otsu'</span>);
+            str1 = <span class="string">'Blurred'</span>;
+            str2 = <span class="string">'Otsu Thresh'</span>;
+    <span class="keyword">end</span>
+
+    <span class="comment">% show input image</span>
+    subplot(3, 4, 1+(i-1)*4)
+    image(img), title(str1)
+    set(gca, <span class="string">'CLim'</span>,[0 255], <span class="string">'XTick'</span>,[], <span class="string">'YTick'</span>,[])
+
+    <span class="comment">% show its histogram</span>
+    subplot(3, 4, [2 3]+(i-1)*4)
+    counts = histc(double(img(:)), 0:255);
+    h = bar(0:255, counts, <span class="string">'histc'</span>);
+    set(h, <span class="string">'EdgeColor'</span>,<span class="string">'none'</span>, <span class="string">'FaceColor'</span>,[0 0.5 0.7])
+    set(gca, <span class="string">'XLim'</span>,[0 256], <span class="string">'XTick'</span>,[], <span class="string">'YTick'</span>,[])
+    title(<span class="string">'Histogram'</span>)
+
+    <span class="comment">% show output image</span>
+    subplot(3, 4, 4+(i-1)*4)
+    image(bw), title(str2)
+    set(gca, <span class="string">'CLim'</span>,[0 255], <span class="string">'XTick'</span>,[], <span class="string">'YTick'</span>,[])
+<span class="keyword">end</span>
+colormap(gray(256))</pre><img src="thresholding_demo_02.png"><h2 id="8">Adaptive Thresholding</h2>
+         <p>In the previous sections, we used a global value as threshold value. But it may not be good in all the conditions where image
+            has different lighting conditions in different areas. In that case, we go for adaptive thresholding. In this, the algorithm
+            calculate the threshold for a small regions of the image. So we get different thresholds for different regions of the same
+            image and it gives us better results for images with varying illumination.
+         </p>
+         <p>It has three "special" input params and only one output argument.</p>
+         <div>
+            <ul>
+               <li><b>Adaptive Method:</b> It decides how thresholding value is calculated, with   two possible values: 1) <tt>Mean</tt>, threshold value is the mean of   neighbourhood area. 2) <tt>Gaussian</tt>, threshold value is the weighted sum of   neighbourhood values where weights are a gaussian window.
+               </li>
+               <li><b>Block Size:</b> It decides the size of neighbourhood area.
+               </li>
+               <li><b>C:</b> It is just a constant which is subtracted from the mean or weighted   mean calculated.
+               </li>
+            </ul>
+         </div>
+         <p>Below piece of code compares global thresholding and adaptive thresholding for an image with varying illumination:</p><pre class="codeinput">img = cv.imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'sudoku.jpg'</span>), <span class="string">'Grayscale'</span>,true);
+img = cv.medianBlur(img, <span class="string">'KSize'</span>,5);
+
+[bw1, thresh] = cv.threshold(img, <span class="string">'Otsu'</span>);
+bw2 = cv.adaptiveThreshold(img, <span class="string">'Method'</span>,<span class="string">'Mean'</span>, <span class="string">'BlockSize'</span>,11, <span class="string">'C'</span>,2);
+bw3 = cv.adaptiveThreshold(img, <span class="string">'Method'</span>,<span class="string">'Gaussian'</span>, <span class="string">'BlockSize'</span>,11, <span class="string">'C'</span>,2);
+
+figure(3)
+subplot(221), imshow(img), title(<span class="string">'Original Image'</span>)
+subplot(222), imshow(bw1), title(<span class="string">'Otsu Thresholding'</span>)
+subplot(223), imshow(bw2), title(<span class="string">'Adaptive Mean Thresholding'</span>)
+subplot(224), imshow(bw3), title(<span class="string">'Adaptive Gaussian Thresholding'</span>)</pre><img src="thresholding_demo_03.png"><h2 id="9">References</h2>
+         <div>
+            <ul>
+               <li>Digital Image Processing, Rafael C. Gonzalez</li>
+            </ul>
+         </div>
+         <div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div><script type="text/x-mathjax-config">
+  // https://stackoverflow.com/a/14631703/97160
+  MathJax.Extension.myImg2jax = {
+    version: "1.0",
+    PreProcess: function (element) {
+      var images = element.getElementsByTagName("img");
+      for (var i = images.length - 1; i >= 0; i--) {
+        var img = images[i];
+        if (img.className === "equation") {
+          var match = img.alt.match(/^(\$\$?)([\s\S]*)\1$/m);
+          if (!match) continue;
+          var script = document.createElement("script");
+          script.type = "math/tex";
+          if (match[1] === "$$") {script.type += ";mode=display"}
+          MathJax.HTML.setScript(script, match[2]);
+          img.parentNode.replaceChild(script, img);
+        }
+      }
+    }
+  };
+  MathJax.Hub.Register.PreProcessor(["PreProcess", MathJax.Extension.myImg2jax]);
+  </script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML"></script>
+      <!--
+##### SOURCE BEGIN #####
+%% Image Thresholding
+%
+% In this demo, we will learn about Simple thresholding, Adaptive
+% thresholding, Otsu's thresholding, and how to use corresponding OpenCV
+% functions: |cv.threshold|, |cv.adaptiveThreshold|, etc.
+%
+% Sources:
+%
+% * <https://docs.opencv.org/3.2.0/d7/d4d/tutorial_py_thresholding.html>
+%
+
+%% Simple Thresholding
+%
+% Here, the matter is straight forward. If pixel value is greater than a
+% threshold value, it is assigned one value (may be white), else it is
+% assigned another value (may be black). The function used is |cv.threshold|.
+% First argument is the source image, which *should be a grayscale image*.
+% Second argument is the threshold value which is used to classify the pixel
+% values. Third argument is the |maxVal| which represents the value to be
+% given if pixel value is more than (sometimes less than) the threshold value.
+% OpenCV provides different styles of thresholding and it is decided by the
+% fourth parameter of the function. The different types are:
+%
+% * Binary
+% * BinaryInv
+% * Trunc
+% * ToZero
+% * ToZeroInv
+%
+% Documentation clearly explain what each type is meant for. Please check out
+% the documentation.
+%
+% The output obtained is our *thresholded image*.
+%
+
+%%
+% create a gradient grayscale image
+img = repmat(uint8(0:255), 256, 1);
+
+%%
+% threshold image using the various types
+types = {'Original', 'Binary', 'BinaryInv', 'Trunc', 'ToZero', 'ToZeroInv'};
+figure(1)
+for i=1:6
+    if i==1
+        out = img;
+    else
+        out = cv.threshold(img, 127, 'MaxValue',255, 'Type',types{i});
+    end
+    subplot(2,3,i), imshow(out), title(types{i})
+end
+
+%% Otsu's Binarization
+%
+% In global thresholding, we used an arbitrary value for threshold value,
+% right? So, how can we know a value we selected is good or not? Answer is,
+% trial and error method. But consider a *bimodal image* (In simple words,
+% bimodal image is an image whose histogram has two peaks). For that image,
+% we can approximately take a value in the middle of those peaks as threshold
+% value, right? That is what Otsu binarization does. So in simple words, it
+% automatically calculates a threshold value from image histogram for a
+% bimodal image. (For images which are not bimodal, binarization won't be
+% accurate.)
+%
+% Since we are working with bimodal images, Otsu's algorithm tries to find a
+% threshold value ($t$) which minimizes the *weighted within-class variance*
+% given by the relation :
+%
+% $$\sigma_w^2(t) = q_1(t)\sigma_1^2(t)+q_2(t)\sigma_2^2(t)$$
+%
+% where
+%
+% $$q_1(t) = \sum_{i=1}^{t} P(i) \quad \& \quad q_1(t) = \sum_{i=t+1}^{I} P(i)$$
+%
+% $$\mu_1(t) = \sum_{i=1}^{t} \frac{iP(i)}{q_1(t)} \quad \&
+%   \quad \mu_2(t) = \sum_{i=t+1}^{I} \frac{iP(i)}{q_2(t)}$$
+%
+% $$\sigma_1^2(t) = \sum_{i=1}^{t} [i-\mu_1(t)]^2 \frac{P(i)}{q_1(t)} \quad \&
+%   \quad \sigma_2^2(t) = \sum_{i=t+1}^{I} [i-\mu_1(t)]^2 \frac{P(i)}{q_2(t)}$$
+%
+% It actually finds a value of $t$ which lies in between two peaks such that
+% variances to both classes are minimum.
+%
+% In OpenCV, the |cv.threshold| function is used, but pass the string |Otsu|
+% instead of the threshold value. Then the algorithm finds the optimal
+% threshold value and returns it as the second output. If Otsu thresholding is
+% not used, this value is same as the threshold value you used.
+%
+% Check out below example. Input image is a noisy image. In first case, I
+% applied global thresholding for a value of 200. In second case, I applied
+% Otsu's thresholding directly. In third case, I filtered image with a 5x5
+% Gaussian kernel to remove the noise, then applied Otsu thresholding. See how
+% noise filtering improves the result.
+%
+
+%%
+% create a noisy image
+img = 55 * ones(400,600,'uint8');
+img = cv.rectangle(img, [150 110 300 180], 'Color',200, 'Thickness','Filled');
+if mexopencv.require('images')
+    img = imnoise(img, 'gaussian', 0, 0.02);
+else
+    img = uint8(double(img) + randn(size(img)) * sqrt(0.02) * 255);
+end
+
+%%
+% threshold it three different ways
+figure(2)
+for i=1:3
+    switch i
+        case 1
+            % global thresholding with a fixed value
+            [bw,thresh] = cv.threshold(img, 200);
+            str1 = 'Noisy Image';
+            str2 = sprintf('Global Thresh (%d)', thresh);
+        case 2
+            % global thresholding using Otsu's method to find optimal value
+            [bw,thresh] = cv.threshold(img, 'Otsu');
+            str1 = 'Noisy Image';
+            str2 = sprintf('Otsu Thresh (%d)', thresh);
+        case 3
+            % global thresholding on smoothed image
+            img = cv.GaussianBlur(img, 'KSize',[5 5]);
+            [bw,thresh] = cv.threshold(img, 'Otsu');
+            str1 = 'Blurred';
+            str2 = 'Otsu Thresh';
+    end
+
+    % show input image
+    subplot(3, 4, 1+(i-1)*4)
+    image(img), title(str1)
+    set(gca, 'CLim',[0 255], 'XTick',[], 'YTick',[])
+
+    % show its histogram
+    subplot(3, 4, [2 3]+(i-1)*4)
+    counts = histc(double(img(:)), 0:255);
+    h = bar(0:255, counts, 'histc');
+    set(h, 'EdgeColor','none', 'FaceColor',[0 0.5 0.7])
+    set(gca, 'XLim',[0 256], 'XTick',[], 'YTick',[])
+    title('Histogram')
+
+    % show output image
+    subplot(3, 4, 4+(i-1)*4)
+    image(bw), title(str2)
+    set(gca, 'CLim',[0 255], 'XTick',[], 'YTick',[])
+end
+colormap(gray(256))
+
+%% Adaptive Thresholding
+%
+% In the previous sections, we used a global value as threshold value. But it
+% may not be good in all the conditions where image has different lighting
+% conditions in different areas. In that case, we go for adaptive
+% thresholding. In this, the algorithm calculate the threshold for a small
+% regions of the image. So we get different thresholds for different regions
+% of the same image and it gives us better results for images with varying
+% illumination.
+%
+% It has three "special" input params and only one output argument.
+%
+% * *Adaptive Method:* It decides how thresholding value is calculated, with
+%   two possible values: 1) |Mean|, threshold value is the mean of
+%   neighbourhood area. 2) |Gaussian|, threshold value is the weighted sum of
+%   neighbourhood values where weights are a gaussian window.
+% * *Block Size:* It decides the size of neighbourhood area.
+% * *C:* It is just a constant which is subtracted from the mean or weighted
+%   mean calculated.
+%
+% Below piece of code compares global thresholding and adaptive thresholding
+% for an image with varying illumination:
+%
+
+img = cv.imread(fullfile(mexopencv.root(),'test','sudoku.jpg'), 'Grayscale',true);
+img = cv.medianBlur(img, 'KSize',5);
+
+[bw1, thresh] = cv.threshold(img, 'Otsu');
+bw2 = cv.adaptiveThreshold(img, 'Method','Mean', 'BlockSize',11, 'C',2);
+bw3 = cv.adaptiveThreshold(img, 'Method','Gaussian', 'BlockSize',11, 'C',2);
+
+figure(3)
+subplot(221), imshow(img), title('Original Image')
+subplot(222), imshow(bw1), title('Otsu Thresholding')
+subplot(223), imshow(bw2), title('Adaptive Mean Thresholding')
+subplot(224), imshow(bw3), title('Adaptive Gaussian Thresholding')
+
+%% References
+%
+% * Digital Image Processing, Rafael C. Gonzalez
+%
+
+##### SOURCE END #####
+--></body>
+</html>

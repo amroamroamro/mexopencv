@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Image Segmentation with Distance Transform and Watershed Algorithm</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="watershed_segmentation_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Image Segmentation with Distance Transform and Watershed Algorithm</h1>
+         <!--introduction-->
+         <p>Sample code showing how to segment overlapping objects using Laplacian filtering, in addition to Watershed and Distance Transformation.</p>
+         <p>In this demo you will learn how to:</p>
+         <div>
+            <ul>
+               <li>Use the OpenCV function <tt>cv.filter2D</tt> in order to perform some laplacian   filtering for image sharpening
+               </li>
+               <li>Use the OpenCV function <tt>cv.distanceTransform</tt> in order to obtain the   derived representation of a binary image, where the value of each pixel is   replaced by its distance
+                  to the nearest background pixel
+               </li>
+               <li>Use the OpenCV function <tt>cv.watershed</tt> in order to isolate objects in the   image from the background
+               </li>
+            </ul>
+         </div>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://docs.opencv.org/3.2.0/d2/dbd/tutorial_distance_transform.html">https://docs.opencv.org/3.2.0/d2/dbd/tutorial_distance_transform.html</a></li>
+               <li><a href="https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/tutorial_code/ImgTrans/imageSegmentation.cpp">https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/tutorial_code/ImgTrans/imageSegmentation.cpp</a></li>
+               <li><a href="https://docs.opencv.org/3.2.0/d3/db4/tutorial_py_watershed.html">https://docs.opencv.org/3.2.0/d3/db4/tutorial_py_watershed.html</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <p>load image</p><pre class="codeinput">fname = fullfile(mexopencv.root(), <span class="string">'test'</span>, <span class="string">'cards.png'</span>);
+<span class="keyword">if</span> exist(fname, <span class="string">'file'</span>) ~= 2
+    disp(<span class="string">'Downloading image...'</span>)
+    url = <span class="string">'https://cdn.rawgit.com/opencv/opencv/3.2.0/samples/data/cards.png'</span>;
+    urlwrite(url, fname);
+<span class="keyword">end</span>
+src = cv.imread(fname, <span class="string">'Color'</span>,true);
+imshow(src), title(<span class="string">'source image'</span>)</pre><img src="watershed_segmentation_demo_01.png"><p>change the background from white to black, since that will help later to extract better results during the use of Distance
+            Transform
+         </p><pre class="codeinput">mask = all(src == 255, 3);
+src(repmat(mask,[1 1 3])) = 0;
+imshow(src), title(<span class="string">'black background image'</span>)</pre><img src="watershed_segmentation_demo_02.png"><p>create a kernel that we will use for accuting/sharpening our image (an approximation of second derivative, a quite strong
+            kernel)
+         </p><pre class="codeinput"><span class="keyword">if</span> true
+    kernel = [1 1 1; 1 -8 1; 1 1 1];
+<span class="keyword">else</span>
+    kernel = [0 1 0; 1 -4 1; 0 1 0];
+<span class="keyword">end</span></pre><p>do the laplacian filtering, with intermediate calculations performed in floating-point precision (given the kernel used, Laplacian
+            image will likely have negative values which would otherwise get truncated too soon)
+         </p><pre class="codeinput"><span class="keyword">if</span> true
+    imgLaplacian = cv.filter2D(src, kernel, <span class="string">'DDepth'</span>,<span class="string">'single'</span>);
+<span class="keyword">else</span>
+    imgLaplacian = cv.Laplacian(src, <span class="string">'DDepth'</span>,<span class="string">'single'</span>);
+<span class="keyword">end</span>
+src = uint8(single(src) - imgLaplacian);
+imshow(src), title(<span class="string">'sharpened image'</span>)</pre><img src="watershed_segmentation_demo_03.png"><p>create binary image from source image</p><pre class="codeinput">bw = cv.cvtColor(src, <span class="string">'RGB2GRAY'</span>);
+bw = cv.threshold(bw, <span class="string">'Otsu'</span>);
+imshow(bw), title(<span class="string">'binary'</span>)</pre><img src="watershed_segmentation_demo_04.png"><p>perform the distance transform algorithm, and normalize it to [0,1] range so we can visualize and threshold it</p><pre class="codeinput">D = cv.distanceTransform(bw);
+D = cv.normalize(D, <span class="string">'Alpha'</span>,0, <span class="string">'Beta'</span>,1, <span class="string">'NormType'</span>,<span class="string">'MinMax'</span>);
+imshow(D), title(<span class="string">'distance transform image'</span>)</pre><img src="watershed_segmentation_demo_05.png"><p>threshold distance image to obtain the peaks and dilate it a bit (these will be the markers for the foreground objects)</p><pre class="codeinput">D = cv.threshold(D, 0.4, <span class="string">'MaxValue'</span>,1);
+D = cv.dilate(D);
+imshow(D), title(<span class="string">'peaks'</span>)
+<span class="keyword">if</span> ~mexopencv.isOctave()
+    <span class="comment">%HACK: transparency not yet implemented in Octave</span>
+    image(<span class="string">'CData'</span>,src, <span class="string">'AlphaData'</span>,0.3)
+<span class="keyword">end</span></pre><img src="watershed_segmentation_demo_06.png"><p>find total markers</p><pre class="codeinput">D = uint8(D * 255);
+contours = cv.findContours(D, <span class="string">'Mode'</span>,<span class="string">'External'</span>, <span class="string">'Method'</span>,<span class="string">'Simple'</span>);
+contours = cellfun(@(C) cat(1,C{:}), contours, <span class="string">'Uniform'</span>,false);
+N = numel(contours);</pre><p>create the marker image for the watershed algorithm and draw the markers (seed regions are marked with positive labels 1,2,3,etc.
+            everything else 0)
+         </p><pre class="codeinput">markers = zeros(size(D), <span class="string">'int32'</span>);
+
+<span class="comment">% foreground markers</span>
+<span class="keyword">for</span> i=1:N
+    markers = cv.drawContours(markers, contours, <span class="string">'ContourIdx'</span>,i-1, <span class="keyword">...</span>
+        <span class="string">'Color'</span>,i, <span class="string">'Thickness'</span>,<span class="string">'Filled'</span>);
+<span class="keyword">end</span>
+
+<span class="comment">% background marker</span>
+markers = cv.circle(markers, [5 5], 3, <span class="string">'Color'</span>,N+1, <span class="string">'Thickness'</span>,<span class="string">'Filled'</span>);</pre><p>perform the watershed algorithm</p><pre class="codeinput">markers = cv.watershed(src, markers);</pre><p>in output, pixels are assigned to regions (1,2,etc.), boundaries set to -1</p><pre class="codeinput">L = uint8(markers);  <span class="comment">% -1,1,2,..,N,N+1 -&gt; 0,1,2,..,N,N+1</span>
+<span class="keyword">if</span> ~mexopencv.isOctave() &amp;&amp; mexopencv.require(<span class="string">'stats'</span>)
+    <span class="comment">%HACK: tabulate in Octave behaves differently</span>
+    tabulate(L(:));  <span class="comment">% 0=boundaries, 1:N=regions, N+1=background</span>
+<span class="keyword">end</span></pre><pre class="codeoutput">  Value    Count   Percent
+      0     5893      1.92%
+      1     8805      2.87%
+      2     9308      3.03%
+      3     9914      3.23%
+      4     2966      0.97%
+      5    10354      3.37%
+      6    13799      4.49%
+      7    11038      3.59%
+      8     6446      2.10%
+      9     4272      1.39%
+     10    10752      3.50%
+     11     9412      3.06%
+     12    10765      3.50%
+     13     9432      3.07%
+     14     8442      2.75%
+     15    175602     57.16%
+</pre><p>show segmented objects color-coded according to labels</p><pre class="codeinput">clr = [1 1 1; hsv(N); 0 0 0];
+rgb = uint8(255 * ind2rgb(L, clr));
+imshow(rgb), title(<span class="string">'segmented image'</span>)</pre><img src="watershed_segmentation_demo_07.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Image Segmentation with Distance Transform and Watershed Algorithm
+% Sample code showing how to segment overlapping objects using Laplacian
+% filtering, in addition to Watershed and Distance Transformation.
+%
+% In this demo you will learn how to:
+%
+% * Use the OpenCV function |cv.filter2D| in order to perform some laplacian
+%   filtering for image sharpening
+% * Use the OpenCV function |cv.distanceTransform| in order to obtain the
+%   derived representation of a binary image, where the value of each pixel is
+%   replaced by its distance to the nearest background pixel
+% * Use the OpenCV function |cv.watershed| in order to isolate objects in the
+%   image from the background
+%
+% Sources:
+%
+% * <https://docs.opencv.org/3.2.0/d2/dbd/tutorial_distance_transform.html>
+% * <https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/tutorial_code/ImgTrans/imageSegmentation.cpp>
+% * <https://docs.opencv.org/3.2.0/d3/db4/tutorial_py_watershed.html>
+%
+
+%%
+% load image
+fname = fullfile(mexopencv.root(), 'test', 'cards.png');
+if exist(fname, 'file') ~= 2
+    disp('Downloading image...')
+    url = 'https://cdn.rawgit.com/opencv/opencv/3.2.0/samples/data/cards.png';
+    urlwrite(url, fname);
+end
+src = cv.imread(fname, 'Color',true);
+imshow(src), title('source image')
+
+%%
+% change the background from white to black, since that will help later to
+% extract better results during the use of Distance Transform
+mask = all(src == 255, 3);
+src(repmat(mask,[1 1 3])) = 0;
+imshow(src), title('black background image')
+
+%%
+% create a kernel that we will use for accuting/sharpening our image
+% (an approximation of second derivative, a quite strong kernel)
+if true
+    kernel = [1 1 1; 1 -8 1; 1 1 1];
+else
+    kernel = [0 1 0; 1 -4 1; 0 1 0];
+end
+
+%%
+% do the laplacian filtering, with intermediate calculations performed in
+% floating-point precision (given the kernel used, Laplacian image will likely
+% have negative values which would otherwise get truncated too soon)
+if true
+    imgLaplacian = cv.filter2D(src, kernel, 'DDepth','single');
+else
+    imgLaplacian = cv.Laplacian(src, 'DDepth','single');
+end
+src = uint8(single(src) - imgLaplacian);
+imshow(src), title('sharpened image')
+
+%%
+% create binary image from source image
+bw = cv.cvtColor(src, 'RGB2GRAY');
+bw = cv.threshold(bw, 'Otsu');
+imshow(bw), title('binary')
+
+%%
+% perform the distance transform algorithm, and normalize it to [0,1] range
+% so we can visualize and threshold it
+D = cv.distanceTransform(bw);
+D = cv.normalize(D, 'Alpha',0, 'Beta',1, 'NormType','MinMax');
+imshow(D), title('distance transform image')
+
+%%
+% threshold distance image to obtain the peaks and dilate it a bit
+% (these will be the markers for the foreground objects)
+D = cv.threshold(D, 0.4, 'MaxValue',1);
+D = cv.dilate(D);
+imshow(D), title('peaks')
+if ~mexopencv.isOctave()
+    %HACK: transparency not yet implemented in Octave
+    image('CData',src, 'AlphaData',0.3)
+end
+
+%%
+% find total markers
+D = uint8(D * 255);
+contours = cv.findContours(D, 'Mode','External', 'Method','Simple');
+contours = cellfun(@(C) cat(1,C{:}), contours, 'Uniform',false);
+N = numel(contours);
+
+%%
+% create the marker image for the watershed algorithm and draw the markers
+% (seed regions are marked with positive labels 1,2,3,etc. everything else 0)
+markers = zeros(size(D), 'int32');
+
+% foreground markers
+for i=1:N
+    markers = cv.drawContours(markers, contours, 'ContourIdx',i-1, ...
+        'Color',i, 'Thickness','Filled');
+end
+
+% background marker
+markers = cv.circle(markers, [5 5], 3, 'Color',N+1, 'Thickness','Filled');
+
+%%
+% perform the watershed algorithm
+markers = cv.watershed(src, markers);
+
+%%
+% in output, pixels are assigned to regions (1,2,etc.), boundaries set to -1
+L = uint8(markers);  % -1,1,2,..,N,N+1 -> 0,1,2,..,N,N+1
+if ~mexopencv.isOctave() && mexopencv.require('stats')
+    %HACK: tabulate in Octave behaves differently
+    tabulate(L(:));  % 0=boundaries, 1:N=regions, N+1=background
+end
+
+%%
+% show segmented objects color-coded according to labels
+clr = [1 1 1; hsv(N); 0 0 0];
+rgb = uint8(255 * ind2rgb(L, clr));
+imshow(rgb), title('segmented image')
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

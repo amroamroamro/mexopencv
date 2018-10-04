@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Contours Demo</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="contours2_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Contours Demo</h1>
+         <!--introduction-->
+         <p>This program illustrates the use of <tt>cv.findContours</tt> and <tt>cv.drawContours</tt>. The original image is put up along with the image of drawn contours.
+         </p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/contours2.cpp">https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/contours2.cpp</a></li>
+               <li><a href="https://github.com/opencv/opencv/blob/3.2.0/samples/python/contours.py">https://github.com/opencv/opencv/blob/3.2.0/samples/python/contours.py</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Draw faces</a></li>
+               <li><a href="#3">Contours</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Draw faces</h2><pre class="codeinput">w = 500;
+img = zeros(w,w, <span class="string">'uint8'</span>);
+
+<span class="comment">% draw 6 faces</span>
+<span class="keyword">for</span> i=0:5
+    dx = mod(i,2)*250 - 30;
+    dy = fix(i/2)*150;
+    white = [255,255,255];
+    black = [0,0,0];
+
+    <span class="keyword">if</span> i==0
+        <span class="keyword">for</span> j=0:9
+            ang = (j+5)*pi/21;
+            img = cv.line(img, <span class="keyword">...</span>
+                round([dx+100+j*10-80*cos(ang), dy+100-90*sin(ang)]), <span class="keyword">...</span>
+                round([dx+100+j*10-30*cos(ang), dy+100-30*sin(ang)]), <span class="keyword">...</span>
+                <span class="string">'Color'</span>,white, <span class="string">'Thickness'</span>,1);
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    opts = {<span class="string">'Thickness'</span>,<span class="string">'Filled'</span>};
+    img = cv.ellipse(img, [dx+150, dy+100], [100,70], <span class="string">'Color'</span>,white, opts{:});
+    img = cv.ellipse(img, [dx+115, dy+70], [30,20], <span class="string">'Color'</span>,black, opts{:});
+    img = cv.ellipse(img, [dx+185, dy+70], [30,20], <span class="string">'Color'</span>,black, opts{:});
+    img = cv.ellipse(img, [dx+115, dy+70], [15,15], <span class="string">'Color'</span>,white, opts{:});
+    img = cv.ellipse(img, [dx+185, dy+70], [15,15], <span class="string">'Color'</span>,white, opts{:});
+    img = cv.ellipse(img, [dx+115, dy+70], [5,5], <span class="string">'Color'</span>,black, opts{:});
+    img = cv.ellipse(img, [dx+185, dy+70], [5,5], <span class="string">'Color'</span>,black, opts{:});
+    img = cv.ellipse(img, [dx+150, dy+100], [10,5], <span class="string">'Color'</span>,black, opts{:});
+    img = cv.ellipse(img, [dx+150, dy+150], [40,10], <span class="string">'Color'</span>,black, opts{:});
+    img = cv.ellipse(img, [dx+27, dy+100], [20,35], <span class="string">'Color'</span>,white, opts{:});
+    img = cv.ellipse(img, [dx+273, dy+100], [20,35], <span class="string">'Color'</span>,white, opts{:});
+<span class="keyword">end</span>
+
+<span class="comment">% show the face</span>
+imshow(img), title(<span class="string">'image'</span>)</pre><img src="contours2_demo_01.png"><h2 id="3">Contours</h2>
+         <p>extract the contours</p><pre class="codeinput">[contours0,hierarchy] = cv.findContours(img, <span class="string">'Mode'</span>,<span class="string">'Tree'</span>, <span class="string">'Method'</span>,<span class="string">'Simple'</span>);
+
+contours = cell(size(contours0));
+<span class="keyword">for</span> k=1:numel(contours0)
+    contours{k} = cv.approxPolyDP(contours0{k}, <span class="string">'Epsilon'</span>,3, <span class="string">'Closed'</span>,true);
+<span class="keyword">end</span></pre><p>show contours at the specified level</p><pre class="codeinput">levels = 3;     <span class="comment">% -3:4</span>
+<span class="keyword">if</span> levels &lt;= 0
+    idx = 3;
+<span class="keyword">else</span>
+    idx = -1;
+<span class="keyword">end</span>
+vis = zeros([w,w,3], <span class="string">'uint8'</span>);
+vis = cv.drawContours(vis, contours, <span class="keyword">...</span>
+    <span class="string">'ContourIdx'</span>,idx, <span class="string">'Hierarchy'</span>,hierarchy, <span class="string">'MaxLevel'</span>,abs(levels), <span class="keyword">...</span>
+    <span class="string">'Color'</span>,[128,255,255], <span class="string">'Thickness'</span>,3, <span class="string">'LineType'</span>,<span class="string">'AA'</span>);
+figure, imshow(vis), title(<span class="string">'contours'</span>)</pre><img src="contours2_demo_02.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Contours Demo
+% This program illustrates the use of |cv.findContours| and |cv.drawContours|.
+% The original image is put up along with the image of drawn contours.
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/contours2.cpp>
+% * <https://github.com/opencv/opencv/blob/3.2.0/samples/python/contours.py>
+%
+
+%% Draw faces
+w = 500;
+img = zeros(w,w, 'uint8');
+
+% draw 6 faces
+for i=0:5
+    dx = mod(i,2)*250 - 30;
+    dy = fix(i/2)*150;
+    white = [255,255,255];
+    black = [0,0,0];
+
+    if i==0
+        for j=0:9
+            ang = (j+5)*pi/21;
+            img = cv.line(img, ...
+                round([dx+100+j*10-80*cos(ang), dy+100-90*sin(ang)]), ...
+                round([dx+100+j*10-30*cos(ang), dy+100-30*sin(ang)]), ...
+                'Color',white, 'Thickness',1);
+        end
+    end
+
+    opts = {'Thickness','Filled'};
+    img = cv.ellipse(img, [dx+150, dy+100], [100,70], 'Color',white, opts{:});
+    img = cv.ellipse(img, [dx+115, dy+70], [30,20], 'Color',black, opts{:});
+    img = cv.ellipse(img, [dx+185, dy+70], [30,20], 'Color',black, opts{:});
+    img = cv.ellipse(img, [dx+115, dy+70], [15,15], 'Color',white, opts{:});
+    img = cv.ellipse(img, [dx+185, dy+70], [15,15], 'Color',white, opts{:});
+    img = cv.ellipse(img, [dx+115, dy+70], [5,5], 'Color',black, opts{:});
+    img = cv.ellipse(img, [dx+185, dy+70], [5,5], 'Color',black, opts{:});
+    img = cv.ellipse(img, [dx+150, dy+100], [10,5], 'Color',black, opts{:});
+    img = cv.ellipse(img, [dx+150, dy+150], [40,10], 'Color',black, opts{:});
+    img = cv.ellipse(img, [dx+27, dy+100], [20,35], 'Color',white, opts{:});
+    img = cv.ellipse(img, [dx+273, dy+100], [20,35], 'Color',white, opts{:});
+end
+
+% show the face
+imshow(img), title('image')
+
+%% Contours
+% extract the contours
+[contours0,hierarchy] = cv.findContours(img, 'Mode','Tree', 'Method','Simple');
+
+contours = cell(size(contours0));
+for k=1:numel(contours0)
+    contours{k} = cv.approxPolyDP(contours0{k}, 'Epsilon',3, 'Closed',true);
+end
+
+%%
+% show contours at the specified level
+levels = 3;     % -3:4
+if levels <= 0
+    idx = 3;
+else
+    idx = -1;
+end
+vis = zeros([w,w,3], 'uint8');
+vis = cv.drawContours(vis, contours, ...
+    'ContourIdx',idx, 'Hierarchy',hierarchy, 'MaxLevel',abs(levels), ...
+    'Color',[128,255,255], 'Thickness',3, 'LineType','AA');
+figure, imshow(vis), title('contours')
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

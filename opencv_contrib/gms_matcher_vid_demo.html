@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>GMS matching strategy (video)</title>
+      <meta name="generator" content="MATLAB 9.4">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2018-10-05">
+      <meta name="DC.source" content="gms_matcher_vid_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">GMS matching strategy (video)</h1>
+         <!--introduction-->
+         <p>This sample demonstrates the GMS matching strategy.</p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="opencv_contrib/modules/xfeatures2d/samples/gms_matcher.cpp">opencv_contrib/modules/xfeatures2d/samples/gms_matcher.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <p>Options</p><pre class="codeinput">opts = struct();
+opts.nfeatures = 2500;
+opts.fastThreshold = 20;
+opts.drawSimple = true;
+opts.withRotation = false;
+opts.withScale = false;
+
+<span class="comment">% helper function</span>
+siz = @(img) [size(img,2), size(img,1)];</pre><p>create feature detector and descriptor matcher objects</p><pre class="codeinput">detector = cv.ORB(<span class="string">'MaxFeatures'</span>,opts.nfeatures, <span class="string">'FastThreshold'</span>,opts.fastThreshold);
+matcher = cv.DescriptorMatcher(<span class="string">'BruteForce-Hamming'</span>);</pre><p>initialize camera</p><pre class="codeinput">cap = createVideoCapture(0);
+assert(cap.isOpened());
+frame = cap.read();
+assert(~isempty(frame));</pre><p>prepare UI</p><pre class="codeinput">hImg = imshow(cat(2,frame,frame));
+title(<span class="string">'Matches GMS'</span>)
+hFig = ancestor(hImg, <span class="string">'figure'</span>);
+setappdata(hFig, <span class="string">'flag'</span>,false);
+hBtn = uicontrol(<span class="string">'Parent'</span>,hFig, <span class="string">'Style'</span>,<span class="string">'pushbutton'</span>, <span class="keyword">...</span>
+    <span class="string">'Position'</span>,[20 20 150 20], <span class="string">'String'</span>,<span class="string">'Set reference frame'</span>, <span class="keyword">...</span>
+    <span class="string">'Callback'</span>,@(~,~) setappdata(hFig, <span class="string">'flag'</span>,true));</pre><img src="gms_matcher_vid_demo_01.png"><p>Main loop</p><pre class="codeinput">disp(<span class="string">'Press button to reinitialize the reference image.'</span>)
+disp(<span class="string">'Close figure to quit.'</span>)
+tsec = zeros(3,1);
+[frameRef, kpRef, descRef] = deal([]);
+<span class="keyword">while</span> ishghandle(hFig)
+    <span class="comment">% read frame</span>
+    frame = cap.read();
+    <span class="keyword">if</span> isempty(frame), <span class="keyword">break</span>; <span class="keyword">end</span>
+
+    <span class="comment">% reference frame</span>
+    <span class="keyword">if</span> isempty(frameRef)
+        frameRef = frame;
+        [kpRef, descRef] = detector.detectAndCompute(frameRef);
+    <span class="keyword">end</span>
+
+    <span class="comment">% detect keypoints and compute descriptors</span>
+    tic();
+    [kp, desc] = detector.detectAndCompute(frame);
+    tsec(1) = toc();
+
+    <span class="comment">% match descriptors</span>
+    tic();
+    matchesAll = matcher.match(desc, descRef);
+    tsec(2) = toc();
+
+    <span class="comment">% GMS matching</span>
+    tic();
+    matchesGMS = cv.matchGMS(siz(frame), kp, siz(frameRef), kpRef, matchesAll, <span class="keyword">...</span>
+        <span class="string">'WithRotation'</span>,opts.withRotation, <span class="string">'WithScale'</span>,opts.withScale);
+    tsec(3) = toc();
+
+    <span class="comment">% show GMS matches</span>
+    out = cv.drawMatches(frame, kp, frameRef, kpRef, matchesGMS, <span class="keyword">...</span>
+        <span class="string">'NotDrawSinglePoints'</span>,opts.drawSimple);
+
+    <span class="comment">% display results</span>
+    str = {
+        sprintf(<span class="string">'ORB: %.2f ms'</span>, tsec(1)*1000)
+        sprintf(<span class="string">'Matching: %.2f ms'</span>, tsec(2)*1000)
+        sprintf(<span class="string">'GMS matching: %.2f ms'</span>, tsec(3)*1000)
+    };
+    <span class="keyword">for</span> i=1:numel(str)
+        out = cv.putText(out, str{i}, [20 20*i], <span class="string">'FontScale'</span>,0.5, <span class="string">'Color'</span>,[255 0 0]);
+    <span class="keyword">end</span>
+    set(hImg, <span class="string">'CData'</span>,out)
+    drawnow
+
+    <span class="comment">% check if button was pressed</span>
+    flag = ishghandle(hFig) &amp;&amp; getappdata(hFig, <span class="string">'flag'</span>);
+    <span class="keyword">if</span> flag
+        setappdata(hFig, <span class="string">'flag'</span>,false);
+        frameRef = [];  <span class="comment">% reset reference frame for next iteration</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+cap.release();</pre><pre class="codeoutput">Press button to reinitialize the reference image.
+Close figure to quit.
+</pre><img src="gms_matcher_vid_demo_02.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2018a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% GMS matching strategy (video)
+%
+% This sample demonstrates the GMS matching strategy.
+%
+% Sources:
+%
+% * <opencv_contrib/modules/xfeatures2d/samples/gms_matcher.cpp>
+%
+
+%%
+% Options
+opts = struct();
+opts.nfeatures = 2500;
+opts.fastThreshold = 20;
+opts.drawSimple = true;
+opts.withRotation = false;
+opts.withScale = false;
+
+% helper function
+siz = @(img) [size(img,2), size(img,1)];
+
+%%
+% create feature detector and descriptor matcher objects
+detector = cv.ORB('MaxFeatures',opts.nfeatures, 'FastThreshold',opts.fastThreshold);
+matcher = cv.DescriptorMatcher('BruteForce-Hamming');
+
+%%
+% initialize camera
+cap = createVideoCapture(0);
+assert(cap.isOpened());
+frame = cap.read();
+assert(~isempty(frame));
+
+%%
+% prepare UI
+hImg = imshow(cat(2,frame,frame));
+title('Matches GMS')
+hFig = ancestor(hImg, 'figure');
+setappdata(hFig, 'flag',false);
+hBtn = uicontrol('Parent',hFig, 'Style','pushbutton', ...
+    'Position',[20 20 150 20], 'String','Set reference frame', ...
+    'Callback',@(~,~) setappdata(hFig, 'flag',true));
+
+%%
+% Main loop
+disp('Press button to reinitialize the reference image.')
+disp('Close figure to quit.')
+tsec = zeros(3,1);
+[frameRef, kpRef, descRef] = deal([]);
+while ishghandle(hFig)
+    % read frame
+    frame = cap.read();
+    if isempty(frame), break; end
+
+    % reference frame
+    if isempty(frameRef)
+        frameRef = frame;
+        [kpRef, descRef] = detector.detectAndCompute(frameRef);
+    end
+
+    % detect keypoints and compute descriptors
+    tic();
+    [kp, desc] = detector.detectAndCompute(frame);
+    tsec(1) = toc();
+
+    % match descriptors
+    tic();
+    matchesAll = matcher.match(desc, descRef);
+    tsec(2) = toc();
+
+    % GMS matching
+    tic();
+    matchesGMS = cv.matchGMS(siz(frame), kp, siz(frameRef), kpRef, matchesAll, ...
+        'WithRotation',opts.withRotation, 'WithScale',opts.withScale);
+    tsec(3) = toc();
+
+    % show GMS matches
+    out = cv.drawMatches(frame, kp, frameRef, kpRef, matchesGMS, ...
+        'NotDrawSinglePoints',opts.drawSimple);
+
+    % display results
+    str = {
+        sprintf('ORB: %.2f ms', tsec(1)*1000)
+        sprintf('Matching: %.2f ms', tsec(2)*1000)
+        sprintf('GMS matching: %.2f ms', tsec(3)*1000)
+    };
+    for i=1:numel(str)
+        out = cv.putText(out, str{i}, [20 20*i], 'FontScale',0.5, 'Color',[255 0 0]);
+    end
+    set(hImg, 'CData',out)
+    drawnow
+
+    % check if button was pressed
+    flag = ishghandle(hFig) && getappdata(hFig, 'flag');
+    if flag
+        setappdata(hFig, 'flag',false);
+        frameRef = [];  % reset reference frame for next iteration
+    end
+end
+cap.release();
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

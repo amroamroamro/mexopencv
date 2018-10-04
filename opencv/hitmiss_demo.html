@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Hit-or-Miss Morphological Operation</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="hitmiss_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Hit-or-Miss Morphological Operation</h1>
+         <!--introduction-->
+         <p>In this tutorial you will learn how to find a given configuration or pattern in a binary image by using the Hit-or-Miss transform
+            (also known as Hit-and-Miss transform).
+         </p>
+         <p>This transform is also the basis of more advanced morphological operations such as thinning or pruning.</p>
+         <p>We will use the OpenCV function <tt>cv.morphologyEx</tt>.
+         </p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://docs.opencv.org/3.3.0/db/d06/tutorial_hitOrMiss.html">https://docs.opencv.org/3.3.0/db/d06/tutorial_hitOrMiss.html</a></li>
+               <li><a href="https://github.com/opencv/opencv/blob/3.3.0/samples/cpp/tutorial_code/ImgProc/HitMiss.cpp">https://github.com/opencv/opencv/blob/3.3.0/samples/cpp/tutorial_code/ImgProc/HitMiss.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Theory</a></li>
+               <li><a href="#3">Other examples</a></li>
+               <li><a href="#4">Code</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Theory</h2>
+         <p>Morphological operators process images based on their shape. These operators apply one or more <i>structuring elements</i> to an input image to obtain the output image. The two basic morphological operations are the <i>erosion</i> and the <i>dilation</i>. The combination of these two operations generate advanced morphological transformations such as <i>opening</i>, <i>closing</i>, or <i>top-hat</i> transform. To know more about these and other basic morphological operations refer to previous demos.
+         </p>
+         <p>The Hit-or-Miss transformation is useful to find patterns in binary images. In particular, it finds those pixels whose neighbourhood
+            matches the shape of a first structuring element <img src="hitmiss_demo_eq03791553578301736702.png" alt="$B_1$" class="equation" width="15" height="12"> while not matching the shape of a second structuring element <img src="hitmiss_demo_eq07543623619137076523.png" alt="$B_2$" class="equation" width="16" height="12"> at the same time. Mathematically, the operation applied to an image <img src="hitmiss_demo_eq05147331747641807187.png" alt="$A$" class="equation" width="10" height="11"> can be expressed as follows:
+         </p>
+         <p><img src="hitmiss_demo_eq09911868288646491199.png" alt="$$A \otimes B = (A \ominus B_1) \cap (A^c \ominus B_2)$$" class="equation" width="195" height="15"></p>
+         <p>Therefore, the hit-or-miss operation comprises three steps:</p>
+         <p>*# Erode image <img src="hitmiss_demo_eq05147331747641807187.png" alt="$A$" class="equation" width="10" height="11"> with structuring element <img src="hitmiss_demo_eq03791553578301736702.png" alt="$B_1$" class="equation" width="15" height="12">. *# Erode the complement of image <img src="hitmiss_demo_eq05147331747641807187.png" alt="$A$" class="equation" width="10" height="11"> (<img src="hitmiss_demo_eq00357070126405175196.png" alt="$A^c$" class="equation" width="15" height="11">) with structuring element <img src="hitmiss_demo_eq07543623619137076523.png" alt="$B_2$" class="equation" width="16" height="12">. *# AND results from step 1 and step 2.
+         </p>
+         <p>The structuring elements <img src="hitmiss_demo_eq03791553578301736702.png" alt="$B_1$" class="equation" width="15" height="12"> and <img src="hitmiss_demo_eq07543623619137076523.png" alt="$B_2$" class="equation" width="16" height="12"> can be combined into a single element <img src="hitmiss_demo_eq10170753361147586657.png" alt="$B$" class="equation" width="11" height="10">. Let's see an example:
+         </p>
+         <p><img src="https://docs.opencv.org/3.3.0/hitmiss_kernels.png"></p>
+         <p><b>Structuring elements (kernels). Left: kernel to 'hit'. Middle: kernel to 'miss'. Right: final combined kernel</b></p>
+         <p>In this case, we are looking for a pattern in which the central pixel belongs to the background while the north, south, east,
+            and west pixels belong to the foreground. The rest of pixels in the neighbourhood can be of any kind, we don't care about
+            them. Now, let's apply this kernel to an input image:
+         </p>
+         <p><img src="https://docs.opencv.org/3.3.0/hitmiss_input.png"></p>
+         <p>You can see that the pattern is found in just one location within the image.</p>
+         <p><img src="https://docs.opencv.org/3.3.0/hitmiss_output.png"></p>
+         <h2 id="3">Other examples</h2>
+         <p>Here you can find the output results of applying different kernels to the same input image used before:</p>
+         <div>
+            <ul>
+               <li>Kernel and output result for finding top-right corners</li>
+            </ul>
+         </div>
+         <p><img src="https://docs.opencv.org/3.3.0/hitmiss_example2.png"></p>
+         <div>
+            <ul>
+               <li>Kernel and output result for finding left end points</li>
+            </ul>
+         </div>
+         <p><img src="https://docs.opencv.org/3.3.0/hitmiss_example3.png"></p>
+         <p>Now try your own patterns!</p>
+         <h2 id="4">Code</h2><pre class="codeinput"><span class="keyword">function</span> hitmiss_demo()</pre><p>input image</p><pre class="codeinput">    img = 255 * uint8([
+        0 0 0 0 0 0 0 0; <span class="keyword">...</span>
+        0 1 1 1 0 0 0 1; <span class="keyword">...</span>
+        0 1 1 1 0 0 0 0; <span class="keyword">...</span>
+        0 1 1 1 0 1 0 0; <span class="keyword">...</span>
+        0 0 1 0 0 0 0 0; <span class="keyword">...</span>
+        0 0 1 0 0 1 1 0; <span class="keyword">...</span>
+        0 1 0 1 0 0 1 0; <span class="keyword">...</span>
+        0 1 1 0 0 0 0 0
+    ]);
+    figure, show_image(img), title(<span class="string">'Original'</span>)</pre><img src="hitmiss_demo_02.png"><p>structuring element</p><pre class="codeinput">    kernel = int32([0 1 0; 1 -1 1; 0 1 0]);
+    figure, show_image(kernel), colorbar, title(<span class="string">'Kernel'</span>)</pre><img src="hitmiss_demo_03.png"><p>hit-or-mess operation</p><pre class="codeinput">    out = cv.morphologyEx(img, <span class="string">'HitMiss'</span>, <span class="string">'Element'</span>,kernel);
+    figure, show_image(out), title(<span class="string">'Hit or Miss'</span>)</pre><img src="hitmiss_demo_04.png"><pre class="codeinput"><span class="keyword">end</span></pre><pre class="codeinput"><span class="keyword">function</span> show_image(img)
+    <span class="comment">% pad because PCOLOR chops off last row and column</span>
+    img = cv.copyMakeBorder(img, [0 1 0 1], <span class="string">'BorderType'</span>,<span class="string">'Constant'</span>);
+    <span class="keyword">if</span> mexopencv.isOctave()
+        img = double(img);
+    <span class="keyword">end</span>
+    h = pcolor(img);
+    set(h, <span class="string">'EdgeColor'</span>,<span class="string">'b'</span>);
+    set(gca, <span class="string">'XAxisLocation'</span>,<span class="string">'top'</span>)
+    axis <span class="string">image</span> <span class="string">ij</span>, colormap(gray(3))
+<span class="keyword">end</span></pre><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div><script type="text/x-mathjax-config">
+  // https://stackoverflow.com/a/14631703/97160
+  MathJax.Extension.myImg2jax = {
+    version: "1.0",
+    PreProcess: function (element) {
+      var images = element.getElementsByTagName("img");
+      for (var i = images.length - 1; i >= 0; i--) {
+        var img = images[i];
+        if (img.className === "equation") {
+          var match = img.alt.match(/^(\$\$?)([\s\S]*)\1$/m);
+          if (!match) continue;
+          var script = document.createElement("script");
+          script.type = "math/tex";
+          if (match[1] === "$$") {script.type += ";mode=display"}
+          MathJax.HTML.setScript(script, match[2]);
+          img.parentNode.replaceChild(script, img);
+        }
+      }
+    }
+  };
+  MathJax.Hub.Register.PreProcessor(["PreProcess", MathJax.Extension.myImg2jax]);
+  </script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML"></script>
+      <!--
+##### SOURCE BEGIN #####
+%% Hit-or-Miss Morphological Operation
+%
+% In this tutorial you will learn how to find a given configuration or pattern
+% in a binary image by using the Hit-or-Miss transform (also known as
+% Hit-and-Miss transform).
+%
+% This transform is also the basis of more advanced morphological operations
+% such as thinning or pruning.
+%
+% We will use the OpenCV function |cv.morphologyEx|.
+%
+% Sources:
+%
+% * <https://docs.opencv.org/3.3.0/db/d06/tutorial_hitOrMiss.html>
+% * <https://github.com/opencv/opencv/blob/3.3.0/samples/cpp/tutorial_code/ImgProc/HitMiss.cpp>
+%
+
+%% Theory
+%
+% Morphological operators process images based on their shape. These operators
+% apply one or more _structuring elements_ to an input image to obtain the
+% output image. The two basic morphological operations are the _erosion_ and
+% the _dilation_. The combination of these two operations generate advanced
+% morphological transformations such as _opening_, _closing_, or _top-hat_
+% transform. To know more about these and other basic morphological operations
+% refer to previous demos.
+%
+% The Hit-or-Miss transformation is useful to find patterns in binary images.
+% In particular, it finds those pixels whose neighbourhood matches the shape
+% of a first structuring element $B_1$ while not matching the shape of a
+% second structuring element $B_2$ at the same time. Mathematically, the
+% operation applied to an image $A$ can be expressed as follows:
+%
+% $$A \otimes B = (A \ominus B_1) \cap (A^c \ominus B_2)$$
+%
+% Therefore, the hit-or-miss operation comprises three steps:
+%
+% *# Erode image $A$ with structuring element $B_1$.
+% *# Erode the complement of image $A$ ($A^c$) with structuring element $B_2$.
+% *# AND results from step 1 and step 2.
+%
+% The structuring elements $B_1$ and $B_2$ can be combined into a single
+% element $B$. Let's see an example:
+%
+% <<https://docs.opencv.org/3.3.0/hitmiss_kernels.png>>
+%
+% *Structuring elements (kernels). Left: kernel to 'hit'. Middle: kernel to
+% 'miss'. Right: final combined kernel*
+%
+% In this case, we are looking for a pattern in which the central pixel
+% belongs to the background while the north, south, east, and west pixels
+% belong to the foreground. The rest of pixels in the neighbourhood can be of
+% any kind, we don't care about them. Now, let's apply this kernel to an input
+% image:
+%
+% <<https://docs.opencv.org/3.3.0/hitmiss_input.png>>
+%
+% You can see that the pattern is found in just one location within the image.
+%
+% <<https://docs.opencv.org/3.3.0/hitmiss_output.png>>
+%
+%% Other examples
+%
+% Here you can find the output results of applying different kernels to the
+% same input image used before:
+%
+% * Kernel and output result for finding top-right corners
+%
+% <<https://docs.opencv.org/3.3.0/hitmiss_example2.png>>
+%
+% * Kernel and output result for finding left end points
+%
+% <<https://docs.opencv.org/3.3.0/hitmiss_example3.png>>
+%
+% Now try your own patterns!
+%
+
+%% Code
+
+function hitmiss_demo()
+    %%
+    % input image
+    img = 255 * uint8([
+        0 0 0 0 0 0 0 0; ...
+        0 1 1 1 0 0 0 1; ...
+        0 1 1 1 0 0 0 0; ...
+        0 1 1 1 0 1 0 0; ...
+        0 0 1 0 0 0 0 0; ...
+        0 0 1 0 0 1 1 0; ...
+        0 1 0 1 0 0 1 0; ...
+        0 1 1 0 0 0 0 0
+    ]);
+    figure, show_image(img), title('Original')
+
+    %%
+    % structuring element
+    kernel = int32([0 1 0; 1 -1 1; 0 1 0]);
+    figure, show_image(kernel), colorbar, title('Kernel')
+
+    %%
+    % hit-or-mess operation
+    out = cv.morphologyEx(img, 'HitMiss', 'Element',kernel);
+    figure, show_image(out), title('Hit or Miss')
+end
+
+%%
+function show_image(img)
+    % pad because PCOLOR chops off last row and column
+    img = cv.copyMakeBorder(img, [0 1 0 1], 'BorderType','Constant');
+    if mexopencv.isOctave()
+        img = double(img);
+    end
+    h = pcolor(img);
+    set(h, 'EdgeColor','b');
+    set(gca, 'XAxisLocation','top')
+    axis image ij, colormap(gray(3))
+end
+
+##### SOURCE END #####
+--></body>
+</html>

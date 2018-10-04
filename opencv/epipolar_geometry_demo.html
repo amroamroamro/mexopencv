@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Epipolar Geometry</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="epipolar_geometry_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Epipolar Geometry</h1>
+         <!--introduction-->
+         <p>In this sample:</p>
+         <div>
+            <ul>
+               <li>We will learn about the basics of multiview geometry</li>
+               <li>We will see what is epipole, epipolar lines, epipolar constraint etc.</li>
+            </ul>
+         </div>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://docs.opencv.org/3.2.0/da/de9/tutorial_py_epipolar_geometry.html">https://docs.opencv.org/3.2.0/da/de9/tutorial_py_epipolar_geometry.html</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Theory</a></li>
+               <li><a href="#3">Code</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Theory</h2>
+         <p>When we take an image using pin-hole camera, we loose an important information, i.e depth of the image, or how far is each
+            point in the image from the camera because it is a 3D-to-2D conversion. So it is an important question whether we can find
+            the depth information using these cameras. And the answer is to use more than one camera. Our eyes works in similar way where
+            we use two cameras (two eyes) which is called stereo vision. So let's see what OpenCV provides in this field.
+         </p>
+         <p>(<i>Learning OpenCV</i> by Gary Bradsky has a lot of information in this field.)
+         </p>
+         <p>Before going to depth images, let's first understand some basic concepts in multiview geometry. In this section we will deal
+            with epipolar geometry. See the image below which shows a basic setup with two cameras taking the image of same scene.
+         </p>
+         <p><img src="https://docs.opencv.org/3.2.0/epipolar.jpg"></p>
+         <p>If we are using only the left camera, we can't find the 3D point corresponding to the point <img src="epipolar_geometry_demo_eq12428413953531653171.png" alt="$x$" class="equation" width="8" height="7"> in image because every point on the line <img src="epipolar_geometry_demo_eq09876005557665873311.png" alt="$OX$" class="equation" width="24" height="11"> projects to the same point on the image plane. But consider the right image also. Now different points on the line <img src="epipolar_geometry_demo_eq09876005557665873311.png" alt="$OX$" class="equation" width="24" height="11"> projects to different points (<img src="epipolar_geometry_demo_eq16467412212572334508.png" alt="$x'$" class="equation" width="12" height="12">) in right plane. So with these two images, we can triangulate the correct 3D point. This is the whole idea.
+         </p>
+         <p>The projection of the different points on <img src="epipolar_geometry_demo_eq09876005557665873311.png" alt="$OX$" class="equation" width="24" height="11"> form a line on right plane (line <img src="epipolar_geometry_demo_eq14084997902502981745.png" alt="$l'$" class="equation" width="7" height="12">). We call it <b>epiline</b> corresponding to the point <img src="epipolar_geometry_demo_eq12428413953531653171.png" alt="$x$" class="equation" width="8" height="7">. It means, to find the point <img src="epipolar_geometry_demo_eq12428413953531653171.png" alt="$x$" class="equation" width="8" height="7"> on the right image, search along this epiline. It should be somewhere on this line. (Think of it this way, to find the matching
+            point in other image, you need not search the whole image, just search along the epiline. So it provides better performance
+            and accuracy). This is called <b>Epipolar Constraint</b>. Similarly all points will have its corresponding epilines in the other image. The plane <img src="epipolar_geometry_demo_eq14585720892884652760.png" alt="$XOO'$" class="equation" width="40" height="12"> is called <b>Epipolar Plane</b>.
+         </p>
+         <p><img src="epipolar_geometry_demo_eq14346102719673728666.png" alt="$O$" class="equation" width="11" height="11"> and <img src="epipolar_geometry_demo_eq15953208482772248986.png" alt="$O'$" class="equation" width="14" height="12"> are the camera centers. From the setup given above, you can see that projection of right camera <img src="epipolar_geometry_demo_eq15953208482772248986.png" alt="$O'$" class="equation" width="14" height="12"> is seen on the left image at the point, <img src="epipolar_geometry_demo_eq12226254761175012236.png" alt="$e$" class="equation" width="6" height="7">. It is called the <b>epipole</b>. Epipole is the point of intersection of line through camera centers and the image planes. Similarly <img src="epipolar_geometry_demo_eq16490712530389353837.png" alt="$e'$" class="equation" width="9" height="12"> is the epipole of the left camera. In some cases, you won't be able to locate the epipole in the image, they may be outside
+            the image (which means, one camera doesn't see the other).
+         </p>
+         <p>All the epilines pass through its epipole. So to find the location of epipole, we can find many epilines and find their intersection
+            point.
+         </p>
+         <p>So in this session, we focus on finding epipolar lines and epipoles. But to find them, we need two more ingredients, <b>Fundamental Matrix (F)</b> and <b>Essential Matrix (E)</b>. Essential Matrix contains the information about translation and rotation, which describe the location of the second camera
+            relative to the first in global coordinates. See the image below (Image courtesy: <i>Learning OpenCV</i> by Gary Bradsky):
+         </p>
+         <p><img src="https://docs.opencv.org/3.2.0/essential_matrix.jpg"></p>
+         <p>But we prefer measurements to be done in pixel coordinates, right? Fundamental Matrix contains the same information as Essential
+            Matrix in addition to the information about the intrinsics of both cameras so that we can relate the two cameras in pixel
+            coordinates. (If we are using rectified images and normalize the point by dividing by the focal lengths, <img src="epipolar_geometry_demo_eq17195906222378412068.png" alt="$F=E$" class="equation" width="42" height="10">). In simple words, Fundamental Matrix F, maps a point in one image to a line (epiline) in the other image. This is calculated
+            from matching points from both the images. A minimum of 8 such points are required to find the fundamental matrix (while using
+            8-point algorithm). More points are preferred and use RANSAC to get a more robust result.
+         </p>
+         <h2 id="3">Code</h2>
+         <p>First we need to find as many possible matches between two images to find the fundamental matrix. For this, we use SIFT descriptors
+            with FLANN based matcher and ratio test.
+         </p>
+         <p>Next we find the Fundamental Matrix from the list of best matches from both the images.</p>
+         <p>Then we find the epilines. Epilines corresponding to the points in first image are drawn on second image. So mentioning of
+            correct images are important here. We get an array of lines. So we define a new function to draw these lines on the images.
+         </p>
+         <p>Below is the result we get:</p>
+         <p><img src="https://docs.opencv.org/3.2.0/epiresult.jpg"></p>
+         <p>You can see in the left image that all epilines are converging at a point outside the image at right side. That meeting point
+            is the epipole.
+         </p>
+         <p>For better results, images with good resolution and many non-planar points should be used.</p>
+         <p>Notes:</p>
+         <div>
+            <ul>
+               <li>One important topic is the forward movement of camera. Then epipoles will   be seen at the same locations in both with epilines
+                  emerging from a fixed   point. See   <a href="http://answers.opencv.org/question/17912/location-of-epipole/">this</a>.
+               </li>
+               <li>Fundamental Matrix estimation is sensitive to quality of matches, outliers   etc. It becomes worse when all selected matches
+                  lie on the same plane. See   <a href="http://answers.opencv.org/question/18125/epilines-not-correct/">this</a>.
+               </li>
+            </ul>
+         </div><pre class="codeinput"><span class="keyword">function</span> epipolar_geometry_demo()</pre><p>a pair of stereo images (grayscale)</p><pre class="codeinput">    img1 = cv.imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'books_left.jpg'</span>), <span class="keyword">...</span>
+        <span class="string">'Grayscale'</span>,true);  <span class="comment">% query image</span>
+    img2 = cv.imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'books_right.jpg'</span>), <span class="keyword">...</span>
+        <span class="string">'Grayscale'</span>,true); <span class="comment">% train image</span></pre><p>detect keypoints and calculate descriptors using SIFT</p><pre class="codeinput">    obj = cv.SIFT(<span class="string">'ConstrastThreshold'</span>,0.03);
+    [kp1,desc1] = obj.detectAndCompute(img1);
+    [kp2,desc2] = obj.detectAndCompute(img2);</pre><p>match descriptors using FLANN</p><pre class="codeinput">    matcher = cv.DescriptorMatcher(<span class="string">'FlannBasedMatcher'</span>, <span class="keyword">...</span>
+        <span class="string">'Index'</span>,{<span class="string">'KDTree'</span>, <span class="string">'Trees'</span>,5}, <span class="string">'Search'</span>,{<span class="string">'Checks'</span>,50});
+    m = matcher.knnMatch(desc1, desc2, 2);</pre><p>keep only "good" matches (ratio test as per Lowe's paper)</p><pre class="codeinput">    m = cat(1, m{:});    <span class="comment">% N-by-2 array of structs</span>
+    idx_good = ([m(:,1).distance] &lt; 0.8*[m(:,2).distance]);
+    m = m(idx_good,1);</pre><p>extract keypoints from filtered matches</p><pre class="codeinput">    pts1 = cat(1, kp1([m.queryIdx]+1).pt);
+    pts2 = cat(1, kp2([m.trainIdx]+1).pt);
+    <span class="keyword">if</span> true
+        pts1 = int32(pts1);
+        pts2 = int32(pts2);
+    <span class="keyword">end</span></pre><p>find Fundamental matrix</p><pre class="codeinput">    [F,mask] = cv.findFundamentalMat(pts1, pts2, <span class="string">'Method'</span>,<span class="string">'LMedS'</span>);
+    mask = logical(mask);</pre><p>select only inlier points</p><pre class="codeinput">    pts1 = pts1(mask,:);
+    pts2 = pts2(mask,:);</pre><p>random colors to draw matching points and lines</p><pre class="codeinput">    clrs = randi([0 255], [size(pts1,1) 3], <span class="string">'uint8'</span>);
+    clrs(:,4) = 0;</pre><p>find epilines corresponding to points in right image (second image) and draw its lines on left image</p><pre class="codeinput">    lines1 = cv.computeCorrespondEpilines(pts2, F, <span class="string">'WhichImage'</span>,2);
+    [img11,~] = drawlines(img1, img2, lines1, pts1, pts2, clrs);</pre><p>find epilines corresponding to points in left image (first image) and draw its lines on right image</p><pre class="codeinput">    lines2 = cv.computeCorrespondEpilines(pts1, F, <span class="string">'WhichImage'</span>,1);
+    [img22,~] = drawlines(img2, img1, lines2, pts2, pts1, clrs);</pre><p>show result</p><pre class="codeinput">    <span class="keyword">if</span> ~mexopencv.isOctave() &amp;&amp; mexopencv.require(<span class="string">'images'</span>)
+        imshowpair(img11, img22, <span class="string">'montage'</span>)
+        title(<span class="string">'Left/Right'</span>)
+    <span class="keyword">else</span>
+        figure(<span class="string">'Position'</span>,[200 200 1200 400])
+        subplot(121), imshow(img11), title(<span class="string">'Left'</span>)
+        subplot(122), imshow(img22), title(<span class="string">'Right'</span>)
+    <span class="keyword">end</span></pre><img src="epipolar_geometry_demo_01.png"><pre class="codeinput"><span class="keyword">end</span>
+
+<span class="keyword">function</span> [img1,img2] = drawlines(img1, img2, lines, pts1, pts2, clrs)
+    <span class="comment">%DRAWLINES  Draw epilines and points on images</span>
+    <span class="comment">%</span>
+    <span class="comment">%     [img1,img2] = drawlines(img1, img2, lines, pts1, pts2, clrs)</span>
+    <span class="comment">%</span>
+    <span class="comment">% ## Input</span>
+    <span class="comment">% * __img1__ first image</span>
+    <span class="comment">% * __img2__ second image</span>
+    <span class="comment">% * __lines__ epilines corresponding to `pts2` in `img2`</span>
+    <span class="comment">% * __pts1__ points in `img1`</span>
+    <span class="comment">% * __pts2__ points in `img2`</span>
+    <span class="comment">% * __clrs__ color of each line and matching points</span>
+    <span class="comment">%</span>
+    <span class="comment">% ## Output</span>
+    <span class="comment">% * __img1__ image with drawn points and epilines for the points in `img2`</span>
+    <span class="comment">% * __img2__ image with drawn points</span>
+    <span class="comment">%</span>
+    <span class="comment">% Epilines corresponding to the points in 1st image is drawn on 2nd image.</span>
+    <span class="comment">%</span>
+    <span class="comment">% See also: estimateFundamentalMatrix, epipolarLine, lineToBorderPoints</span>
+    <span class="comment">%</span>
+
+    <span class="comment">% convert to RGB</span>
+    img1 = cv.cvtColor(img1, <span class="string">'GRAY2RGB'</span>);
+    img2 = cv.cvtColor(img2, <span class="string">'GRAY2RGB'</span>);
+
+    <span class="comment">% epilines</span>
+    w = size(img1,2);
+    N = size(lines,1);
+    p1 = int32([zeros(N,1), -lines(:,3)./lines(:,2)]);
+    p2 = int32([ones(N,1)*w, -(lines(:,3)+lines(:,1)*w)./lines(:,2)]);
+    img1 = cv.line(img1, p1, p2, <span class="string">'Colors'</span>,clrs, <span class="string">'LineType'</span>,<span class="string">'AA'</span>);
+
+    <span class="comment">% matching points</span>
+    img1 = cv.circle(img1, pts1, 5, <span class="string">'Colors'</span>,clrs, <span class="string">'Thickness'</span>,<span class="string">'Filled'</span>);
+    img2 = cv.circle(img2, pts2, 5, <span class="string">'Colors'</span>,clrs, <span class="string">'Thickness'</span>,<span class="string">'Filled'</span>);
+<span class="keyword">end</span></pre><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div><script type="text/x-mathjax-config">
+  // https://stackoverflow.com/a/14631703/97160
+  MathJax.Extension.myImg2jax = {
+    version: "1.0",
+    PreProcess: function (element) {
+      var images = element.getElementsByTagName("img");
+      for (var i = images.length - 1; i >= 0; i--) {
+        var img = images[i];
+        if (img.className === "equation") {
+          var match = img.alt.match(/^(\$\$?)([\s\S]*)\1$/m);
+          if (!match) continue;
+          var script = document.createElement("script");
+          script.type = "math/tex";
+          if (match[1] === "$$") {script.type += ";mode=display"}
+          MathJax.HTML.setScript(script, match[2]);
+          img.parentNode.replaceChild(script, img);
+        }
+      }
+    }
+  };
+  MathJax.Hub.Register.PreProcessor(["PreProcess", MathJax.Extension.myImg2jax]);
+  </script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML"></script>
+      <!--
+##### SOURCE BEGIN #####
+%% Epipolar Geometry
+%
+% In this sample:
+%
+% * We will learn about the basics of multiview geometry
+% * We will see what is epipole, epipolar lines, epipolar constraint etc.
+%
+% Sources:
+%
+% * <https://docs.opencv.org/3.2.0/da/de9/tutorial_py_epipolar_geometry.html>
+%
+
+%% Theory
+%
+% When we take an image using pin-hole camera, we loose an important
+% information, i.e depth of the image, or how far is each point in the image
+% from the camera because it is a 3D-to-2D conversion. So it is an important
+% question whether we can find the depth information using these cameras. And
+% the answer is to use more than one camera. Our eyes works in similar way
+% where we use two cameras (two eyes) which is called stereo vision. So let's
+% see what OpenCV provides in this field.
+%
+% (_Learning OpenCV_ by Gary Bradsky has a lot of information in this field.)
+%
+% Before going to depth images, let's first understand some basic concepts in
+% multiview geometry. In this section we will deal with epipolar geometry. See
+% the image below which shows a basic setup with two cameras taking the image
+% of same scene.
+%
+% <<https://docs.opencv.org/3.2.0/epipolar.jpg>>
+%
+% If we are using only the left camera, we can't find the 3D point
+% corresponding to the point $x$ in image because every point on the line
+% $OX$ projects to the same point on the image plane. But consider the right
+% image also. Now different points on the line $OX$ projects to different
+% points ($x'$) in right plane. So with these two images, we can triangulate
+% the correct 3D point. This is the whole idea.
+%
+% The projection of the different points on $OX$ form a line on right plane
+% (line $l'$). We call it *epiline* corresponding to the point $x$. It means,
+% to find the point $x$ on the right image, search along this epiline. It
+% should be somewhere on this line. (Think of it this way, to find the
+% matching point in other image, you need not search the whole image, just
+% search along the epiline. So it provides better performance and accuracy).
+% This is called *Epipolar Constraint*. Similarly all points will have its
+% corresponding epilines in the other image. The plane $XOO'$ is called
+% *Epipolar Plane*.
+%
+% $O$ and $O'$ are the camera centers. From the setup given above, you can see
+% that projection of right camera $O'$ is seen on the left image at the point,
+% $e$. It is called the *epipole*. Epipole is the point of intersection of
+% line through camera centers and the image planes. Similarly $e'$ is the
+% epipole of the left camera. In some cases, you won't be able to locate the
+% epipole in the image, they may be outside the image (which means, one camera
+% doesn't see the other).
+%
+% All the epilines pass through its epipole. So to find the location of
+% epipole, we can find many epilines and find their intersection point.
+%
+% So in this session, we focus on finding epipolar lines and epipoles. But to
+% find them, we need two more ingredients, *Fundamental Matrix (F)* and
+% *Essential Matrix (E)*. Essential Matrix contains the information about
+% translation and rotation, which describe the location of the second camera
+% relative to the first in global coordinates. See the image below
+% (Image courtesy: _Learning OpenCV_ by Gary Bradsky):
+%
+% <<https://docs.opencv.org/3.2.0/essential_matrix.jpg>>
+%
+% But we prefer measurements to be done in pixel coordinates, right?
+% Fundamental Matrix contains the same information as Essential Matrix in
+% addition to the information about the intrinsics of both cameras so that we
+% can relate the two cameras in pixel coordinates. (If we are using rectified
+% images and normalize the point by dividing by the focal lengths, $F=E$). In
+% simple words, Fundamental Matrix F, maps a point in one image to a line
+% (epiline) in the other image. This is calculated from matching points from
+% both the images. A minimum of 8 such points are required to find the
+% fundamental matrix (while using 8-point algorithm). More points are
+% preferred and use RANSAC to get a more robust result.
+%
+
+%% Code
+%
+% First we need to find as many possible matches between two images to find
+% the fundamental matrix. For this, we use SIFT descriptors with FLANN based
+% matcher and ratio test.
+%
+% Next we find the Fundamental Matrix from the list of best matches from both
+% the images.
+%
+% Then we find the epilines. Epilines corresponding to the points in first
+% image are drawn on second image. So mentioning of correct images are
+% important here. We get an array of lines. So we define a new function to
+% draw these lines on the images.
+%
+% Below is the result we get:
+%
+% <<https://docs.opencv.org/3.2.0/epiresult.jpg>>
+%
+% You can see in the left image that all epilines are converging at a point
+% outside the image at right side. That meeting point is the epipole.
+%
+% For better results, images with good resolution and many non-planar points
+% should be used.
+%
+% Notes:
+%
+% * One important topic is the forward movement of camera. Then epipoles will
+%   be seen at the same locations in both with epilines emerging from a fixed
+%   point. See
+%   <http://answers.opencv.org/question/17912/location-of-epipole/ this>.
+% * Fundamental Matrix estimation is sensitive to quality of matches, outliers
+%   etc. It becomes worse when all selected matches lie on the same plane. See
+%   <http://answers.opencv.org/question/18125/epilines-not-correct/ this>.
+%
+
+function epipolar_geometry_demo()
+    %%
+    % a pair of stereo images (grayscale)
+    img1 = cv.imread(fullfile(mexopencv.root(),'test','books_left.jpg'), ...
+        'Grayscale',true);  % query image
+    img2 = cv.imread(fullfile(mexopencv.root(),'test','books_right.jpg'), ...
+        'Grayscale',true); % train image
+
+    %%
+    % detect keypoints and calculate descriptors using SIFT
+    obj = cv.SIFT('ConstrastThreshold',0.03);
+    [kp1,desc1] = obj.detectAndCompute(img1);
+    [kp2,desc2] = obj.detectAndCompute(img2);
+
+    %%
+    % match descriptors using FLANN
+    matcher = cv.DescriptorMatcher('FlannBasedMatcher', ...
+        'Index',{'KDTree', 'Trees',5}, 'Search',{'Checks',50});
+    m = matcher.knnMatch(desc1, desc2, 2);
+
+    %%
+    % keep only "good" matches (ratio test as per Lowe's paper)
+    m = cat(1, m{:});    % N-by-2 array of structs
+    idx_good = ([m(:,1).distance] < 0.8*[m(:,2).distance]);
+    m = m(idx_good,1);
+
+    %%
+    % extract keypoints from filtered matches
+    pts1 = cat(1, kp1([m.queryIdx]+1).pt);
+    pts2 = cat(1, kp2([m.trainIdx]+1).pt);
+    if true
+        pts1 = int32(pts1);
+        pts2 = int32(pts2);
+    end
+
+    %%
+    % find Fundamental matrix
+    [F,mask] = cv.findFundamentalMat(pts1, pts2, 'Method','LMedS');
+    mask = logical(mask);
+
+    %%
+    % select only inlier points
+    pts1 = pts1(mask,:);
+    pts2 = pts2(mask,:);
+
+    %%
+    % random colors to draw matching points and lines
+    clrs = randi([0 255], [size(pts1,1) 3], 'uint8');
+    clrs(:,4) = 0;
+
+    %%
+    % find epilines corresponding to points in right image (second image)
+    % and draw its lines on left image
+    lines1 = cv.computeCorrespondEpilines(pts2, F, 'WhichImage',2);
+    [img11,~] = drawlines(img1, img2, lines1, pts1, pts2, clrs);
+
+    %%
+    % find epilines corresponding to points in left image (first image)
+    % and draw its lines on right image
+    lines2 = cv.computeCorrespondEpilines(pts1, F, 'WhichImage',1);
+    [img22,~] = drawlines(img2, img1, lines2, pts2, pts1, clrs);
+
+    %%
+    % show result
+    if ~mexopencv.isOctave() && mexopencv.require('images')
+        imshowpair(img11, img22, 'montage')
+        title('Left/Right')
+    else
+        figure('Position',[200 200 1200 400])
+        subplot(121), imshow(img11), title('Left')
+        subplot(122), imshow(img22), title('Right')
+    end
+end
+
+function [img1,img2] = drawlines(img1, img2, lines, pts1, pts2, clrs)
+    %DRAWLINES  Draw epilines and points on images
+    %
+    %     [img1,img2] = drawlines(img1, img2, lines, pts1, pts2, clrs)
+    %
+    % ## Input
+    % * __img1__ first image
+    % * __img2__ second image
+    % * __lines__ epilines corresponding to `pts2` in `img2`
+    % * __pts1__ points in `img1`
+    % * __pts2__ points in `img2`
+    % * __clrs__ color of each line and matching points
+    %
+    % ## Output
+    % * __img1__ image with drawn points and epilines for the points in `img2`
+    % * __img2__ image with drawn points
+    %
+    % Epilines corresponding to the points in 1st image is drawn on 2nd image.
+    %
+    % See also: estimateFundamentalMatrix, epipolarLine, lineToBorderPoints
+    %
+
+    % convert to RGB
+    img1 = cv.cvtColor(img1, 'GRAY2RGB');
+    img2 = cv.cvtColor(img2, 'GRAY2RGB');
+
+    % epilines
+    w = size(img1,2);
+    N = size(lines,1);
+    p1 = int32([zeros(N,1), -lines(:,3)./lines(:,2)]);
+    p2 = int32([ones(N,1)*w, -(lines(:,3)+lines(:,1)*w)./lines(:,2)]);
+    img1 = cv.line(img1, p1, p2, 'Colors',clrs, 'LineType','AA');
+
+    % matching points
+    img1 = cv.circle(img1, pts1, 5, 'Colors',clrs, 'Thickness','Filled');
+    img2 = cv.circle(img2, pts2, 5, 'Colors',clrs, 'Thickness','Filled');
+end
+
+##### SOURCE END #####
+--></body>
+</html>

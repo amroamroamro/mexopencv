@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Lucas-Kanade Optical Flow</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="lucas_kanade_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Lucas-Kanade Optical Flow</h1>
+         <!--introduction-->
+         <p>In this demo, we will:</p>
+         <div>
+            <ul>
+               <li>understand the concepts of optical flow and its estimation using   Lucas-Kanade method.</li>
+               <li>use functions like <tt>cv.calcOpticalFlowPyrLK</tt> to track feature points   in a video.
+               </li>
+            </ul>
+         </div>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://docs.opencv.org/3.2.0/d7/d8b/tutorial_py_lucas_kanade.html">https://docs.opencv.org/3.2.0/d7/d8b/tutorial_py_lucas_kanade.html</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Optical Flow</a></li>
+               <li><a href="#3">Lucas-Kanade method</a></li>
+               <li><a href="#4">Lucas-Kanade Optical Flow in OpenCV</a></li>
+               <li><a href="#5">Video</a></li>
+               <li><a href="#6">First frame</a></li>
+               <li><a href="#11">Main loop</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Optical Flow</h2>
+         <p>Optical flow is the pattern of apparent motion of image objects between two consecutive frames caused by the movemement of
+            object or camera. It is 2D vector field where each vector is a displacement vector showing the movement of points from first
+            frame to second. Consider the image below:
+         </p>
+         <p><img src="https://docs.opencv.org/3.2.0/optical_flow_basic1.jpg"></p>
+         <p>It shows a ball moving in 5 consecutive frames. The arrow shows its displacement vector. Optical flow has many applications
+            in areas like:
+         </p>
+         <div>
+            <ul>
+               <li>Structure from Motion</li>
+               <li>Video Compression</li>
+               <li>Video Stabilization</li>
+               <li>etc.</li>
+            </ul>
+         </div>
+         <p>Optical flow works on several assumptions:</p>
+         <div>
+            <ol>
+               <li>The pixel intensities of an object do not change between consecutive frames</li>
+               <li>Neighbouring pixels have similar motion</li>
+            </ol>
+         </div>
+         <p>Consider a pixel <img src="lucas_kanade_demo_eq14778109266949104991.png" alt="$I(x,y,t)$" class="equation" width="52" height="15"> in first frame. It moves by distance <img src="lucas_kanade_demo_eq08465698055356466800.png" alt="$(dx,dy)$" class="equation" width="47" height="15"> in next frame taken after <img src="lucas_kanade_demo_eq10862117650221664858.png" alt="$dt$" class="equation" width="12" height="11"> time. So since those pixels are the same and intensity does not change, we can say,
+         </p>
+         <p><img src="lucas_kanade_demo_eq17397911918165713576.png" alt="$$I(x,y,t) = I(x+dx, y+dy, t+dt)$$" class="equation" width="223" height="15"></p>
+         <p>Then take taylor series approximation of right-hand side, remove common terms and divide by <img src="lucas_kanade_demo_eq10862117650221664858.png" alt="$dt$" class="equation" width="12" height="11"> to get the following equation:
+         </p>
+         <p><img src="lucas_kanade_demo_eq07991151311983967930.png" alt="$$f_x u + f_y v + f_t = 0$$" class="equation" width="117" height="15"></p>
+         <p>where</p>
+         <p><img src="lucas_kanade_demo_eq15113956296710734593.png" alt="$$f_x = \frac{\partial f}{\partial x} \quad ; \quad&#xA;  f_y = \frac{\partial f}{\partial y}$$" class="equation" width="142" height="34"></p>
+         <p><img src="lucas_kanade_demo_eq16003766732570219467.png" alt="$$u = \frac{dx}{dt} \quad ; \quad&#xA;  v = \frac{dy}{dt}$$" class="equation" width="128" height="31"></p>
+         <p>Above equation is called Optical Flow equation. In it, we can find <img src="lucas_kanade_demo_eq13223538974671168557.png" alt="$f_x$" class="equation" width="13" height="14"> and <img src="lucas_kanade_demo_eq05403568010390334380.png" alt="$f_y$" class="equation" width="12" height="15">, they are image gradients. Similarly <img src="lucas_kanade_demo_eq16711918407829976924.png" alt="$f_t$" class="equation" width="11" height="14"> is the gradient along time. But <img src="lucas_kanade_demo_eq09496338466564753964.png" alt="$(u,v)$" class="equation" width="32" height="15"> is unknown. We cannot solve this one equation with two unknown variables. So several methods are provided to solve this problem
+            and one of them is Lucas-Kanade.
+         </p>
+         <h2 id="3">Lucas-Kanade method</h2>
+         <p>We have seen an assumption before, that all the neighbouring pixels will have similar motion. Lucas-Kanade method takes a
+            3x3 patch around the point. So all the 9 points have the same motion. We can find <img src="lucas_kanade_demo_eq14317252503590170924.png" alt="$(f_x, f_y, f_t)$" class="equation" width="61" height="16"> for these 9 points. So now our problem becomes solving 9 equations with two unknown variables which is over-determined. A
+            better solution is obtained with least square fit method. Below is the final solution which is two equation-two unknown problem
+            and solve to get the solution:
+         </p>
+         <p><img src="lucas_kanade_demo_eq03369689095311179969.png" alt="$$&#xA;\left[\matrix{u \cr v}\right] =&#xA;\left[\matrix{&#xA;  \sum_{i}{f_{x_i}}^2       &amp; \sum_{i}{f_{x_i} f_{y_i}} \cr&#xA;  \sum_{i}{f_{x_i} f_{y_i}} &amp; \sum_{i}{f_{y_i}}^2&#xA;}\right]^{-1}&#xA;\left[\matrix{&#xA;  - \sum_{i}{f_{x_i} f_{t_i}} \cr&#xA;  - \sum_{i}{f_{y_i} f_{t_i}}&#xA;}\right]&#xA;$$" class="equation" width="292" height="39"></p>
+         <p>(Note similarity of inverse matrix with Harris corner detector. It denotes that corners are better points to be tracked.)</p>
+         <p>So from user point of view, idea is simple, we give some points to track, we receive the optical flow vectors of those points.
+            But again there are some problems. Until now, we were dealing with small motions. So it fails when there is large motion.
+            So again we go for pyramids. When we go up in the pyramid, small motions are removed and large motions becomes small motions.
+            So applying Lucas-Kanade there, we get optical flow along with the scale.
+         </p>
+         <h2 id="4">Lucas-Kanade Optical Flow in OpenCV</h2>
+         <p>OpenCV provides all these in a single function, <tt>cv.calcOpticalFlowPyrLK</tt>. Here, we create a simple application which tracks some points in a video. To decide the points, we use <tt>cv.goodFeaturesToTrack</tt>. We take the first frame, detect some Shi-Tomasi corner points in it, then we iteratively track those points using Lucas-Kanade
+            optical flow. For the function <tt>cv.calcOpticalFlowPyrLK</tt> we pass the previous frame, previous points and next frame. It returns next points along with some status numbers which has
+            a value of 1 if next point is found, else zero. We iteratively pass these next points as previous points in next step. See
+            the code below.
+         </p>
+         <p>This code doesn't check how correct are the next keypoints. So even if any feature point disappears in image, there is a chance
+            that optical flow finds the next point which may look close to it. So actually for a robust tracking, corner points should
+            be detected in particular intervals. OpenCV samples comes up with such a sample which finds the feature points at every 5
+            frames. It also run a backward-check of the optical flow points got to select only good ones.
+         </p>
+         <h2 id="5">Video</h2>
+         <p>Prepare video source</p><pre class="codeinput"><span class="keyword">if</span> mexopencv.require(<span class="string">'vision'</span>)
+    vid = fullfile(toolboxdir(<span class="string">'vision'</span>), <span class="string">'visiondata'</span>, <span class="string">'visiontraffic.avi'</span>);
+    <span class="comment">%cap.PosFrames = 80;  % skip first few seconds with no motion</span>
+<span class="keyword">elseif</span> true
+    vid = fullfile(mexopencv.root(), <span class="string">'test'</span>, <span class="string">'768x576.avi'</span>);
+<span class="keyword">else</span>
+    vid = fullfile(mexopencv.root(), <span class="string">'test'</span>, <span class="string">'sparse_optical_flow.avi'</span>);
+    <span class="keyword">if</span> exist(vid, <span class="string">'file'</span>) ~= 2
+        disp(<span class="string">'Downloading video...'</span>)
+        url = <span class="string">'https://cdn.rawgit.com/opencv/opencv_extra/3.2.0/gpu_demos_pack/demos/sparse_optical_flow/data/sparse_optical_flow.avi'</span>;
+        urlwrite(url, vid);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+<span class="keyword">if</span> exist(vid, <span class="string">'file'</span>) ~= 2, vid = 0; <span class="keyword">end</span>
+cap = cv.VideoCapture(vid);
+assert(cap.isOpened(), <span class="string">'Failed to initialize capturing'</span>);</pre><h2 id="6">First frame</h2>
+         <p>Grab first frame</p><pre class="codeinput">frame = cap.read();
+assert(~isempty(frame), <span class="string">'Failed to read frame'</span>);
+prev = cv.cvtColor(frame, <span class="string">'RGB2GRAY'</span>);</pre><p>Detect corners using Shi-Tomasi method (performed only once at the start)</p><pre class="codeinput">pts0 = cv.goodFeaturesToTrack(prev, <span class="keyword">...</span>
+    <span class="string">'MaxCorners'</span>,100, <span class="string">'QualityLevel'</span>,0.3, <span class="string">'MinDistance'</span>,7, <span class="string">'BlockSize'</span>,7);
+pts0 = cat(1, pts0{:});
+assert(~isempty(pts0), <span class="string">'No corners found'</span>);
+fprintf(<span class="string">'%d points\n'</span>, size(pts0,1));</pre><pre class="codeoutput">59 points
+</pre><p>Initialize a mask image for drawing purposes (on which point tracks are drawn and remembered)</p><pre class="codeinput">mask = zeros(size(frame), class(frame));</pre><p>Some random colors for plotting</p><pre class="codeinput">N = 64;
+clrs = uint8(hsv(N) * 255);  <span class="comment">% randi([0 255], [N 3])</span>
+clrs(:,4) = 0;</pre><p>Plot</p><pre class="codeinput">hImg = imshow(frame);
+title(<span class="string">'PyrLK [Sparse]'</span>)</pre><img src="lucas_kanade_demo_01.png"><h2 id="11">Main loop</h2><pre class="codeinput"><span class="keyword">while</span> ishghandle(hImg)
+    <span class="comment">% Grab next frame</span>
+    frame = cap.read();
+    <span class="keyword">if</span> isempty(frame), <span class="keyword">break</span>; <span class="keyword">end</span>
+    next = cv.cvtColor(frame, <span class="string">'RGB2GRAY'</span>);
+
+    <span class="comment">% Calculate sparse optical flow using Lucas-Kanade method to track points</span>
+    [pts1, status] = cv.calcOpticalFlowPyrLK(prev, next, pts0, <span class="keyword">...</span>
+        <span class="string">'WinSize'</span>,[15 15], <span class="string">'MaxLevel'</span>,2, <span class="keyword">...</span>
+        <span class="string">'Criteria'</span>,struct(<span class="string">'type'</span>,<span class="string">'Count+EPS'</span>, <span class="string">'maxCount'</span>,10, <span class="string">'epsilon'</span>,0.03));
+    pts1 = cat(1, pts1{:});
+    status = logical(status);
+
+    <span class="comment">% Keep good points (points for which the flow has been found)</span>
+    <span class="keyword">if</span> ~any(status)
+        <span class="keyword">break</span>;
+    <span class="keyword">elseif</span> ~all(status)
+        fprintf(<span class="string">'%d points\n'</span>, nnz(status));
+    <span class="keyword">end</span>
+    pts0 = pts0(status,:);
+    pts1 = pts1(status,:);
+
+    <span class="comment">% Draw latest locations of tracked points</span>
+    clr = clrs(rem((1:size(pts1,1))-1,N)+1,:);  <span class="comment">% cycle through colors</span>
+    frame = cv.circle(frame, pts1, 5, <span class="string">'Colors'</span>,clr, <span class="string">'Thickness'</span>,<span class="string">'Filled'</span>);
+
+    <span class="comment">% Draw point tracks (comet-like plot)</span>
+    mask = cv.line(mask, pts1, pts0, <span class="string">'Colors'</span>,clr, <span class="string">'Thickness'</span>,2);
+    frame = cv.addWeighted(frame, 0.5, mask, 0.5, 0.0);
+
+    <span class="comment">% Display result</span>
+    set(hImg, <span class="string">'CData'</span>,frame);
+    drawnow;
+
+    <span class="comment">% Next iteration: update the previous frame and previous points</span>
+    prev = next;
+    pts0 = pts1;
+<span class="keyword">end</span>
+cap.release();</pre><pre class="codeoutput">51 points
+50 points
+48 points
+47 points
+40 points
+36 points
+31 points
+30 points
+25 points
+24 points
+</pre><img src="lucas_kanade_demo_02.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div><script type="text/x-mathjax-config">
+  // https://stackoverflow.com/a/14631703/97160
+  MathJax.Extension.myImg2jax = {
+    version: "1.0",
+    PreProcess: function (element) {
+      var images = element.getElementsByTagName("img");
+      for (var i = images.length - 1; i >= 0; i--) {
+        var img = images[i];
+        if (img.className === "equation") {
+          var match = img.alt.match(/^(\$\$?)([\s\S]*)\1$/m);
+          if (!match) continue;
+          var script = document.createElement("script");
+          script.type = "math/tex";
+          if (match[1] === "$$") {script.type += ";mode=display"}
+          MathJax.HTML.setScript(script, match[2]);
+          img.parentNode.replaceChild(script, img);
+        }
+      }
+    }
+  };
+  MathJax.Hub.Register.PreProcessor(["PreProcess", MathJax.Extension.myImg2jax]);
+  </script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML"></script>
+      <!--
+##### SOURCE BEGIN #####
+%% Lucas-Kanade Optical Flow
+%
+% In this demo, we will:
+%
+% * understand the concepts of optical flow and its estimation using
+%   Lucas-Kanade method.
+% * use functions like |cv.calcOpticalFlowPyrLK| to track feature points
+%   in a video.
+%
+% Sources:
+%
+% * <https://docs.opencv.org/3.2.0/d7/d8b/tutorial_py_lucas_kanade.html>
+%
+
+%% Optical Flow
+%
+% Optical flow is the pattern of apparent motion of image objects between two
+% consecutive frames caused by the movemement of object or camera. It is 2D
+% vector field where each vector is a displacement vector showing the movement
+% of points from first frame to second. Consider the image below:
+%
+% <<https://docs.opencv.org/3.2.0/optical_flow_basic1.jpg>>
+%
+% It shows a ball moving in 5 consecutive frames. The arrow shows its
+% displacement vector. Optical flow has many applications in areas like:
+%
+% * Structure from Motion
+% * Video Compression
+% * Video Stabilization
+% * etc.
+%
+% Optical flow works on several assumptions:
+%
+% # The pixel intensities of an object do not change between consecutive frames
+% # Neighbouring pixels have similar motion
+%
+% Consider a pixel $I(x,y,t)$ in first frame. It moves by distance $(dx,dy)$
+% in next frame taken after $dt$ time. So since those pixels are the same and
+% intensity does not change, we can say,
+%
+% $$I(x,y,t) = I(x+dx, y+dy, t+dt)$$
+%
+% Then take taylor series approximation of right-hand side, remove common
+% terms and divide by $dt$ to get the following equation:
+%
+% $$f_x u + f_y v + f_t = 0$$
+%
+% where
+%
+% $$f_x = \frac{\partial f}{\partial x} \quad ; \quad
+%   f_y = \frac{\partial f}{\partial y}$$
+%
+% $$u = \frac{dx}{dt} \quad ; \quad
+%   v = \frac{dy}{dt}$$
+%
+% Above equation is called Optical Flow equation. In it, we can find $f_x$ and
+% $f_y$, they are image gradients. Similarly $f_t$ is the gradient along time.
+% But $(u,v)$ is unknown. We cannot solve this one equation with two unknown
+% variables. So several methods are provided to solve this problem and one of
+% them is Lucas-Kanade.
+%
+
+%% Lucas-Kanade method
+%
+% We have seen an assumption before, that all the neighbouring pixels will
+% have similar motion. Lucas-Kanade method takes a 3x3 patch around the point.
+% So all the 9 points have the same motion. We can find $(f_x, f_y, f_t)$ for
+% these 9 points. So now our problem becomes solving 9 equations with two
+% unknown variables which is over-determined. A better solution is obtained
+% with least square fit method. Below is the final solution which is two
+% equation-two unknown problem and solve to get the solution:
+%
+% $$
+% \left[\matrix{u \cr v}\right] =
+% \left[\matrix{
+%   \sum_{i}{f_{x_i}}^2       & \sum_{i}{f_{x_i} f_{y_i}} \cr
+%   \sum_{i}{f_{x_i} f_{y_i}} & \sum_{i}{f_{y_i}}^2
+% }\right]^{-1}
+% \left[\matrix{
+%   - \sum_{i}{f_{x_i} f_{t_i}} \cr
+%   - \sum_{i}{f_{y_i} f_{t_i}}
+% }\right]
+% $$
+%
+% (Note similarity of inverse matrix with Harris corner detector. It denotes
+% that corners are better points to be tracked.)
+%
+% So from user point of view, idea is simple, we give some points to track,
+% we receive the optical flow vectors of those points. But again there are
+% some problems. Until now, we were dealing with small motions. So it fails
+% when there is large motion. So again we go for pyramids. When we go up in
+% the pyramid, small motions are removed and large motions becomes small
+% motions. So applying Lucas-Kanade there, we get optical flow along with the
+% scale.
+%
+
+%% Lucas-Kanade Optical Flow in OpenCV
+%
+% OpenCV provides all these in a single function, |cv.calcOpticalFlowPyrLK|.
+% Here, we create a simple application which tracks some points in a video.
+% To decide the points, we use |cv.goodFeaturesToTrack|. We take the first
+% frame, detect some Shi-Tomasi corner points in it, then we iteratively track
+% those points using Lucas-Kanade optical flow. For the function
+% |cv.calcOpticalFlowPyrLK| we pass the previous frame, previous points and
+% next frame. It returns next points along with some status numbers which has
+% a value of 1 if next point is found, else zero. We iteratively pass these
+% next points as previous points in next step. See the code below.
+%
+% This code doesn't check how correct are the next keypoints. So even if any
+% feature point disappears in image, there is a chance that optical flow finds
+% the next point which may look close to it. So actually for a robust tracking,
+% corner points should be detected in particular intervals. OpenCV samples
+% comes up with such a sample which finds the feature points at every 5 frames.
+% It also run a backward-check of the optical flow points got to select only
+% good ones.
+%
+
+%% Video
+% Prepare video source
+if mexopencv.require('vision')
+    vid = fullfile(toolboxdir('vision'), 'visiondata', 'visiontraffic.avi');
+    %cap.PosFrames = 80;  % skip first few seconds with no motion
+elseif true
+    vid = fullfile(mexopencv.root(), 'test', '768x576.avi');
+else
+    vid = fullfile(mexopencv.root(), 'test', 'sparse_optical_flow.avi');
+    if exist(vid, 'file') ~= 2
+        disp('Downloading video...')
+        url = 'https://cdn.rawgit.com/opencv/opencv_extra/3.2.0/gpu_demos_pack/demos/sparse_optical_flow/data/sparse_optical_flow.avi';
+        urlwrite(url, vid);
+    end
+end
+if exist(vid, 'file') ~= 2, vid = 0; end
+cap = cv.VideoCapture(vid);
+assert(cap.isOpened(), 'Failed to initialize capturing');
+
+%% First frame
+% Grab first frame
+frame = cap.read();
+assert(~isempty(frame), 'Failed to read frame');
+prev = cv.cvtColor(frame, 'RGB2GRAY');
+
+%%
+% Detect corners using Shi-Tomasi method (performed only once at the start)
+pts0 = cv.goodFeaturesToTrack(prev, ...
+    'MaxCorners',100, 'QualityLevel',0.3, 'MinDistance',7, 'BlockSize',7);
+pts0 = cat(1, pts0{:});
+assert(~isempty(pts0), 'No corners found');
+fprintf('%d points\n', size(pts0,1));
+
+%%
+% Initialize a mask image for drawing purposes
+% (on which point tracks are drawn and remembered)
+mask = zeros(size(frame), class(frame));
+
+%%
+% Some random colors for plotting
+N = 64;
+clrs = uint8(hsv(N) * 255);  % randi([0 255], [N 3])
+clrs(:,4) = 0;
+
+%%
+% Plot
+hImg = imshow(frame);
+title('PyrLK [Sparse]')
+
+%% Main loop
+while ishghandle(hImg)
+    % Grab next frame
+    frame = cap.read();
+    if isempty(frame), break; end
+    next = cv.cvtColor(frame, 'RGB2GRAY');
+
+    % Calculate sparse optical flow using Lucas-Kanade method to track points
+    [pts1, status] = cv.calcOpticalFlowPyrLK(prev, next, pts0, ...
+        'WinSize',[15 15], 'MaxLevel',2, ...
+        'Criteria',struct('type','Count+EPS', 'maxCount',10, 'epsilon',0.03));
+    pts1 = cat(1, pts1{:});
+    status = logical(status);
+
+    % Keep good points (points for which the flow has been found)
+    if ~any(status)
+        break;
+    elseif ~all(status)
+        fprintf('%d points\n', nnz(status));
+    end
+    pts0 = pts0(status,:);
+    pts1 = pts1(status,:);
+
+    % Draw latest locations of tracked points
+    clr = clrs(rem((1:size(pts1,1))-1,N)+1,:);  % cycle through colors
+    frame = cv.circle(frame, pts1, 5, 'Colors',clr, 'Thickness','Filled');
+
+    % Draw point tracks (comet-like plot)
+    mask = cv.line(mask, pts1, pts0, 'Colors',clr, 'Thickness',2);
+    frame = cv.addWeighted(frame, 0.5, mask, 0.5, 0.0);
+
+    % Display result
+    set(hImg, 'CData',frame);
+    drawnow;
+
+    % Next iteration: update the previous frame and previous points
+    prev = next;
+    pts0 = pts1;
+end
+cap.release();
+
+##### SOURCE END #####
+--></body>
+</html>

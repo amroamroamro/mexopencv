@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Non-Photorealistic Rendering</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="npr_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Non-Photorealistic Rendering</h1>
+         <!--introduction-->
+         <p>This tutorial demonstrates how to use OpenCV Non-Photorealistic Rendering Module:</p>
+         <div>
+            <ul>
+               <li>Edge Preserve Smoothing   - Using Normalized convolution Filter   - Using Recursive Filter</li>
+               <li>Detail Enhancement</li>
+               <li>Pencil sketch/Color Pencil Drawing</li>
+               <li>Stylization</li>
+            </ul>
+         </div>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/npr_demo.cpp">https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/npr_demo.cpp</a></li>
+               <li><a href="https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/tutorial_code/photo/non_photorealistic_rendering/npr_demo.cpp">https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/tutorial_code/photo/non_photorealistic_rendering/npr_demo.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Input Image</a></li>
+               <li><a href="#3">Edge Preserve Smoothing</a></li>
+               <li><a href="#4">Detail Enhancement</a></li>
+               <li><a href="#5">Pencil sketch</a></li>
+               <li><a href="#6">Stylization</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Input Image</h2><pre class="codeinput">I = imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'fruits.jpg'</span>));
+opts = {<span class="string">'FlipChannels'</span>,true};</pre><h2 id="3">Edge Preserve Smoothing</h2><pre class="codeinput">img = cv.edgePreservingFilter(I, <span class="string">'Filter'</span>,<span class="string">'NormConv'</span>, opts{:});
+subplot(121), imshow(img), title({<span class="string">'Edge Preserve Smoothing'</span>, <span class="string">'NormConv'</span>})
+img = cv.edgePreservingFilter(I, <span class="string">'Filter'</span>,<span class="string">'Recursive'</span>, opts{:});
+subplot(122), imshow(img), title({<span class="string">'Edge Preserve Smoothing'</span>, <span class="string">'Recursive'</span>})</pre><img src="npr_demo_01.png"><h2 id="4">Detail Enhancement</h2><pre class="codeinput">img = cv.detailEnhance(I, opts{:});
+figure
+imshow(img), title(<span class="string">'Detail Enhanced'</span>)</pre><img src="npr_demo_02.png"><h2 id="5">Pencil sketch</h2><pre class="codeinput">[img1, img] = cv.pencilSketch(I, <span class="keyword">...</span>
+    <span class="string">'SigmaS'</span>,10 , <span class="string">'SigmaR'</span>,0.1, <span class="string">'ShadeFactor'</span>,0.03, opts{:});
+figure
+subplot(121), imshow(img1), title(<span class="string">'Pencil Sketch'</span>);
+subplot(122), imshow(img), title(<span class="string">'Color Pencil Sketch'</span>);</pre><img src="npr_demo_03.png"><h2 id="6">Stylization</h2><pre class="codeinput">img = cv.stylization(I, opts{:});
+figure
+imshow(img), title(<span class="string">'Stylization'</span>)</pre><img src="npr_demo_04.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Non-Photorealistic Rendering
+% This tutorial demonstrates how to use OpenCV Non-Photorealistic Rendering
+% Module:
+%
+% * Edge Preserve Smoothing
+%   - Using Normalized convolution Filter
+%   - Using Recursive Filter
+% * Detail Enhancement
+% * Pencil sketch/Color Pencil Drawing
+% * Stylization
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/npr_demo.cpp>
+% * <https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/tutorial_code/photo/non_photorealistic_rendering/npr_demo.cpp>
+%
+
+%% Input Image
+I = imread(fullfile(mexopencv.root(),'test','fruits.jpg'));
+opts = {'FlipChannels',true};
+
+%% Edge Preserve Smoothing
+img = cv.edgePreservingFilter(I, 'Filter','NormConv', opts{:});
+subplot(121), imshow(img), title({'Edge Preserve Smoothing', 'NormConv'})
+img = cv.edgePreservingFilter(I, 'Filter','Recursive', opts{:});
+subplot(122), imshow(img), title({'Edge Preserve Smoothing', 'Recursive'})
+
+%% Detail Enhancement
+img = cv.detailEnhance(I, opts{:});
+figure
+imshow(img), title('Detail Enhanced')
+
+%% Pencil sketch
+[img1, img] = cv.pencilSketch(I, ...
+    'SigmaS',10 , 'SigmaR',0.1, 'ShadeFactor',0.03, opts{:});
+figure
+subplot(121), imshow(img1), title('Pencil Sketch');
+subplot(122), imshow(img), title('Color Pencil Sketch');
+
+%% Stylization
+img = cv.stylization(I, opts{:});
+figure
+imshow(img), title('Stylization')
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

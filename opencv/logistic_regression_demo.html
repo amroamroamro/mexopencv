@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Logistic Regression</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="logistic_regression_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Logistic Regression</h1>
+         <!--introduction-->
+         <p>The file <tt>data01.xml</tt> contains digits 0 and 1 of 20 samples each, collected on an Android device. Each of the collected images are of size 28 x
+            28 re-arranged to 1 x 784 matrix.
+         </p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv/blob/3.1.0/samples/cpp/logistic_regression.cpp">https://github.com/opencv/opencv/blob/3.1.0/samples/cpp/logistic_regression.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Dataset</a></li>
+               <li><a href="#6">Classification</a></li>
+               <li><a href="#7">Prediction</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Dataset</h2>
+         <p>download data</p><pre class="codeinput">dsFile = fullfile(mexopencv.root(), <span class="string">'test'</span>, <span class="string">'data01.xml'</span>);
+<span class="keyword">if</span> exist(dsFile, <span class="string">'file'</span>) ~= 2
+    disp(<span class="string">'Download dataset...'</span>);
+    url = <span class="string">'https://cdn.rawgit.com/opencv/opencv/3.2.0/samples/data/data01.xml'</span>;
+    urlwrite(url, dsFile);
+<span class="keyword">end</span></pre><p>load data</p><pre class="codeinput">disp(<span class="string">'Loading the dataset...'</span>);
+S = cv.FileStorage(dsFile);
+data = single(S.datamat);
+labels = int32(S.labelsmat);
+fprintf(<span class="string">'%d rows of data\n'</span>, size(data,1));</pre><pre class="codeoutput">Loading the dataset...
+40 rows of data
+</pre><p>split intro train/test sets</p><pre class="codeinput">data_train = data(1:2:end,:);
+data_test = data(2:2:end,:);
+labels_train = labels(1:2:end);
+labels_test = labels(2:2:end);
+fprintf(<span class="string">'training/testing samples count: %d / %d\n'</span>, <span class="keyword">...</span>
+    size(data_train,1), size(data_test,1));</pre><pre class="codeoutput">training/testing samples count: 20 / 20
+</pre><p>display sample image</p><pre class="codeinput"><span class="keyword">if</span> mexopencv.require(<span class="string">'images'</span>)  <span class="comment">% MONTAGE</span>
+    showImage = @(data) montage(reshape(data', 28, 28, 1, []));
+    subplot(121), showImage(data_train), title(<span class="string">'train'</span>)
+    subplot(122), showImage(data_test), title(<span class="string">'test'</span>)
+<span class="keyword">end</span></pre><img src="logistic_regression_demo_01.png"><h2 id="6">Classification</h2>
+         <p>simple case with batch gradient</p><pre class="codeinput">lr = cv.LogisticRegression();
+lr.LearningRate = 0.001;
+lr.Iterations = 10;
+lr.Regularization = <span class="string">'L2'</span>;
+lr.TrainMethod = <span class="string">'Batch'</span>;
+lr.MiniBatchSize = 1;
+
+fprintf(<span class="string">'training... '</span>);
+tic
+lr.train(data_train, labels_train);
+toc
+
+fprintf(<span class="string">'predicting... '</span>);
+tic
+responses = lr.predict(data_test);
+toc</pre><pre class="codeoutput">training... Elapsed time is 0.048445 seconds.
+predicting... Elapsed time is 0.004559 seconds.
+</pre><h2 id="7">Prediction</h2>
+         <p>show prediction report</p><pre class="codeinput">disp(<span class="string">'original vs predicted:'</span>);
+disp([labels_test(:) responses(:)]);
+
+<span class="keyword">if</span> ~mexopencv.isOctave() &amp;&amp; mexopencv.require(<span class="string">'stats'</span>)
+    <span class="comment">%HACK: CONFUSIONMAT not implemented in Octave</span>
+    cm = confusionmat(labels_test, responses);
+    disp(<span class="string">'confusion matrix'</span>);
+    display(cm);
+<span class="keyword">end</span>
+
+acc = 100 * nnz(labels_test == responses) / size(responses,1);
+fprintf(<span class="string">'accuracy: %.2f%%\n'</span>, acc);</pre><pre class="codeoutput">original vs predicted:
+   0   0
+   0   0
+   0   0
+   0   0
+   0   0
+   0   0
+   0   0
+   0   0
+   0   0
+   0   0
+   1   1
+   1   1
+   1   1
+   1   1
+   1   1
+   1   1
+   1   1
+   1   0
+   1   1
+   1   1
+confusion matrix
+cm =
+    10     0
+     1     9
+accuracy: 95.00%
+</pre><p>save the classfier</p><pre class="codeinput">fname = fullfile(tempdir(),<span class="string">'NewLR_Trained.xml'</span>);
+lr.save(fname);
+disp([<span class="string">'classifier saved to: '</span> fname]);</pre><pre class="codeoutput">classifier saved to: C:\Users\Amro\AppData\Local\Temp\NewLR_Trained.xml
+</pre><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Logistic Regression
+% The file |data01.xml| contains digits 0 and 1 of 20 samples each,
+% collected on an Android device. Each of the collected images are of size
+% 28 x 28 re-arranged to 1 x 784 matrix.
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv/blob/3.1.0/samples/cpp/logistic_regression.cpp>
+%
+
+%% Dataset
+% download data
+dsFile = fullfile(mexopencv.root(), 'test', 'data01.xml');
+if exist(dsFile, 'file') ~= 2
+    disp('Download dataset...');
+    url = 'https://cdn.rawgit.com/opencv/opencv/3.2.0/samples/data/data01.xml';
+    urlwrite(url, dsFile);
+end
+
+%%
+% load data
+disp('Loading the dataset...');
+S = cv.FileStorage(dsFile);
+data = single(S.datamat);
+labels = int32(S.labelsmat);
+fprintf('%d rows of data\n', size(data,1));
+
+%%
+% split intro train/test sets
+data_train = data(1:2:end,:);
+data_test = data(2:2:end,:);
+labels_train = labels(1:2:end);
+labels_test = labels(2:2:end);
+fprintf('training/testing samples count: %d / %d\n', ...
+    size(data_train,1), size(data_test,1));
+
+%%
+% display sample image
+if mexopencv.require('images')  % MONTAGE
+    showImage = @(data) montage(reshape(data', 28, 28, 1, []));
+    subplot(121), showImage(data_train), title('train')
+    subplot(122), showImage(data_test), title('test')
+end
+
+%% Classification
+% simple case with batch gradient
+lr = cv.LogisticRegression();
+lr.LearningRate = 0.001;
+lr.Iterations = 10;
+lr.Regularization = 'L2';
+lr.TrainMethod = 'Batch';
+lr.MiniBatchSize = 1;
+
+fprintf('training... ');
+tic
+lr.train(data_train, labels_train);
+toc
+
+fprintf('predicting... ');
+tic
+responses = lr.predict(data_test);
+toc
+
+%% Prediction
+% show prediction report
+disp('original vs predicted:');
+disp([labels_test(:) responses(:)]);
+
+if ~mexopencv.isOctave() && mexopencv.require('stats')
+    %HACK: CONFUSIONMAT not implemented in Octave
+    cm = confusionmat(labels_test, responses);
+    disp('confusion matrix');
+    display(cm);
+end
+
+acc = 100 * nnz(labels_test == responses) / size(responses,1);
+fprintf('accuracy: %.2f%%\n', acc);
+
+%%
+% save the classfier
+fname = fullfile(tempdir(),'NewLR_Trained.xml');
+lr.save(fname);
+disp(['classifier saved to: ' fname]);
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

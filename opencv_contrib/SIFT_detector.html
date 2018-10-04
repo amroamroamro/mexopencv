@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Introduction to SIFT (Scale-Invariant Feature Transform)</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="SIFT_detector.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Introduction to SIFT (Scale-Invariant Feature Transform)</h1>
+         <!--introduction-->
+         <p>In this chapter, we we learn:</p>
+         <div>
+            <ul>
+               <li>about the concepts of SIFT algorithm</li>
+               <li>how to find SIFT Keypoints and Descriptors.</li>
+            </ul>
+         </div>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://docs.opencv.org/3.2.0/da/df5/tutorial_py_sift_intro.html">https://docs.opencv.org/3.2.0/da/df5/tutorial_py_sift_intro.html</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Theory</a></li>
+               <li><a href="#3">1. Scale-space Extrema Detection</a></li>
+               <li><a href="#4">2. Keypoint Localization</a></li>
+               <li><a href="#5">3. Orientation Assignment</a></li>
+               <li><a href="#6">4. Keypoint Descriptor</a></li>
+               <li><a href="#7">5. Keypoint Matching</a></li>
+               <li><a href="#8">Code</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Theory</h2>
+         <p>We previously saw learned about corner detectors like Harris etc. They are rotation-invariant, which means, even if the image
+            is rotated, we can find the same corners. It is obvious because corners remain corners in rotated image also. But what about
+            scaling? A corner may not be a corner if the image is scaled. For example, check a simple image below. A corner in a small
+            image within a small window is flat when it is zoomed in the same window. So Harris corner is not scale invariant.
+         </p>
+         <p><img src="https://docs.opencv.org/3.2.0/sift_scale_invariant.jpg"></p>
+         <p>So, in 2004, <b>D.Lowe</b>, University of British Columbia, came up with a new algorithm, Scale Invariant Feature Transform (SIFT) in his paper, "Distinctive
+            Image Features from Scale-Invariant Keypoints", which extract keypoints and compute its descriptors. <i>(This paper is easy to understand and considered to be best material available on SIFT. So this explanation is just a short
+               summary of this paper)</i>.
+         </p>
+         <p>There are mainly four steps involved in SIFT algorithm. We will see them one-by-one.</p>
+         <h2 id="3">1. Scale-space Extrema Detection</h2>
+         <p>From the image above, it is obvious that we can't use the same window to detect keypoints with different scale. It is OK with
+            small corner. But to detect larger corners we need larger windows. For this, scale-space filtering is used. In it, Laplacian
+            of Gaussian is found for the image with various <img src="SIFT_detector_eq11373214381793991308.png" alt="$\sigma$" class="equation" width="8" height="7"> values. LoG acts as a blob detector which detects blobs in various sizes due to change in <img src="SIFT_detector_eq11373214381793991308.png" alt="$\sigma$" class="equation" width="8" height="7">. In short, <img src="SIFT_detector_eq11373214381793991308.png" alt="$\sigma$" class="equation" width="8" height="7"> acts as a scaling parameter. For example, in the above image, Gaussian kernel with low <img src="SIFT_detector_eq11373214381793991308.png" alt="$\sigma$" class="equation" width="8" height="7"> gives high value for small corner while Gaussian kernel with high <img src="SIFT_detector_eq11373214381793991308.png" alt="$\sigma$" class="equation" width="8" height="7"> fits well for larger corner. So, we can find the local maxima across the scale and space which gives us a list of <img src="SIFT_detector_eq02392065365544915090.png" alt="$(x,y,\sigma)$" class="equation" width="47" height="15"> values which means there is a potential keypoint at (x,y) at <img src="SIFT_detector_eq11373214381793991308.png" alt="$\sigma$" class="equation" width="8" height="7"> scale.
+         </p>
+         <p>But this LoG is a little costly, so SIFT algorithm uses Difference of Gaussians which is an approximation of LoG. Difference
+            of Gaussian is obtained as the difference of Gaussian blurring of an image with two different <img src="SIFT_detector_eq11373214381793991308.png" alt="$\sigma$" class="equation" width="8" height="7">, let it be <img src="SIFT_detector_eq11373214381793991308.png" alt="$\sigma$" class="equation" width="8" height="7"> and <img src="SIFT_detector_eq15543240133365194372.png" alt="$k\sigma$" class="equation" width="16" height="11">. This process is done for different octaves of the image in Gaussian Pyramid. It is represented in below image:
+         </p>
+         <p><img src="https://docs.opencv.org/3.2.0/sift_dog.jpg"></p>
+         <p>Once this DoG are found, images are searched for local extrema over scale and space. For exmple, one pixel in an image is
+            compared with its 8 neighbours as well as 9 pixels in next scale and 9 pixels in previous scales. If it is a local extrema,
+            it is a potential keypoint. It basically means that keypoint is best represented in that scale. It is shown in below image:
+         </p>
+         <p><img src="https://docs.opencv.org/3.2.0/sift_local_extrema.jpg"></p>
+         <p>Regarding different parameters, the paper gives some empirical data which can be summarized as, number of octaves = 4, number
+            of scale levels = 5, initial <img src="SIFT_detector_eq03209501847251346728.png" alt="$\sigma=1.6$" class="equation" width="47" height="11">, <img src="SIFT_detector_eq00978784449454809223.png" alt="$k=\sqrt{2}$" class="equation" width="47" height="15">, etc. as optimal values.
+         </p>
+         <h2 id="4">2. Keypoint Localization</h2>
+         <p>Once potential keypoints locations are found, they have to be refined to get more accurate results. They used Taylor series
+            expansion of scale space to get more accurate location of extrema, and if the intensity at this extrema is less than a threshold
+            value (0.03 as per the paper), it is rejected. This threshold is called <tt>ContrastThreshold</tt> in OpenCV
+         </p>
+         <p>DoG has higher response for edges, so edges also need to be removed. For this, a concept similar to Harris corner detector
+            is used. They used a 2x2 Hessian matrix (H) to compute the pricipal curvature. We know from Harris corner detector that for
+            edges, one eigen value is larger than the other. So here they used a simple function.
+         </p>
+         <p>If this ratio is greater than a threshold, called <tt>EdgeThreshold</tt> in OpenCV, that keypoint is discarded. It is given as 10 in paper.
+         </p>
+         <p>So it eliminates any low-contrast keypoints and edge keypoints and what remains is strong interest points.</p>
+         <h2 id="5">3. Orientation Assignment</h2>
+         <p>Now an orientation is assigned to each keypoint to achieve invariance to image rotation. A neigbourhood is taken around the
+            keypoint location depending on the scale, and the gradient magnitude and direction is calculated in that region. An orientation
+            histogram with 36 bins covering 360 degrees is created. (It is weighted by gradient magnitude and Gaussian-weighted circular
+            window with <img src="SIFT_detector_eq11373214381793991308.png" alt="$\sigma$" class="equation" width="8" height="7"> equal to 1.5 times the scale of keypoint. The highest peak in the histogram is taken and any peak above 80% of it is also
+            considered to calculate the orientation. It creates keypoints with same location and scale, but different directions. It contribute
+            to stability of matching.
+         </p>
+         <h2 id="6">4. Keypoint Descriptor</h2>
+         <p>Now keypoint descriptor is created. A 16x16 neighbourhood around the keypoint is taken. It is devided into 16 sub-blocks of
+            4x4 size. For each sub-block, 8 bin orientation histogram is created. So a total of 128 bin values are available. It is represented
+            as a vector to form keypoint descriptor. In addition to this, several measures are taken to achieve robustness against illumination
+            changes, rotation etc.
+         </p>
+         <h2 id="7">5. Keypoint Matching</h2>
+         <p>Keypoints between two images are matched by identifying their nearest neighbours. But in some cases, the second closest-match
+            may be very near to the first. It may happen due to noise or some other reasons. In that case, ratio of closest-distance to
+            second-closest distance is taken. If it is greater than 0.8, they are rejected. It eliminaters around 90% of false matches
+            while discards only 5% correct matches, as per the paper.
+         </p>
+         <p>So this is a summary of SIFT algorithm. For more details and understanding, reading the original paper is highly recommended.
+            Remember one thing, this algorithm is patented. So this algorithm is included in the opencv_contrib repo, rather than the
+            main repo.
+         </p>
+         <h2 id="8">Code</h2>
+         <p>Read image as grayscale</p><pre class="codeinput">img = cv.imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'butterfly.jpg'</span>), <span class="keyword">...</span>
+    <span class="string">'Grayscale'</span>,true);</pre><p>Detect keypoints using SIFT Detector</p><pre class="codeinput">sift = cv.SIFT();
+keypoints = sift.detect(img);</pre><p>The detect function finds the keypoint in the images. You can pass a mask if you want to search only a part of image. Each
+            keypoint is a special structure which has many attributes like its (x,y) coordinates, size of the meaningful neighbourhood,
+            angle which specifies its orientation, response that specifies strength of keypoints etc.
+         </p><pre class="codeinput">whos <span class="string">keypoints</span>
+disp(keypoints(1))</pre><pre class="codeoutput">  Name           Size               Bytes  Class     Attributes
+
+  keypoints      1x1119            815016  struct              
+
+          pt: [7.7227 250.7586]
+        size: 7.1291
+       angle: 89.7085
+    response: 0.0162
+      octave: 16188160
+    class_id: -1
+</pre><p>OpenCV also provides <tt>cv.drawKeyPoints</tt> function which draws the small circles on the locations of keypoints.
+         </p><pre class="codeinput">out = cv.drawKeypoints(img, keypoints);
+imshow(out);</pre><img src="SIFT_detector_01.png"><p>If you set the flag <tt>DrawRichKeypoints</tt>, it will draw a circle with size of keypoint and it will even show its orientation.
+         </p><pre class="codeinput">out = cv.drawKeypoints(img, keypoints, <span class="string">'DrawRichKeypoints'</span>,true);
+imshow(out);</pre><img src="SIFT_detector_02.png"><p>Now to calculate the descriptor, OpenCV provides two methods:</p>
+         <div>
+            <ol>
+               <li>Since you already found keypoints, you can call <tt>cv.SIFT.compute</tt> which   computes the descriptors from the keypoints we have found.
+               </li>
+               <li>If you didn't find keypoints, directly find keypoints and descriptors in a   single step with the function <tt>cv.SIFT.detectAndCompute</tt>.
+               </li>
+            </ol>
+         </div><pre class="codeinput">[keypoints, descriptors] = sift.detectAndCompute(img);
+whos <span class="string">descriptors</span></pre><pre class="codeoutput">  Name                Size              Bytes  Class     Attributes
+
+  descriptors      1119x128            572928  single              
+
+</pre><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div><script type="text/x-mathjax-config">
+  // https://stackoverflow.com/a/14631703/97160
+  MathJax.Extension.myImg2jax = {
+    version: "1.0",
+    PreProcess: function (element) {
+      var images = element.getElementsByTagName("img");
+      for (var i = images.length - 1; i >= 0; i--) {
+        var img = images[i];
+        if (img.className === "equation") {
+          var match = img.alt.match(/^(\$\$?)([\s\S]*)\1$/m);
+          if (!match) continue;
+          var script = document.createElement("script");
+          script.type = "math/tex";
+          if (match[1] === "$$") {script.type += ";mode=display"}
+          MathJax.HTML.setScript(script, match[2]);
+          img.parentNode.replaceChild(script, img);
+        }
+      }
+    }
+  };
+  MathJax.Hub.Register.PreProcessor(["PreProcess", MathJax.Extension.myImg2jax]);
+  </script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML"></script>
+      <!--
+##### SOURCE BEGIN #####
+%% Introduction to SIFT (Scale-Invariant Feature Transform)
+%
+% In this chapter, we we learn:
+%
+% * about the concepts of SIFT algorithm
+% * how to find SIFT Keypoints and Descriptors.
+%
+% Sources:
+%
+% * <https://docs.opencv.org/3.2.0/da/df5/tutorial_py_sift_intro.html>
+%
+
+%% Theory
+%
+% We previously saw learned about corner detectors like Harris etc. They are
+% rotation-invariant, which means, even if the image is rotated, we can find
+% the same corners. It is obvious because corners remain corners in rotated
+% image also. But what about scaling? A corner may not be a corner if the
+% image is scaled. For example, check a simple image below. A corner in a
+% small image within a small window is flat when it is zoomed in the same
+% window. So Harris corner is not scale invariant.
+%
+% <<https://docs.opencv.org/3.2.0/sift_scale_invariant.jpg>>
+%
+% So, in 2004, *D.Lowe*, University of British Columbia, came up with a new
+% algorithm, Scale Invariant Feature Transform (SIFT) in his paper,
+% "Distinctive Image Features from Scale-Invariant Keypoints", which extract
+% keypoints and compute its descriptors. _(This paper is easy to understand
+% and considered to be best material available on SIFT. So this explanation is
+% just a short summary of this paper)_.
+%
+% There are mainly four steps involved in SIFT algorithm. We will see them
+% one-by-one.
+%
+%% 1. Scale-space Extrema Detection
+%
+% From the image above, it is obvious that we can't use the same window to
+% detect keypoints with different scale. It is OK with small corner. But to
+% detect larger corners we need larger windows. For this, scale-space
+% filtering is used. In it, Laplacian of Gaussian is found for the image with
+% various $\sigma$ values. LoG acts as a blob detector which detects blobs in
+% various sizes due to change in $\sigma$. In short, $\sigma$ acts as a
+% scaling parameter. For example, in the above image, Gaussian kernel with low
+% $\sigma$ gives high value for small corner while Gaussian kernel with high
+% $\sigma$ fits well for larger corner. So, we can find the local maxima
+% across the scale and space which gives us a list of $(x,y,\sigma)$ values
+% which means there is a potential keypoint at (x,y) at $\sigma$ scale.
+%
+% But this LoG is a little costly, so SIFT algorithm uses Difference of
+% Gaussians which is an approximation of LoG. Difference of Gaussian is
+% obtained as the difference of Gaussian blurring of an image with two
+% different $\sigma$, let it be $\sigma$ and $k\sigma$. This process is done
+% for different octaves of the image in Gaussian Pyramid. It is represented in
+% below image:
+%
+% <<https://docs.opencv.org/3.2.0/sift_dog.jpg>>
+%
+% Once this DoG are found, images are searched for local extrema over scale
+% and space. For exmple, one pixel in an image is compared with its 8
+% neighbours as well as 9 pixels in next scale and 9 pixels in previous
+% scales. If it is a local extrema, it is a potential keypoint. It basically
+% means that keypoint is best represented in that scale. It is shown in below
+% image:
+%
+% <<https://docs.opencv.org/3.2.0/sift_local_extrema.jpg>>
+%
+% Regarding different parameters, the paper gives some empirical data which
+% can be summarized as, number of octaves = 4, number of scale levels = 5,
+% initial $\sigma=1.6$, $k=\sqrt{2}$, etc. as optimal values.
+%
+%% 2. Keypoint Localization
+%
+% Once potential keypoints locations are found, they have to be refined to get
+% more accurate results. They used Taylor series expansion of scale space to
+% get more accurate location of extrema, and if the intensity at this extrema
+% is less than a threshold value (0.03 as per the paper), it is rejected. This
+% threshold is called |ContrastThreshold| in OpenCV
+%
+% DoG has higher response for edges, so edges also need to be removed. For
+% this, a concept similar to Harris corner detector is used. They used a 2x2
+% Hessian matrix (H) to compute the pricipal curvature. We know from Harris
+% corner detector that for edges, one eigen value is larger than the other. So
+% here they used a simple function.
+%
+% If this ratio is greater than a threshold, called |EdgeThreshold| in OpenCV,
+% that keypoint is discarded. It is given as 10 in paper.
+%
+% So it eliminates any low-contrast keypoints and edge keypoints and what
+% remains is strong interest points.
+%
+%% 3. Orientation Assignment
+%
+% Now an orientation is assigned to each keypoint to achieve invariance to
+% image rotation. A neigbourhood is taken around the keypoint location
+% depending on the scale, and the gradient magnitude and direction is
+% calculated in that region. An orientation histogram with 36 bins covering
+% 360 degrees is created. (It is weighted by gradient magnitude and
+% Gaussian-weighted circular window with $\sigma$ equal to 1.5 times the scale
+% of keypoint. The highest peak in the histogram is taken and any peak above
+% 80% of it is also considered to calculate the orientation. It creates
+% keypoints with same location and scale, but different directions. It
+% contribute to stability of matching.
+%
+%% 4. Keypoint Descriptor
+%
+% Now keypoint descriptor is created. A 16x16 neighbourhood around the
+% keypoint is taken. It is devided into 16 sub-blocks of 4x4 size. For each
+% sub-block, 8 bin orientation histogram is created. So a total of 128 bin
+% values are available. It is represented as a vector to form keypoint
+% descriptor. In addition to this, several measures are taken to achieve
+% robustness against illumination changes, rotation etc.
+%
+%% 5. Keypoint Matching
+%
+% Keypoints between two images are matched by identifying their nearest
+% neighbours. But in some cases, the second closest-match may be very near to
+% the first. It may happen due to noise or some other reasons. In that case,
+% ratio of closest-distance to second-closest distance is taken. If it is
+% greater than 0.8, they are rejected. It eliminaters around 90% of false
+% matches while discards only 5% correct matches, as per the paper.
+%
+% So this is a summary of SIFT algorithm. For more details and understanding,
+% reading the original paper is highly recommended. Remember one thing, this
+% algorithm is patented. So this algorithm is included in the opencv_contrib
+% repo, rather than the main repo.
+%
+
+
+%% Code
+
+%%
+% Read image as grayscale
+img = cv.imread(fullfile(mexopencv.root(),'test','butterfly.jpg'), ...
+    'Grayscale',true);
+
+%%
+% Detect keypoints using SIFT Detector
+sift = cv.SIFT();
+keypoints = sift.detect(img);
+
+%%
+% The detect function finds the keypoint in the images. You can pass a mask
+% if you want to search only a part of image. Each keypoint is a special
+% structure which has many attributes like its (x,y) coordinates, size of the
+% meaningful neighbourhood, angle which specifies its orientation, response
+% that specifies strength of keypoints etc.
+whos keypoints
+disp(keypoints(1))
+
+%%
+% OpenCV also provides |cv.drawKeyPoints| function which draws the small
+% circles on the locations of keypoints.
+out = cv.drawKeypoints(img, keypoints);
+imshow(out);
+
+%%
+% If you set the flag |DrawRichKeypoints|, it will draw a circle with size of
+% keypoint and it will even show its orientation.
+out = cv.drawKeypoints(img, keypoints, 'DrawRichKeypoints',true);
+imshow(out);
+
+%%
+% Now to calculate the descriptor, OpenCV provides two methods:
+%
+% # Since you already found keypoints, you can call |cv.SIFT.compute| which
+%   computes the descriptors from the keypoints we have found.
+% # If you didn't find keypoints, directly find keypoints and descriptors in a
+%   single step with the function |cv.SIFT.detectAndCompute|.
+%
+[keypoints, descriptors] = sift.detectAndCompute(img);
+whos descriptors
+
+##### SOURCE END #####
+--></body>
+</html>

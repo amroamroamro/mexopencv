@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>pyrlk_optical_flow_demo</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="pyrlk_optical_flow_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#1">Lucas-Kanade Sparse Optical Flow</a></li>
+               <li><a href="#2">Helper function</a></li>
+            </ul>
+         </div>
+         <h2 id="1">Lucas-Kanade Sparse Optical Flow</h2>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv/blob/3.2.0/samples/tapi/pyrlk_optical_flow.cpp">https://github.com/opencv/opencv/blob/3.2.0/samples/tapi/pyrlk_optical_flow.cpp</a></li>
+               <li><a href="https://github.com/opencv/opencv/blob/3.2.0/samples/gpu/pyrlk_optical_flow.cpp">https://github.com/opencv/opencv/blob/3.2.0/samples/gpu/pyrlk_optical_flow.cpp</a></li>
+            </ul>
+         </div><pre class="codeinput"><span class="keyword">function</span> pyrlk_optical_flow_demo()
+    <span class="comment">% Prepare video source</span>
+    <span class="keyword">if</span> true
+        vid = 0;
+    <span class="keyword">elseif</span> true
+        vid = fullfile(mexopencv.root(), <span class="string">'test'</span>, <span class="string">'768x576.avi'</span>);
+    <span class="keyword">elseif</span> mexopencv.require(<span class="string">'vision'</span>)
+        vid = fullfile(toolboxdir(<span class="string">'vision'</span>), <span class="string">'visiondata'</span>, <span class="string">'visiontraffic.avi'</span>);
+    <span class="keyword">end</span>
+    cap = createVideoCapture([], <span class="string">'chess'</span>);
+    assert(cap.isOpened(), <span class="string">'Failed to initialize capturing'</span>);
+
+    <span class="comment">% Grab first frame</span>
+    frame = cap.read();
+    assert(~isempty(frame), <span class="string">'Failed to read frame'</span>);
+    gray0 = cv.cvtColor(frame, <span class="string">'RGB2GRAY'</span>);
+
+    <span class="comment">% Plot</span>
+    hImg = imshow(frame);
+    title(<span class="string">'PyrLK [Sparse]'</span>)
+
+    <span class="comment">% Main loop</span>
+    <span class="keyword">while</span> ishghandle(hImg)
+        <span class="comment">% Grab next frame</span>
+        frame = cap.read();
+        <span class="keyword">if</span> isempty(frame), <span class="keyword">break</span>; <span class="keyword">end</span>
+        gray1 = cv.cvtColor(frame, <span class="string">'RGB2GRAY'</span>);
+
+        <span class="comment">% Detect corners in previous frame</span>
+        pts0 = cv.goodFeaturesToTrack(gray0, <span class="keyword">...</span>
+            <span class="string">'MaxCorners'</span>,100, <span class="string">'QualityLevel'</span>,0.01, <span class="string">'MinDistance'</span>,0);
+        pts0 = cat(1, pts0{:});
+        <span class="keyword">if</span> isempty(pts0), <span class="keyword">continue</span>; <span class="keyword">end</span>
+
+        <span class="comment">% Compute sparse optical flow (track points from previous to current frame)</span>
+        [pts1, status] = cv.calcOpticalFlowPyrLK(gray0, gray1, pts0);
+        pts1 = cat(1, pts1{:});
+        status = logical(status);
+
+        <span class="comment">% Draw sparse flow (only good points for which flow was found)</span>
+        <span class="keyword">if</span> any(status)
+            frame = drawArrows(frame, pts0(status,:), pts1(status,:));
+        <span class="keyword">end</span>
+
+        <span class="comment">% Display result</span>
+        set(hImg, <span class="string">'CData'</span>,frame);
+        drawnow;
+
+        <span class="comment">% Next iteration</span>
+        gray0 = gray1;
+        pts0 = pts1;
+    <span class="keyword">end</span>
+    cap.release();
+<span class="keyword">end</span></pre><img src="pyrlk_optical_flow_demo_01.png"><h2 id="2">Helper function</h2><pre class="codeinput"><span class="keyword">function</span> img = drawArrows(img, pts0, pts1)
+    <span class="comment">%DRAWARROWS  Draw sparse optical flow</span>
+    <span class="comment">%</span>
+    <span class="comment">% See also: quiver</span>
+    <span class="comment">%</span>
+
+    <span class="comment">% compute angle and hypotenuse</span>
+    uv = pts0 - pts1;
+    ang = atan2(uv(:,2), uv(:,1));
+    mag = hypot(uv(:,2), uv(:,1));
+
+    <span class="comment">% skip short ones</span>
+    idx = (mag &lt; 1.0);
+    <span class="keyword">if</span> all(idx), <span class="keyword">return</span>; <span class="keyword">end</span>
+    pts0(idx,:) = [];
+    pts1(idx,:) = [];
+    ang(idx,:) = [];
+    mag(idx,:) = [];
+
+    <span class="comment">% Options for line drawing</span>
+    props = {<span class="string">'Color'</span>,[255 0 0], <span class="string">'Thickness'</span>,1};
+
+    <span class="comment">% Here we lengthen the arrow by a factor of three,</span>
+    <span class="comment">% and draw the main line of the arrow</span>
+    pts1 = pts0 - 3 * bsxfun(@times, mag, [cos(ang) sin(ang)]);
+    img = cv.line(img, pts0, pts1, props{:});
+
+    <span class="comment">% Now we draw the tips of the arrow. We do some scaling so that the</span>
+    <span class="comment">% tips look proportional to the main line of the arrow</span>
+    pts0 = pts1 + 9 * [cos(ang + pi/4) sin(ang + pi/4)];
+    img = cv.line(img, pts0, pts1, props{:});
+    pts0 = pts1 + 9 * [cos(ang - pi/4) sin(ang - pi/4)];
+    img = cv.line(img, pts0, pts1, props{:});
+<span class="keyword">end</span></pre><img src="pyrlk_optical_flow_demo_02.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Lucas-Kanade Sparse Optical Flow
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv/blob/3.2.0/samples/tapi/pyrlk_optical_flow.cpp>
+% * <https://github.com/opencv/opencv/blob/3.2.0/samples/gpu/pyrlk_optical_flow.cpp>
+%
+
+function pyrlk_optical_flow_demo()
+    % Prepare video source
+    if true
+        vid = 0;
+    elseif true
+        vid = fullfile(mexopencv.root(), 'test', '768x576.avi');
+    elseif mexopencv.require('vision')
+        vid = fullfile(toolboxdir('vision'), 'visiondata', 'visiontraffic.avi');
+    end
+    cap = createVideoCapture([], 'chess');
+    assert(cap.isOpened(), 'Failed to initialize capturing');
+
+    % Grab first frame
+    frame = cap.read();
+    assert(~isempty(frame), 'Failed to read frame');
+    gray0 = cv.cvtColor(frame, 'RGB2GRAY');
+
+    % Plot
+    hImg = imshow(frame);
+    title('PyrLK [Sparse]')
+
+    % Main loop
+    while ishghandle(hImg)
+        % Grab next frame
+        frame = cap.read();
+        if isempty(frame), break; end
+        gray1 = cv.cvtColor(frame, 'RGB2GRAY');
+
+        % Detect corners in previous frame
+        pts0 = cv.goodFeaturesToTrack(gray0, ...
+            'MaxCorners',100, 'QualityLevel',0.01, 'MinDistance',0);
+        pts0 = cat(1, pts0{:});
+        if isempty(pts0), continue; end
+
+        % Compute sparse optical flow (track points from previous to current frame)
+        [pts1, status] = cv.calcOpticalFlowPyrLK(gray0, gray1, pts0);
+        pts1 = cat(1, pts1{:});
+        status = logical(status);
+
+        % Draw sparse flow (only good points for which flow was found)
+        if any(status)
+            frame = drawArrows(frame, pts0(status,:), pts1(status,:));
+        end
+
+        % Display result
+        set(hImg, 'CData',frame);
+        drawnow;
+
+        % Next iteration
+        gray0 = gray1;
+        pts0 = pts1;
+    end
+    cap.release();
+end
+
+%% Helper function
+
+function img = drawArrows(img, pts0, pts1)
+    %DRAWARROWS  Draw sparse optical flow
+    %
+    % See also: quiver
+    %
+
+    % compute angle and hypotenuse
+    uv = pts0 - pts1;
+    ang = atan2(uv(:,2), uv(:,1));
+    mag = hypot(uv(:,2), uv(:,1));
+
+    % skip short ones
+    idx = (mag < 1.0);
+    if all(idx), return; end
+    pts0(idx,:) = [];
+    pts1(idx,:) = [];
+    ang(idx,:) = [];
+    mag(idx,:) = [];
+
+    % Options for line drawing
+    props = {'Color',[255 0 0], 'Thickness',1};
+
+    % Here we lengthen the arrow by a factor of three,
+    % and draw the main line of the arrow
+    pts1 = pts0 - 3 * bsxfun(@times, mag, [cos(ang) sin(ang)]);
+    img = cv.line(img, pts0, pts1, props{:});
+
+    % Now we draw the tips of the arrow. We do some scaling so that the
+    % tips look proportional to the main line of the arrow
+    pts0 = pts1 + 9 * [cos(ang + pi/4) sin(ang + pi/4)];
+    img = cv.line(img, pts0, pts1, props{:});
+    pts0 = pts1 + 9 * [cos(ang - pi/4) sin(ang - pi/4)];
+    img = cv.line(img, pts0, pts1, props{:});
+end
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

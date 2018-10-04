@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>opt_flow_demo</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="opt_flow_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#1">Dense Optical Flow</a></li>
+               <li><a href="#2">Helper functions</a></li>
+            </ul>
+         </div>
+         <h2 id="1">Dense Optical Flow</h2>
+         <p>Demo shows how to compute the optical flow for all the points in the frame using <tt>cv.calcOpticalFlowFarneback</tt>.
+         </p>
+         <p>OpenCV provides an algorithm to find the dense optical flow. It is based on Gunner Farneback's algorithm which is explained
+            in "Two-Frame Motion Estimation Based on Polynomial Expansion" by Gunner Farneback in 2003.
+         </p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://docs.opencv.org/3.2.0/d7/d8b/tutorial_py_lucas_kanade.html">https://docs.opencv.org/3.2.0/d7/d8b/tutorial_py_lucas_kanade.html</a></li>
+               <li><a href="https://github.com/opencv/opencv/blob/3.2.0/samples/python/opt_flow.py">https://github.com/opencv/opencv/blob/3.2.0/samples/python/opt_flow.py</a></li>
+               <li><a href="https://github.com/opencv/opencv/blob/3.2.0/samples/gpu/farneback_optical_flow.cpp">https://github.com/opencv/opencv/blob/3.2.0/samples/gpu/farneback_optical_flow.cpp</a></li>
+               <li><a href="https://github.com/opencv/opencv/blob/3.2.0/samples/tapi/tvl1_optical_flow.cpp">https://github.com/opencv/opencv/blob/3.2.0/samples/tapi/tvl1_optical_flow.cpp</a></li>
+            </ul>
+         </div><pre class="codeinput"><span class="keyword">function</span> opt_flow_demo()
+    <span class="comment">% Prepare video source</span>
+    <span class="keyword">if</span> true
+        vid = 0;
+    <span class="keyword">elseif</span> mexopencv.require(<span class="string">'vision'</span>)
+        vid = fullfile(toolboxdir(<span class="string">'vision'</span>), <span class="string">'visiondata'</span>, <span class="string">'visiontraffic.avi'</span>);
+        <span class="comment">%cap.PosFrames = 80;  % skip first few seconds with no motion</span>
+    <span class="keyword">else</span>
+        vid = fullfile(mexopencv.root(), <span class="string">'test'</span>, <span class="string">'768x576.avi'</span>);
+    <span class="keyword">end</span>
+    cap = createVideoCapture([], <span class="string">'chess'</span>);
+    assert(cap.isOpened(), <span class="string">'Could not initialize capturing'</span>);
+
+    <span class="comment">% Grab first frame</span>
+    frame = cap.read();
+    assert(~isempty(frame), <span class="string">'Failed to read frame'</span>);
+    prev = cv.cvtColor(frame, <span class="string">'RGB2GRAY'</span>);
+    outGlitch = [];
+
+    <span class="comment">% Plot</span>
+    hImg = imshow(repmat(frame, [2 2]));
+    title(<span class="string">'Optical Flow'</span>)
+
+    <span class="comment">% Main loop</span>
+    <span class="keyword">while</span> ishghandle(hImg)
+        <span class="comment">% Grab next frame</span>
+        frame = cap.read();
+        <span class="keyword">if</span> isempty(frame), <span class="keyword">break</span>; <span class="keyword">end</span>
+        next = cv.cvtColor(frame, <span class="string">'RGB2GRAY'</span>);
+        <span class="keyword">if</span> isempty(outGlitch), outGlitch = frame; <span class="keyword">end</span>
+
+        <span class="comment">% Calculate dense optical flow</span>
+        flow = cv.calcOpticalFlowFarneback(prev, next, <span class="keyword">...</span>
+            <span class="string">'Levels'</span>,3, <span class="string">'WinSize'</span>,15, <span class="string">'Iterations'</span>,3, <span class="string">'PolySigma'</span>,1.2);
+
+        <span class="comment">% Visualize optical flow</span>
+        outField = draw_vector_field(frame, flow);
+        outGlitch = warp_flow(outGlitch, flow);
+        outFlow1 = draw_flow_hsv(flow);
+        outFlow2 = draw_flow_rgb(flow);
+
+        <span class="comment">% Display concatenated results</span>
+        set(hImg, <span class="string">'CData'</span>,[outField, outGlitch; outFlow1, outFlow2]);
+        drawnow;
+
+        <span class="comment">% Next iteration</span>
+        prev = next;
+    <span class="keyword">end</span>
+    cap.release();
+<span class="keyword">end</span></pre><pre class="codeoutput">Warning: Image is too big to fit on screen; displaying at 67% 
+</pre><img src="opt_flow_demo_01.png"><h2 id="2">Helper functions</h2><pre class="codeinput"><span class="keyword">function</span> img = draw_vector_field(img, flow, step, clr)
+    <span class="comment">%DRAW_FLOW  Vector field flow visualization</span>
+
+    <span class="keyword">if</span> nargin &lt; 3, step = 2^4; <span class="keyword">end</span>
+    <span class="keyword">if</span> nargin &lt; 4, clr = [0 255 0]; <span class="keyword">end</span>
+
+    <span class="comment">% vector field grid</span>
+    sz = size(flow);
+    <span class="keyword">if</span> true
+        xstep = step/2:step:sz(2);
+        ystep = step/2:step:sz(1);
+    <span class="keyword">else</span>
+        xstep = round(linspace(1, sz(2), 40));
+        ystep = round(linspace(1, sz(1), 40));
+    <span class="keyword">end</span>
+    [X,Y] = meshgrid(xstep, ystep);
+
+    <span class="comment">% draw arrows (velocity vectors)</span>
+    <span class="comment">%TODO: cv.arrowedLine</span>
+    <span class="keyword">if</span> true
+        <span class="comment">% vectorized implementation</span>
+        XY = [X(:) Y(:)];
+        UV = reshape(permute(flow(ystep,xstep,:), [3 1 2]), 2, []).';
+        img = cv.circle(img, XY, 1, <span class="string">'Color'</span>,clr, <span class="string">'Thickness'</span>,<span class="string">'Filled'</span>);
+        img = cv.line(img, XY, round(XY+UV), <span class="string">'Color'</span>,clr);
+    <span class="keyword">else</span>
+        <span class="comment">% double-loops, much slower</span>
+        <span class="keyword">for</span> x=xstep
+            <span class="keyword">for</span> y=ystep
+                xy = [x y];
+                uv = [flow(y,x,1) flow(y,x,2)];
+                img = cv.circle(img, xy, 1, <span class="string">'Color'</span>,clr, <span class="string">'Thickness'</span>,<span class="string">'Filled'</span>);
+                img = cv.line(img, xy, round(xy+uv), <span class="string">'Color'</span>,clr);
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> img = draw_flow_hsv(flow)
+    <span class="comment">%DRAW_FLOW_HSV  Flow visualization using HSV colorspace</span>
+
+    <span class="comment">% map its direction to Hue value, and its magnitude to Value plane</span>
+    [ang, mag] = cart2pol(flow(:,:,1), flow(:,:,2)); <span class="comment">% ang in [-pi,pi]</span>
+    <span class="keyword">if</span> mexopencv.isOctave()
+        <span class="comment">%HACK: RAD2DEG not implemented in Octave</span>
+        ang = (ang + pi) * (180 / pi);
+    <span class="keyword">else</span>
+        ang = rad2deg(ang + pi);
+    <span class="keyword">end</span>
+
+    <span class="comment">% create HSV image for flow visualization</span>
+    <span class="comment">% (8-bit: 0 &lt;= H &lt;= 360/2, 0 &lt;= S,V &lt;= 255)</span>
+    img = zeros([size(flow,1) size(flow,2) 3], <span class="string">'uint8'</span>);
+    img(:,:,1) = ang / 2;
+    img(:,:,2) = 255;
+    <span class="keyword">if</span> true
+        img(:,:,3) = min(mag*4, 255);
+    <span class="keyword">else</span>
+        img(:,:,3) = cv.normalize(mag, <span class="keyword">...</span>
+            <span class="string">'NormType'</span>,<span class="string">'MinMax'</span>, <span class="string">'Alpha'</span>,0, <span class="string">'Beta'</span>,255);
+    <span class="keyword">end</span>
+
+    <span class="comment">% convert to RGB image</span>
+    img = cv.cvtColor(img, <span class="string">'HSV2RGB'</span>);
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> img = draw_flow_hsv_(flow)
+    <span class="comment">%DRAW_FLOW_HSV_  Flow visualization using HSV colorspace</span>
+
+    [mag, ang] = cv.cartToPolar(flow(:,:,1), -flow(:,:,2), <span class="string">'Degrees'</span>,true);
+    mag = cv.normalize(mag, <span class="string">'Alpha'</span>,0, <span class="string">'Beta'</span>,1, <span class="string">'NormType'</span>,<span class="string">'MinMax'</span>);
+    hsv = cat(3, ang, mag);
+    hsv(:,:,3) = 1;
+    img = cv.cvtColor(hsv, <span class="string">'HSV2RGB'</span>);
+    img = uint8(255 * img);
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> img = draw_flow_rgb(flow)
+    <span class="comment">%DRAW_FLOW_RGB  Flow visualization using RGB colorspace</span>
+
+    dMax = max(abs(flow(:)));                  <span class="comment">% max displacement</span>
+    img = bsxfun(@times, flow, cat(3,1,-1));   <span class="comment">% U, -V</span>
+    img = (img - (-dMax)) / (dMax - (-dMax));  <span class="comment">% map values</span>
+    img(:,:,3) = 0;
+    img = uint8(255 * img);
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> img = warp_flow(img, flow)
+    <span class="comment">%WARP_FLOW  Flow glitch</span>
+
+    flow = -flow;
+    flow(:,:,1) = bsxfun(@plus, flow(:,:,1), 0:size(flow,2)-1);
+    flow(:,:,2) = bsxfun(@plus, flow(:,:,2), (0:size(flow,1)-1).');
+    img = cv.remap(img, flow, <span class="string">'Interpolation'</span>,<span class="string">'Area'</span>);
+<span class="keyword">end</span></pre><img src="opt_flow_demo_02.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Dense Optical Flow
+% Demo shows how to compute the optical flow for all the points in the frame
+% using |cv.calcOpticalFlowFarneback|.
+%
+% OpenCV provides an algorithm to find the dense optical flow.
+% It is based on Gunner Farneback's algorithm which is explained in
+% "Two-Frame Motion Estimation Based on Polynomial Expansion"
+% by Gunner Farneback in 2003.
+%
+% Sources:
+%
+% * <https://docs.opencv.org/3.2.0/d7/d8b/tutorial_py_lucas_kanade.html>
+% * <https://github.com/opencv/opencv/blob/3.2.0/samples/python/opt_flow.py>
+% * <https://github.com/opencv/opencv/blob/3.2.0/samples/gpu/farneback_optical_flow.cpp>
+% * <https://github.com/opencv/opencv/blob/3.2.0/samples/tapi/tvl1_optical_flow.cpp>
+%
+
+function opt_flow_demo()
+    % Prepare video source
+    if true
+        vid = 0;
+    elseif mexopencv.require('vision')
+        vid = fullfile(toolboxdir('vision'), 'visiondata', 'visiontraffic.avi');
+        %cap.PosFrames = 80;  % skip first few seconds with no motion
+    else
+        vid = fullfile(mexopencv.root(), 'test', '768x576.avi');
+    end
+    cap = createVideoCapture([], 'chess');
+    assert(cap.isOpened(), 'Could not initialize capturing');
+
+    % Grab first frame
+    frame = cap.read();
+    assert(~isempty(frame), 'Failed to read frame');
+    prev = cv.cvtColor(frame, 'RGB2GRAY');
+    outGlitch = [];
+
+    % Plot
+    hImg = imshow(repmat(frame, [2 2]));
+    title('Optical Flow')
+
+    % Main loop
+    while ishghandle(hImg)
+        % Grab next frame
+        frame = cap.read();
+        if isempty(frame), break; end
+        next = cv.cvtColor(frame, 'RGB2GRAY');
+        if isempty(outGlitch), outGlitch = frame; end
+
+        % Calculate dense optical flow
+        flow = cv.calcOpticalFlowFarneback(prev, next, ...
+            'Levels',3, 'WinSize',15, 'Iterations',3, 'PolySigma',1.2);
+
+        % Visualize optical flow
+        outField = draw_vector_field(frame, flow);
+        outGlitch = warp_flow(outGlitch, flow);
+        outFlow1 = draw_flow_hsv(flow);
+        outFlow2 = draw_flow_rgb(flow);
+
+        % Display concatenated results
+        set(hImg, 'CData',[outField, outGlitch; outFlow1, outFlow2]);
+        drawnow;
+
+        % Next iteration
+        prev = next;
+    end
+    cap.release();
+end
+
+%% Helper functions
+
+function img = draw_vector_field(img, flow, step, clr)
+    %DRAW_FLOW  Vector field flow visualization
+
+    if nargin < 3, step = 2^4; end
+    if nargin < 4, clr = [0 255 0]; end
+
+    % vector field grid
+    sz = size(flow);
+    if true
+        xstep = step/2:step:sz(2);
+        ystep = step/2:step:sz(1);
+    else
+        xstep = round(linspace(1, sz(2), 40));
+        ystep = round(linspace(1, sz(1), 40));
+    end
+    [X,Y] = meshgrid(xstep, ystep);
+
+    % draw arrows (velocity vectors)
+    %TODO: cv.arrowedLine
+    if true
+        % vectorized implementation
+        XY = [X(:) Y(:)];
+        UV = reshape(permute(flow(ystep,xstep,:), [3 1 2]), 2, []).';
+        img = cv.circle(img, XY, 1, 'Color',clr, 'Thickness','Filled');
+        img = cv.line(img, XY, round(XY+UV), 'Color',clr);
+    else
+        % double-loops, much slower
+        for x=xstep
+            for y=ystep
+                xy = [x y];
+                uv = [flow(y,x,1) flow(y,x,2)];
+                img = cv.circle(img, xy, 1, 'Color',clr, 'Thickness','Filled');
+                img = cv.line(img, xy, round(xy+uv), 'Color',clr);
+            end
+        end
+    end
+end
+
+function img = draw_flow_hsv(flow)
+    %DRAW_FLOW_HSV  Flow visualization using HSV colorspace
+
+    % map its direction to Hue value, and its magnitude to Value plane
+    [ang, mag] = cart2pol(flow(:,:,1), flow(:,:,2)); % ang in [-pi,pi]
+    if mexopencv.isOctave()
+        %HACK: RAD2DEG not implemented in Octave
+        ang = (ang + pi) * (180 / pi);
+    else
+        ang = rad2deg(ang + pi);
+    end
+
+    % create HSV image for flow visualization
+    % (8-bit: 0 <= H <= 360/2, 0 <= S,V <= 255)
+    img = zeros([size(flow,1) size(flow,2) 3], 'uint8');
+    img(:,:,1) = ang / 2;
+    img(:,:,2) = 255;
+    if true
+        img(:,:,3) = min(mag*4, 255);
+    else
+        img(:,:,3) = cv.normalize(mag, ...
+            'NormType','MinMax', 'Alpha',0, 'Beta',255);
+    end
+
+    % convert to RGB image
+    img = cv.cvtColor(img, 'HSV2RGB');
+end
+
+function img = draw_flow_hsv_(flow)
+    %DRAW_FLOW_HSV_  Flow visualization using HSV colorspace
+
+    [mag, ang] = cv.cartToPolar(flow(:,:,1), -flow(:,:,2), 'Degrees',true);
+    mag = cv.normalize(mag, 'Alpha',0, 'Beta',1, 'NormType','MinMax');
+    hsv = cat(3, ang, mag);
+    hsv(:,:,3) = 1;
+    img = cv.cvtColor(hsv, 'HSV2RGB');
+    img = uint8(255 * img);
+end
+
+function img = draw_flow_rgb(flow)
+    %DRAW_FLOW_RGB  Flow visualization using RGB colorspace
+
+    dMax = max(abs(flow(:)));                  % max displacement
+    img = bsxfun(@times, flow, cat(3,1,-1));   % U, -V
+    img = (img - (-dMax)) / (dMax - (-dMax));  % map values
+    img(:,:,3) = 0;
+    img = uint8(255 * img);
+end
+
+function img = warp_flow(img, flow)
+    %WARP_FLOW  Flow glitch
+
+    flow = -flow;
+    flow(:,:,1) = bsxfun(@plus, flow(:,:,1), 0:size(flow,2)-1);
+    flow(:,:,2) = bsxfun(@plus, flow(:,:,2), (0:size(flow,1)-1).');
+    img = cv.remap(img, flow, 'Interpolation','Area');
+end
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

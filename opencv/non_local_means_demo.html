@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Non-Local Means Image Denoising</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="non_local_means_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Non-Local Means Image Denoising</h1>
+         <!--introduction-->
+         <p>In this demo, we will learn:</p>
+         <div>
+            <ul>
+               <li>about Non-local Means Denoising algorithm to remove noise in an image.</li>
+               <li>how to use functions like <tt>cv.fastNlMeansDenoising</tt>,   <tt>cv.fastNlMeansDenoisingColored</tt>, and <tt>cv.fastNlMeansDenoisingMulti</tt></li>
+            </ul>
+         </div>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://docs.opencv.org/3.2.0/d5/d69/tutorial_py_non_local_means.html">https://docs.opencv.org/3.2.0/d5/d69/tutorial_py_non_local_means.html</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Theory</a></li>
+               <li><a href="#3">1) <tt>cv.fastNlMeansDenoising</tt>, <tt>cv.fastNlMeansDenoisingColored</tt></a></li>
+               <li><a href="#5">Image</a></li>
+               <li><a href="#6">Noise</a></li>
+               <li><a href="#9">Denoise</a></li>
+               <li><a href="#12">2) <tt>cv.fastNlMeansDenoisingMulti</tt></a></li>
+               <li><a href="#13">Video</a></li>
+               <li><a href="#14">Noise</a></li>
+               <li><a href="#16">Denoise</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Theory</h2>
+         <p>We have previously seen many image smoothing techniques like Gaussian Blurring, Median Blurring, etc. and they were good to
+            some extent in removing small quantities of noise. In those techniques, we took a small neighbourhood around a pixel and did
+            some operations like Gaussian weighted average, median of the values, etc. to replace the central element. In short, noise
+            removal at a pixel was local to its neighbourhood.
+         </p>
+         <p>There is a property of noise. Noise is generally considered to be a random variable with zero mean. Consider a noisy pixel,
+            <img src="non_local_means_demo_eq11782214580219831217.png" alt="$p = p_0 + n$" class="equation" width="67" height="12"> where <img src="non_local_means_demo_eq08520394409338739758.png" alt="$p_0$" class="equation" width="13" height="10"> is the true value of pixel and <img src="non_local_means_demo_eq08984225997457563733.png" alt="$n$" class="equation" width="9" height="7"> is the noise in that pixel. You can take large number of same pixels (say <img src="non_local_means_demo_eq03672095713503266041.png" alt="$N$" class="equation" width="13" height="10">) from different images and computes their average. Ideally, you should get <img src="non_local_means_demo_eq08390402270231588124.png" alt="$p = p_0$" class="equation" width="40" height="10"> since mean of noise is zero.
+         </p>
+         <p>You can verify it yourself by a simple setup. Hold a static camera to a certain location for a couple of seconds. This will
+            give you plenty of frames, or a lot of images of the same scene. Then write a piece of code to find the average of all the
+            frames in the video. Compare the final result and first frame. You can see reduction in noise. Unfortunately this simple method
+            is not robust to camera and scene motions. Also often there is only one noisy image available.
+         </p>
+         <p>So idea is simple, we need a set of similar images to average out the noise. Consider a small window (say 5x5 window) in the
+            image. Chance is large that the same patch may be somewhere else in the image. Sometimes in a small neigbourhood around it.
+            What about using these similar patches together and find their average? For that particular window, that is fine. See an example
+            image below:
+         </p>
+         <p><img src="https://docs.opencv.org/3.2.0/nlm_patch.jpg"></p>
+         <p>The blue patches in the image looks the similar. Green patches looks similar. So we take a pixel, take small window around
+            it, search for similar windows in the image, average all the windows and replace the pixel with the result we got. This method
+            is Non-Local Means Denoising. It takes more time compared to blurring techniques we saw earlier, but its result is very good.
+            More details and online demo can be found in the following resources:
+         </p>
+         <div>
+            <ul>
+               <li><a href="http://www.ipol.im/pub/art/2011/bcm_nlm/">Image Processing On Line</a></li>
+               <li><a href="https://www.coursera.org/course/images">Coursera: Image Prcessing</a></li>
+            </ul>
+         </div>
+         <p>For color images, image is converted to CIELAB colorspace and then it separately denoise L and AB components.</p>
+         <p>OpenCV provides four variations of this technique:</p>
+         <div>
+            <ul>
+               <li><tt>cv.fastNlMeansDenoising</tt>: works with a single grayscale images
+               </li>
+               <li><tt>cv.fastNlMeansDenoisingColored</tt>: works with a color image.
+               </li>
+               <li><tt>cv.fastNlMeansDenoisingMulti</tt>: works with image sequence captured in   short period of time (grayscale images)
+               </li>
+               <li><tt>cv.fastNlMeansDenoisingColoredMulti</tt>: same as above, but for color images.
+               </li>
+            </ul>
+         </div>
+         <p>Common arguments are:</p>
+         <div>
+            <ul>
+               <li><tt>H</tt>: parameter deciding filter strength. Higher <tt>H</tt> value removes noise   better, but removes details of image also. (10 is ok)
+               </li>
+               <li><tt>HColor</tt>: same as <tt>H</tt>, but for color images only. (normally same as <tt>H</tt>)
+               </li>
+               <li><tt>TemplateWindowSize</tt>: should be odd. (recommended 7)
+               </li>
+               <li><tt>SearchWindowSize</tt>: should be odd. (recommended 21)
+               </li>
+            </ul>
+         </div>
+         <h2 id="3">1) <tt>cv.fastNlMeansDenoising</tt>, <tt>cv.fastNlMeansDenoisingColored</tt></h2>
+         <p>First we show how to remove noise from color/grayscale images. (Noise is expected to be gaussian).</p>
+         <p>Options</p><pre class="codeinput">do_color = true;
+do_noise_gauss = true;
+do_noise_saltnpepper = false;</pre><h2 id="5">Image</h2>
+         <p>Load image (either grayscale or color)</p><pre class="codeinput">src = cv.imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'lena.jpg'</span>), <span class="string">'Color'</span>,do_color);
+dst = src;</pre><h2 id="6">Noise</h2>
+         <p>Add Gaussian noise</p><pre class="codeinput"><span class="keyword">if</span> do_noise_gauss
+    m = 0;                                  <span class="comment">% noise mean</span>
+    sd = 0.4 * std(double(dst(:)) / 255);   <span class="comment">% noise standard deviation</span>
+    <span class="keyword">if</span> mexopencv.require(<span class="string">'images'</span>)
+        dst = imnoise(dst, <span class="string">'gaussian'</span>, m, sd^2);
+    <span class="keyword">else</span>
+        noise = randn(size(dst)) * sd + m;
+        dst = double(dst)/255 + noise;
+        dst = min(max(dst, 0), 1);
+        dst = uint8(dst * 255);
+    <span class="keyword">end</span>
+<span class="keyword">end</span></pre><p>Add Salt &amp; Pepper noise</p><pre class="codeinput"><span class="keyword">if</span> do_noise_saltnpepper
+    prcnt = 0.01;  <span class="comment">% noise density</span>
+    <span class="keyword">if</span> mexopencv.require(<span class="string">'images'</span>)
+        dst = imnoise(dst, <span class="string">'salt &amp; pepper'</span>, prcnt);
+    <span class="keyword">else</span>
+        mask = rand(size(dst));
+        dst(mask &lt; prcnt/2) = 0;
+        dst(mask &gt; 1 - prcnt/2) = 255;
+    <span class="keyword">end</span>
+<span class="keyword">end</span></pre><p>Show noisy image</p><pre class="codeinput">subplot(121), imshow(src), title(<span class="string">'original'</span>)
+subplot(122), imshow(dst), title(<span class="string">'noisy'</span>)
+fprintf(<span class="string">'PSNR = %.6f\n'</span>, cv.PSNR(src, dst));</pre><pre class="codeoutput">PSNR = 20.896842
+</pre><img src="non_local_means_demo_01.png"><h2 id="9">Denoise</h2>
+         <p>Compare various image denoise techniques</p><pre class="codeinput">imgs = cell(5,1);
+names = cell(size(imgs));
+<span class="keyword">for</span> i=1:numel(imgs)
+    tic
+    <span class="keyword">switch</span> i
+        <span class="keyword">case</span> 1
+            str = <span class="string">'Box Filter'</span>;
+            out = cv.boxFilter(dst, <span class="string">'KSize'</span>,[7 7]);
+        <span class="keyword">case</span> 2
+            str = <span class="string">'Gaussian Filter'</span>;
+            out = cv.GaussianBlur(dst, <span class="string">'KSize'</span>,[7 7], <span class="string">'SigmaX'</span>,5, <span class="string">'SigmaY'</span>,5);
+        <span class="keyword">case</span> 3
+            str = <span class="string">'Median Filter'</span>;
+            out = cv.medianBlur(dst, <span class="string">'KSize'</span>,3);
+        <span class="keyword">case</span> 4
+            str = <span class="string">'Bilateral Filter'</span>;
+            out = cv.bilateralFilter(dst, <span class="string">'Diameter'</span>,7, <span class="string">'SigmaColor'</span>,35, <span class="string">'SigmaSpace'</span>,5);
+        <span class="keyword">case</span> 5
+            str = <span class="string">'Non-Local Means Filter'</span>;
+            <span class="keyword">if</span> size(dst,3) == 1
+                out = cv.fastNlMeansDenoising(dst, <span class="string">'H'</span>,9);
+            <span class="keyword">else</span>
+                out = cv.fastNlMeansDenoisingColored(dst, <span class="string">'H'</span>,9, <span class="string">'HColor'</span>,9);
+            <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    t = toc;
+    imgs{i} = out;
+    names{i} = str;
+    fprintf(<span class="string">'%-23s : [PSNR = %.6f] Elapsed time is %f seconds.\n'</span>, <span class="keyword">...</span>
+        str, cv.PSNR(src, out), t);
+<span class="keyword">end</span></pre><pre class="codeoutput">Box Filter              : [PSNR = 27.064057] Elapsed time is 0.032708 seconds.
+Gaussian Filter         : [PSNR = 27.272195] Elapsed time is 0.020858 seconds.
+Median Filter           : [PSNR = 27.257955] Elapsed time is 0.053008 seconds.
+Bilateral Filter        : [PSNR = 24.196976] Elapsed time is 0.044703 seconds.
+Non-Local Means Filter  : [PSNR = 25.448762] Elapsed time is 1.178667 seconds.
+</pre><p>Show results</p><pre class="codeinput"><span class="keyword">for</span> i=1:numel(imgs)
+    figure, imshow(imgs{i}), title(names{i})
+<span class="keyword">end</span></pre><img src="non_local_means_demo_02.png"><img src="non_local_means_demo_03.png"><img src="non_local_means_demo_04.png"><img src="non_local_means_demo_05.png"><img src="non_local_means_demo_06.png"><p>Show as movie for easy comparison</p><pre class="codeinput"><span class="keyword">if</span> ~mexopencv.isOctave() &amp;&amp; mexopencv.require(<span class="string">'images'</span>)
+    <span class="comment">%HACK: IMPLAY not implemented in Octave</span>
+    <span class="keyword">for</span> i=1:numel(imgs)
+        imgs{i} = cv.putText(imgs{i}, names{i}, [10 20], <span class="keyword">...</span>
+            <span class="string">'Color'</span>,[255 255 0], <span class="string">'LineType'</span>,<span class="string">'AA'</span>, <span class="keyword">...</span>
+            <span class="string">'FontFace'</span>,<span class="string">'HersheyPlain'</span>, <span class="string">'FontScale'</span>,1.2);
+    <span class="keyword">end</span>
+    implay(cat(4, imgs{:}), 1)
+<span class="keyword">end</span></pre><img src="non_local_means_demo_07.png"><h2 id="12">2) <tt>cv.fastNlMeansDenoisingMulti</tt></h2>
+         <p>Now we will apply the same method to a video.</p>
+         <div>
+            <ul>
+               <li>The first argument of the function is the list of noisy frames.</li>
+               <li>Second argument <tt>imgToDenoiseIndex</tt> specifies which frame we need to   denoise, for that we pass the index of frame in our input list (0-based).
+               </li>
+               <li>Third is <tt>temporalWindowSize</tt> which specifies the number of nearby frames   to be used for denoising. It should be odd.
+               </li>
+            </ul>
+         </div>
+         <p>In that case, a total of <tt>temporalWindowSize</tt> frames are used where central frame is the frame to be denoised. For example, you passed a list of 5 frames as input. Let
+            <tt>imgToDenoiseIndex = 2</tt> and <tt>temporalWindowSize = 3</tt>. Then <tt>frame-1</tt>, <tt>frame-2</tt> and <tt>frame-3</tt> are used to denoise <tt>frame-2</tt>.
+         </p>
+         <h2 id="13">Video</h2>
+         <p>Open input video</p><pre class="codeinput"><span class="keyword">if</span> ~mexopencv.isOctave() &amp;&amp; mexopencv.require(<span class="string">'images'</span>)
+    fname = fullfile(toolboxdir(<span class="string">'images'</span>), <span class="string">'imdata'</span>, <span class="string">'AT3_1m4_%02d.tif'</span>);
+<span class="keyword">else</span>
+    fname = fullfile(mexopencv.root(), <span class="string">'test'</span>, <span class="string">'768x576.avi'</span>);
+<span class="keyword">end</span>
+cap = cv.VideoCapture(fname);
+assert(cap.isOpened());</pre><h2 id="14">Noise</h2>
+         <p>Read first 10 frames, and create noisy frames</p><pre class="codeinput">len = 10;
+srcs = cell(len,1);
+dsts = cell(len,1);
+<span class="keyword">for</span> i=1:len
+    <span class="comment">% get frame and convert to grayscale</span>
+    src = cap.read();
+    assert(~isempty(src));
+    src = cv.cvtColor(src, <span class="string">'RGB2GRAY'</span>);
+    srcs{i} = src;
+
+    <span class="comment">% add Gaussian noise</span>
+    noise = randn(size(src)) * 10;
+    dst = double(src) + noise;
+    dst = min(max(dst, 0), 255);
+    dst = uint8(dst);
+    dsts{i} = dst;
+<span class="keyword">end</span></pre><pre class="codeinput">cap.release();</pre><h2 id="16">Denoise</h2>
+         <p>Denoise each frame considering 5 nearby frames</p><pre class="codeinput">out = cell(len,1);
+<span class="keyword">for</span> i=1:len
+    tic
+    <span class="keyword">if</span> i &gt; 2 &amp;&amp; i &lt; len-1
+        out{i} = cv.fastNlMeansDenoisingMulti(dsts, i-1, 5, <span class="string">'H'</span>,6, <span class="keyword">...</span>
+            <span class="string">'TemplateWindowSize'</span>,7, <span class="string">'SearchWindowSize'</span>,35);
+    <span class="keyword">else</span>
+        <span class="comment">% skip images on the timeline border with insufficient neighbors</span>
+        out{i} = dsts{i};
+    <span class="keyword">end</span>
+    toc
+<span class="keyword">end</span></pre><pre class="codeoutput">Elapsed time is 0.001082 seconds.
+Elapsed time is 0.000352 seconds.
+Elapsed time is 2.658743 seconds.
+Elapsed time is 2.733849 seconds.
+Elapsed time is 2.602693 seconds.
+Elapsed time is 2.631372 seconds.
+Elapsed time is 2.557090 seconds.
+Elapsed time is 2.659948 seconds.
+Elapsed time is 0.001488 seconds.
+Elapsed time is 0.000062 seconds.
+</pre><p>Show results for the 3rd frame</p><pre class="codeinput">figure
+subplot(221), imshow(srcs{3}), title(<span class="string">'original'</span>)
+subplot(222), imshow(dsts{3}), title(<span class="string">'noisy'</span>)
+subplot(223), imshow(out{3}), title(<span class="string">'denoised'</span>)</pre><img src="non_local_means_demo_08.png"><p>Show as movie</p><pre class="codeinput"><span class="keyword">if</span> ~mexopencv.isOctave() &amp;&amp; mexopencv.require(<span class="string">'images'</span>)
+    implay(cat(4, out{:}), 1)
+<span class="keyword">end</span></pre><img src="non_local_means_demo_09.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div><script type="text/x-mathjax-config">
+  // https://stackoverflow.com/a/14631703/97160
+  MathJax.Extension.myImg2jax = {
+    version: "1.0",
+    PreProcess: function (element) {
+      var images = element.getElementsByTagName("img");
+      for (var i = images.length - 1; i >= 0; i--) {
+        var img = images[i];
+        if (img.className === "equation") {
+          var match = img.alt.match(/^(\$\$?)([\s\S]*)\1$/m);
+          if (!match) continue;
+          var script = document.createElement("script");
+          script.type = "math/tex";
+          if (match[1] === "$$") {script.type += ";mode=display"}
+          MathJax.HTML.setScript(script, match[2]);
+          img.parentNode.replaceChild(script, img);
+        }
+      }
+    }
+  };
+  MathJax.Hub.Register.PreProcessor(["PreProcess", MathJax.Extension.myImg2jax]);
+  </script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML"></script>
+      <!--
+##### SOURCE BEGIN #####
+%% Non-Local Means Image Denoising
+%
+% In this demo, we will learn:
+%
+% * about Non-local Means Denoising algorithm to remove noise in an image.
+% * how to use functions like |cv.fastNlMeansDenoising|,
+%   |cv.fastNlMeansDenoisingColored|, and |cv.fastNlMeansDenoisingMulti|
+%
+% Sources:
+%
+% * <https://docs.opencv.org/3.2.0/d5/d69/tutorial_py_non_local_means.html>
+%
+
+%% Theory
+%
+% We have previously seen many image smoothing techniques like Gaussian
+% Blurring, Median Blurring, etc. and they were good to some extent in
+% removing small quantities of noise. In those techniques, we took a small
+% neighbourhood around a pixel and did some operations like Gaussian weighted
+% average, median of the values, etc. to replace the central element. In
+% short, noise removal at a pixel was local to its neighbourhood.
+%
+% There is a property of noise. Noise is generally considered to be a random
+% variable with zero mean. Consider a noisy pixel, $p = p_0 + n$ where $p_0$
+% is the true value of pixel and $n$ is the noise in that pixel. You can take
+% large number of same pixels (say $N$) from different images and computes
+% their average. Ideally, you should get $p = p_0$ since mean of noise is
+% zero.
+%
+% You can verify it yourself by a simple setup. Hold a static camera to a
+% certain location for a couple of seconds. This will give you plenty of
+% frames, or a lot of images of the same scene. Then write a piece of code to
+% find the average of all the frames in the video. Compare the final result
+% and first frame. You can see reduction in noise. Unfortunately this simple
+% method is not robust to camera and scene motions. Also often there is only
+% one noisy image available.
+%
+% So idea is simple, we need a set of similar images to average out the noise.
+% Consider a small window (say 5x5 window) in the image. Chance is large that
+% the same patch may be somewhere else in the image. Sometimes in a small
+% neigbourhood around it. What about using these similar patches together and
+% find their average? For that particular window, that is fine. See an example
+% image below:
+%
+% <<https://docs.opencv.org/3.2.0/nlm_patch.jpg>>
+%
+% The blue patches in the image looks the similar. Green patches looks
+% similar. So we take a pixel, take small window around it, search for similar
+% windows in the image, average all the windows and replace the pixel with the
+% result we got. This method is Non-Local Means Denoising. It takes more time
+% compared to blurring techniques we saw earlier, but its result is very good.
+% More details and online demo can be found in the following resources:
+%
+% * <http://www.ipol.im/pub/art/2011/bcm_nlm/ Image Processing On Line>
+% * <https://www.coursera.org/course/images Coursera: Image Prcessing>
+%
+% For color images, image is converted to CIELAB colorspace and then it
+% separately denoise L and AB components.
+%
+% OpenCV provides four variations of this technique:
+%
+% * |cv.fastNlMeansDenoising|: works with a single grayscale images
+% * |cv.fastNlMeansDenoisingColored|: works with a color image.
+% * |cv.fastNlMeansDenoisingMulti|: works with image sequence captured in
+%   short period of time (grayscale images)
+% * |cv.fastNlMeansDenoisingColoredMulti|: same as above, but for color images.
+%
+% Common arguments are:
+%
+% * |H|: parameter deciding filter strength. Higher |H| value removes noise
+%   better, but removes details of image also. (10 is ok)
+% * |HColor|: same as |H|, but for color images only. (normally same as |H|)
+% * |TemplateWindowSize|: should be odd. (recommended 7)
+% * |SearchWindowSize|: should be odd. (recommended 21)
+%
+
+%% 1) |cv.fastNlMeansDenoising|, |cv.fastNlMeansDenoisingColored|
+%
+% First we show how to remove noise from color/grayscale images.
+% (Noise is expected to be gaussian).
+%
+
+%%
+% Options
+do_color = true;
+do_noise_gauss = true;
+do_noise_saltnpepper = false;
+
+%% Image
+% Load image (either grayscale or color)
+src = cv.imread(fullfile(mexopencv.root(),'test','lena.jpg'), 'Color',do_color);
+dst = src;
+
+%% Noise
+% Add Gaussian noise
+if do_noise_gauss
+    m = 0;                                  % noise mean
+    sd = 0.4 * std(double(dst(:)) / 255);   % noise standard deviation
+    if mexopencv.require('images')
+        dst = imnoise(dst, 'gaussian', m, sd^2);
+    else
+        noise = randn(size(dst)) * sd + m;
+        dst = double(dst)/255 + noise;
+        dst = min(max(dst, 0), 1);
+        dst = uint8(dst * 255);
+    end
+end
+
+%%
+% Add Salt & Pepper noise
+if do_noise_saltnpepper
+    prcnt = 0.01;  % noise density
+    if mexopencv.require('images')
+        dst = imnoise(dst, 'salt & pepper', prcnt);
+    else
+        mask = rand(size(dst));
+        dst(mask < prcnt/2) = 0;
+        dst(mask > 1 - prcnt/2) = 255;
+    end
+end
+
+%%
+% Show noisy image
+subplot(121), imshow(src), title('original')
+subplot(122), imshow(dst), title('noisy')
+fprintf('PSNR = %.6f\n', cv.PSNR(src, dst));
+
+%% Denoise
+% Compare various image denoise techniques
+imgs = cell(5,1);
+names = cell(size(imgs));
+for i=1:numel(imgs)
+    tic
+    switch i
+        case 1
+            str = 'Box Filter';
+            out = cv.boxFilter(dst, 'KSize',[7 7]);
+        case 2
+            str = 'Gaussian Filter';
+            out = cv.GaussianBlur(dst, 'KSize',[7 7], 'SigmaX',5, 'SigmaY',5);
+        case 3
+            str = 'Median Filter';
+            out = cv.medianBlur(dst, 'KSize',3);
+        case 4
+            str = 'Bilateral Filter';
+            out = cv.bilateralFilter(dst, 'Diameter',7, 'SigmaColor',35, 'SigmaSpace',5);
+        case 5
+            str = 'Non-Local Means Filter';
+            if size(dst,3) == 1
+                out = cv.fastNlMeansDenoising(dst, 'H',9);
+            else
+                out = cv.fastNlMeansDenoisingColored(dst, 'H',9, 'HColor',9);
+            end
+    end
+    t = toc;
+    imgs{i} = out;
+    names{i} = str;
+    fprintf('%-23s : [PSNR = %.6f] Elapsed time is %f seconds.\n', ...
+        str, cv.PSNR(src, out), t);
+end
+
+%%
+% Show results
+for i=1:numel(imgs)
+    figure, imshow(imgs{i}), title(names{i})
+end
+
+%%
+% Show as movie for easy comparison
+if ~mexopencv.isOctave() && mexopencv.require('images')
+    %HACK: IMPLAY not implemented in Octave
+    for i=1:numel(imgs)
+        imgs{i} = cv.putText(imgs{i}, names{i}, [10 20], ...
+            'Color',[255 255 0], 'LineType','AA', ...
+            'FontFace','HersheyPlain', 'FontScale',1.2);
+    end
+    implay(cat(4, imgs{:}), 1)
+end
+
+
+%% 2) |cv.fastNlMeansDenoisingMulti|
+%
+% Now we will apply the same method to a video.
+%
+% * The first argument of the function is the list of noisy frames.
+% * Second argument |imgToDenoiseIndex| specifies which frame we need to
+%   denoise, for that we pass the index of frame in our input list (0-based).
+% * Third is |temporalWindowSize| which specifies the number of nearby frames
+%   to be used for denoising. It should be odd.
+%
+% In that case, a total of |temporalWindowSize| frames are used where central
+% frame is the frame to be denoised. For example, you passed a list of 5
+% frames as input. Let |imgToDenoiseIndex = 2| and |temporalWindowSize = 3|.
+% Then |frame-1|, |frame-2| and |frame-3| are used to denoise |frame-2|.
+%
+
+%% Video
+% Open input video
+if ~mexopencv.isOctave() && mexopencv.require('images')
+    fname = fullfile(toolboxdir('images'), 'imdata', 'AT3_1m4_%02d.tif');
+else
+    fname = fullfile(mexopencv.root(), 'test', '768x576.avi');
+end
+cap = cv.VideoCapture(fname);
+assert(cap.isOpened());
+
+%% Noise
+% Read first 10 frames, and create noisy frames
+len = 10;
+srcs = cell(len,1);
+dsts = cell(len,1);
+for i=1:len
+    % get frame and convert to grayscale
+    src = cap.read();
+    assert(~isempty(src));
+    src = cv.cvtColor(src, 'RGB2GRAY');
+    srcs{i} = src;
+
+    % add Gaussian noise
+    noise = randn(size(src)) * 10;
+    dst = double(src) + noise;
+    dst = min(max(dst, 0), 255);
+    dst = uint8(dst);
+    dsts{i} = dst;
+end
+
+%%
+cap.release();
+
+%% Denoise
+% Denoise each frame considering 5 nearby frames
+out = cell(len,1);
+for i=1:len
+    tic
+    if i > 2 && i < len-1
+        out{i} = cv.fastNlMeansDenoisingMulti(dsts, i-1, 5, 'H',6, ...
+            'TemplateWindowSize',7, 'SearchWindowSize',35);
+    else
+        % skip images on the timeline border with insufficient neighbors
+        out{i} = dsts{i};
+    end
+    toc
+end
+
+%%
+% Show results for the 3rd frame
+figure
+subplot(221), imshow(srcs{3}), title('original')
+subplot(222), imshow(dsts{3}), title('noisy')
+subplot(223), imshow(out{3}), title('denoised')
+
+%%
+% Show as movie
+if ~mexopencv.isOctave() && mexopencv.require('images')
+    implay(cat(4, out{:}), 1)
+end
+
+##### SOURCE END #####
+--></body>
+</html>

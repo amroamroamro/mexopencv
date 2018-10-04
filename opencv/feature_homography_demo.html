@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Feature Matching + Homography to find a known object</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="feature_homography_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Feature Matching + Homography to find a known object</h1>
+         <!--introduction-->
+         <p>In this sample, you will use features2d and calib3d to detect an object in a scene.</p>
+         <p>You will learn how to:</p>
+         <div>
+            <ul>
+               <li>Use the function <a href="matlab:doc('cv.findHomography')">cv.findHomography</a> to   find the transform between matched keypoints.
+               </li>
+               <li>Use the function   <a href="matlab:doc('cv.perspectiveTransform')">cv.perspectiveTransform</a> to map the   points.
+               </li>
+            </ul>
+         </div>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://docs.opencv.org/3.2.0/d7/dff/tutorial_feature_homography.html">https://docs.opencv.org/3.2.0/d7/dff/tutorial_feature_homography.html</a></li>
+               <li><a href="https://docs.opencv.org/3.2.0/dd/dd4/tutorial_detection_of_planar_objects.html">https://docs.opencv.org/3.2.0/dd/dd4/tutorial_detection_of_planar_objects.html</a></li>
+               <li><a href="https://docs.opencv.org/3.2.0/d1/de0/tutorial_py_feature_homography.html">https://docs.opencv.org/3.2.0/d1/de0/tutorial_py_feature_homography.html</a></li>
+               <li><a href="https://github.com/opencv/opencv/blob/3.2.0/samples/python/find_obj.py">https://github.com/opencv/opencv/blob/3.2.0/samples/python/find_obj.py</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#3">Options</a></li>
+               <li><a href="#4">Input images</a></li>
+               <li><a href="#5">Step 1: Detect the keypoints and extract descriptors using SURF</a></li>
+               <li><a href="#7">Step 2: Matching descriptor vectors using FLANN matcher</a></li>
+               <li><a href="#12">Step 3: Compute homography</a></li>
+               <li><a href="#13">Step 4: Localize the object</a></li>
+               <li><a href="#14">Show results</a></li>
+            </ul>
+         </div>
+         <p>In a previous demo, we used a <tt>queryImage</tt>, found some feature points in it, we took another <tt>trainImage</tt>, found the features in that image too and we found the best matches among them. In short, we found locations of some parts
+            of an object in another cluttered image. This information is sufficient to find the object exactly on the <tt>trainImage</tt>.
+         </p>
+         <p>For that, we can use a function from <i>calib3d</i> module, <tt>cv.findHomography</tt>. If we pass the set of points from both the images, it will find the perpective transformation of that object. Then we can
+            use <tt>cv.perspectiveTransform</tt> to find the object. It needs atleast four correct points to find the transformation.
+         </p>
+         <p>We have seen that there can be some possible errors while matching which may affect the result. To solve this problem, algorithm
+            uses <tt>Ransac</tt> or <tt>LMedS</tt> (which can be specificed in the <tt>Method</tt> option). So good matches which provide correct estimation are called inliers and remaining are called outliers. <tt>cv.findHomography</tt> returns a mask which specifies the inlier and outlier points.
+         </p>
+         <h2 id="3">Options</h2><pre class="codeinput">OPTS_FEATURE = <span class="string">'SURF'</span>;   <span class="comment">% detector: ORB, BRISK, AKAZE, KAZE, SIFT, SURF</span>
+OPTS_FLANN = true;       <span class="comment">% matcher: FLANN or Brute Force</span>
+OPTS_KNN_MATCH = false;  <span class="comment">% matcher method: match or knnMatch (k=2)</span></pre><h2 id="4">Input images</h2><pre class="codeinput">imgObj = cv.imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'box.png'</span>), <span class="string">'Grayscale'</span>,true);
+imgScene = cv.imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'box_in_scene.png'</span>), <span class="string">'Grayscale'</span>,true);
+subplot(1,3,1), imshow(imgObj), title(<span class="string">'object'</span>)
+subplot(1,3,[2 3]), imshow(imgScene), title(<span class="string">'scene'</span>)</pre><img src="feature_homography_demo_01.png"><h2 id="5">Step 1: Detect the keypoints and extract descriptors using SURF</h2><pre class="codeinput"><span class="keyword">switch</span> upper(OPTS_FEATURE)
+    <span class="keyword">case</span> <span class="string">'SURF'</span>
+        detector = cv.SURF(<span class="string">'HessianThreshold'</span>,400);
+    <span class="keyword">case</span> <span class="string">'SIFT'</span>
+        detector = cv.SIFT();
+    <span class="keyword">case</span> <span class="string">'ORB'</span>
+        detector = cv.ORB();
+    <span class="keyword">case</span> <span class="string">'BRISK'</span>
+        detector = cv.BRISK();
+    <span class="keyword">case</span> <span class="string">'AKAZE'</span>
+        detector = cv.AKAZE();
+    <span class="keyword">case</span> <span class="string">'KAZE'</span>
+        detector = cv.KAZE();
+    <span class="keyword">otherwise</span>
+        error(<span class="string">'unrecognized feature: %s'</span>, OPTS_FEATURE)
+<span class="keyword">end</span>
+display(detector)</pre><pre class="codeoutput">detector = 
+  SURF with properties:
+
+                  id: 2
+    HessianThreshold: 400
+            NOctaves: 4
+       NOctaveLayers: 3
+            Extended: 0
+             Upright: 0
+</pre><pre class="codeinput">[keyObj,featObj] = detector.detectAndCompute(imgObj);
+[keyScene,featScene] = detector.detectAndCompute(imgScene);
+fprintf(<span class="string">'object: %d keypoints\n'</span>, numel(keyObj));
+fprintf(<span class="string">'scene: %d keypoints\n'</span>, numel(keyScene));
+whos <span class="string">featObj</span> <span class="string">featScene</span></pre><pre class="codeoutput">object: 786 keypoints
+scene: 1040 keypoints
+  Name              Size             Bytes  Class     Attributes
+
+  featObj         786x64            201216  single              
+  featScene      1040x64            266240  single              
+
+</pre><h2 id="7">Step 2: Matching descriptor vectors using FLANN matcher</h2><pre class="codeinput"><span class="keyword">if</span> OPTS_FLANN
+    <span class="keyword">if</span> ~isempty(strfind(detector.defaultNorm(), <span class="string">'Hamming'</span>))
+        opts = {<span class="string">'LSH'</span>, <span class="string">'TableNumber'</span>,6, <span class="string">'KeySize'</span>,12, <span class="string">'MultiProbeLevel'</span>,1};
+    <span class="keyword">else</span>
+        opts = {<span class="string">'KDTree'</span>, <span class="string">'Trees'</span>,5};
+    <span class="keyword">end</span>
+    matcher = cv.DescriptorMatcher(<span class="string">'FlannBasedMatcher'</span>, <span class="string">'Index'</span>,opts);
+<span class="keyword">else</span>
+    matcher = cv.DescriptorMatcher(<span class="string">'BFMatcher'</span>, <span class="keyword">...</span>
+        <span class="string">'NormType'</span>,detector.defaultNorm());
+<span class="keyword">end</span>
+display(matcher)</pre><pre class="codeoutput">matcher = 
+  DescriptorMatcher with properties:
+
+      id: 33
+    Type: 'FlannBasedMatcher'
+</pre><pre class="codeinput"><span class="keyword">if</span> OPTS_KNN_MATCH
+    matches = matcher.knnMatch(featObj, featScene, 2);
+<span class="keyword">else</span>
+    matches = matcher.match(featObj, featScene);
+<span class="keyword">end</span>
+fprintf(<span class="string">'%d matches\n'</span>, numel(matches));</pre><pre class="codeoutput">786 matches
+</pre><p>Filter matches and keep only "good" ones</p><pre class="codeinput"><span class="keyword">if</span> OPTS_KNN_MATCH
+    <span class="comment">% ratio test</span>
+    dists = cellfun(@(m) m(1).distance, matches);
+    idx = cellfun(@(m) (numel(m) == 2) &amp;&amp; <span class="keyword">...</span>
+        (m(1).distance &lt; 0.75 * m(2).distance), matches);
+    matches = cellfun(@(m) m(1), matches(idx));
+<span class="keyword">else</span>
+    <span class="comment">% distance less than k*min_dist</span>
+    dists = [matches.distance];
+    cutoff = 3 * min(dists);
+    matches = matches(dists &lt;= cutoff);
+    fprintf(<span class="string">'Min dist = %f\nMax dist = %f\nCutoff = %f\n'</span>, <span class="keyword">...</span>
+        min(dists), max(dists), cutoff);
+<span class="keyword">end</span>
+fprintf(<span class="string">'%d good matches\n'</span>, numel(matches));</pre><pre class="codeoutput">Min dist = 0.055168
+Max dist = 0.644580
+Cutoff = 0.165503
+31 good matches
+</pre><p>show original and filtered distances</p><pre class="codeinput"><span class="keyword">if</span> ~mexopencv.isOctave()
+    <span class="comment">%HACK: HISTOGRAM not implemented in Octave</span>
+    figure
+    hh = histogram(dists); hold <span class="string">on</span>
+    histogram([matches.distance], hh.BinEdges)
+    <span class="keyword">if</span> OPTS_KNN_MATCH
+        legend({<span class="string">'All'</span>, <span class="string">'Good'</span>})
+    <span class="keyword">else</span>
+        line([cutoff cutoff] + hh.BinWidth/2, ylim(), <span class="string">'LineWidth'</span>,2, <span class="string">'Color'</span>,<span class="string">'r'</span>)
+        legend({<span class="string">'All'</span>, <span class="string">'Good'</span>, <span class="string">'cutoff'</span>})
+    <span class="keyword">end</span>
+    hold <span class="string">off</span>
+    title(<span class="string">'Distribution of match distances'</span>)
+<span class="keyword">end</span></pre><img src="feature_homography_demo_02.png"><p>Get the keypoints from the good matches (Note: indices in C are zero-based while MATLAB are one-based)</p><pre class="codeinput">ptsObj = cat(1, keyObj([matches.queryIdx]+1).pt);
+ptsScene = cat(1, keyScene([matches.trainIdx]+1).pt);
+whos <span class="string">ptsObj</span> <span class="string">ptsScene</span></pre><pre class="codeoutput">  Name           Size            Bytes  Class     Attributes
+
+  ptsObj        31x2               496  double              
+  ptsScene      31x2               496  double              
+
+</pre><h2 id="12">Step 3: Compute homography</h2><pre class="codeinput">assert(numel(matches) &gt;= 4, <span class="string">'not enough matches for homography estimation'</span>);
+[H,inliers] = cv.findHomography(ptsObj, ptsScene, <span class="string">'Method'</span>,<span class="string">'Ransac'</span>);
+assert(~isempty(H), <span class="string">'homography estimation failed'</span>);
+inliers = logical(inliers);
+display(H)
+fprintf(<span class="string">'Num outliers reported by RANSAC = %d\n'</span>, nnz(~inliers));</pre><pre class="codeoutput">H =
+    0.4283   -0.1864  121.5736
+    0.0022    0.3643  162.5073
+   -0.0002   -0.0005    1.0000
+Num outliers reported by RANSAC = 2
+</pre><h2 id="13">Step 4: Localize the object</h2><pre class="codeinput"><span class="comment">% get the corners from the first image (the object to be "detected")</span>
+[h,w,~] = size(imgObj);
+corners = [0 0; w 0; w h; 0 h];
+display(corners)
+
+<span class="comment">% apply the homography to the corner points of the box</span>
+p = cv.perspectiveTransform(corners, H);
+display(p)</pre><pre class="codeoutput">corners =
+     0     0
+   324     0
+   324   223
+     0   223
+p =
+  121.5736  162.5073
+  282.7520  177.2785
+  267.8110  299.2625
+   89.2696  271.9903
+</pre><h2 id="14">Show results</h2><pre class="codeinput"><span class="comment">% draw the final good matches</span>
+imgMatches = cv.drawMatches(imgObj, keyObj, imgScene, keyScene, matches, <span class="keyword">...</span>
+    <span class="string">'NotDrawSinglePoints'</span>,true, <span class="string">'MatchesMask'</span>,inliers);
+
+<span class="comment">% draw lines between the transformed corners (the mapped object in the scene)</span>
+p(:,1) = p(:,1) + w;  <span class="comment">% shift points for the montage image</span>
+imgMatches = cv.polylines(imgMatches, p, <span class="string">'Closed'</span>,true, <span class="keyword">...</span>
+    <span class="string">'Color'</span>,[0 255 0], <span class="string">'Thickness'</span>,4, <span class="string">'LineType'</span>,<span class="string">'AA'</span>);
+figure, imshow(imgMatches)
+title(<span class="string">'Good Matches &amp; Object detection'</span>)</pre><img src="feature_homography_demo_03.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Feature Matching + Homography to find a known object
+% In this sample, you will use features2d and calib3d to detect an object in a
+% scene.
+%
+% You will learn how to:
+%
+% * Use the function <matlab:doc('cv.findHomography') cv.findHomography> to
+%   find the transform between matched keypoints.
+% * Use the function
+%   <matlab:doc('cv.perspectiveTransform') cv.perspectiveTransform> to map the
+%   points.
+%
+% Sources:
+%
+% * <https://docs.opencv.org/3.2.0/d7/dff/tutorial_feature_homography.html>
+% * <https://docs.opencv.org/3.2.0/dd/dd4/tutorial_detection_of_planar_objects.html>
+% * <https://docs.opencv.org/3.2.0/d1/de0/tutorial_py_feature_homography.html>
+% * <https://github.com/opencv/opencv/blob/3.2.0/samples/python/find_obj.py>
+%
+
+%%
+% In a previous demo, we used a |queryImage|, found some feature points in it,
+% we took another |trainImage|, found the features in that image too and we
+% found the best matches among them. In short, we found locations of some
+% parts of an object in another cluttered image. This information is
+% sufficient to find the object exactly on the |trainImage|.
+%
+% For that, we can use a function from _calib3d_ module, |cv.findHomography|.
+% If we pass the set of points from both the images, it will find the
+% perpective transformation of that object. Then we can use
+% |cv.perspectiveTransform| to find the object. It needs atleast four correct
+% points to find the transformation.
+%
+% We have seen that there can be some possible errors while matching which may
+% affect the result. To solve this problem, algorithm uses |Ransac| or |LMedS|
+% (which can be specificed in the |Method| option). So good matches which
+% provide correct estimation are called inliers and remaining are called
+% outliers. |cv.findHomography| returns a mask which specifies the inlier and
+% outlier points.
+%
+
+%% Options
+OPTS_FEATURE = 'SURF';   % detector: ORB, BRISK, AKAZE, KAZE, SIFT, SURF
+OPTS_FLANN = true;       % matcher: FLANN or Brute Force
+OPTS_KNN_MATCH = false;  % matcher method: match or knnMatch (k=2)
+
+%% Input images
+imgObj = cv.imread(fullfile(mexopencv.root(),'test','box.png'), 'Grayscale',true);
+imgScene = cv.imread(fullfile(mexopencv.root(),'test','box_in_scene.png'), 'Grayscale',true);
+subplot(1,3,1), imshow(imgObj), title('object')
+subplot(1,3,[2 3]), imshow(imgScene), title('scene')
+
+%% Step 1: Detect the keypoints and extract descriptors using SURF
+switch upper(OPTS_FEATURE)
+    case 'SURF'
+        detector = cv.SURF('HessianThreshold',400);
+    case 'SIFT'
+        detector = cv.SIFT();
+    case 'ORB'
+        detector = cv.ORB();
+    case 'BRISK'
+        detector = cv.BRISK();
+    case 'AKAZE'
+        detector = cv.AKAZE();
+    case 'KAZE'
+        detector = cv.KAZE();
+    otherwise
+        error('unrecognized feature: %s', OPTS_FEATURE)
+end
+display(detector)
+
+%%
+[keyObj,featObj] = detector.detectAndCompute(imgObj);
+[keyScene,featScene] = detector.detectAndCompute(imgScene);
+fprintf('object: %d keypoints\n', numel(keyObj));
+fprintf('scene: %d keypoints\n', numel(keyScene));
+whos featObj featScene
+
+%% Step 2: Matching descriptor vectors using FLANN matcher
+if OPTS_FLANN
+    if ~isempty(strfind(detector.defaultNorm(), 'Hamming'))
+        opts = {'LSH', 'TableNumber',6, 'KeySize',12, 'MultiProbeLevel',1};
+    else
+        opts = {'KDTree', 'Trees',5};
+    end
+    matcher = cv.DescriptorMatcher('FlannBasedMatcher', 'Index',opts);
+else
+    matcher = cv.DescriptorMatcher('BFMatcher', ...
+        'NormType',detector.defaultNorm());
+end
+display(matcher)
+
+%%
+if OPTS_KNN_MATCH
+    matches = matcher.knnMatch(featObj, featScene, 2);
+else
+    matches = matcher.match(featObj, featScene);
+end
+fprintf('%d matches\n', numel(matches));
+
+%%
+% Filter matches and keep only "good" ones
+if OPTS_KNN_MATCH
+    % ratio test
+    dists = cellfun(@(m) m(1).distance, matches);
+    idx = cellfun(@(m) (numel(m) == 2) && ...
+        (m(1).distance < 0.75 * m(2).distance), matches);
+    matches = cellfun(@(m) m(1), matches(idx));
+else
+    % distance less than k*min_dist
+    dists = [matches.distance];
+    cutoff = 3 * min(dists);
+    matches = matches(dists <= cutoff);
+    fprintf('Min dist = %f\nMax dist = %f\nCutoff = %f\n', ...
+        min(dists), max(dists), cutoff);
+end
+fprintf('%d good matches\n', numel(matches));
+
+%%
+% show original and filtered distances
+if ~mexopencv.isOctave()
+    %HACK: HISTOGRAM not implemented in Octave
+    figure
+    hh = histogram(dists); hold on
+    histogram([matches.distance], hh.BinEdges)
+    if OPTS_KNN_MATCH
+        legend({'All', 'Good'})
+    else
+        line([cutoff cutoff] + hh.BinWidth/2, ylim(), 'LineWidth',2, 'Color','r')
+        legend({'All', 'Good', 'cutoff'})
+    end
+    hold off
+    title('Distribution of match distances')
+end
+
+%%
+% Get the keypoints from the good matches
+% (Note: indices in C are zero-based while MATLAB are one-based)
+ptsObj = cat(1, keyObj([matches.queryIdx]+1).pt);
+ptsScene = cat(1, keyScene([matches.trainIdx]+1).pt);
+whos ptsObj ptsScene
+
+%% Step 3: Compute homography
+assert(numel(matches) >= 4, 'not enough matches for homography estimation');
+[H,inliers] = cv.findHomography(ptsObj, ptsScene, 'Method','Ransac');
+assert(~isempty(H), 'homography estimation failed');
+inliers = logical(inliers);
+display(H)
+fprintf('Num outliers reported by RANSAC = %d\n', nnz(~inliers));
+
+%% Step 4: Localize the object
+
+% get the corners from the first image (the object to be "detected")
+[h,w,~] = size(imgObj);
+corners = [0 0; w 0; w h; 0 h];
+display(corners)
+
+% apply the homography to the corner points of the box
+p = cv.perspectiveTransform(corners, H);
+display(p)
+
+%% Show results
+
+% draw the final good matches
+imgMatches = cv.drawMatches(imgObj, keyObj, imgScene, keyScene, matches, ...
+    'NotDrawSinglePoints',true, 'MatchesMask',inliers);
+
+% draw lines between the transformed corners (the mapped object in the scene)
+p(:,1) = p(:,1) + w;  % shift points for the montage image
+imgMatches = cv.polylines(imgMatches, p, 'Closed',true, ...
+    'Color',[0 255 0], 'Thickness',4, 'LineType','AA');
+figure, imshow(imgMatches)
+title('Good Matches & Object detection')
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

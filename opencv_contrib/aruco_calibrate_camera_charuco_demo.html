@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Camera Calibration using ChArUco Boards Demo</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="aruco_calibrate_camera_charuco_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Camera Calibration using ChArUco Boards Demo</h1>
+         <!--introduction-->
+         <p>Calibration using a ChArUco board.</p>
+         <p>To capture a frame for calibration, press 'c', If input comes from video, press any key for next frame To finish capturing,
+            press 'ESC' key and calibration starts.
+         </p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://docs.opencv.org/3.1.0/da/d13/tutorial_aruco_calibration.html">https://docs.opencv.org/3.1.0/da/d13/tutorial_aruco_calibration.html</a></li>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/aruco/samples/calibrate_camera_charuco.cpp">https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/aruco/samples/calibrate_camera_charuco.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Parameters</a></li>
+               <li><a href="#3">Input source</a></li>
+               <li><a href="#4">Collect</a></li>
+               <li><a href="#5">Calibration</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Parameters</h2><pre class="codeinput"><span class="comment">% options</span>
+vidFile = <span class="string">''</span>;                   <span class="comment">% Use video file instead of camera as input</span>
+squaresX = 5;                   <span class="comment">% Number of squares in X direction</span>
+squaresY = 7;                   <span class="comment">% Number of squares in Y direction</span>
+squareLength = 60;              <span class="comment">% Square side length (in pixels)</span>
+markerLength = 30;              <span class="comment">% Marker side length (in pixels)</span>
+dictionaryId = <span class="string">'6x6_250'</span>;       <span class="comment">% Dictionary id</span>
+refindStrategy = true;          <span class="comment">% Apply refined strategy</span>
+showChessboardCorners = true;   <span class="comment">% Show detected chessboard corners after calibration</span>
+calibrationFlags = {
+    <span class="string">'UseIntrinsicGuess'</span>,false, <span class="keyword">...</span>
+    <span class="string">'FixAspectRatio'</span>,false, <span class="keyword">...</span><span class="comment">     % Fix aspect ratio (fx/fy)</span>
+    <span class="string">'ZeroTangentDist'</span>,true, <span class="keyword">...</span><span class="comment">     % Assume zero tangential distortion</span>
+    <span class="string">'FixPrincipalPoint'</span>,false       <span class="comment">% Fix the principal point at the center</span>
+};
+aspectRatio = 1;                    <span class="comment">% Fix aspect ratio (fx/fy) to this value</span>
+
+<span class="comment">% FixAspectRatio in camera parameters</span>
+<span class="keyword">if</span> calibrationFlags{4}
+    camMatrix = eye(3);
+    camMatrix(1,1) = aspectRatio;
+    calibrationFlags = [calibrationFlags, <span class="string">'CameraMatrix'</span>,camMatrix];
+<span class="keyword">end</span>
+
+<span class="comment">% marker detector parameters</span>
+detectorParams = struct();
+<span class="keyword">if</span> false
+    <span class="comment">%detectorParams.nMarkers = 1024;</span>
+    detectorParams.adaptiveThreshWinSizeMin = 3;
+    detectorParams.adaptiveThreshWinSizeMax = 23;
+    detectorParams.adaptiveThreshWinSizeStep = 10;
+    detectorParams.adaptiveThreshConstant = 7;
+    detectorParams.minMarkerPerimeterRate = 0.03;
+    detectorParams.maxMarkerPerimeterRate = 4.0;
+    detectorParams.polygonalApproxAccuracyRate = 0.05;
+    detectorParams.minCornerDistanceRate = 0.05;
+    detectorParams.minDistanceToBorder = 3;
+    detectorParams.minMarkerDistanceRate = 0.05;
+    detectorParams.cornerRefinementMethod = <span class="string">'None'</span>;
+    detectorParams.cornerRefinementWinSize = 5;
+    detectorParams.cornerRefinementMaxIterations = 30;
+    detectorParams.cornerRefinementMinAccuracy = 0.1;
+    detectorParams.markerBorderBits = 1;
+    detectorParams.perspectiveRemovePixelPerCell = 8;
+    detectorParams.perspectiveRemoveIgnoredMarginPerCell = 0.13;
+    detectorParams.maxErroneousBitsInBorderRate = 0.04;
+    detectorParams.minOtsuStdDev = 5.0;
+    detectorParams.errorCorrectionRate = 0.6;
+<span class="keyword">end</span>
+
+<span class="comment">% create charuco board</span>
+dictionary = {<span class="string">'Predefined'</span>, dictionaryId};
+board = {squaresX, squaresY, squareLength, markerLength, dictionary};</pre><h2 id="3">Input source</h2><pre class="codeinput"><span class="keyword">if</span> ~isempty(vidFile) &amp;&amp; exist(vidFile, <span class="string">'file'</span>) == 2
+    vid = cv.VideoCapture(vidFile);
+    waitTime = 1;     <span class="comment">% 1 sec</span>
+<span class="keyword">else</span>
+    vid = createVideoCapture([], <span class="string">'charuco'</span>);
+    waitTime = 0.01;  <span class="comment">% 10 msec</span>
+<span class="keyword">end</span>
+<span class="keyword">if</span> ~vid.isOpened(), error(<span class="string">'failed to initialize VideoCapture'</span>); <span class="keyword">end</span></pre><h2 id="4">Collect</h2><pre class="codeinput"><span class="comment">% collect data from each frame</span>
+allCorners = {};
+allIds = {};
+allImgs = {};
+imgSize = [];
+hImg = []; hFig = [];
+<span class="keyword">while</span> true
+    <span class="comment">% grab frame</span>
+    img = vid.read();
+    <span class="keyword">if</span> isempty(img), <span class="keyword">break</span>; <span class="keyword">end</span>
+
+    <span class="comment">% detect markers</span>
+    [corners, ids, rejected] = cv.detectMarkers(img, dictionary, <span class="keyword">...</span>
+        <span class="string">'DetectorParameters'</span>,detectorParams);
+
+    <span class="comment">% refined strategy to detect more markers</span>
+    <span class="keyword">if</span> refindStrategy
+        [corners, ids, rejected] = cv.refineDetectedMarkers(img, <span class="keyword">...</span>
+            [<span class="string">'CharucoBoard'</span>,board], corners, ids, rejected);
+    <span class="keyword">end</span>
+
+    <span class="comment">% interpolate charuco corners</span>
+    <span class="keyword">if</span> ~isempty(ids)
+        [charucoCorners, charucoIds] = cv.interpolateCornersCharuco(<span class="keyword">...</span>
+            corners, ids, img, board);
+    <span class="keyword">end</span>
+
+    <span class="comment">% draw results</span>
+    out = img;
+    <span class="keyword">if</span> ~isempty(ids)
+        out = cv.drawDetectedMarkers(out, corners);  <span class="comment">% 'IDs',ids</span>
+        <span class="keyword">if</span> ~isempty(charucoCorners)
+            out = cv.drawDetectedCornersCharuco(out, charucoCorners, <span class="keyword">...</span>
+                <span class="string">'IDs'</span>,charucoIds);
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    out = cv.putText(out, [<span class="string">'Press "c" to add current frame. '</span>, <span class="keyword">...</span>
+        <span class="string">'"ESC" to finish and calibrate'</span>], [10 20], <span class="keyword">...</span>
+        <span class="string">'FontScale'</span>,0.5, <span class="string">'Color'</span>,[255 0 0], <span class="string">'Thickness'</span>,2);
+
+    <span class="keyword">if</span> isempty(hImg)
+        hImg = imshow(out);
+        hFig = ancestor(hImg, <span class="string">'figure'</span>);
+        set(hFig, <span class="string">'KeyPressFcn'</span>,@(o,e) setappdata(o, <span class="string">'key'</span>,e.Key));
+        setappdata(hFig, <span class="string">'key'</span>,<span class="string">''</span>);
+    <span class="keyword">elseif</span> ishghandle(hImg)
+        set(hImg, <span class="string">'CData'</span>,out);
+    <span class="keyword">else</span>
+        <span class="keyword">break</span>;
+    <span class="keyword">end</span>
+    drawnow; pause(waitTime);
+
+    <span class="comment">% collect frame</span>
+    <span class="keyword">switch</span> getappdata(hFig, <span class="string">'key'</span>)
+        <span class="keyword">case</span> {<span class="string">'space'</span>, <span class="string">'return'</span>, <span class="string">'c'</span>}
+            <span class="keyword">if</span> ~isempty(ids)
+                fprintf(<span class="string">'Frame captured at %s\n'</span>, datestr(now()));
+                allCorners{end+1} = corners;
+                allIds{end+1} = ids;
+                allImgs{end+1} = img;
+                imgSize = size(img);
+            <span class="keyword">else</span>
+                disp(<span class="string">'frame skipped, no corners detected!'</span>);
+            <span class="keyword">end</span>
+        <span class="keyword">case</span> {<span class="string">'escape'</span>, <span class="string">'q'</span>}
+            disp(<span class="string">'Finished collecting frames.'</span>);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">'p'</span>
+            pause(5);
+    <span class="keyword">end</span>
+    setappdata(hFig, <span class="string">'key'</span>,<span class="string">''</span>);
+<span class="keyword">end</span>
+vid.release();</pre><pre class="codeoutput">Frame captured at 03-Dec-2017 20:03:08
+Frame captured at 03-Dec-2017 20:03:09
+Frame captured at 03-Dec-2017 20:03:11
+Frame captured at 03-Dec-2017 20:03:13
+Frame captured at 03-Dec-2017 20:03:16
+Frame captured at 03-Dec-2017 20:03:17
+</pre><img src="aruco_calibrate_camera_charuco_demo_01.png"><h2 id="5">Calibration</h2><pre class="codeinput">disp(<span class="string">'Calibrating...'</span>)
+
+<span class="comment">% calibrate camera using aruco markers</span>
+<span class="keyword">if</span> isempty([allIds{:}]), error(<span class="string">'Not enough captures for calibration'</span>); <span class="keyword">end</span>
+[camMatrix, distCoeffs, arucoRepErr] = <span class="keyword">...</span>
+    cv.calibrateCameraAruco([allCorners{:}], [allIds{:}], <span class="keyword">...</span>
+        cellfun(@numel, allCorners), [<span class="string">'CharucoBoard'</span>,board], <span class="keyword">...</span>
+        imgSize([2 1]), calibrationFlags{:});
+
+<span class="comment">% prepare data for charuco calibration</span>
+allCharucoCorners = cell(size(allCorners));
+allCharucoIds = cell(size(allCorners));
+<span class="keyword">for</span> i=1:numel(allCorners)
+    <span class="comment">% interpolate using camera parameters</span>
+    [allCharucoCorners{i}, allCharucoIds{i}] = cv.interpolateCornersCharuco(<span class="keyword">...</span>
+        allCorners{i}, allIds{i}, allImgs{i}, board, <span class="keyword">...</span>
+        <span class="string">'CameraMatrix'</span>,camMatrix, <span class="string">'DistCoeffs'</span>,distCoeffs);
+    <span class="keyword">if</span> isempty(allCharucoIds{i})
+        warning(<span class="string">'interpolateCornersCharuco found no corners'</span>);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">% drop images where it failed to interpolate charuco corners</span>
+idx = cellfun(@isempty, allCharucoIds);
+allCharucoIds(idx) = [];
+allCharucoCorners(idx) = [];
+allImgs(idx) = [];
+
+<span class="comment">% calibrate camera using charuco</span>
+<span class="keyword">if</span> numel(allCharucoCorners) &lt; 4, error(<span class="string">'Not enough corners for calibration'</span>); <span class="keyword">end</span>
+[camMatrix, distCoeffs, repError, rvecs, tvecs] = <span class="keyword">...</span>
+    cv.calibrateCameraCharuco(allCharucoCorners, allCharucoIds, board, <span class="keyword">...</span>
+        imgSize([2 1]), calibrationFlags{:});
+
+<span class="comment">% calibration results</span>
+fprintf(<span class="string">'Calibration Time: %s\n'</span>, datestr(now()));
+fprintf(<span class="string">'Image Width: %d, Image Height: %d\n'</span>, imgSize(2), imgSize(1));
+disp(<span class="string">'Flags:'</span>); cellfun(@disp,calibrationFlags);
+<span class="keyword">if</span> calibrationFlags{4}, fprintf(<span class="string">'Aspect Ratio: %f\n'</span>, aspectRatio); <span class="keyword">end</span>
+disp(<span class="string">'Camera Matrix:'</span>); disp(camMatrix)
+disp(<span class="string">'Distortion Coefficients:'</span>); disp(distCoeffs)
+fprintf(<span class="string">'Reprojection Error: Charuco = %f, Aruco = %f\n'</span>, repError, arucoRepErr);
+save <span class="string">camera_parameters.mat</span> <span class="string">-mat</span> <span class="string">camMatrix</span> <span class="string">distCoeffs</span>
+
+<span class="comment">% show interpolated charuco corners for debugging</span>
+<span class="keyword">if</span> showChessboardCorners
+    axisLength = 0.5 * min(squaresX, squaresY) * squareLength;
+    outImgs = {};
+    <span class="keyword">for</span> i=1:numel(allImgs)
+        <span class="keyword">if</span> ~isempty(allIds{i}) &amp;&amp; ~isempty(allCharucoCorners)
+            img = cv.drawDetectedCornersCharuco(<span class="keyword">...</span>
+                allImgs{i}, allCharucoCorners{i}, <span class="string">'IDs'</span>,allCharucoIds{i});
+            img = cv.drawAxis(img, camMatrix, distCoeffs, <span class="keyword">...</span>
+                rvecs{i}, tvecs{i}, axisLength);
+            outImgs{end+1} = img;
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    <span class="keyword">if</span> ~mexopencv.isOctave() &amp;&amp; mexopencv.require(<span class="string">'images'</span>)
+        <span class="comment">%HACK: IMPLAY not implemented in Octave</span>
+        implay(cat(4, outImgs{:}), 1);
+    <span class="keyword">end</span>
+<span class="keyword">end</span></pre><pre class="codeoutput">Calibrating...
+Calibration Time: 03-Dec-2017 20:03:19
+Image Width: 512, Image Height: 512
+Flags:
+UseIntrinsicGuess
+   0
+FixAspectRatio
+   0
+ZeroTangentDist
+   1
+FixPrincipalPoint
+   0
+Camera Matrix:
+  486.6273         0  256.6522
+         0  484.4509  229.9744
+         0         0    1.0000
+Distortion Coefficients:
+   -0.0264   -1.6408         0         0   10.3417
+Reprojection Error: Charuco = 0.149381, Aruco = 0.726062
+</pre><img src="aruco_calibrate_camera_charuco_demo_02.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Camera Calibration using ChArUco Boards Demo
+% Calibration using a ChArUco board.
+%
+% To capture a frame for calibration, press 'c',
+% If input comes from video, press any key for next frame
+% To finish capturing, press 'ESC' key and calibration starts.
+%
+% Sources:
+%
+% * <https://docs.opencv.org/3.1.0/da/d13/tutorial_aruco_calibration.html>
+% * <https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/aruco/samples/calibrate_camera_charuco.cpp>
+%
+
+%% Parameters
+
+% options
+vidFile = '';                   % Use video file instead of camera as input
+squaresX = 5;                   % Number of squares in X direction
+squaresY = 7;                   % Number of squares in Y direction
+squareLength = 60;              % Square side length (in pixels)
+markerLength = 30;              % Marker side length (in pixels)
+dictionaryId = '6x6_250';       % Dictionary id
+refindStrategy = true;          % Apply refined strategy
+showChessboardCorners = true;   % Show detected chessboard corners after calibration
+calibrationFlags = {
+    'UseIntrinsicGuess',false, ...
+    'FixAspectRatio',false, ...     % Fix aspect ratio (fx/fy)
+    'ZeroTangentDist',true, ...     % Assume zero tangential distortion
+    'FixPrincipalPoint',false       % Fix the principal point at the center
+};
+aspectRatio = 1;                    % Fix aspect ratio (fx/fy) to this value
+
+% FixAspectRatio in camera parameters
+if calibrationFlags{4}
+    camMatrix = eye(3);
+    camMatrix(1,1) = aspectRatio;
+    calibrationFlags = [calibrationFlags, 'CameraMatrix',camMatrix];
+end
+
+% marker detector parameters
+detectorParams = struct();
+if false
+    %detectorParams.nMarkers = 1024;
+    detectorParams.adaptiveThreshWinSizeMin = 3;
+    detectorParams.adaptiveThreshWinSizeMax = 23;
+    detectorParams.adaptiveThreshWinSizeStep = 10;
+    detectorParams.adaptiveThreshConstant = 7;
+    detectorParams.minMarkerPerimeterRate = 0.03;
+    detectorParams.maxMarkerPerimeterRate = 4.0;
+    detectorParams.polygonalApproxAccuracyRate = 0.05;
+    detectorParams.minCornerDistanceRate = 0.05;
+    detectorParams.minDistanceToBorder = 3;
+    detectorParams.minMarkerDistanceRate = 0.05;
+    detectorParams.cornerRefinementMethod = 'None';
+    detectorParams.cornerRefinementWinSize = 5;
+    detectorParams.cornerRefinementMaxIterations = 30;
+    detectorParams.cornerRefinementMinAccuracy = 0.1;
+    detectorParams.markerBorderBits = 1;
+    detectorParams.perspectiveRemovePixelPerCell = 8;
+    detectorParams.perspectiveRemoveIgnoredMarginPerCell = 0.13;
+    detectorParams.maxErroneousBitsInBorderRate = 0.04;
+    detectorParams.minOtsuStdDev = 5.0;
+    detectorParams.errorCorrectionRate = 0.6;
+end
+
+% create charuco board
+dictionary = {'Predefined', dictionaryId};
+board = {squaresX, squaresY, squareLength, markerLength, dictionary};
+
+%% Input source
+if ~isempty(vidFile) && exist(vidFile, 'file') == 2
+    vid = cv.VideoCapture(vidFile);
+    waitTime = 1;     % 1 sec
+else
+    vid = createVideoCapture([], 'charuco');
+    waitTime = 0.01;  % 10 msec
+end
+if ~vid.isOpened(), error('failed to initialize VideoCapture'); end
+
+%% Collect
+
+% collect data from each frame
+allCorners = {};
+allIds = {};
+allImgs = {};
+imgSize = [];
+hImg = []; hFig = [];
+while true
+    % grab frame
+    img = vid.read();
+    if isempty(img), break; end
+
+    % detect markers
+    [corners, ids, rejected] = cv.detectMarkers(img, dictionary, ...
+        'DetectorParameters',detectorParams);
+
+    % refined strategy to detect more markers
+    if refindStrategy
+        [corners, ids, rejected] = cv.refineDetectedMarkers(img, ...
+            ['CharucoBoard',board], corners, ids, rejected);
+    end
+
+    % interpolate charuco corners
+    if ~isempty(ids)
+        [charucoCorners, charucoIds] = cv.interpolateCornersCharuco(...
+            corners, ids, img, board);
+    end
+
+    % draw results
+    out = img;
+    if ~isempty(ids)
+        out = cv.drawDetectedMarkers(out, corners);  % 'IDs',ids
+        if ~isempty(charucoCorners)
+            out = cv.drawDetectedCornersCharuco(out, charucoCorners, ...
+                'IDs',charucoIds);
+        end
+    end
+    out = cv.putText(out, ['Press "c" to add current frame. ', ...
+        '"ESC" to finish and calibrate'], [10 20], ...
+        'FontScale',0.5, 'Color',[255 0 0], 'Thickness',2);
+
+    if isempty(hImg)
+        hImg = imshow(out);
+        hFig = ancestor(hImg, 'figure');
+        set(hFig, 'KeyPressFcn',@(o,e) setappdata(o, 'key',e.Key));
+        setappdata(hFig, 'key','');
+    elseif ishghandle(hImg)
+        set(hImg, 'CData',out);
+    else
+        break;
+    end
+    drawnow; pause(waitTime);
+
+    % collect frame
+    switch getappdata(hFig, 'key')
+        case {'space', 'return', 'c'}
+            if ~isempty(ids)
+                fprintf('Frame captured at %s\n', datestr(now()));
+                allCorners{end+1} = corners;
+                allIds{end+1} = ids;
+                allImgs{end+1} = img;
+                imgSize = size(img);
+            else
+                disp('frame skipped, no corners detected!');
+            end
+        case {'escape', 'q'}
+            disp('Finished collecting frames.');
+            break;
+        case 'p'
+            pause(5);
+    end
+    setappdata(hFig, 'key','');
+end
+vid.release();
+
+%% Calibration
+disp('Calibrating...')
+
+% calibrate camera using aruco markers
+if isempty([allIds{:}]), error('Not enough captures for calibration'); end
+[camMatrix, distCoeffs, arucoRepErr] = ...
+    cv.calibrateCameraAruco([allCorners{:}], [allIds{:}], ...
+        cellfun(@numel, allCorners), ['CharucoBoard',board], ...
+        imgSize([2 1]), calibrationFlags{:});
+
+% prepare data for charuco calibration
+allCharucoCorners = cell(size(allCorners));
+allCharucoIds = cell(size(allCorners));
+for i=1:numel(allCorners)
+    % interpolate using camera parameters
+    [allCharucoCorners{i}, allCharucoIds{i}] = cv.interpolateCornersCharuco(...
+        allCorners{i}, allIds{i}, allImgs{i}, board, ...
+        'CameraMatrix',camMatrix, 'DistCoeffs',distCoeffs);
+    if isempty(allCharucoIds{i})
+        warning('interpolateCornersCharuco found no corners');
+    end
+end
+
+% drop images where it failed to interpolate charuco corners
+idx = cellfun(@isempty, allCharucoIds);
+allCharucoIds(idx) = [];
+allCharucoCorners(idx) = [];
+allImgs(idx) = [];
+
+% calibrate camera using charuco
+if numel(allCharucoCorners) < 4, error('Not enough corners for calibration'); end
+[camMatrix, distCoeffs, repError, rvecs, tvecs] = ...
+    cv.calibrateCameraCharuco(allCharucoCorners, allCharucoIds, board, ...
+        imgSize([2 1]), calibrationFlags{:});
+
+% calibration results
+fprintf('Calibration Time: %s\n', datestr(now()));
+fprintf('Image Width: %d, Image Height: %d\n', imgSize(2), imgSize(1));
+disp('Flags:'); cellfun(@disp,calibrationFlags);
+if calibrationFlags{4}, fprintf('Aspect Ratio: %f\n', aspectRatio); end
+disp('Camera Matrix:'); disp(camMatrix)
+disp('Distortion Coefficients:'); disp(distCoeffs)
+fprintf('Reprojection Error: Charuco = %f, Aruco = %f\n', repError, arucoRepErr);
+save camera_parameters.mat -mat camMatrix distCoeffs
+
+% show interpolated charuco corners for debugging
+if showChessboardCorners
+    axisLength = 0.5 * min(squaresX, squaresY) * squareLength;
+    outImgs = {};
+    for i=1:numel(allImgs)
+        if ~isempty(allIds{i}) && ~isempty(allCharucoCorners)
+            img = cv.drawDetectedCornersCharuco(...
+                allImgs{i}, allCharucoCorners{i}, 'IDs',allCharucoIds{i});
+            img = cv.drawAxis(img, camMatrix, distCoeffs, ...
+                rvecs{i}, tvecs{i}, axisLength);
+            outImgs{end+1} = img;
+        end
+    end
+    if ~mexopencv.isOctave() && mexopencv.require('images')
+        %HACK: IMPLAY not implemented in Octave
+        implay(cat(4, outImgs{:}), 1);
+    end
+end
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

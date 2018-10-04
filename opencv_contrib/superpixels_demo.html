@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Superpixels demo</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="superpixels_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Superpixels demo</h1>
+         <!--introduction-->
+         <p>This program demonstrates superpixels segmentation using OpenCV classes <tt>cv.SuperpixelSEEDS</tt>, <tt>cv.SuperpixelSLIC</tt>, and <tt>cv.SuperpixelLSC</tt>.
+         </p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.2.0/modules/ximgproc/samples/seeds.cpp">https://github.com/opencv/opencv_contrib/blob/3.2.0/modules/ximgproc/samples/seeds.cpp</a></li>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.2.0/modules/ximgproc/samples/slic.cpp">https://github.com/opencv/opencv_contrib/blob/3.2.0/modules/ximgproc/samples/slic.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Algorithm</a></li>
+               <li><a href="#3">Load image</a></li>
+               <li><a href="#6">Create segmentation object</a></li>
+               <li><a href="#7">Segment image</a></li>
+               <li><a href="#10">Display output</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Algorithm</h2>
+         <p>choose one of: 'SEEDS', 'SLIC', 'SLICO', 'MSLIC', 'LSC'</p><pre class="codeinput">ALG = <span class="string">'SEEDS'</span>;</pre><h2 id="3">Load image</h2><pre class="codeinput">src = cv.imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'test1.png'</span>), <span class="string">'Color'</span>,true);
+assert(~isempty(src), <span class="string">'Could not open image'</span>);
+src = cv.resize(src, 0.5, 0.5, <span class="string">'Interpolation'</span>,<span class="string">'Area'</span>);</pre><p>smooth image a bit</p><pre class="codeinput"><span class="keyword">if</span> true
+    src = cv.GaussianBlur(src, <span class="string">'KSize'</span>,[3 3]);
+<span class="keyword">end</span></pre><p>convert to LAB color space</p><pre class="codeinput"><span class="keyword">if</span> true
+    converted = cv.cvtColor(src, <span class="string">'RGB2Lab'</span>);
+<span class="keyword">else</span>
+    converted = cv.cvtColor(src, <span class="string">'BGR2HSV'</span>);
+<span class="keyword">end</span></pre><h2 id="6">Create segmentation object</h2><pre class="codeinput">num_superpixels = 300;  <span class="comment">% SEEDS Number of Superpixels</span>
+num_levels = 4;         <span class="comment">% SEEDS Number of Levels</span>
+prior = 2;              <span class="comment">% SEEDS Smoothing Prior</span>
+num_histogram_bins = 5; <span class="comment">% SEEDS histogram bins</span>
+double_step = false;    <span class="comment">% SEEDS two steps</span>
+region_size = 20;       <span class="comment">% SLIC/SLICO/MSLIC/LSC average superpixel size</span>
+ruler = 15.0;           <span class="comment">% SLIC/MSLIC smoothness (spatial regularization)</span>
+ratio = 0.075;          <span class="comment">% LSC compactness</span>
+min_element_size = 25;  <span class="comment">% SLIC/SLICO/MSLIC/LSC minimum component size percentage</span>
+num_iterations = 10;    <span class="comment">% Iterations</span>
+
+<span class="keyword">switch</span> ALG
+    <span class="keyword">case</span> <span class="string">'SEEDS'</span>
+        superpix = cv.SuperpixelSEEDS(<span class="keyword">...</span>
+            size(converted), num_superpixels, num_levels, <span class="string">'Prior'</span>,prior, <span class="keyword">...</span>
+            <span class="string">'HistogramBins'</span>,num_histogram_bins, <span class="string">'DoubleStep'</span>,double_step);
+    <span class="keyword">case</span> {<span class="string">'SLIC'</span>, <span class="string">'SLICO'</span>, <span class="string">'MSLIC'</span>}
+        superpix = cv.SuperpixelSLIC(converted, <span class="string">'Algorithm'</span>,ALG, <span class="keyword">...</span>
+            <span class="string">'RegionSize'</span>,region_size, <span class="string">'Ruler'</span>,ruler);
+    <span class="keyword">case</span> <span class="string">'LSC'</span>
+        superpix = cv.SuperpixelLSC(converted, <span class="keyword">...</span>
+            <span class="string">'RegionSize'</span>,region_size, <span class="string">'Ratio'</span>,ratio);
+    <span class="keyword">otherwise</span>
+        error(<span class="string">'Unrecognized algorithm %s'</span>, ALG);
+<span class="keyword">end</span></pre><h2 id="7">Segment image</h2><pre class="codeinput">tic
+<span class="keyword">if</span> strcmp(ALG, <span class="string">'SEEDS'</span>)
+    superpix.iterate(converted, <span class="string">'NumIterations'</span>,num_iterations);
+<span class="keyword">else</span>
+    superpix.iterate(<span class="string">'NumIterations'</span>,num_iterations);
+
+    <span class="comment">% merge small superpixels to neighbouring ones</span>
+    <span class="keyword">if</span> min_element_size &gt; 0
+        superpix.enforceLabelConnectivity(<span class="string">'MinElementSize'</span>,min_element_size);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+npix = superpix.getNumberOfSuperpixels();
+fprintf(<span class="string">'%s segmentation with %d superpixels\n'</span>, ALG, npix);
+toc</pre><pre class="codeoutput">SEEDS segmentation with 176 superpixels
+Elapsed time is 0.027262 seconds.
+</pre><p>get the contours for displaying</p><pre class="codeinput">mask = superpix.getLabelContourMask(<span class="string">'ThickLine'</span>,true);
+zr = false(size(mask));
+result = imlincomb(0.8,src, 0.2,255*ones(size(src),<span class="string">'uint8'</span>));
+result(cat(3,mask,zr,zr)) = 0;
+result(cat(3,zr,mask,zr)) = 0;
+result(cat(3,zr,zr,mask)) = 255;</pre><p>retrieve the segmentation result</p><pre class="codeinput">labels = superpix.getLabels();
+<span class="keyword">if</span> false
+    <span class="comment">% use the last x bits to determine the color. Note that this does not</span>
+    <span class="comment">% guarantee that 2 neighboring superpixels have different colors.</span>
+    bits = 2;
+    L = bitand(labels, bitshift(1,bits)-1) * bitshift(1,16-bits);
+    L = double(L) ./ double(max(L(:)));
+<span class="keyword">else</span>
+    labels = double(labels) + 1;
+    L = label2rgb(labels, jet(npix), <span class="string">'k'</span>, <span class="string">'shuffle'</span>);
+<span class="keyword">end</span></pre><h2 id="10">Display output</h2><pre class="codeinput">subplot(221), imshow(src), title(<span class="string">'image'</span>)
+subplot(222), imshow(result), title(<span class="string">'superpixel contours'</span>)
+subplot(223), imshow(mask), title(<span class="string">'mask'</span>)
+subplot(224), imshow(L), title(<span class="string">'labels'</span>)</pre><img src="superpixels_demo_01.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Superpixels demo
+% This program demonstrates superpixels segmentation using OpenCV classes
+% |cv.SuperpixelSEEDS|, |cv.SuperpixelSLIC|, and |cv.SuperpixelLSC|.
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv_contrib/blob/3.2.0/modules/ximgproc/samples/seeds.cpp>
+% * <https://github.com/opencv/opencv_contrib/blob/3.2.0/modules/ximgproc/samples/slic.cpp>
+%
+
+%% Algorithm
+% choose one of: 'SEEDS', 'SLIC', 'SLICO', 'MSLIC', 'LSC'
+ALG = 'SEEDS';
+
+%% Load image
+src = cv.imread(fullfile(mexopencv.root(),'test','test1.png'), 'Color',true);
+assert(~isempty(src), 'Could not open image');
+src = cv.resize(src, 0.5, 0.5, 'Interpolation','Area');
+
+%%
+% smooth image a bit
+if true
+    src = cv.GaussianBlur(src, 'KSize',[3 3]);
+end
+
+%%
+% convert to LAB color space
+if true
+    converted = cv.cvtColor(src, 'RGB2Lab');
+else
+    converted = cv.cvtColor(src, 'BGR2HSV');
+end
+
+%% Create segmentation object
+num_superpixels = 300;  % SEEDS Number of Superpixels
+num_levels = 4;         % SEEDS Number of Levels
+prior = 2;              % SEEDS Smoothing Prior
+num_histogram_bins = 5; % SEEDS histogram bins
+double_step = false;    % SEEDS two steps
+region_size = 20;       % SLIC/SLICO/MSLIC/LSC average superpixel size
+ruler = 15.0;           % SLIC/MSLIC smoothness (spatial regularization)
+ratio = 0.075;          % LSC compactness
+min_element_size = 25;  % SLIC/SLICO/MSLIC/LSC minimum component size percentage
+num_iterations = 10;    % Iterations
+
+switch ALG
+    case 'SEEDS'
+        superpix = cv.SuperpixelSEEDS(...
+            size(converted), num_superpixels, num_levels, 'Prior',prior, ...
+            'HistogramBins',num_histogram_bins, 'DoubleStep',double_step);
+    case {'SLIC', 'SLICO', 'MSLIC'}
+        superpix = cv.SuperpixelSLIC(converted, 'Algorithm',ALG, ...
+            'RegionSize',region_size, 'Ruler',ruler);
+    case 'LSC'
+        superpix = cv.SuperpixelLSC(converted, ...
+            'RegionSize',region_size, 'Ratio',ratio);
+    otherwise
+        error('Unrecognized algorithm %s', ALG);
+end
+
+%% Segment image
+tic
+if strcmp(ALG, 'SEEDS')
+    superpix.iterate(converted, 'NumIterations',num_iterations);
+else
+    superpix.iterate('NumIterations',num_iterations);
+
+    % merge small superpixels to neighbouring ones
+    if min_element_size > 0
+        superpix.enforceLabelConnectivity('MinElementSize',min_element_size);
+    end
+end
+npix = superpix.getNumberOfSuperpixels();
+fprintf('%s segmentation with %d superpixels\n', ALG, npix);
+toc
+
+%%
+% get the contours for displaying
+mask = superpix.getLabelContourMask('ThickLine',true);
+zr = false(size(mask));
+result = imlincomb(0.8,src, 0.2,255*ones(size(src),'uint8'));
+result(cat(3,mask,zr,zr)) = 0;
+result(cat(3,zr,mask,zr)) = 0;
+result(cat(3,zr,zr,mask)) = 255;
+
+%%
+% retrieve the segmentation result
+labels = superpix.getLabels();
+if false
+    % use the last x bits to determine the color. Note that this does not
+    % guarantee that 2 neighboring superpixels have different colors.
+    bits = 2;
+    L = bitand(labels, bitshift(1,bits)-1) * bitshift(1,16-bits);
+    L = double(L) ./ double(max(L(:)));
+else
+    labels = double(labels) + 1;
+    L = label2rgb(labels, jet(npix), 'k', 'shuffle');
+end
+
+%% Display output
+subplot(221), imshow(src), title('image')
+subplot(222), imshow(result), title('superpixel contours')
+subplot(223), imshow(mask), title('mask')
+subplot(224), imshow(L), title('labels')
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

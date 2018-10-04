@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Lucas-Kanade Tracker</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="lk_track_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Lucas-Kanade Tracker</h1>
+         <!--introduction-->
+         <p>Lucas-Kanade sparse optical flow demo. Uses <tt>cv.goodFeaturesToTrack</tt> for track initialization and back-tracking for match verification between frames.
+         </p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv/blob/3.2.0/samples/python/lk_track.py">https://github.com/opencv/opencv/blob/3.2.0/samples/python/lk_track.py</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Options</a></li>
+               <li><a href="#3">Video</a></li>
+               <li><a href="#4">First frame</a></li>
+               <li><a href="#5">Initialize</a></li>
+               <li><a href="#7">Main loop</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Options</h2><pre class="codeinput">track_len = 10;       <span class="comment">% max number of locations of point to remember</span>
+detect_interval = 5;  <span class="comment">% detect new corners every X iterations</span>
+
+<span class="comment">% params for corner detection and flow computation</span>
+shi_params = {<span class="string">'MaxCorners'</span>,500, <span class="string">'QualityLevel'</span>,0.3, <span class="string">'MinDistance'</span>,7, <span class="keyword">...</span>
+    <span class="string">'BlockSize'</span>,7};
+lk_params = {<span class="string">'WinSize'</span>,[15 15], <span class="string">'MaxLevel'</span>,2, <span class="keyword">...</span>
+    <span class="string">'Criteria'</span>,struct(<span class="string">'type'</span>,<span class="string">'Count+EPS'</span>, <span class="string">'maxCount'</span>,10, <span class="string">'epsilon'</span>,0.03)};</pre><h2 id="3">Video</h2>
+         <p>Prepare video source</p><pre class="codeinput"><span class="keyword">if</span> true
+    vid = 0;
+<span class="keyword">elseif</span> true
+    vid = fullfile(mexopencv.root(), <span class="string">'test'</span>, <span class="string">'768x576.avi'</span>);
+<span class="keyword">elseif</span> mexopencv.require(<span class="string">'vision'</span>)
+    vid = fullfile(toolboxdir(<span class="string">'vision'</span>), <span class="string">'visiondata'</span>, <span class="string">'visiontraffic.avi'</span>);
+<span class="keyword">end</span>
+cap = createVideoCapture([], <span class="string">'chess'</span>);
+assert(cap.isOpened(), <span class="string">'Failed to initialize capturing'</span>);</pre><h2 id="4">First frame</h2>
+         <p>Grab first frame</p><pre class="codeinput">frame = cap.read();
+assert(~isempty(frame), <span class="string">'Failed to read frame'</span>);
+gray0 = cv.cvtColor(frame, <span class="string">'RGB2GRAY'</span>);</pre><h2 id="5">Initialize</h2>
+         <p>stores history of locations for a set of points (cell array of Nx2 matrices)</p><pre class="codeinput">tracks = {};
+clr = [0 255 0];</pre><p>Plot</p><pre class="codeinput">hImg = imshow(frame);
+title(<span class="string">'Lucas-Kanade tracker'</span>)</pre><img src="lk_track_demo_01.png"><h2 id="7">Main loop</h2><pre class="codeinput">counter = 0;  <span class="comment">% iterations counter</span>
+<span class="keyword">while</span> ishghandle(hImg)
+    <span class="comment">% Grab next frame</span>
+    frame = cap.read();
+    <span class="keyword">if</span> isempty(frame), <span class="keyword">break</span>; <span class="keyword">end</span>
+    gray1 = cv.cvtColor(frame, <span class="string">'RGB2GRAY'</span>);
+
+    <span class="keyword">if</span> ~isempty(tracks)
+        <span class="comment">% track last position of points, in forward and backward direction</span>
+        p0 = cellfun(@(tr) tr(end,:), tracks, <span class="string">'UniformOutput'</span>,false);
+        p1 = cv.calcOpticalFlowPyrLK(gray0, gray1, p0, lk_params{:});
+        p0r = cv.calcOpticalFlowPyrLK(gray1, gray0, p1, lk_params{:});
+        <span class="comment">% keep only good matches</span>
+        good = cellfun(@(a,b) max(abs(a - b)), p0, p0r) &lt; 1;
+        tracks = tracks(good);
+        p1 = p1(good);
+        <span class="keyword">if</span> any(good)
+            <span class="comment">% append new locations to existing tracked points</span>
+            tracks = cellfun(@(tr,p) [tr; p], tracks, p1, <span class="string">'UniformOutput'</span>,false);
+            <span class="comment">% keep only the last 10 locations in each track (fixed size queue)</span>
+            idx = cellfun(@(tr) size(tr,1), tracks) &gt; track_len;
+            tracks(idx) = cellfun(@(tr) tr(2:end,:), tracks(idx), <span class="string">'UniformOutput'</span>,false);
+            <span class="comment">% draw latest points and their tracks (comet-like plot)</span>
+            frame = cv.circle(frame, p1, 2, <span class="string">'Thickness'</span>,<span class="string">'Filled'</span>, <span class="string">'Color'</span>,clr);
+            frame = cv.polylines(frame, tracks, <span class="string">'Closed'</span>,false, <span class="string">'Color'</span>,clr);
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    <span class="comment">% display number of tracked points</span>
+    frame = cv.putText(frame, <span class="keyword">...</span>
+        sprintf(<span class="string">'track count: %d'</span>, numel(tracks)), [20 20], <span class="keyword">...</span>
+        <span class="string">'FontScale'</span>,0.5, <span class="string">'Color'</span>,[255 255 0], <span class="string">'LineType'</span>,<span class="string">'AA'</span>);
+
+    <span class="keyword">if</span> rem(counter, detect_interval) == 0 || isempty(tracks)
+        <span class="comment">% region of interest mask</span>
+        <span class="keyword">if</span> ~isempty(tracks)
+            <span class="comment">% try to find new points by masking-out last track positions</span>
+            mask = 255 * ones(size(gray1), <span class="string">'uint8'</span>);
+            p = cellfun(@(tr) tr(end,:), tracks, <span class="string">'UniformOutput'</span>,false);
+            mask = cv.circle(mask, p, 5, <span class="string">'Thickness'</span>,<span class="string">'Filled'</span>, <span class="string">'Color'</span>,0);
+            roi_params = {<span class="string">'Mask'</span>,mask};
+        <span class="keyword">else</span>
+            roi_params = {};
+        <span class="keyword">end</span>
+        <span class="comment">% detect corners</span>
+        p = cv.goodFeaturesToTrack(gray1, roi_params{:}, shi_params{:});
+        <span class="keyword">if</span> ~isempty(p)
+            <span class="comment">% append new set of points (p is a cell array of 1x2 vectors)</span>
+            tracks = [tracks, p];
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    <span class="comment">% Display result</span>
+    set(hImg, <span class="string">'CData'</span>,frame);
+    drawnow;
+
+    <span class="comment">% Next iteration</span>
+    counter = counter + 1;
+    gray0 = gray1;
+<span class="keyword">end</span>
+cap.release();</pre><img src="lk_track_demo_02.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Lucas-Kanade Tracker
+%
+% Lucas-Kanade sparse optical flow demo. Uses |cv.goodFeaturesToTrack| for
+% track initialization and back-tracking for match verification between
+% frames.
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv/blob/3.2.0/samples/python/lk_track.py>
+%
+
+%% Options
+track_len = 10;       % max number of locations of point to remember
+detect_interval = 5;  % detect new corners every X iterations
+
+% params for corner detection and flow computation
+shi_params = {'MaxCorners',500, 'QualityLevel',0.3, 'MinDistance',7, ...
+    'BlockSize',7};
+lk_params = {'WinSize',[15 15], 'MaxLevel',2, ...
+    'Criteria',struct('type','Count+EPS', 'maxCount',10, 'epsilon',0.03)};
+
+%% Video
+% Prepare video source
+if true
+    vid = 0;
+elseif true
+    vid = fullfile(mexopencv.root(), 'test', '768x576.avi');
+elseif mexopencv.require('vision')
+    vid = fullfile(toolboxdir('vision'), 'visiondata', 'visiontraffic.avi');
+end
+cap = createVideoCapture([], 'chess');
+assert(cap.isOpened(), 'Failed to initialize capturing');
+
+%% First frame
+% Grab first frame
+frame = cap.read();
+assert(~isempty(frame), 'Failed to read frame');
+gray0 = cv.cvtColor(frame, 'RGB2GRAY');
+
+%% Initialize
+% stores history of locations for a set of points (cell array of Nx2 matrices)
+tracks = {};
+clr = [0 255 0];
+
+%%
+% Plot
+hImg = imshow(frame);
+title('Lucas-Kanade tracker')
+
+%% Main loop
+counter = 0;  % iterations counter
+while ishghandle(hImg)
+    % Grab next frame
+    frame = cap.read();
+    if isempty(frame), break; end
+    gray1 = cv.cvtColor(frame, 'RGB2GRAY');
+
+    if ~isempty(tracks)
+        % track last position of points, in forward and backward direction
+        p0 = cellfun(@(tr) tr(end,:), tracks, 'UniformOutput',false);
+        p1 = cv.calcOpticalFlowPyrLK(gray0, gray1, p0, lk_params{:});
+        p0r = cv.calcOpticalFlowPyrLK(gray1, gray0, p1, lk_params{:});
+        % keep only good matches
+        good = cellfun(@(a,b) max(abs(a - b)), p0, p0r) < 1;
+        tracks = tracks(good);
+        p1 = p1(good);
+        if any(good)
+            % append new locations to existing tracked points
+            tracks = cellfun(@(tr,p) [tr; p], tracks, p1, 'UniformOutput',false);
+            % keep only the last 10 locations in each track (fixed size queue)
+            idx = cellfun(@(tr) size(tr,1), tracks) > track_len;
+            tracks(idx) = cellfun(@(tr) tr(2:end,:), tracks(idx), 'UniformOutput',false);
+            % draw latest points and their tracks (comet-like plot)
+            frame = cv.circle(frame, p1, 2, 'Thickness','Filled', 'Color',clr);
+            frame = cv.polylines(frame, tracks, 'Closed',false, 'Color',clr);
+        end
+    end
+
+    % display number of tracked points
+    frame = cv.putText(frame, ...
+        sprintf('track count: %d', numel(tracks)), [20 20], ...
+        'FontScale',0.5, 'Color',[255 255 0], 'LineType','AA');
+
+    if rem(counter, detect_interval) == 0 || isempty(tracks)
+        % region of interest mask
+        if ~isempty(tracks)
+            % try to find new points by masking-out last track positions
+            mask = 255 * ones(size(gray1), 'uint8');
+            p = cellfun(@(tr) tr(end,:), tracks, 'UniformOutput',false);
+            mask = cv.circle(mask, p, 5, 'Thickness','Filled', 'Color',0);
+            roi_params = {'Mask',mask};
+        else
+            roi_params = {};
+        end
+        % detect corners
+        p = cv.goodFeaturesToTrack(gray1, roi_params{:}, shi_params{:});
+        if ~isempty(p)
+            % append new set of points (p is a cell array of 1x2 vectors)
+            tracks = [tracks, p];
+        end
+    end
+
+    % Display result
+    set(hImg, 'CData',frame);
+    drawnow;
+
+    % Next iteration
+    counter = counter + 1;
+    gray0 = gray1;
+end
+cap.release();
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Line descriptors matching demo</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="line_matching_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Line descriptors matching demo</h1>
+         <!--introduction-->
+         <p>This example shows the functionalities of line descriptors matching furnished by <tt>cv.BinaryDescriptorMatcher</tt> class.
+         </p>
+         <p>This module shows how to extract line segments from an image by 2 different methods: First segmenting lines with Line Segment
+            Detector <tt>cv.LSDDetector</tt>, and then (or just) using the Binary Descriptor to get the lines and give them a descriptor <tt>cv.BinaryDescriptor</tt>. Finally, we can then match line segments using the <tt>cv.BinaryDescriptorMatcher</tt> class.
+         </p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/line_descriptor/samples/matching.cpp">https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/line_descriptor/samples/matching.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Matching among descriptors</a></li>
+               <li><a href="#3">Images</a></li>
+               <li><a href="#4">BinaryDescriptor: Detect and Compute</a></li>
+               <li><a href="#5">BinaryDescriptor: Match</a></li>
+               <li><a href="#6">LSDDetector: Detect and Compute</a></li>
+               <li><a href="#7">LSDDetector: Match</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Matching among descriptors</h2>
+         <p>If we have extracted descriptors from two different images, it is possible to search for matches among them. One way of doing
+            it is matching exactly a descriptor to each input query descriptor, choosing the one at closest distance.
+         </p>
+         <p>Sometimes, we could be interested in searching for the closest <tt>k</tt> descriptors, given an input one. See cv.BinaryDescriptorMatcher.knnMatch
+         </p>
+         <p>In some cases, we could have a search radius and look for all descriptors distant at the most <tt>r</tt> from input query. See cv.BinaryDescriptorMatcher.radiusMatch
+         </p>
+         <h2 id="3">Images</h2><pre class="codeinput"><span class="comment">% load images</span>
+<span class="keyword">if</span> false
+    img1 = cv.imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'books_left.jpg'</span>), <span class="string">'Color'</span>,true);
+    img2 = cv.imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'books_right.jpg'</span>), <span class="string">'Color'</span>,true);
+<span class="keyword">else</span>
+    im = which(<span class="string">'cameraman.tif'</span>);
+    <span class="keyword">if</span> isempty(im), im = fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'blox.jpg'</span>); <span class="keyword">end</span>
+    img1 = cv.imread(im, <span class="string">'Color'</span>,true);
+    M = cv.getRotationMatrix2D(round([size(img1,2) size(img1,1)]./2), -20, 0.9);
+    img2 = cv.warpAffine(img1, M);
+<span class="keyword">end</span>
+
+<span class="comment">% create binary masks</span>
+mask1 = ones(size(img1,1), size(img1,2), <span class="string">'uint8'</span>);
+mask2 = ones(size(img2,1), size(img2,2), <span class="string">'uint8'</span>);
+
+subplot(121), imshow(img1)
+subplot(122), imshow(img2)
+whos <span class="string">img1</span> <span class="string">img2</span> <span class="string">mask1</span> <span class="string">mask2</span></pre><pre class="codeoutput">  Name         Size                Bytes  Class    Attributes
+
+  img1       256x256x3            196608  uint8              
+  img2       256x256x3            196608  uint8              
+  mask1      256x256               65536  uint8              
+  mask2      256x256               65536  uint8              
+
+</pre><img src="line_matching_demo_01.png"><h2 id="4">BinaryDescriptor: Detect and Compute</h2><pre class="codeinput"><span class="comment">% create a BinaryDescriptor object with default parameters</span>
+bd = cv.BinaryDescriptor();
+
+<span class="comment">% compute lines and descriptors</span>
+[keylines1, descr1] = bd.detectAndCompute(img1, <span class="string">'Mask'</span>,mask1);
+[keylines2, descr2] = bd.detectAndCompute(img2, <span class="string">'Mask'</span>,mask2);
+whos <span class="string">keylines1</span> <span class="string">keylines2</span> <span class="string">descr1</span> <span class="string">descr2</span>
+
+<span class="comment">% select keylines from first octave and their descriptors</span>
+idx = ([keylines1.octave] == 0);
+keylines1 = keylines1(idx);
+descr1 = descr1(idx,:);
+
+idx = ([keylines2.octave] == 0);
+keylines2 = keylines2(idx);
+descr2 = descr2(idx,:);</pre><pre class="codeoutput">  Name            Size            Bytes  Class     Attributes
+
+  descr1         53x32             1696  uint8               
+  descr2         46x32             1472  uint8               
+  keylines1       1x53            79208  struct              
+  keylines2       1x46            68848  struct              
+
+</pre><h2 id="5">BinaryDescriptor: Match</h2><pre class="codeinput"><span class="comment">% create a BinaryDescriptorMatcher object</span>
+bdm = cv.BinaryDescriptorMatcher();
+
+<span class="comment">% require match</span>
+matches = bdm.match(descr1, descr2)
+
+<span class="comment">% select best matches</span>
+MATCHES_DIST_THRESHOLD = 25;
+good_matches = ([matches.distance] &lt; MATCHES_DIST_THRESHOLD);
+fprintf(<span class="string">'number of good matches = %d\n'</span>, nnz(good_matches));
+
+<span class="comment">% plot matches</span>
+outImg = cv.drawLineMatches(img1, keylines1, img2, keylines2, matches, <span class="keyword">...</span>
+    <span class="string">'MatchesMask'</span>,good_matches);
+figure, imshow(outImg)
+title(<span class="string">'Matches in octave 0'</span>)</pre><pre class="codeoutput">matches = 
+  1&times;53 struct array with fields:
+    queryIdx
+    trainIdx
+    imgIdx
+    distance
+number of good matches = 12
+</pre><img src="line_matching_demo_02.png"><h2 id="6">LSDDetector: Detect and Compute</h2><pre class="codeinput"><span class="comment">% create an LSD detector</span>
+lsd = cv.LSDDetector();
+
+<span class="comment">% detect lines</span>
+keylines1 = lsd.detect(img1, <span class="string">'Scale'</span>,2, <span class="string">'NumOctaves'</span>,2, <span class="string">'Mask'</span>,mask1);
+keylines2 = lsd.detect(img2, <span class="string">'Scale'</span>,2, <span class="string">'NumOctaves'</span>,2, <span class="string">'Mask'</span>,mask2);
+whos <span class="string">keylines1</span> <span class="string">keylines2</span>
+
+<span class="comment">% compute descriptors for lines</span>
+descr1 = bd.compute(img1, keylines1);
+descr2 = bd.compute(img2, keylines2);
+whos <span class="string">descr1</span> <span class="string">descr2</span>
+
+<span class="comment">% select lines and descriptors from second octave</span>
+idx = ([keylines1.octave] == 1);
+keylines1 = keylines1(idx);
+descr1 = descr1(idx,:);
+
+idx = ([keylines2.octave] == 1);
+keylines2 = keylines2(idx);
+descr2 = descr2(idx,:);</pre><pre class="codeoutput">  Name           Size              Bytes  Class     Attributes
+
+  keylines1      1x230            341168  struct              
+  keylines2      1x208            308608  struct              
+
+  Name          Size            Bytes  Class    Attributes
+
+  descr1      230x32             7360  uint8              
+  descr2      208x32             6656  uint8              
+
+</pre><h2 id="7">LSDDetector: Match</h2><pre class="codeinput"><span class="comment">% compute matches</span>
+matches = bdm.match(descr1, descr2)
+
+<span class="comment">% select best matches</span>
+good_matches = ([matches.distance] &lt; MATCHES_DIST_THRESHOLD);
+fprintf(<span class="string">'number of good matches = %d\n'</span>, nnz(good_matches));
+
+<span class="comment">% plot matches</span>
+img1 = cv.resize(img1, 0.5, 0.5);
+img2 = cv.resize(img2, 0.5, 0.5);
+outImg = cv.drawLineMatches(img1, keylines1, img2, keylines2, matches, <span class="keyword">...</span>
+    <span class="string">'MatchesMask'</span>,good_matches);
+figure, imshow(outImg)
+title(<span class="string">'LSD Matches in octave 1'</span>)</pre><pre class="codeoutput">matches = 
+  1&times;64 struct array with fields:
+    queryIdx
+    trainIdx
+    imgIdx
+    distance
+number of good matches = 16
+</pre><img src="line_matching_demo_03.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Line descriptors matching demo
+% This example shows the functionalities of line descriptors matching
+% furnished by |cv.BinaryDescriptorMatcher| class.
+%
+% This module shows how to extract line segments from an image by 2 different
+% methods: First segmenting lines with Line Segment Detector |cv.LSDDetector|,
+% and then (or just) using the Binary Descriptor to get the lines and give
+% them a descriptor |cv.BinaryDescriptor|. Finally, we can then match line
+% segments using the |cv.BinaryDescriptorMatcher| class.
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/line_descriptor/samples/matching.cpp>
+%
+
+%% Matching among descriptors
+% If we have extracted descriptors from two different images, it is possible
+% to search for matches among them. One way of doing it is matching exactly a
+% descriptor to each input query descriptor, choosing the one at closest
+% distance.
+%
+% Sometimes, we could be interested in searching for the closest |k|
+% descriptors, given an input one.
+% See cv.BinaryDescriptorMatcher.knnMatch
+%
+% In some cases, we could have a search radius and look for all descriptors
+% distant at the most |r| from input query.
+% See cv.BinaryDescriptorMatcher.radiusMatch
+%
+
+%% Images
+
+% load images
+if false
+    img1 = cv.imread(fullfile(mexopencv.root(),'test','books_left.jpg'), 'Color',true);
+    img2 = cv.imread(fullfile(mexopencv.root(),'test','books_right.jpg'), 'Color',true);
+else
+    im = which('cameraman.tif');
+    if isempty(im), im = fullfile(mexopencv.root(),'test','blox.jpg'); end
+    img1 = cv.imread(im, 'Color',true);
+    M = cv.getRotationMatrix2D(round([size(img1,2) size(img1,1)]./2), -20, 0.9);
+    img2 = cv.warpAffine(img1, M);
+end
+
+% create binary masks
+mask1 = ones(size(img1,1), size(img1,2), 'uint8');
+mask2 = ones(size(img2,1), size(img2,2), 'uint8');
+
+subplot(121), imshow(img1)
+subplot(122), imshow(img2)
+whos img1 img2 mask1 mask2
+
+%% BinaryDescriptor: Detect and Compute
+
+% create a BinaryDescriptor object with default parameters
+bd = cv.BinaryDescriptor();
+
+% compute lines and descriptors
+[keylines1, descr1] = bd.detectAndCompute(img1, 'Mask',mask1);
+[keylines2, descr2] = bd.detectAndCompute(img2, 'Mask',mask2);
+whos keylines1 keylines2 descr1 descr2
+
+% select keylines from first octave and their descriptors
+idx = ([keylines1.octave] == 0);
+keylines1 = keylines1(idx);
+descr1 = descr1(idx,:);
+
+idx = ([keylines2.octave] == 0);
+keylines2 = keylines2(idx);
+descr2 = descr2(idx,:);
+
+%% BinaryDescriptor: Match
+
+% create a BinaryDescriptorMatcher object
+bdm = cv.BinaryDescriptorMatcher();
+
+% require match
+matches = bdm.match(descr1, descr2)
+
+% select best matches
+MATCHES_DIST_THRESHOLD = 25;
+good_matches = ([matches.distance] < MATCHES_DIST_THRESHOLD);
+fprintf('number of good matches = %d\n', nnz(good_matches));
+
+% plot matches
+outImg = cv.drawLineMatches(img1, keylines1, img2, keylines2, matches, ...
+    'MatchesMask',good_matches);
+figure, imshow(outImg)
+title('Matches in octave 0')
+
+%% LSDDetector: Detect and Compute
+
+% create an LSD detector
+lsd = cv.LSDDetector();
+
+% detect lines
+keylines1 = lsd.detect(img1, 'Scale',2, 'NumOctaves',2, 'Mask',mask1);
+keylines2 = lsd.detect(img2, 'Scale',2, 'NumOctaves',2, 'Mask',mask2);
+whos keylines1 keylines2
+
+% compute descriptors for lines
+descr1 = bd.compute(img1, keylines1);
+descr2 = bd.compute(img2, keylines2);
+whos descr1 descr2
+
+% select lines and descriptors from second octave
+idx = ([keylines1.octave] == 1);
+keylines1 = keylines1(idx);
+descr1 = descr1(idx,:);
+
+idx = ([keylines2.octave] == 1);
+keylines2 = keylines2(idx);
+descr2 = descr2(idx,:);
+
+%% LSDDetector: Match
+
+% compute matches
+matches = bdm.match(descr1, descr2)
+
+% select best matches
+good_matches = ([matches.distance] < MATCHES_DIST_THRESHOLD);
+fprintf('number of good matches = %d\n', nnz(good_matches));
+
+% plot matches
+img1 = cv.resize(img1, 0.5, 0.5);
+img2 = cv.resize(img2, 0.5, 0.5);
+outImg = cv.drawLineMatches(img1, keylines1, img2, keylines2, matches, ...
+    'MatchesMask',good_matches);
+figure, imshow(outImg)
+title('LSD Matches in octave 1')
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

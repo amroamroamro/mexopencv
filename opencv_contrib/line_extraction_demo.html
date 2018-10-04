@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Binary Descriptors for Line Segments</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="line_extraction_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Binary Descriptors for Line Segments</h1>
+         <!--introduction-->
+         <p>This example shows the functionalities of lines extraction and descriptors computation furnished by <tt>cv.LSDDetector</tt> and <tt>cv.BinaryDescriptor</tt> classes.
+         </p>
+         <p>In this tutorial it will be shown how to:</p>
+         <div>
+            <ul>
+               <li>use the <tt>cv.BinaryDescriptor</tt> interface to extract lines and store them   in <tt>KeyLine</tt> objects
+               </li>
+               <li>use the same interface to compute descriptors for every extracted line</li>
+            </ul>
+         </div>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/line_descriptor/samples/lsd_lines_extraction.cpp">https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/line_descriptor/samples/lsd_lines_extraction.cpp</a></li>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/line_descriptor/samples/lines_extraction.cpp">https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/line_descriptor/samples/lines_extraction.cpp</a></li>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/line_descriptor/samples/compute_descriptors.cpp">https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/line_descriptor/samples/compute_descriptors.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Lines extraction and descriptors computation</a></li>
+               <li><a href="#3">Image</a></li>
+               <li><a href="#4">Initialize</a></li>
+               <li><a href="#5">Extract lines</a></li>
+               <li><a href="#6">Compute descriptors</a></li>
+               <li><a href="#7">Plot</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Lines extraction and descriptors computation</h2>
+         <p>In the following snippet of code, it is shown how to detect lines from an image. The LSD extractor is initialized with <tt>LSD_REFINE_ADV</tt> option; remaining parameters are left to their default values. A mask of ones is used in order to accept all extracted lines,
+            which, at the end, are displayed using random colors for octave 0.
+         </p>
+         <p>Once keylines have been detected, it is possible to compute their descriptors.</p>
+         <h2 id="3">Image</h2><pre class="codeinput"><span class="comment">% load image</span>
+<span class="keyword">if</span> mexopencv.isOctave()
+    im = fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'blox.jpg'</span>);
+<span class="keyword">else</span>
+    im = which(<span class="string">'cameraman.tif'</span>);
+<span class="keyword">end</span>
+img = cv.imread(im, <span class="string">'Color'</span>,true);
+
+<span class="comment">% create binary mask</span>
+mask = ones(size(img,1), size(img,2), <span class="string">'uint8'</span>);
+
+whos <span class="string">img</span> <span class="string">mask</span></pre><pre class="codeoutput">  Name        Size                Bytes  Class    Attributes
+
+  img       256x256x3            196608  uint8              
+  mask      256x256               65536  uint8              
+
+</pre><h2 id="4">Initialize</h2><pre class="codeinput"><span class="comment">% create BinaryDescriptor/LSDDetector objects with default parameters</span>
+bd = cv.BinaryDescriptor();
+lsd = cv.LSDDetector();</pre><h2 id="5">Extract lines</h2><pre class="codeinput">keylinesBD = bd.detect(img, <span class="string">'Mask'</span>,mask)
+keylinesLSD = lsd.detect(img, <span class="string">'Scale'</span>,2, <span class="string">'NumOctaves'</span>,1, <span class="string">'Mask'</span>,mask)</pre><pre class="codeoutput">keylinesBD = 
+  1&times;53 struct array with fields:
+    angle
+    class_id
+    octave
+    pt
+    response
+    size
+    startPoint
+    endPoint
+    startPointInOctave
+    endPointInOctave
+    lineLength
+    numOfPixels
+keylinesLSD = 
+  1&times;166 struct array with fields:
+    angle
+    class_id
+    octave
+    pt
+    response
+    size
+    startPoint
+    endPoint
+    startPointInOctave
+    endPointInOctave
+    lineLength
+    numOfPixels
+</pre><h2 id="6">Compute descriptors</h2><pre class="codeinput">descriptorsBD = bd.compute(img, keylinesBD);
+descriptorsLSD = bd.compute(img, keylinesLSD);
+whos <span class="string">descriptorsBD</span> <span class="string">descriptorsLSD</span></pre><pre class="codeoutput">  Name                  Size            Bytes  Class    Attributes
+
+  descriptorsBD        53x32             1696  uint8              
+  descriptorsLSD      166x32             5312  uint8              
+
+</pre><h2 id="7">Plot</h2><pre class="codeinput"><span class="comment">% lines extracted from octave 0</span>
+keylinesBD = keylinesBD([keylinesBD.octave] == 0);
+keylinesLSD = keylinesLSD([keylinesLSD.octave] == 0);
+
+<span class="comment">% draw line between extremes using random colors</span>
+outBD = img;
+outLSD = img;
+<span class="keyword">for</span> i=1:numel(keylinesBD)
+    outBD = cv.line(outBD, keylinesBD(i).startPoint, keylinesBD(i).endPoint, <span class="keyword">...</span>
+        <span class="string">'Color'</span>,randi([0 255],[1 3]), <span class="string">'Thickness'</span>,3);
+<span class="keyword">end</span>
+<span class="keyword">for</span> i=1:numel(keylinesLSD)
+    outLSD = cv.line(outLSD, keylinesLSD(i).startPoint, keylinesLSD(i).endPoint, <span class="keyword">...</span>
+        <span class="string">'Color'</span>,randi([0 255],[1 3]), <span class="string">'Thickness'</span>,3);
+<span class="keyword">end</span>
+subplot(121), imshow(outBD), title(<span class="string">'BD Lines'</span>)
+subplot(122), imshow(outLSD), title(<span class="string">'LSD Lines'</span>)</pre><img src="line_extraction_demo_01.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Binary Descriptors for Line Segments
+% This example shows the functionalities of lines extraction and descriptors
+% computation furnished by |cv.LSDDetector| and |cv.BinaryDescriptor| classes.
+%
+% In this tutorial it will be shown how to:
+%
+% * use the |cv.BinaryDescriptor| interface to extract lines and store them
+%   in |KeyLine| objects
+% * use the same interface to compute descriptors for every extracted line
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/line_descriptor/samples/lsd_lines_extraction.cpp>
+% * <https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/line_descriptor/samples/lines_extraction.cpp>
+% * <https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/line_descriptor/samples/compute_descriptors.cpp>
+%
+
+%% Lines extraction and descriptors computation
+% In the following snippet of code, it is shown how to detect lines from an
+% image. The LSD extractor is initialized with |LSD_REFINE_ADV| option;
+% remaining parameters are left to their default values. A mask of ones is
+% used in order to accept all extracted lines, which, at the end, are
+% displayed using random colors for octave 0.
+%
+% Once keylines have been detected, it is possible to compute their
+% descriptors.
+%
+
+%% Image
+
+% load image
+if mexopencv.isOctave()
+    im = fullfile(mexopencv.root(),'test','blox.jpg');
+else
+    im = which('cameraman.tif');
+end
+img = cv.imread(im, 'Color',true);
+
+% create binary mask
+mask = ones(size(img,1), size(img,2), 'uint8');
+
+whos img mask
+
+%% Initialize
+
+% create BinaryDescriptor/LSDDetector objects with default parameters
+bd = cv.BinaryDescriptor();
+lsd = cv.LSDDetector();
+
+%% Extract lines
+keylinesBD = bd.detect(img, 'Mask',mask)
+keylinesLSD = lsd.detect(img, 'Scale',2, 'NumOctaves',1, 'Mask',mask)
+
+%% Compute descriptors
+descriptorsBD = bd.compute(img, keylinesBD);
+descriptorsLSD = bd.compute(img, keylinesLSD);
+whos descriptorsBD descriptorsLSD
+
+%% Plot
+
+% lines extracted from octave 0
+keylinesBD = keylinesBD([keylinesBD.octave] == 0);
+keylinesLSD = keylinesLSD([keylinesLSD.octave] == 0);
+
+% draw line between extremes using random colors
+outBD = img;
+outLSD = img;
+for i=1:numel(keylinesBD)
+    outBD = cv.line(outBD, keylinesBD(i).startPoint, keylinesBD(i).endPoint, ...
+        'Color',randi([0 255],[1 3]), 'Thickness',3);
+end
+for i=1:numel(keylinesLSD)
+    outLSD = cv.line(outLSD, keylinesLSD(i).startPoint, keylinesLSD(i).endPoint, ...
+        'Color',randi([0 255],[1 3]), 'Thickness',3);
+end
+subplot(121), imshow(outBD), title('BD Lines')
+subplot(122), imshow(outLSD), title('LSD Lines')
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

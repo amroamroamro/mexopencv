@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Detection of ArUco Boards Demo</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="aruco_detect_board_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Detection of ArUco Boards Demo</h1>
+         <!--introduction-->
+         <p>Detection and pose estimation using a Board of markers (an ArUco Planar Grid board).</p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://docs.opencv.org/3.1.0/db/da9/tutorial_aruco_board_detection.html">https://docs.opencv.org/3.1.0/db/da9/tutorial_aruco_board_detection.html</a></li>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/aruco/samples/detect_board.cpp">https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/aruco/samples/detect_board.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Parameters</a></li>
+               <li><a href="#3">Input source</a></li>
+               <li><a href="#4">Main loop</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Parameters</h2><pre class="codeinput"><span class="comment">% options</span>
+vidFile = <span class="string">''</span>;              <span class="comment">% Use video file instead of camera as input</span>
+markersX = 5;              <span class="comment">% Number of markers in X direction</span>
+markersY = 7;              <span class="comment">% Number of markers in Y direction</span>
+markerLength = 60;         <span class="comment">% Marker side length (in pixels)</span>
+markerSeparation = 15;     <span class="comment">% Separation between two consecutive markers in the grid (in pixels)</span>
+dictionaryId = <span class="string">'6x6_250'</span>;  <span class="comment">% Dictionary id</span>
+showRejected = false;      <span class="comment">% Show rejected candidates too</span>
+refindStrategy = true;     <span class="comment">% Apply refined strategy</span>
+estimatePose = true;       <span class="comment">% Wheather to estimate pose or not</span>
+<span class="keyword">if</span> estimatePose
+    <span class="comment">% calibrated camera parameters</span>
+    load <span class="string">camera_parameters.mat</span> <span class="string">-mat</span> <span class="string">camMatrix</span> <span class="string">distCoeffs</span>
+    <span class="comment">%camMatrix = eye(3);</span>
+    <span class="comment">%distCoeffs = zeros(1,5);</span>
+<span class="keyword">else</span>
+    camMatrix = [];
+    distCoeffs = [];
+<span class="keyword">end</span>
+
+<span class="comment">% marker detector parameters</span>
+detectorParams = struct();
+<span class="keyword">if</span> false
+    <span class="comment">%detectorParams.nMarkers = 1024;</span>
+    detectorParams.adaptiveThreshWinSizeMin = 3;
+    detectorParams.adaptiveThreshWinSizeMax = 23;
+    detectorParams.adaptiveThreshWinSizeStep = 10;
+    detectorParams.adaptiveThreshConstant = 7;
+    detectorParams.minMarkerPerimeterRate = 0.03;
+    detectorParams.maxMarkerPerimeterRate = 4.0;
+    detectorParams.polygonalApproxAccuracyRate = 0.05;
+    detectorParams.minCornerDistanceRate = 0.05;
+    detectorParams.minDistanceToBorder = 3;
+    detectorParams.minMarkerDistanceRate = 0.05;
+    detectorParams.cornerRefinementMethod = <span class="string">'None'</span>;
+    detectorParams.cornerRefinementWinSize = 5;
+    detectorParams.cornerRefinementMaxIterations = 30;
+    detectorParams.cornerRefinementMinAccuracy = 0.1;
+    detectorParams.markerBorderBits = 1;
+    detectorParams.perspectiveRemovePixelPerCell = 8;
+    detectorParams.perspectiveRemoveIgnoredMarginPerCell = 0.13;
+    detectorParams.maxErroneousBitsInBorderRate = 0.04;
+    detectorParams.minOtsuStdDev = 5.0;
+    detectorParams.errorCorrectionRate = 0.6;
+<span class="keyword">end</span>
+detectorParams.cornerRefinementMethod = <span class="string">'Subpix'</span>;  <span class="comment">% do corner refinement in markers</span>
+
+<span class="comment">% create board</span>
+dictionary = {<span class="string">'Predefined'</span>, dictionaryId};
+board = {<span class="string">'GridBoard'</span>, <span class="keyword">...</span>
+    markersX, markersY, markerLength, markerSeparation, dictionary};
+
+axisLength = 0.5 * (min(markersX, markersY) * <span class="keyword">...</span>
+    (markerLength + markerSeparation) + markerSeparation);</pre><h2 id="3">Input source</h2><pre class="codeinput"><span class="keyword">if</span> ~isempty(vidFile) &amp;&amp; exist(vidFile, <span class="string">'file'</span>) == 2
+    vid = cv.VideoCapture(vidFile);
+    waitTime = 1;     <span class="comment">% 1 sec</span>
+<span class="keyword">else</span>
+    vid = createVideoCapture([], <span class="string">'aruco'</span>);
+    waitTime = 0.01;  <span class="comment">% 10 msec</span>
+<span class="keyword">end</span>
+<span class="keyword">if</span> ~vid.isOpened(), error(<span class="string">'failed to initialize VideoCapture'</span>); <span class="keyword">end</span></pre><h2 id="4">Main loop</h2><pre class="codeinput">totalTime = 0;
+totalIterations = 0;
+hImg = [];
+<span class="keyword">while</span> true
+    <span class="comment">% grab frame</span>
+    img = vid.read();
+    <span class="keyword">if</span> isempty(img), <span class="keyword">break</span>; <span class="keyword">end</span>
+
+    tId = tic();
+
+    <span class="comment">% detect markers</span>
+    [corners, ids, rejected] = cv.detectMarkers(img, dictionary, <span class="keyword">...</span>
+        <span class="string">'DetectorParameters'</span>,detectorParams);
+
+    <span class="comment">% refined strategy to detect more markers</span>
+    <span class="keyword">if</span> refindStrategy
+        [corners, ids, rejected] = cv.refineDetectedMarkers(img, board, <span class="keyword">...</span>
+            corners, ids, rejected, <span class="keyword">...</span>
+            <span class="string">'CameraMatrix'</span>,camMatrix, <span class="string">'DistCoeffs'</span>,distCoeffs);
+    <span class="keyword">end</span>
+
+    <span class="comment">% estimate board pose</span>
+    markersOfBoardDetected = 0;
+    <span class="keyword">if</span> estimatePose &amp;&amp; ~isempty(ids)
+        [rvec, tvec, markersOfBoardDetected] = <span class="keyword">...</span>
+            cv.estimatePoseBoard(corners, ids, board, camMatrix, distCoeffs);
+    <span class="keyword">end</span>
+
+    <span class="comment">% tic/toc</span>
+    currentTime = toc(tId);
+    totalTime = totalTime + currentTime;
+    totalIterations = totalIterations + 1;
+    <span class="keyword">if</span> mod(totalIterations, 30) == 0
+        fprintf(<span class="string">'Detection time = %f ms (Mean = %f ms)\n'</span>, <span class="keyword">...</span>
+            1000*currentTime, 1000*totalTime/totalIterations);
+    <span class="keyword">end</span>
+
+    <span class="comment">% draw results</span>
+    <span class="keyword">if</span> ~isempty(ids)
+        img = cv.drawDetectedMarkers(img, corners, <span class="string">'IDs'</span>,ids);
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> showRejected &amp;&amp; ~isempty(rejected)
+        img = cv.drawDetectedMarkers(img, rejected, <span class="string">'BorderColor'</span>,[255 0 100]);
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> estimatePose &amp;&amp; markersOfBoardDetected &gt; 0
+        img = cv.drawAxis(img, camMatrix, distCoeffs, rvec, tvec, axisLength);
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> isempty(hImg)
+        hImg = imshow(img);
+    <span class="keyword">elseif</span> ishghandle(hImg)
+        set(hImg, <span class="string">'CData'</span>,img);
+    <span class="keyword">else</span>
+        <span class="keyword">break</span>;
+    <span class="keyword">end</span>
+    drawnow; pause(waitTime);
+<span class="keyword">end</span>
+vid.release();</pre><pre class="codeoutput">Detection time = 93.482247 ms (Mean = 91.843650 ms)
+Detection time = 90.427224 ms (Mean = 91.272188 ms)
+</pre><img src="aruco_detect_board_demo_01.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Detection of ArUco Boards Demo
+% Detection and pose estimation using a Board of markers
+% (an ArUco Planar Grid board).
+%
+% Sources:
+%
+% * <https://docs.opencv.org/3.1.0/db/da9/tutorial_aruco_board_detection.html>
+% * <https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/aruco/samples/detect_board.cpp>
+%
+
+%% Parameters
+
+% options
+vidFile = '';              % Use video file instead of camera as input
+markersX = 5;              % Number of markers in X direction
+markersY = 7;              % Number of markers in Y direction
+markerLength = 60;         % Marker side length (in pixels)
+markerSeparation = 15;     % Separation between two consecutive markers in the grid (in pixels)
+dictionaryId = '6x6_250';  % Dictionary id
+showRejected = false;      % Show rejected candidates too
+refindStrategy = true;     % Apply refined strategy
+estimatePose = true;       % Wheather to estimate pose or not
+if estimatePose
+    % calibrated camera parameters
+    load camera_parameters.mat -mat camMatrix distCoeffs
+    %camMatrix = eye(3);
+    %distCoeffs = zeros(1,5);
+else
+    camMatrix = [];
+    distCoeffs = [];
+end
+
+% marker detector parameters
+detectorParams = struct();
+if false
+    %detectorParams.nMarkers = 1024;
+    detectorParams.adaptiveThreshWinSizeMin = 3;
+    detectorParams.adaptiveThreshWinSizeMax = 23;
+    detectorParams.adaptiveThreshWinSizeStep = 10;
+    detectorParams.adaptiveThreshConstant = 7;
+    detectorParams.minMarkerPerimeterRate = 0.03;
+    detectorParams.maxMarkerPerimeterRate = 4.0;
+    detectorParams.polygonalApproxAccuracyRate = 0.05;
+    detectorParams.minCornerDistanceRate = 0.05;
+    detectorParams.minDistanceToBorder = 3;
+    detectorParams.minMarkerDistanceRate = 0.05;
+    detectorParams.cornerRefinementMethod = 'None';
+    detectorParams.cornerRefinementWinSize = 5;
+    detectorParams.cornerRefinementMaxIterations = 30;
+    detectorParams.cornerRefinementMinAccuracy = 0.1;
+    detectorParams.markerBorderBits = 1;
+    detectorParams.perspectiveRemovePixelPerCell = 8;
+    detectorParams.perspectiveRemoveIgnoredMarginPerCell = 0.13;
+    detectorParams.maxErroneousBitsInBorderRate = 0.04;
+    detectorParams.minOtsuStdDev = 5.0;
+    detectorParams.errorCorrectionRate = 0.6;
+end
+detectorParams.cornerRefinementMethod = 'Subpix';  % do corner refinement in markers
+
+% create board
+dictionary = {'Predefined', dictionaryId};
+board = {'GridBoard', ...
+    markersX, markersY, markerLength, markerSeparation, dictionary};
+
+axisLength = 0.5 * (min(markersX, markersY) * ...
+    (markerLength + markerSeparation) + markerSeparation);
+
+%% Input source
+if ~isempty(vidFile) && exist(vidFile, 'file') == 2
+    vid = cv.VideoCapture(vidFile);
+    waitTime = 1;     % 1 sec
+else
+    vid = createVideoCapture([], 'aruco');
+    waitTime = 0.01;  % 10 msec
+end
+if ~vid.isOpened(), error('failed to initialize VideoCapture'); end
+
+%% Main loop
+totalTime = 0;
+totalIterations = 0;
+hImg = [];
+while true
+    % grab frame
+    img = vid.read();
+    if isempty(img), break; end
+
+    tId = tic();
+
+    % detect markers
+    [corners, ids, rejected] = cv.detectMarkers(img, dictionary, ...
+        'DetectorParameters',detectorParams);
+
+    % refined strategy to detect more markers
+    if refindStrategy
+        [corners, ids, rejected] = cv.refineDetectedMarkers(img, board, ...
+            corners, ids, rejected, ...
+            'CameraMatrix',camMatrix, 'DistCoeffs',distCoeffs);
+    end
+
+    % estimate board pose
+    markersOfBoardDetected = 0;
+    if estimatePose && ~isempty(ids)
+        [rvec, tvec, markersOfBoardDetected] = ...
+            cv.estimatePoseBoard(corners, ids, board, camMatrix, distCoeffs);
+    end
+
+    % tic/toc
+    currentTime = toc(tId);
+    totalTime = totalTime + currentTime;
+    totalIterations = totalIterations + 1;
+    if mod(totalIterations, 30) == 0
+        fprintf('Detection time = %f ms (Mean = %f ms)\n', ...
+            1000*currentTime, 1000*totalTime/totalIterations);
+    end
+
+    % draw results
+    if ~isempty(ids)
+        img = cv.drawDetectedMarkers(img, corners, 'IDs',ids);
+    end
+
+    if showRejected && ~isempty(rejected)
+        img = cv.drawDetectedMarkers(img, rejected, 'BorderColor',[255 0 100]);
+    end
+
+    if estimatePose && markersOfBoardDetected > 0
+        img = cv.drawAxis(img, camMatrix, distCoeffs, rvec, tvec, axisLength);
+    end
+
+    if isempty(hImg)
+        hImg = imshow(img);
+    elseif ishghandle(hImg)
+        set(hImg, 'CData',img);
+    else
+        break;
+    end
+    drawnow; pause(waitTime);
+end
+vid.release();
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

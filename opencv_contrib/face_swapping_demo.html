@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Face swapping using face landmark detection</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2018-02-20">
+      <meta name="DC.source" content="face_swapping_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Face swapping using face landmark detection</h1>
+         <!--introduction-->
+         <p>This demo lets you swap a face in one image with another face in another image. It first detects faces in both images and
+            finds its landmarks. Then it swaps the face in first image with in another image.
+         </p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/face/samples/sample_face_swapping.cpp">https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/face/samples/sample_face_swapping.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Options</a></li>
+               <li><a href="#3">Images</a></li>
+               <li><a href="#5">Init</a></li>
+               <li><a href="#6">Detect</a></li>
+               <li><a href="#10">Swap</a></li>
+               <li><a href="#15">Seamless cloning</a></li>
+               <li><a href="#19">Helper function</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Options</h2><pre class="codeinput"><span class="comment">% [INPUT] path to the first/second images in which you want to apply face swapping</span>
+im1 = fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'lena.jpg'</span>);     <span class="comment">% source</span>
+im2 = which(<span class="string">'kids.tif'</span>);                                <span class="comment">% destination</span>
+
+<span class="comment">% [INPUT] path to binary file storing the trained model to load</span>
+modelFile = fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'face_landmark_model.dat'</span>);
+<span class="keyword">if</span> exist(modelFile, <span class="string">'file'</span>) ~= 2
+    <span class="comment">% download model from GitHub</span>
+    disp(<span class="string">'Downloading model (~ 69MB)...'</span>)
+    url = <span class="string">'https://cdn.rawgit.com/opencv/opencv_3rdparty/contrib_face_alignment_20170818/face_landmark_model.dat'</span>;
+    urlwrite(url, modelFile);
+<span class="keyword">end</span>
+
+<span class="comment">% [INPUT] path to the cascade xml file for the face detector</span>
+xmlFace = fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'lbpcascade_frontalface.xml'</span>);
+download_classifier_xml(xmlFace);
+
+<span class="comment">% name of user-defined face detector function</span>
+faceDetectFcn = <span class="string">'myFaceDetector'</span>;
+assert(exist([faceDetectFcn <span class="string">'.m'</span>], <span class="string">'file'</span>) == 2, <span class="string">'missing face detect function'</span>);</pre><h2 id="3">Images</h2>
+         <p>load and show images</p><pre class="codeinput">img1 = cv.imread(im1);
+img2 = cv.imread(im2);
+subplot(121), imshow(img1), title(<span class="string">'source'</span>)
+subplot(122), imshow(img2), title(<span class="string">'destination'</span>)</pre><img src="face_swapping_demo_01.png"><p>resized images as it is easier to process small images, resized according to their actual ratio</p><pre class="codeinput">ratio1 = size(img1,2) / size(img1,1);
+ratio2 = size(img2,2) / size(img2,1);
+img1 = cv.resize(img1, fix(640 * [ratio1, ratio1]));
+img2 = cv.resize(img2, fix(640 * [ratio2, ratio2]));</pre><h2 id="5">Init</h2>
+         <p>create instance of the face landmark detection class, and set the face detector function, then load the pre-trained model</p><pre class="codeinput">obj = cv.FacemarkKazemi();
+obj.setFaceDetector(faceDetectFcn);
+obj.loadModel(modelFile);</pre><h2 id="6">Detect</h2>
+         <p>detect faces in both images</p><pre class="codeinput">faces1 = obj.getFaces(img1);
+faces2 = obj.getFaces(img2);
+assert(~isempty(faces1) &amp;&amp; ~isempty(faces2), <span class="string">'No faces found'</span>);</pre><p>in case of multiple detections, take the biggest face in each image</p><pre class="codeinput"><span class="keyword">if</span> numel(faces1) &gt; 1
+    [~,ind] = max(cellfun(@cv.Rect.area, faces1));
+    faces1 = faces1(ind);
+<span class="keyword">end</span>
+<span class="keyword">if</span> numel(faces2) &gt; 1
+    [~,ind] = max(cellfun(@cv.Rect.area, faces2));
+    faces2 = faces2(ind);
+<span class="keyword">end</span></pre><p>detect landmarks in both images</p><pre class="codeinput">shapes1 = obj.fit(img1, faces1);
+shapes2 = obj.fit(img2, faces2);
+assert(~isempty(shapes1) &amp;&amp; ~isempty(shapes2), <span class="string">'No landmarks found'</span>);
+pts1 = shapes1{1};
+pts2 = shapes2{1};</pre><p>show landmarks</p><pre class="codeinput">figure
+subplot(121), imshow(drawLandmarks(img1, pts1)), title(<span class="string">'source'</span>)
+subplot(122), imshow(drawLandmarks(img2, pts2)), title(<span class="string">'destination'</span>)</pre><img src="face_swapping_demo_02.png"><h2 id="10">Swap</h2>
+         <p>First compute convex hull to find the boundary points of the face in the image which has to be swapped.</p>
+         <p>Next as we need to warp one face over the other, we need to find affine transform. To find affine transform in OpenCV, it
+            requires three set of points to calculate the affine matrix. Also we just need to warp the face instead of the surrounding
+            regions. Hence we divide the face into triangles so that each triangle can be easily warped onto the other image.
+         </p>
+         <p>The function <tt>divideIntoTriangles</tt> divides the detected faces into triangles. The function <tt>warpTriangle</tt> then warps each triangle of one image to other image to swap the faces.
+         </p>
+         <p>compute convex hull</p><pre class="codeinput">indices = cv.convexHull(pts2, <span class="string">'ReturnPoints'</span>,false);
+pts1 = pts1(indices + 1);
+pts2 = pts2(indices + 1);</pre><p>Triangulation for points on the convex hull</p><pre class="codeinput">rect = [0, 0, size(img2,2), size(img2,1)];
+triangles = divideIntoTriangles(rect, pts2);</pre><p>Apply affine transformation to Delaunay triangles</p><pre class="codeinput">img1 = single(img1);
+img1Warped = single(img2);
+<span class="keyword">for</span> i=1:numel(triangles)
+    <span class="comment">% Get matching triangles points in img1 and img2</span>
+    tr1 = pts1(triangles{i} + 1);
+    tr2 = pts2(triangles{i} + 1);
+    <span class="comment">% warp tr1 in img1 into tr2 in img2</span>
+    img1Warped = warpTriangle(img1, img1Warped, tr1, tr2);
+<span class="keyword">end</span>
+img1Warped = uint8(img1Warped);</pre><p>show result</p><pre class="codeinput">figure, imshow(img1Warped)</pre><img src="face_swapping_demo_03.png"><h2 id="15">Seamless cloning</h2>
+         <p>Even after warping, the results somehow look unnatural. Hence to improve the results we apply seamless cloning to get the
+            desired results as required.
+         </p>
+         <p>create mask from convex hull</p><pre class="codeinput">mask = zeros(rect(4), rect(3), <span class="string">'uint8'</span>);
+mask = cv.fillConvexPoly(mask, pts2, <span class="string">'Color'</span>,255);</pre><p>Clone seamlessly</p><pre class="codeinput">r = cv.boundingRect(pts2);
+center = r(1:2) + r(3:4)/2;
+img1Warped = cv.seamlessClone(img1Warped, img2, mask, center, <span class="string">'Method'</span>,<span class="string">'NormalClone'</span>);</pre><p>show result</p><pre class="codeinput">figure, imshow(img1Warped)</pre><img src="face_swapping_demo_04.png"><h2 id="19">Helper function</h2><pre class="codeinput"><span class="keyword">function</span> download_classifier_xml(fname)
+    <span class="keyword">if</span> exist(fname, <span class="string">'file'</span>) ~= 2
+        <span class="comment">% attempt to download trained Haar/LBP/HOG classifier from Github</span>
+        url = <span class="string">'https://cdn.rawgit.com/opencv/opencv/3.4.0/data/'</span>;
+        [~, f, ext] = fileparts(fname);
+        <span class="keyword">if</span> strncmpi(f, <span class="string">'haarcascade_'</span>, length(<span class="string">'haarcascade_'</span>))
+            url = [url, <span class="string">'haarcascades/'</span>];
+        <span class="keyword">elseif</span> strncmpi(f, <span class="string">'lbpcascade_'</span>, length(<span class="string">'lbpcascade_'</span>))
+            url = [url, <span class="string">'lbpcascades/'</span>];
+        <span class="keyword">elseif</span> strncmpi(f, <span class="string">'hogcascade_'</span>, length(<span class="string">'hogcascade_'</span>))
+            url = [url, <span class="string">'hogcascades/'</span>];
+        <span class="keyword">else</span>
+            error(<span class="string">'File not found'</span>);
+        <span class="keyword">end</span>
+        urlwrite([url f ext], fname);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> img = drawLandmarks(img, pts, varargin)
+    <span class="comment">%DRAWLANDMARKS  Draw facial landmark points</span>
+    <span class="comment">%</span>
+    <span class="comment">%     img = drawLandmarks(img, pts)</span>
+    <span class="comment">%     img = drawLandmarks(img, pts, 'OptionName',optionValue, ...)</span>
+    <span class="comment">%</span>
+    <span class="comment">% ## Input</span>
+    <span class="comment">% * __img__ input image</span>
+    <span class="comment">% * __pts__ face landmarks (68 points)</span>
+    <span class="comment">%</span>
+    <span class="comment">% ## Output</span>
+    <span class="comment">% * __img__ output image with drawn landmarks</span>
+    <span class="comment">%</span>
+    <span class="comment">% ## Options</span>
+    <span class="comment">% Optional drawing params passed to cv.polylines function (color,</span>
+    <span class="comment">% thickness, line type).</span>
+    <span class="comment">%</span>
+    <span class="comment">% The function assumes annotations following the Multi-PIE 68 points</span>
+    <span class="comment">% mark-up, as described in:</span>
+    <span class="comment">% [i-bug][https://ibug.doc.ic.ac.uk/resources/facial-point-annotations/].</span>
+    <span class="comment">%</span>
+    <span class="comment">% For reference, see:</span>
+    <span class="comment">%</span>
+    <span class="comment">% ![image][https://ibug.doc.ic.ac.uk/media/uploads/images/annotpics/figure_68_markup.jpg]</span>
+    <span class="comment">%</span>
+    <span class="comment">% See also: cv.Facemark.drawFacemarks</span>
+    <span class="comment">%</span>
+
+    <span class="comment">% points</span>
+<span class="comment">    %{
+</span><span class="comment">    p1 = {
+</span><span class="comment">        pts(1:17),  ...  % chin
+</span><span class="comment">        pts(18:22), ...  % left eyebrow
+</span><span class="comment">        pts(23:27), ...  % right eyebrow
+</span><span class="comment">        pts(28:31)       % nose top part
+</span><span class="comment">    };
+</span><span class="comment">    p2 = {
+</span><span class="comment">        pts(31:36), ...  % nose bottom part
+</span><span class="comment">        pts(37:42), ...  % left eye
+</span><span class="comment">        pts(43:48), ...  % right eye
+</span><span class="comment">        pts(49:60), ...  % lips outer part
+</span><span class="comment">        pts(61:68)       % lips inside part
+</span><span class="comment">    };
+</span><span class="comment">    %}
+</span>    p1 = mat2cell(pts(1:31), 1, [17 5 5 4]);
+    p2 = mat2cell(pts(31:end), 1, [6 6 6 12 8]);
+
+    <span class="comment">% draw polylines (p1: not closed, p2: closed)</span>
+    opts = {<span class="string">'Color'</span>,[0 255 0], <span class="string">'Thickness'</span>,2, <span class="string">'LineType'</span>,<span class="string">'AA'</span>};
+    opts = [opts varargin];
+    img = cv.polylines(img, p1, <span class="string">'Closed'</span>,false, opts{:});
+    img = cv.polylines(img, p2, <span class="string">'Closed'</span>,true, opts{:});
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> delaunayTri = divideIntoTriangles(rect, points)
+    <span class="comment">%DIVIDEINTOTRIANGLES  Divide the face into triangles for warping</span>
+
+    <span class="comment">% Create an instance of Subdiv2D, insert points, and get triangles</span>
+    subdiv = cv.Subdiv2D(rect);
+    subdiv.insert(points);
+    triangleList = subdiv.getTriangleList();
+
+    delaunayTri = {};
+    <span class="keyword">for</span> i=1:numel(triangleList)
+        <span class="comment">% 3-points triangle</span>
+        tr = triangleList{i};
+        tr = {tr(1:2), tr(3:4), tr(5:6)};
+
+        <span class="comment">% skip triangle if not all its points are within image ROI</span>
+        <span class="keyword">if</span> all(cellfun(@(pt) cv.Rect.contains(rect, pt), tr))
+            <span class="comment">% corresponding indices into convex hull points</span>
+            [~,ind] = cv.batchDistance(cat(1,tr{:}), cat(1,points{:}), <span class="keyword">...</span>
+                <span class="string">'NormType'</span>,<span class="string">'L1'</span>, <span class="string">'K'</span>,1);
+            delaunayTri{end+1} = ind;
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> img2 = warpTriangle(img1, img2, tr1, tr2)
+    <span class="comment">%WARPTRIANGLE  Warp triangle1 in img1 into corresponding triangle2 in img2</span>
+
+    rect1 = cv.boundingRect(tr1);
+    rect2 = cv.boundingRect(tr2);
+
+    <span class="comment">% Offset points by left top corner of the respective rectangles</span>
+    tr1Rect = cellfun(@(pt) pt - rect1(1:2), tr1, <span class="string">'UniformOutput'</span>,false);
+    tr2Rect = cellfun(@(pt) pt - rect2(1:2), tr2, <span class="string">'UniformOutput'</span>,false);
+
+    <span class="comment">% estimate transformation from source to destination triangles</span>
+    warp_mat = cv.getAffineTransform(tr1Rect, tr2Rect);
+
+    <span class="comment">% Apply transformation to small rectangular patch</span>
+    img1Rect = cv.Rect.crop(img1, rect1);
+    img2Rect = cv.warpAffine(img1Rect, warp_mat, <span class="string">'DSize'</span>,rect2(3:4), <span class="keyword">...</span>
+        <span class="string">'BorderType'</span>,<span class="string">'Reflect101'</span>);
+
+    <span class="comment">% Get mask by filling triangle</span>
+    mask = zeros([rect2([4 3]) 3], <span class="string">'single'</span>);
+    mask = cv.fillConvexPoly(mask, tr2Rect, <span class="string">'Color'</span>,[1 1 1], <span class="string">'LineType'</span>,<span class="string">'AA'</span>);
+
+    <span class="comment">% cut out triangle and paste it on top of destination image</span>
+    img2Rect = cv.multiply(img2Rect, mask);
+    img2 = cv.Rect.crop(img2, rect2, cv.multiply(cv.Rect.crop(img2, rect2), 1 - mask));
+    img2 = cv.Rect.crop(img2, rect2, cv.Rect.crop(img2, rect2) + img2Rect);
+<span class="keyword">end</span>
+
+<span class="comment">% The facemark API provides the functionality to the user to use their own</span>
+<span class="comment">% face detector. The code below implements a sample face detector. This</span>
+<span class="comment">% function must be saved in its own M-function to be used by the facemark API.</span>
+<span class="keyword">function</span> faces = myFaceDetector(img)
+    <span class="keyword">persistent</span> obj
+    <span class="keyword">if</span> isempty(obj)
+        obj = cv.CascadeClassifier();
+        obj.load(xmlFace);
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> size(img,3) &gt; 1
+        gray = cv.cvtColor(img, <span class="string">'RGB2GRAY'</span>);
+    <span class="keyword">else</span>
+        gray = img;
+    <span class="keyword">end</span>
+    gray = cv.equalizeHist(gray);
+    faces = obj.detect(gray, <span class="string">'ScaleFactor'</span>,1.4, <span class="string">'MinNeighbors'</span>,2, <span class="keyword">...</span>
+        <span class="string">'ScaleImage'</span>,true, <span class="string">'MinSize'</span>,[30 30]);
+<span class="keyword">end</span></pre><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Face swapping using face landmark detection
+%
+% This demo lets you swap a face in one image with another face in another
+% image. It first detects faces in both images and finds its landmarks. Then
+% it swaps the face in first image with in another image.
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/face/samples/sample_face_swapping.cpp>
+%
+
+%% Options
+
+% [INPUT] path to the first/second images in which you want to apply face swapping
+im1 = fullfile(mexopencv.root(),'test','lena.jpg');     % source
+im2 = which('kids.tif');                                % destination
+
+% [INPUT] path to binary file storing the trained model to load
+modelFile = fullfile(mexopencv.root(),'test','face_landmark_model.dat');
+if exist(modelFile, 'file') ~= 2
+    % download model from GitHub
+    disp('Downloading model (~ 69MB)...')
+    url = 'https://cdn.rawgit.com/opencv/opencv_3rdparty/contrib_face_alignment_20170818/face_landmark_model.dat';
+    urlwrite(url, modelFile);
+end
+
+% [INPUT] path to the cascade xml file for the face detector
+xmlFace = fullfile(mexopencv.root(),'test','lbpcascade_frontalface.xml');
+download_classifier_xml(xmlFace);
+
+% name of user-defined face detector function
+faceDetectFcn = 'myFaceDetector';
+assert(exist([faceDetectFcn '.m'], 'file') == 2, 'missing face detect function');
+
+%% Images
+% load and show images
+img1 = cv.imread(im1);
+img2 = cv.imread(im2);
+subplot(121), imshow(img1), title('source')
+subplot(122), imshow(img2), title('destination')
+
+%%
+% resized images as it is easier to process small images,
+% resized according to their actual ratio
+ratio1 = size(img1,2) / size(img1,1);
+ratio2 = size(img2,2) / size(img2,1);
+img1 = cv.resize(img1, fix(640 * [ratio1, ratio1]));
+img2 = cv.resize(img2, fix(640 * [ratio2, ratio2]));
+
+%% Init
+% create instance of the face landmark detection class,
+% and set the face detector function, then load the pre-trained model
+obj = cv.FacemarkKazemi();
+obj.setFaceDetector(faceDetectFcn);
+obj.loadModel(modelFile);
+
+%% Detect
+% detect faces in both images
+faces1 = obj.getFaces(img1);
+faces2 = obj.getFaces(img2);
+assert(~isempty(faces1) && ~isempty(faces2), 'No faces found');
+
+%%
+% in case of multiple detections, take the biggest face in each image
+if numel(faces1) > 1
+    [~,ind] = max(cellfun(@cv.Rect.area, faces1));
+    faces1 = faces1(ind);
+end
+if numel(faces2) > 1
+    [~,ind] = max(cellfun(@cv.Rect.area, faces2));
+    faces2 = faces2(ind);
+end
+
+%%
+% detect landmarks in both images
+shapes1 = obj.fit(img1, faces1);
+shapes2 = obj.fit(img2, faces2);
+assert(~isempty(shapes1) && ~isempty(shapes2), 'No landmarks found');
+pts1 = shapes1{1};
+pts2 = shapes2{1};
+
+%%
+% show landmarks
+figure
+subplot(121), imshow(drawLandmarks(img1, pts1)), title('source')
+subplot(122), imshow(drawLandmarks(img2, pts2)), title('destination')
+
+%% Swap
+% First compute convex hull to find the boundary points of the face in the
+% image which has to be swapped.
+%
+% Next as we need to warp one face over the other, we need to find affine
+% transform. To find affine transform in OpenCV, it requires three set of
+% points to calculate the affine matrix. Also we just need to warp the face
+% instead of the surrounding regions. Hence we divide the face into triangles
+% so that each triangle can be easily warped onto the other image.
+%
+% The function |divideIntoTriangles| divides the detected faces into triangles.
+% The function |warpTriangle| then warps each triangle of one image to other
+% image to swap the faces.
+
+%%
+% compute convex hull
+indices = cv.convexHull(pts2, 'ReturnPoints',false);
+pts1 = pts1(indices + 1);
+pts2 = pts2(indices + 1);
+
+%%
+% Triangulation for points on the convex hull
+rect = [0, 0, size(img2,2), size(img2,1)];
+triangles = divideIntoTriangles(rect, pts2);
+
+%%
+% Apply affine transformation to Delaunay triangles
+img1 = single(img1);
+img1Warped = single(img2);
+for i=1:numel(triangles)
+    % Get matching triangles points in img1 and img2
+    tr1 = pts1(triangles{i} + 1);
+    tr2 = pts2(triangles{i} + 1);
+    % warp tr1 in img1 into tr2 in img2
+    img1Warped = warpTriangle(img1, img1Warped, tr1, tr2);
+end
+img1Warped = uint8(img1Warped);
+
+%%
+% show result
+figure, imshow(img1Warped)
+
+%% Seamless cloning
+% Even after warping, the results somehow look unnatural. Hence to improve the
+% results we apply seamless cloning to get the desired results as required.
+
+%%
+% create mask from convex hull
+mask = zeros(rect(4), rect(3), 'uint8');
+mask = cv.fillConvexPoly(mask, pts2, 'Color',255);
+
+%%
+% Clone seamlessly
+r = cv.boundingRect(pts2);
+center = r(1:2) + r(3:4)/2;
+img1Warped = cv.seamlessClone(img1Warped, img2, mask, center, 'Method','NormalClone');
+
+%%
+% show result
+figure, imshow(img1Warped)
+
+%% Helper function
+
+function download_classifier_xml(fname)
+    if exist(fname, 'file') ~= 2
+        % attempt to download trained Haar/LBP/HOG classifier from Github
+        url = 'https://cdn.rawgit.com/opencv/opencv/3.4.0/data/';
+        [~, f, ext] = fileparts(fname);
+        if strncmpi(f, 'haarcascade_', length('haarcascade_'))
+            url = [url, 'haarcascades/'];
+        elseif strncmpi(f, 'lbpcascade_', length('lbpcascade_'))
+            url = [url, 'lbpcascades/'];
+        elseif strncmpi(f, 'hogcascade_', length('hogcascade_'))
+            url = [url, 'hogcascades/'];
+        else
+            error('File not found');
+        end
+        urlwrite([url f ext], fname);
+    end
+end
+
+function img = drawLandmarks(img, pts, varargin)
+    %DRAWLANDMARKS  Draw facial landmark points
+    %
+    %     img = drawLandmarks(img, pts)
+    %     img = drawLandmarks(img, pts, 'OptionName',optionValue, ...)
+    %
+    % ## Input
+    % * __img__ input image
+    % * __pts__ face landmarks (68 points)
+    %
+    % ## Output
+    % * __img__ output image with drawn landmarks
+    %
+    % ## Options
+    % Optional drawing params passed to cv.polylines function (color,
+    % thickness, line type).
+    %
+    % The function assumes annotations following the Multi-PIE 68 points
+    % mark-up, as described in:
+    % [i-bug][https://ibug.doc.ic.ac.uk/resources/facial-point-annotations/].
+    %
+    % For reference, see:
+    %
+    % ![image][https://ibug.doc.ic.ac.uk/media/uploads/images/annotpics/figure_68_markup.jpg]
+    %
+    % See also: cv.Facemark.drawFacemarks
+    %
+
+    % points
+    %{
+    p1 = {
+        pts(1:17),  ...  % chin
+        pts(18:22), ...  % left eyebrow
+        pts(23:27), ...  % right eyebrow
+        pts(28:31)       % nose top part
+    };
+    p2 = {
+        pts(31:36), ...  % nose bottom part
+        pts(37:42), ...  % left eye
+        pts(43:48), ...  % right eye
+        pts(49:60), ...  % lips outer part
+        pts(61:68)       % lips inside part
+    };
+    %}
+    p1 = mat2cell(pts(1:31), 1, [17 5 5 4]);
+    p2 = mat2cell(pts(31:end), 1, [6 6 6 12 8]);
+
+    % draw polylines (p1: not closed, p2: closed)
+    opts = {'Color',[0 255 0], 'Thickness',2, 'LineType','AA'};
+    opts = [opts varargin];
+    img = cv.polylines(img, p1, 'Closed',false, opts{:});
+    img = cv.polylines(img, p2, 'Closed',true, opts{:});
+end
+
+function delaunayTri = divideIntoTriangles(rect, points)
+    %DIVIDEINTOTRIANGLES  Divide the face into triangles for warping
+
+    % Create an instance of Subdiv2D, insert points, and get triangles
+    subdiv = cv.Subdiv2D(rect);
+    subdiv.insert(points);
+    triangleList = subdiv.getTriangleList();
+
+    delaunayTri = {};
+    for i=1:numel(triangleList)
+        % 3-points triangle
+        tr = triangleList{i};
+        tr = {tr(1:2), tr(3:4), tr(5:6)};
+
+        % skip triangle if not all its points are within image ROI
+        if all(cellfun(@(pt) cv.Rect.contains(rect, pt), tr))
+            % corresponding indices into convex hull points
+            [~,ind] = cv.batchDistance(cat(1,tr{:}), cat(1,points{:}), ...
+                'NormType','L1', 'K',1);
+            delaunayTri{end+1} = ind;
+        end
+    end
+end
+
+function img2 = warpTriangle(img1, img2, tr1, tr2)
+    %WARPTRIANGLE  Warp triangle1 in img1 into corresponding triangle2 in img2
+
+    rect1 = cv.boundingRect(tr1);
+    rect2 = cv.boundingRect(tr2);
+
+    % Offset points by left top corner of the respective rectangles
+    tr1Rect = cellfun(@(pt) pt - rect1(1:2), tr1, 'UniformOutput',false);
+    tr2Rect = cellfun(@(pt) pt - rect2(1:2), tr2, 'UniformOutput',false);
+
+    % estimate transformation from source to destination triangles
+    warp_mat = cv.getAffineTransform(tr1Rect, tr2Rect);
+
+    % Apply transformation to small rectangular patch
+    img1Rect = cv.Rect.crop(img1, rect1);
+    img2Rect = cv.warpAffine(img1Rect, warp_mat, 'DSize',rect2(3:4), ...
+        'BorderType','Reflect101');
+
+    % Get mask by filling triangle
+    mask = zeros([rect2([4 3]) 3], 'single');
+    mask = cv.fillConvexPoly(mask, tr2Rect, 'Color',[1 1 1], 'LineType','AA');
+
+    % cut out triangle and paste it on top of destination image
+    img2Rect = cv.multiply(img2Rect, mask);
+    img2 = cv.Rect.crop(img2, rect2, cv.multiply(cv.Rect.crop(img2, rect2), 1 - mask));
+    img2 = cv.Rect.crop(img2, rect2, cv.Rect.crop(img2, rect2) + img2Rect);
+end
+
+% The facemark API provides the functionality to the user to use their own
+% face detector. The code below implements a sample face detector. This
+% function must be saved in its own M-function to be used by the facemark API.
+function faces = myFaceDetector(img)
+    persistent obj
+    if isempty(obj)
+        obj = cv.CascadeClassifier();
+        obj.load(xmlFace);
+    end
+
+    if size(img,3) > 1
+        gray = cv.cvtColor(img, 'RGB2GRAY');
+    else
+        gray = img;
+    end
+    gray = cv.equalizeHist(gray);
+    faces = obj.detect(gray, 'ScaleFactor',1.4, 'MinNeighbors',2, ...
+        'ScaleImage',true, 'MinSize',[30 30]);
+end
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Bright edges detection</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2018-02-20">
+      <meta name="DC.source" content="brightedges_demo_gui.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Bright edges detection</h1>
+         <p>A new approach for visualizing edges. It uses the absolute difference of two blurs to compute gradients creating local minimas
+            for edges. The histogram equalization makes the edges appears darker within a bright zone.
+         </p>
+         <p>If a contrast value of zero is given no additional process is performed.</p>
+         <p>Otherwise a contrasting correction finds the local minimas and sets the edge to black, while setting the surrounding to white.
+            A pixel correction restores line continuity and removes dark spots.
+         </p>
+         <p>The default contrast value is 1 over a range of 255. This default contrast ensures visualizing edges on chessboard like images
+            or low resolution images where small objects edges may be needed. Other contrast values will look for deeper local minimas,
+            removing smaller details and only leaving higher gradient variations.
+         </p>
+         <p>Souces:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/ximgproc/samples/brightedgesexample.cpp">https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/ximgproc/samples/brightedgesexample.cpp</a></li>
+            </ul>
+         </div><pre class="codeinput"><span class="keyword">function</span> varargout = brightedges_demo_gui(im)
+    <span class="comment">% load source image</span>
+    <span class="keyword">if</span> nargin &lt; 1
+        im = fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'butterfly.jpg'</span>);
+        img = cv.imread(im, <span class="string">'Color'</span>,true);
+    <span class="keyword">elseif</span> ischar(im)
+        img = cv.imread(im, <span class="string">'Color'</span>,true);
+    <span class="keyword">else</span>
+        img = im;
+    <span class="keyword">end</span>
+    assert(size(img,3) == 3, <span class="string">'RGB image expected'</span>);
+
+    <span class="comment">% create the UI</span>
+    h = buildGUI(img);
+    <span class="keyword">if</span> nargout &gt; 0, varargout{1} = h; <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> onChange(~,~,h)
+    <span class="comment">%ONCHANGE  Event handler for UI controls</span>
+
+    <span class="comment">% retrieve current values from UI controls</span>
+    longRange = round(get(h.slid(1), <span class="string">'Value'</span>)) * 2 + 1;
+    shortRange = round(get(h.slid(2), <span class="string">'Value'</span>)) * 2 + 1; <span class="comment">% odd for GaussianBlur</span>
+    contrst = round(get(h.slid(3), <span class="string">'Value'</span>));
+    set(h.txt(1), <span class="string">'String'</span>,sprintf(<span class="string">'LongRange: %d'</span>,longRange));
+    set(h.txt(2), <span class="string">'String'</span>,sprintf(<span class="string">'ShortRange: %d'</span>,shortRange));
+    set(h.txt(3), <span class="string">'String'</span>,sprintf(<span class="string">'Contrast: %d'</span>,contrst));
+
+    <span class="comment">% histogram equalization</span>
+    out = cv.BrightEdges(h.src, <span class="keyword">...</span>
+        <span class="string">'Contrast'</span>,contrst, <span class="string">'ShortRange'</span>,shortRange, <span class="string">'LongRange'</span>,longRange);
+
+    <span class="comment">% show result</span>
+    set(h.img, <span class="string">'CData'</span>,out);
+    drawnow;
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> h = buildGUI(img)
+    <span class="comment">%BUILDGUI  Creates the UI</span>
+
+    <span class="comment">% parameters</span>
+    contrst = 1;
+    shortRange = 1;
+    longRange = 4;
+    out = cv.BrightEdges(img);
+    sz = size(img);
+    sz(2) = max(sz(2), 300);  <span class="comment">% minimum figure width</span>
+
+    <span class="comment">% build the user interface (no resizing to keep it simple)</span>
+    h = struct();
+    h.src = img;
+    h.fig = figure(<span class="string">'Name'</span>,<span class="string">'BrightEdges Demo'</span>, <span class="keyword">...</span>
+        <span class="string">'NumberTitle'</span>,<span class="string">'off'</span>, <span class="string">'Menubar'</span>,<span class="string">'none'</span>, <span class="string">'Resize'</span>,<span class="string">'off'</span>, <span class="keyword">...</span>
+        <span class="string">'Position'</span>,[200 200 sz(2) sz(1)+80-1]);
+    <span class="keyword">if</span> ~mexopencv.isOctave()
+        <span class="comment">%HACK: not implemented in Octave</span>
+        movegui(h.fig, <span class="string">'center'</span>);
+    <span class="keyword">end</span>
+    h.ax = axes(<span class="string">'Parent'</span>,h.fig, <span class="string">'Units'</span>,<span class="string">'pixels'</span>, <span class="string">'Position'</span>,[1 80 sz(2) sz(1)]);
+    <span class="keyword">if</span> ~mexopencv.isOctave()
+        h.img = imshow(out, <span class="string">'Parent'</span>,h.ax);
+    <span class="keyword">else</span>
+        <span class="comment">%HACK: https://savannah.gnu.org/bugs/index.php?45473</span>
+        axes(h.ax);
+        h.img = imshow(out);
+    <span class="keyword">end</span>
+    h.txt(1) = uicontrol(<span class="string">'Parent'</span>,h.fig, <span class="string">'Style'</span>,<span class="string">'text'</span>, <span class="string">'FontSize'</span>,11, <span class="keyword">...</span>
+        <span class="string">'Position'</span>,[5 5 130 20], <span class="string">'String'</span>,<span class="string">'LongRange:'</span>);
+    h.txt(2) = uicontrol(<span class="string">'Parent'</span>,h.fig, <span class="string">'Style'</span>,<span class="string">'text'</span>, <span class="string">'FontSize'</span>,11, <span class="keyword">...</span>
+        <span class="string">'Position'</span>,[5 30 130 20], <span class="string">'String'</span>,<span class="string">'ShortRange:'</span>);
+    h.txt(3) = uicontrol(<span class="string">'Parent'</span>,h.fig, <span class="string">'Style'</span>,<span class="string">'text'</span>, <span class="string">'FontSize'</span>,11, <span class="keyword">...</span>
+        <span class="string">'Position'</span>,[5 55 130 20], <span class="string">'String'</span>,<span class="string">'Contrast:'</span>);
+    h.slid(1) = uicontrol(<span class="string">'Parent'</span>,h.fig, <span class="string">'Style'</span>,<span class="string">'slider'</span>, <span class="keyword">...</span>
+        <span class="string">'Value'</span>,longRange, <span class="string">'Min'</span>,1, <span class="string">'Max'</span>,30, <span class="string">'SliderStep'</span>,[1 5]./(30-1), <span class="keyword">...</span>
+        <span class="string">'Position'</span>,[135 5 sz(2)-135-5 20]);
+    h.slid(2) = uicontrol(<span class="string">'Parent'</span>,h.fig, <span class="string">'Style'</span>,<span class="string">'slider'</span>, <span class="keyword">...</span>
+        <span class="string">'Value'</span>,shortRange, <span class="string">'Min'</span>,1, <span class="string">'Max'</span>,30, <span class="string">'SliderStep'</span>,[1 5]./(30-1), <span class="keyword">...</span>
+        <span class="string">'Position'</span>,[135 30 sz(2)-135-5 20]);
+    h.slid(3) = uicontrol(<span class="string">'Parent'</span>,h.fig, <span class="string">'Style'</span>,<span class="string">'slider'</span>, <span class="keyword">...</span>
+        <span class="string">'Value'</span>,contrst, <span class="string">'Min'</span>,0, <span class="string">'Max'</span>,100, <span class="string">'SliderStep'</span>,[1 10]./(100-0), <span class="keyword">...</span>
+        <span class="string">'Position'</span>,[135 55 sz(2)-135-5 20]);
+
+    <span class="comment">% hook event handlers, and trigger default start</span>
+    set(h.slid, <span class="string">'Callback'</span>,{@onChange,h}, <span class="keyword">...</span>
+        <span class="string">'Interruptible'</span>,<span class="string">'off'</span>, <span class="string">'BusyAction'</span>,<span class="string">'cancel'</span>);
+    onChange([],[],h);
+<span class="keyword">end</span></pre><img src="brightedges_demo_gui_01.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Bright edges detection
+%
+% A new approach for visualizing edges. It uses the absolute difference of two
+% blurs to compute gradients creating local minimas for edges. The histogram
+% equalization makes the edges appears darker within a bright zone.
+%
+% If a contrast value of zero is given no additional process is performed.
+%
+% Otherwise a contrasting correction finds the local minimas and sets the edge
+% to black, while setting the surrounding to white. A pixel correction
+% restores line continuity and removes dark spots.
+%
+% The default contrast value is 1 over a range of 255. This default contrast
+% ensures visualizing edges on chessboard like images or low resolution images
+% where small objects edges may be needed.
+% Other contrast values will look for deeper local minimas, removing smaller
+% details and only leaving higher gradient variations.
+%
+% Souces:
+%
+% * <https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/ximgproc/samples/brightedgesexample.cpp>
+%
+
+function varargout = brightedges_demo_gui(im)
+    % load source image
+    if nargin < 1
+        im = fullfile(mexopencv.root(),'test','butterfly.jpg');
+        img = cv.imread(im, 'Color',true);
+    elseif ischar(im)
+        img = cv.imread(im, 'Color',true);
+    else
+        img = im;
+    end
+    assert(size(img,3) == 3, 'RGB image expected');
+
+    % create the UI
+    h = buildGUI(img);
+    if nargout > 0, varargout{1} = h; end
+end
+
+function onChange(~,~,h)
+    %ONCHANGE  Event handler for UI controls
+
+    % retrieve current values from UI controls
+    longRange = round(get(h.slid(1), 'Value')) * 2 + 1;
+    shortRange = round(get(h.slid(2), 'Value')) * 2 + 1; % odd for GaussianBlur
+    contrst = round(get(h.slid(3), 'Value'));
+    set(h.txt(1), 'String',sprintf('LongRange: %d',longRange));
+    set(h.txt(2), 'String',sprintf('ShortRange: %d',shortRange));
+    set(h.txt(3), 'String',sprintf('Contrast: %d',contrst));
+
+    % histogram equalization
+    out = cv.BrightEdges(h.src, ...
+        'Contrast',contrst, 'ShortRange',shortRange, 'LongRange',longRange);
+
+    % show result
+    set(h.img, 'CData',out);
+    drawnow;
+end
+
+function h = buildGUI(img)
+    %BUILDGUI  Creates the UI
+
+    % parameters
+    contrst = 1;
+    shortRange = 1;
+    longRange = 4;
+    out = cv.BrightEdges(img);
+    sz = size(img);
+    sz(2) = max(sz(2), 300);  % minimum figure width
+
+    % build the user interface (no resizing to keep it simple)
+    h = struct();
+    h.src = img;
+    h.fig = figure('Name','BrightEdges Demo', ...
+        'NumberTitle','off', 'Menubar','none', 'Resize','off', ...
+        'Position',[200 200 sz(2) sz(1)+80-1]);
+    if ~mexopencv.isOctave()
+        %HACK: not implemented in Octave
+        movegui(h.fig, 'center');
+    end
+    h.ax = axes('Parent',h.fig, 'Units','pixels', 'Position',[1 80 sz(2) sz(1)]);
+    if ~mexopencv.isOctave()
+        h.img = imshow(out, 'Parent',h.ax);
+    else
+        %HACK: https://savannah.gnu.org/bugs/index.php?45473
+        axes(h.ax);
+        h.img = imshow(out);
+    end
+    h.txt(1) = uicontrol('Parent',h.fig, 'Style','text', 'FontSize',11, ...
+        'Position',[5 5 130 20], 'String','LongRange:');
+    h.txt(2) = uicontrol('Parent',h.fig, 'Style','text', 'FontSize',11, ...
+        'Position',[5 30 130 20], 'String','ShortRange:');
+    h.txt(3) = uicontrol('Parent',h.fig, 'Style','text', 'FontSize',11, ...
+        'Position',[5 55 130 20], 'String','Contrast:');
+    h.slid(1) = uicontrol('Parent',h.fig, 'Style','slider', ...
+        'Value',longRange, 'Min',1, 'Max',30, 'SliderStep',[1 5]./(30-1), ...
+        'Position',[135 5 sz(2)-135-5 20]);
+    h.slid(2) = uicontrol('Parent',h.fig, 'Style','slider', ...
+        'Value',shortRange, 'Min',1, 'Max',30, 'SliderStep',[1 5]./(30-1), ...
+        'Position',[135 30 sz(2)-135-5 20]);
+    h.slid(3) = uicontrol('Parent',h.fig, 'Style','slider', ...
+        'Value',contrst, 'Min',0, 'Max',100, 'SliderStep',[1 10]./(100-0), ...
+        'Position',[135 55 sz(2)-135-5 20]);
+
+    % hook event handlers, and trigger default start
+    set(h.slid, 'Callback',{@onChange,h}, ...
+        'Interruptible','off', 'BusyAction','cancel');
+    onChange([],[],h);
+end
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

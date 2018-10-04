@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Pei&amp;Lin Normalization</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="peilin_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Pei&amp;Lin Normalization</h1>
+         <!--introduction-->
+         <p>This program demonstrates Pei-Lin Normalization.</p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.3.1/modules/ximgproc/samples/peilin.cpp">https://github.com/opencv/opencv_contrib/blob/3.3.1/modules/ximgproc/samples/peilin.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <p>Source images</p><pre class="codeinput">fname1 = fullfile(mexopencv.root(), <span class="string">'test'</span>, <span class="string">'peilin_plane.png'</span>);
+fname2 = fullfile(mexopencv.root(), <span class="string">'test'</span>, <span class="string">'peilin_shape.png'</span>);
+<span class="keyword">if</span> exist(fname1, <span class="string">'file'</span>) ~= 2
+    disp(<span class="string">'Downloading Image...'</span>)
+    url = <span class="string">'https://cdn.rawgit.com/opencv/opencv_contrib/3.3.1/modules/ximgproc/samples/peilin_plane.png'</span>;
+    urlwrite(url, fname1);
+<span class="keyword">end</span>
+<span class="keyword">if</span> exist(fname2, <span class="string">'file'</span>) ~= 2
+    disp(<span class="string">'Downloading Image...'</span>)
+    url = <span class="string">'https://cdn.rawgit.com/opencv/opencv_contrib/3.3.1/modules/ximgproc/samples/peilin_shape.png'</span>;
+    urlwrite(url, fname2);
+<span class="keyword">end</span></pre><p>Load images</p><pre class="codeinput">I = cv.imread(fname1, <span class="string">'Grayscale'</span>,true);
+J = cv.imread(fname2, <span class="string">'Grayscale'</span>,true);</pre><p>Apply normalization</p><pre class="codeinput">N = cv.warpAffine(I, cv.PeiLinNormalization(I));
+D = cv.warpAffine(I, cv.PeiLinNormalization(J), <span class="string">'WarpInverse'</span>,true);</pre><p>Show results</p><pre class="codeinput">subplot(221), imshow(I), title(<span class="string">'I'</span>)
+subplot(222), imshow(N), title(<span class="string">'N'</span>)
+subplot(223), imshow(J), title(<span class="string">'J'</span>)
+subplot(224), imshow(D), title(<span class="string">'D'</span>)</pre><img src="peilin_demo_01.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Pei&Lin Normalization
+% This program demonstrates Pei-Lin Normalization.
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv_contrib/blob/3.3.1/modules/ximgproc/samples/peilin.cpp>
+%
+
+%%
+% Source images
+fname1 = fullfile(mexopencv.root(), 'test', 'peilin_plane.png');
+fname2 = fullfile(mexopencv.root(), 'test', 'peilin_shape.png');
+if exist(fname1, 'file') ~= 2
+    disp('Downloading Image...')
+    url = 'https://cdn.rawgit.com/opencv/opencv_contrib/3.3.1/modules/ximgproc/samples/peilin_plane.png';
+    urlwrite(url, fname1);
+end
+if exist(fname2, 'file') ~= 2
+    disp('Downloading Image...')
+    url = 'https://cdn.rawgit.com/opencv/opencv_contrib/3.3.1/modules/ximgproc/samples/peilin_shape.png';
+    urlwrite(url, fname2);
+end
+
+%%
+% Load images
+I = cv.imread(fname1, 'Grayscale',true);
+J = cv.imread(fname2, 'Grayscale',true);
+
+%%
+% Apply normalization
+N = cv.warpAffine(I, cv.PeiLinNormalization(I));
+D = cv.warpAffine(I, cv.PeiLinNormalization(J), 'WarpInverse',true);
+
+%%
+% Show results
+subplot(221), imshow(I), title('I')
+subplot(222), imshow(N), title('N')
+subplot(223), imshow(J), title('J')
+subplot(224), imshow(D), title('D')
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

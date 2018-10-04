@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Introduction to SURF (Speeded-Up Robust Features)</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="SURF_detector.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Introduction to SURF (Speeded-Up Robust Features)</h1>
+         <!--introduction-->
+         <p>SURF keypoint detection + keypoint drawing with OpenCV functions</p>
+         <p>In this sample you will learn:</p>
+         <div>
+            <ul>
+               <li>The basics of SURF.</li>
+               <li>How to use <a href="matlab:doc('cv.SURF')">cv.SURF</a> and its function   <tt>cv.SURF.detect</tt> to perform the detection process in order to find   interest points.
+               </li>
+               <li>How to use the function <a href="matlab:doc('cv.drawKeypoints')">cv.drawKeypoints</a>   to draw the detected keypoints.
+               </li>
+            </ul>
+         </div>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://docs.opencv.org/3.2.0/d7/d66/tutorial_feature_detection.html">https://docs.opencv.org/3.2.0/d7/d66/tutorial_feature_detection.html</a></li>
+               <li><a href="https://docs.opencv.org/3.2.0/df/dd2/tutorial_py_surf_intro.html">https://docs.opencv.org/3.2.0/df/dd2/tutorial_py_surf_intro.html</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Theory</a></li>
+               <li><a href="#3">Code</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Theory</h2>
+         <p>We previously saw SIFT for keypoint detection and description. But it was comparatively slow and people needed more speeded-up
+            version. In 2006, three people, Bay, H., Tuytelaars, T. and Van Gool, L, published another paper, "SURF: Speeded Up Robust
+            Features" which introduced a new algorithm called SURF. As name suggests, it is a speeded-up version of SIFT.
+         </p>
+         <p>In SIFT, Lowe approximated Laplacian of Gaussian with Difference of Gaussian for finding scale-space. SURF goes a little further
+            and approximates LoG with Box Filter. Below image shows a demonstration of such an approximation. One big advantage of this
+            approximation is that, convolution with box filter can be easily calculated with the help of integral images. And it can be
+            done in parallel for different scales. Also the SURF rely on determinant of Hessian matrix for both scale and location.
+         </p>
+         <p><img src="https://docs.opencv.org/3.2.0/surf_boxfilter.jpg"></p>
+         <p>For orientation assignment, SURF uses wavelet responses in horizontal and vertical direction for a neighbourhood of size 6s.
+            Adequate Gaussian weights are also applied to it. Then they are plotted in a space as given in below image. The dominant orientation
+            is estimated by calculating the sum of all responses within a sliding orientation window of angle 60 degrees. Interesting
+            thing is that, wavelet response can be found out using integral images very easily at any scale. For many applications, rotation
+            invariance is not required, so no need of finding this orientation, which speeds up the process. SURF provides such a functionality
+            called Upright-SURF or U-SURF. It improves speed and is robust upto <img src="SURF_detector_eq15573626736437017154.png" alt="$\pm 15^{\circ}$" class="equation" width="31" height="11">. OpenCV supports both, depending upon the flag, <tt>Upright</tt>. If it is 0, orientation is calculated. If it is 1, orientation is not calculated and it is faster.
+         </p>
+         <p><img src="https://docs.opencv.org/3.2.0/surf_orientation.jpg"></p>
+         <p>For feature description, SURF uses Wavelet responses in horizontal and vertical direction (again, use of integral images makes
+            things easier). A neighbourhood of size 20sX20s is taken around the keypoint where <tt>s</tt> is the size. It is divided into 4x4 subregions. For each subregion, horizontal and vertical wavelet responses are taken and
+            a vector is formed like this, <img src="SURF_detector_eq13192379814095083704.png" alt="$v=( \sum{d_x}, \sum{d_y}, \sum{|d_x|}, \sum{|d_y|})$" class="equation" width="201" height="16">. This when represented as a vector gives SURF feature descriptor with total 64 dimensions. Lower the dimension, higher the
+            speed of computation and matching, but provide better distinctiveness of features.
+         </p>
+         <p>For more distinctiveness, SURF feature descriptor has an extended 128 dimension version. The sums of <img src="SURF_detector_eq01350836773562277220.png" alt="$d_x$" class="equation" width="13" height="13"> and <img src="SURF_detector_eq17997704812226943935.png" alt="$|d_x|$" class="equation" width="19" height="15"> are computed separately for <img src="SURF_detector_eq01010721022310333461.png" alt="$d_y < 0$" class="equation" width="40" height="15"> and <img src="SURF_detector_eq06968715913179794621.png" alt="$d_y \geq 0$" class="equation" width="40" height="15">. Similarly, the sums of <img src="SURF_detector_eq06932345220616509576.png" alt="$d_y$" class="equation" width="13" height="15"> and <img src="SURF_detector_eq00764942142815936843.png" alt="$|d_y|$" class="equation" width="19" height="16"> are split up according to the sign of <img src="SURF_detector_eq01350836773562277220.png" alt="$d_x$" class="equation" width="13" height="13"> , thereby doubling the number of features. It doesn't add much computation complexity. OpenCV supports both by setting the
+            value of flag <tt>Extended</tt> with 0 and 1 for 64-dim and 128-dim respectively (default is 128-dim).
+         </p>
+         <p>Another important improvement is the use of sign of Laplacian (trace of Hessian Matrix) for underlying interest point. It
+            adds no computation cost since it is already computed during detection. The sign of the Laplacian distinguishes bright blobs
+            on dark backgrounds from the reverse situation. In the matching stage, we only compare features if they have the same type
+            of contrast (as shown in image below). This minimal information allows for faster matching, without reducing the descriptor's
+            performance.
+         </p>
+         <p><img src="https://docs.opencv.org/3.2.0/surf_matching.jpg"></p>
+         <p>In short, SURF adds a lot of features to improve the speed in every step. Analysis shows it is 3 times faster than SIFT while
+            performance is comparable to SIFT. SURF is good at handling images with blurring and rotation, but not good at handling viewpoint
+            change and illumination change.
+         </p>
+         <p>OpenCV provides SURF functionalities just like SIFT. You initiate a SURF object with some optional conditions like 64/128-dim
+            descriptors, Upright/Normal SURF, etc. All the details are well explained in docs. Then as we did in SIFT, we can use <tt>cv.SURF.detect, |cv.SURF.compute</tt>, etc. for finding keypoints and descriptors.
+         </p>
+         <h2 id="3">Code</h2>
+         <p>Read image as grayscale</p><pre class="codeinput">img = cv.imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'butterfly.jpg'</span>), <span class="keyword">...</span>
+    <span class="string">'Grayscale'</span>,true);</pre><p>Detect keypoints using SURF Detector</p><pre class="codeinput">detector = cv.SURF();
+detector.HessianThreshold = 400;
+tic
+keypoints = detector.detect(img);
+toc</pre><pre class="codeoutput">Elapsed time is 0.026675 seconds.
+</pre><pre class="codeinput">whos <span class="string">keypoints</span>
+disp(keypoints(1))</pre><pre class="codeoutput">  Name           Size               Bytes  Class     Attributes
+
+  keypoints      1x1330            968624  struct              
+
+          pt: [421.8119 208.1639]
+        size: 22
+       angle: 300.0605
+    response: 1.1092e+05
+      octave: 0
+    class_id: -1
+</pre><p>Draw keypoints</p><pre class="codeinput">out = cv.drawKeypoints(img, keypoints);
+imshow(out);</pre><img src="SURF_detector_01.png"><p>We increase the Hessian Threshold to some large value. This is just to avoid drawing too many keypoints. In real applications,
+            it is better to have a value between 300 and 500, as we may need all those keypoints when matching.
+         </p><pre class="codeinput">detector.HessianThreshold = 50000;
+keypoints = detector.detect(img);
+fprintf(<span class="string">'%d keypoints\n'</span>, numel(keypoints));</pre><pre class="codeoutput">48 keypoints
+</pre><pre class="codeinput">out = cv.drawKeypoints(img, keypoints, <span class="keyword">...</span>
+    <span class="string">'Color'</span>,[255 0 0], <span class="string">'DrawRichKeypoints'</span>,true);
+imshow(out);</pre><img src="SURF_detector_02.png"><p>Now we apply U-SURF, so that it won't find the orientation.</p><pre class="codeinput">detector.Upright = true;
+keypoints = detector.detect(img);
+out = cv.drawKeypoints(img, keypoints, <span class="keyword">...</span>
+    <span class="string">'Color'</span>,[255 0 0], <span class="string">'DrawRichKeypoints'</span>,true);
+imshow(out);</pre><img src="SURF_detector_03.png"><p>Finally we change the descriptor size to 128.</p><pre class="codeinput">disp(detector.descriptorSize)
+detector.Extended = true;
+disp(detector.descriptorSize)
+descriptors = detector.compute(img, keypoints);
+whos <span class="string">descriptors</span></pre><pre class="codeoutput">    64
+   128
+  Name              Size             Bytes  Class     Attributes
+
+  descriptors      48x128            24576  single              
+
+</pre><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div><script type="text/x-mathjax-config">
+  // https://stackoverflow.com/a/14631703/97160
+  MathJax.Extension.myImg2jax = {
+    version: "1.0",
+    PreProcess: function (element) {
+      var images = element.getElementsByTagName("img");
+      for (var i = images.length - 1; i >= 0; i--) {
+        var img = images[i];
+        if (img.className === "equation") {
+          var match = img.alt.match(/^(\$\$?)([\s\S]*)\1$/m);
+          if (!match) continue;
+          var script = document.createElement("script");
+          script.type = "math/tex";
+          if (match[1] === "$$") {script.type += ";mode=display"}
+          MathJax.HTML.setScript(script, match[2]);
+          img.parentNode.replaceChild(script, img);
+        }
+      }
+    }
+  };
+  MathJax.Hub.Register.PreProcessor(["PreProcess", MathJax.Extension.myImg2jax]);
+  </script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML"></script>
+      <!--
+##### SOURCE BEGIN #####
+%% Introduction to SURF (Speeded-Up Robust Features)
+% SURF keypoint detection + keypoint drawing with OpenCV functions
+%
+% In this sample you will learn:
+%
+% * The basics of SURF.
+% * How to use <matlab:doc('cv.SURF') cv.SURF> and its function
+%   |cv.SURF.detect| to perform the detection process in order to find
+%   interest points.
+% * How to use the function <matlab:doc('cv.drawKeypoints') cv.drawKeypoints>
+%   to draw the detected keypoints.
+%
+% Sources:
+%
+% * <https://docs.opencv.org/3.2.0/d7/d66/tutorial_feature_detection.html>
+% * <https://docs.opencv.org/3.2.0/df/dd2/tutorial_py_surf_intro.html>
+%
+
+%% Theory
+%
+% We previously saw SIFT for keypoint detection and description. But it was
+% comparatively slow and people needed more speeded-up version. In 2006, three
+% people, Bay, H., Tuytelaars, T. and Van Gool, L, published another paper,
+% "SURF: Speeded Up Robust Features" which introduced a new algorithm called
+% SURF. As name suggests, it is a speeded-up version of SIFT.
+%
+% In SIFT, Lowe approximated Laplacian of Gaussian with Difference of Gaussian
+% for finding scale-space. SURF goes a little further and approximates LoG
+% with Box Filter. Below image shows a demonstration of such an approximation.
+% One big advantage of this approximation is that, convolution with box filter
+% can be easily calculated with the help of integral images. And it can be
+% done in parallel for different scales. Also the SURF rely on determinant of
+% Hessian matrix for both scale and location.
+%
+% <<https://docs.opencv.org/3.2.0/surf_boxfilter.jpg>>
+%
+% For orientation assignment, SURF uses wavelet responses in horizontal and
+% vertical direction for a neighbourhood of size 6s. Adequate Gaussian weights
+% are also applied to it. Then they are plotted in a space as given in below
+% image. The dominant orientation is estimated by calculating the sum of all
+% responses within a sliding orientation window of angle 60 degrees.
+% Interesting thing is that, wavelet response can be found out using integral
+% images very easily at any scale. For many applications, rotation invariance
+% is not required, so no need of finding this orientation, which speeds up the
+% process. SURF provides such a functionality called Upright-SURF or U-SURF.
+% It improves speed and is robust upto $\pm 15^{\circ}$. OpenCV supports both,
+% depending upon the flag, |Upright|. If it is 0, orientation is calculated.
+% If it is 1, orientation is not calculated and it is faster.
+%
+% <<https://docs.opencv.org/3.2.0/surf_orientation.jpg>>
+%
+% For feature description, SURF uses Wavelet responses in horizontal and
+% vertical direction (again, use of integral images makes things easier). A
+% neighbourhood of size 20sX20s is taken around the keypoint where |s| is the
+% size. It is divided into 4x4 subregions. For each subregion, horizontal and
+% vertical wavelet responses are taken and a vector is formed like this,
+% $v=( \sum{d_x}, \sum{d_y}, \sum{|d_x|}, \sum{|d_y|})$. This when represented
+% as a vector gives SURF feature descriptor with total 64 dimensions. Lower
+% the dimension, higher the speed of computation and matching, but provide
+% better distinctiveness of features.
+%
+% For more distinctiveness, SURF feature descriptor has an extended 128
+% dimension version. The sums of $d_x$ and $|d_x|$ are computed separately for
+% $d_y < 0$ and $d_y \geq 0$. Similarly, the sums of $d_y$ and $|d_y|$ are
+% split up according to the sign of $d_x$ , thereby doubling the number of
+% features. It doesn't add much computation complexity. OpenCV supports both
+% by setting the value of flag |Extended| with 0 and 1 for 64-dim and 128-dim
+% respectively (default is 128-dim).
+%
+% Another important improvement is the use of sign of Laplacian (trace of
+% Hessian Matrix) for underlying interest point. It adds no computation cost
+% since it is already computed during detection. The sign of the Laplacian
+% distinguishes bright blobs on dark backgrounds from the reverse situation.
+% In the matching stage, we only compare features if they have the same type
+% of contrast (as shown in image below). This minimal information allows for
+% faster matching, without reducing the descriptor's performance.
+%
+% <<https://docs.opencv.org/3.2.0/surf_matching.jpg>>
+%
+% In short, SURF adds a lot of features to improve the speed in every step.
+% Analysis shows it is 3 times faster than SIFT while performance is
+% comparable to SIFT. SURF is good at handling images with blurring and
+% rotation, but not good at handling viewpoint change and illumination change.
+%
+% OpenCV provides SURF functionalities just like SIFT. You initiate a SURF
+% object with some optional conditions like 64/128-dim descriptors,
+% Upright/Normal SURF, etc. All the details are well explained in docs. Then
+% as we did in SIFT, we can use |cv.SURF.detect, |cv.SURF.compute|, etc. for
+% finding keypoints and descriptors.
+%
+
+%% Code
+
+%%
+% Read image as grayscale
+img = cv.imread(fullfile(mexopencv.root(),'test','butterfly.jpg'), ...
+    'Grayscale',true);
+
+%%
+% Detect keypoints using SURF Detector
+detector = cv.SURF();
+detector.HessianThreshold = 400;
+tic
+keypoints = detector.detect(img);
+toc
+
+%%
+whos keypoints
+disp(keypoints(1))
+
+%%
+% Draw keypoints
+out = cv.drawKeypoints(img, keypoints);
+imshow(out);
+
+%%
+% We increase the Hessian Threshold to some large value.
+% This is just to avoid drawing too many keypoints.
+% In real applications, it is better to have a value between 300 and 500,
+% as we may need all those keypoints when matching.
+detector.HessianThreshold = 50000;
+keypoints = detector.detect(img);
+fprintf('%d keypoints\n', numel(keypoints));
+
+%%
+out = cv.drawKeypoints(img, keypoints, ...
+    'Color',[255 0 0], 'DrawRichKeypoints',true);
+imshow(out);
+
+%%
+% Now we apply U-SURF, so that it won't find the orientation.
+detector.Upright = true;
+keypoints = detector.detect(img);
+out = cv.drawKeypoints(img, keypoints, ...
+    'Color',[255 0 0], 'DrawRichKeypoints',true);
+imshow(out);
+
+%%
+% Finally we change the descriptor size to 128.
+disp(detector.descriptorSize)
+detector.Extended = true;
+disp(detector.descriptorSize)
+descriptors = detector.compute(img, keypoints);
+whos descriptors
+
+##### SOURCE END #####
+--></body>
+</html>

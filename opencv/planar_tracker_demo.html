@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>planar_tracker_demo</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="planar_tracker_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#1">AKAZE and ORB planar tracking</a></li>
+               <li><a href="#2">Helper functions</a></li>
+            </ul>
+         </div>
+         <h2 id="1">AKAZE and ORB planar tracking</h2>
+         <p>In this demo, we will compare AKAZE and ORB local features by using them to find matches between video frames and track object
+            movements.
+         </p>
+         <p>The algorithm is as follows: First, we detect and describe keypoints on the first frame inside a manually set object boundaries.
+            For every next frame:
+         </p>
+         <div>
+            <ul>
+               <li>Detect and describe keypoints</li>
+               <li>Match them using bruteforce matcher</li>
+               <li>Estimate homography transformation using RANSAC</li>
+               <li>Filter inliers from all the matches</li>
+               <li>Apply homography transformation to the bounding box to find the object</li>
+               <li>Draw bounding box and inliers, compute inlier ratio as evaluation metric</li>
+            </ul>
+         </div>
+         <p>To do the tracking we need a video and object position on the first frame. You can download an example video and data from
+            <a href="https://docs.google.com/file/d/0B72G7D4snftJandBb0taLVJHMFk">here</a>.
+         </p>
+         <p>To run the sample, you specify an input (video file or camera id), then select a bounding box with the mouse, to start tracking.</p>
+         <p>Example video: <a href="http://www.youtube.com/watch?v=pzVbhxx6aog">http://www.youtube.com/watch?v=pzVbhxx6aog</a>.
+         </p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://docs.opencv.org/3.3.1/dc/d16/tutorial_akaze_tracking.html">https://docs.opencv.org/3.3.1/dc/d16/tutorial_akaze_tracking.html</a></li>
+               <li><a href="https://github.com/opencv/opencv/blob/3.3.1/samples/cpp/tutorial_code/features2D/AKAZE_tracking/planar_tracking.cpp">https://github.com/opencv/opencv/blob/3.3.1/samples/cpp/tutorial_code/features2D/AKAZE_tracking/planar_tracking.cpp</a></li>
+               <li><a href="https://github.com/opencv/opencv/blob/3.3.1/samples/python/plane_tracker.py">https://github.com/opencv/opencv/blob/3.3.1/samples/python/plane_tracker.py</a></li>
+            </ul>
+         </div><pre class="codeinput"><span class="keyword">function</span> varargout = planar_tracker_demo(fname)
+    <span class="comment">% initialize app state and options</span>
+    app = defaultOptions();
+
+    <span class="comment">% load video</span>
+    <span class="keyword">if</span> nargin &lt; 1
+        fname = fullfile(mexopencv.root(), <span class="string">'test'</span>, <span class="string">'blais.mp4'</span>);
+        win = [136 0 366 433];     <span class="comment">% book</span>
+        <span class="comment">%win = [135 165 285 175];  % face</span>
+        <span class="keyword">if</span> exist(fname, <span class="string">'file'</span>) ~= 2
+            error(<span class="string">'Missing "blais.mp4" video, download it from here: %s'</span>, <span class="keyword">...</span>
+                <span class="string">'https://docs.google.com/file/d/0B72G7D4snftJandBb0taLVJHMFk'</span>)
+        <span class="keyword">end</span>
+    <span class="keyword">else</span>
+        win = [];
+    <span class="keyword">end</span>
+    vid = cv.VideoCapture(fname);
+    assert(vid.isOpened(), <span class="string">'Failed to open video'</span>);
+
+    <span class="comment">% get first frame</span>
+    frame = vid.read();
+    assert(~isempty(frame), <span class="string">'Failed to read frames'</span>);
+
+    <span class="comment">% prompt user for an object ROI</span>
+    <span class="keyword">if</span> isempty(win)
+        win = selectROI(frame)
+        assert(~isempty(win), <span class="string">'No object specified'</span>);
+    <span class="keyword">end</span>
+
+    <span class="comment">% store first frame and bounding box points</span>
+    app.sz = size(frame);
+    app.frame0 = frame;
+    app.bb0 = bsxfun(@plus, win(1:2), [0 0; win(3) 0; win(3:4); 0 win(4)]);
+
+    <span class="comment">% create feature detectors and descriptor matchers objects</span>
+    <span class="comment">%names = {'AKAZE', 'KAZE', 'ORB', 'BRISK', 'SIFT', 'SURF'};</span>
+    names = {<span class="string">'AKAZE'</span>, <span class="string">'ORB'</span>};
+    f = createTrackers(app, names);
+
+    <span class="comment">% detect keypoints and compute descriptors in first frame (ROI region)</span>
+    <span class="keyword">for</span> i=1:numel(f)
+        <span class="keyword">if</span> true &amp;&amp; i&gt;1 &amp;&amp; strcmp(f(i).name, <span class="string">'ORB'</span>)
+            <span class="comment">% to ensure detectors locate roughly same number of keypoints</span>
+            f(i).detector.MaxFeatures = f(1).stats(1);
+        <span class="keyword">end</span>
+        [f(i).kp0, f(i).desc0, f(i).stats] = processFirstFrame(f(i), app);
+    <span class="keyword">end</span>
+    stats = cat(1, f.stats);
+
+    <span class="comment">% prepare plot</span>
+    h = createUI(f, app);
+    <span class="keyword">if</span> nargout &gt; 0, varargout{1} = h; <span class="keyword">end</span>
+
+    <span class="comment">% main loop</span>
+    counter = 0;
+    <span class="keyword">while</span> ishghandle(h(1).img)
+        <span class="comment">% get next frame</span>
+        counter = counter + 1;
+        frame = vid.read();
+        <span class="keyword">if</span> isempty(frame), <span class="keyword">break</span>; <span class="keyword">end</span>
+        <span class="keyword">if</span> rem(counter, app.show_every_frame) &gt; 0, <span class="keyword">continue</span>; <span class="keyword">end</span>
+
+        <span class="keyword">for</span> i=1:numel(f)
+            <span class="comment">% feature matching + homography to track object</span>
+            [out, bb, f(i).stats] = processFrame(f(i), app, frame);
+
+            <span class="comment">% check quality of match</span>
+            <span class="keyword">if</span> all(f(i).stats(3:4) &gt;= [app.min_inliers app.min_inliers_ratio])
+                lin_opts = {<span class="string">'LineWidth'</span>,2, <span class="string">'LineStyle'</span>,<span class="string">'-'</span>};
+            <span class="keyword">else</span>
+                <span class="comment">% uncertain: not enough matches and/or too many outliers</span>
+                lin_opts = {<span class="string">'LineWidth'</span>,0.5, <span class="string">'LineStyle'</span>,<span class="string">':'</span>};
+            <span class="keyword">end</span>
+
+            <span class="comment">% show results</span>
+            set(h(i).txt, <span class="string">'String'</span>,printStats(f(i).stats));
+            set(h(i).lin, <span class="string">'XData'</span>,bb([1:end 1],1) + app.sz(2), <span class="keyword">...</span>
+                <span class="string">'YData'</span>,bb([1:end 1],2), lin_opts{:});
+            set(h(i).img, <span class="string">'CData'</span>,out);
+        <span class="keyword">end</span>
+        stats = stats + cat(1, f.stats);
+        drawnow;
+    <span class="keyword">end</span>
+    vid.release();
+
+    <span class="comment">% show average stats</span>
+    stats = stats ./ (counter / app.show_every_frame);
+    stats(:,1:3) = round(stats(:,1:3));
+    <span class="keyword">for</span> i=1:numel(f)
+        disp([<span class="string">'-- '</span> f(i).name <span class="string">' --'</span>]);
+        cellfun(@disp, printStats(stats(i,:)));
+    <span class="keyword">end</span>
+<span class="keyword">end</span></pre><h2 id="2">Helper functions</h2><pre class="codeinput"><span class="keyword">function</span> app = defaultOptions()
+    <span class="comment">%DEFAULTOPTIONS  Create default options structure</span>
+
+    app = struct();
+    app.akaze_thresh = 3e-4;     <span class="comment">% AKAZE threshold set to locate ~1000 keypoints</span>
+    app.ransac_thresh = 2.5;     <span class="comment">% RANSAC inlier threshold</span>
+    app.match_ratio = 0.8;       <span class="comment">% nearest-neighbour matching ratio</span>
+    app.min_inliers = 100;       <span class="comment">% minimal number of inliers to draw bounding box</span>
+    app.min_inliers_ratio = 0.2; <span class="comment">% minimal inliers ratio to draw bounding box</span>
+    app.draw_top_matches = 100;  <span class="comment">% draw the top 50 matches only</span>
+    app.show_every_frame = 3;    <span class="comment">% display every 3 frames to maintain high fps</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> win = selectROI(img)
+    <span class="comment">%SELECTROI  Interactively select region with mouse</span>
+
+    hImg = imshow(img);
+    axis <span class="string">on</span>
+    hRect = imrect();
+    win = wait(hRect);
+    close(ancestor(hImg, <span class="string">'Figure'</span>));
+    <span class="keyword">if</span> ~isempty(win)
+        win(1:2) = win(1:2) - 1;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> f = createTrackers(app, names)
+    <span class="comment">%CREATETRACKERS  Create detectors and matchers objects</span>
+
+    f = struct();
+    <span class="keyword">for</span> i=1:numel(names)
+        <span class="comment">% create detector object</span>
+        f(i).name = names{i};
+        <span class="keyword">switch</span> names{i}
+            <span class="keyword">case</span> <span class="string">'AKAZE'</span>
+                f(i).detector = cv.AKAZE(<span class="string">'Threshold'</span>,app.akaze_thresh);
+            <span class="keyword">case</span> <span class="string">'KAZE'</span>
+                f(i).detector = cv.KAZE(<span class="string">'Threshold'</span>,app.akaze_thresh);
+            <span class="keyword">case</span> <span class="string">'ORB'</span>
+                f(i).detector = cv.ORB(<span class="string">'MaxFeatures'</span>,1000);
+            <span class="keyword">case</span> <span class="string">'BRISK'</span>
+                f(i).detector = cv.BRISK();
+            <span class="keyword">case</span> <span class="string">'SIFT'</span>
+                f(i).detector = cv.SIFT();
+            <span class="keyword">case</span> <span class="string">'SURF'</span>
+                f(i).detector = cv.SURF();
+            <span class="keyword">otherwise</span>
+                error(<span class="string">'Unexpected detector type'</span>)
+        <span class="keyword">end</span>
+
+        <span class="comment">% create matcher object</span>
+        <span class="keyword">if</span> true
+            <span class="keyword">if</span> false
+                opts = {<span class="string">'CrossCheck'</span>,true};
+            <span class="keyword">else</span>
+                opts = {};
+            <span class="keyword">end</span>
+            f(i).matcher = cv.DescriptorMatcher(<span class="string">'BFMatcher'</span>, <span class="keyword">...</span>
+                <span class="string">'NormType'</span>,f(i).detector.defaultNorm(), opts{:});
+        <span class="keyword">else</span>
+            f(i).matcher = cv.DescriptorMatcher(<span class="string">'FlannBasedMatcher'</span>, <span class="keyword">...</span>
+                <span class="string">'Index'</span>,<span class="keyword">...</span>
+                {<span class="string">'LSH'</span>, <span class="string">'TableNumber'</span>,6, <span class="string">'KeySize'</span>,12, <span class="string">'MultiProbeLevel'</span>,1});
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> h = createUI(f, app)
+    <span class="comment">%CREATEUI  Creates the UI</span>
+
+    x = app.bb0([1:end 1], 1);
+    y = app.bb0([1:end 1], 2);
+    lin_opts = {<span class="string">'Color'</span>,<span class="string">'b'</span>, <span class="string">'LineWidth'</span>,2, <span class="string">'LineStyle'</span>,<span class="string">'-'</span>};
+
+    <span class="comment">% plot images, objects, and stats</span>
+    h = struct();
+    figure(<span class="string">'Position'</span>,get(0, <span class="string">'DefaultFigurePosition'</span>) .* [0.4 0.2 1.5 1.7])
+    <span class="keyword">for</span> i=1:numel(f)
+        subplot(numel(f),1,i)
+        h(i).img = imshow([app.frame0, app.frame0]);
+        line(x, y, lin_opts{:})
+        h(i).lin = line(x + app.sz(2), y, lin_opts{:});
+        h(i).txt = text(2*app.sz(2), app.sz(1), printStats(f(i).stats), <span class="keyword">...</span>
+            <span class="string">'Color'</span>,<span class="string">'y'</span>, <span class="string">'HorizontalAlignment'</span>,<span class="string">'right'</span>, <span class="string">'VerticalAlignment'</span>,<span class="string">'bottom'</span>);
+        title(sprintf(<span class="string">'%s, %d keypoints'</span>, f(i).name, f(i).stats(1)))
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> str = printStats(stats)
+    <span class="comment">%PRINTSTATS  Pretty print matching statistics</span>
+
+    str = {
+        sprintf(<span class="string">'Keypoints: %d'</span>, stats(1))
+        sprintf(<span class="string">'Matches: %d'</span>, stats(2))
+        sprintf(<span class="string">'Inliers: %d'</span>, stats(3))
+        sprintf(<span class="string">'Inliers Ratio: %.0f%%'</span>, stats(4)*100)
+        sprintf(<span class="string">'FPS: %.2f'</span>, stats(5))
+    };
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> [kp, desc, stats] = processFirstFrame(f, app)
+    <span class="comment">%PROCESSFIRSTFRAME Process first frame</span>
+
+    <span class="comment">% init stats</span>
+    stats = [0, 0, 0, 0, 0];
+
+    <span class="comment">% create ROI mask</span>
+    mask = zeros(app.sz(1:2), <span class="string">'uint8'</span>);
+    mask = cv.fillPoly(mask, app.bb0, <span class="string">'Color'</span>,255);
+
+    tm = cv.TickMeter();
+    tm.start();
+
+    <span class="comment">% detect and compute features of first frame in ROI region</span>
+    [kp, desc] = f.detector.detectAndCompute(app.frame0, <span class="string">'Mask'</span>,mask);
+    assert(~isempty(kp), <span class="string">'No keypoints detected in first frame'</span>);
+    stats(1) = numel(kp);
+
+    tm.stop();
+    stats(5) = 1 / tm.TimeSec;
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> [out, bb1, stats] = processFrame(f, app, frame1)
+    <span class="comment">%PROCESSFRAME  Process subsequent frames</span>
+
+    <span class="comment">% initialize output</span>
+    out = [app.frame0, frame1];
+    bb1 = nan(size(app.bb0));
+    stats = [0 0 0 0 0];
+
+    tm = cv.TickMeter();
+    tm.start();
+
+    <span class="comment">% detect and compute features in current frame</span>
+    [kp1, desc1] = f.detector.detectAndCompute(frame1);
+    stats(1) = numel(kp1);
+    <span class="keyword">if</span> numel(kp1) &lt; 2, <span class="keyword">return</span>; <span class="keyword">end</span>
+
+    <span class="comment">% match against first frame features</span>
+    <span class="keyword">if</span> true
+        <span class="comment">% 2-NN matching with ratio test (if closest match is MATCH_RATIO</span>
+        <span class="comment">% closer than the second closest one, then its a good match)</span>
+        matches = f.matcher.knnMatch(f.desc0, desc1, 2);
+        idx = cellfun(@(m) numel(m) == 2 &amp;&amp; <span class="keyword">...</span>
+            (m(1).distance &lt; app.match_ratio * m(2).distance), matches);
+        matches = cellfun(@(m) m(1), matches(idx));
+    <span class="keyword">elseif</span> false
+        matches = f.matcher.knnMatch(f.desc0, desc1, 1);
+        matches = [matches{:}];
+    <span class="keyword">else</span>
+        matches = f.matcher.match(f.desc0, desc1);
+    <span class="keyword">end</span>
+    stats(2) = numel(matches);
+    <span class="keyword">if</span> numel(matches) &lt; 4, <span class="keyword">return</span>; <span class="keyword">end</span>
+
+    <span class="comment">% estimate homography using RANSAC</span>
+    pt0 = cat(1, f.kp0([matches.queryIdx] + 1).pt);
+    pt1 = cat(1, kp1([matches.trainIdx] + 1).pt);
+    [H, inliers] = cv.findHomography(pt0, pt1, <span class="keyword">...</span>
+        <span class="string">'Method'</span>,<span class="string">'Ransac'</span>, <span class="string">'RansacReprojThreshold'</span>,app.ransac_thresh);
+    inliers = logical(inliers);
+    stats(3) = nnz(inliers);
+    stats(4) = stats(3) / stats(2);
+    <span class="keyword">if</span> isempty(H), <span class="keyword">return</span>; <span class="keyword">end</span>
+
+    tm.stop();
+    stats(5) = 1 / tm.TimeSec;
+
+    <span class="comment">% project object bounding box using homography to locate it in new frame</span>
+    bb1 = cv.perspectiveTransform(app.bb0, H);
+
+    <span class="comment">% draw matches</span>
+    <span class="keyword">if</span> app.draw_top_matches &gt; 0
+        <span class="comment">% only draw top inlier matches (sorted by distance) to reduce clutter</span>
+        [~,idx] = sort([matches.distance]);
+        idx(~inliers(idx)) = [];
+        inliers(idx(app.draw_top_matches+1:end)) = false;
+    <span class="keyword">end</span>
+    out = cv.drawMatches(app.frame0, f.kp0, frame1, kp1, matches, <span class="keyword">...</span>
+        <span class="string">'MatchesMask'</span>,inliers, <span class="keyword">...</span>
+        <span class="string">'MatchColor'</span>,[255 0 0], <span class="string">'SinglePointColor'</span>,[255 0 255]);
+<span class="keyword">end</span></pre><pre class="codeoutput">-- AKAZE --
+Keypoints: 963
+Matches: 521
+Inliers: 384
+Inliers Ratio: 67%
+FPS: 4.10
+-- ORB --
+Keypoints: 1058
+Matches: 413
+Inliers: 271
+Inliers Ratio: 59%
+FPS: 5.26
+</pre><img src="planar_tracker_demo_01.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% AKAZE and ORB planar tracking
+%
+% In this demo, we will compare AKAZE and ORB local features by using them to
+% find matches between video frames and track object movements.
+%
+% The algorithm is as follows: First, we detect and describe keypoints on the
+% first frame inside a manually set object boundaries. For every next frame:
+%
+% * Detect and describe keypoints
+% * Match them using bruteforce matcher
+% * Estimate homography transformation using RANSAC
+% * Filter inliers from all the matches
+% * Apply homography transformation to the bounding box to find the object
+% * Draw bounding box and inliers, compute inlier ratio as evaluation metric
+%
+% To do the tracking we need a video and object position on the first frame.
+% You can download an example video and data from
+% <https://docs.google.com/file/d/0B72G7D4snftJandBb0taLVJHMFk here>.
+%
+% To run the sample, you specify an input (video file or camera id), then
+% select a bounding box with the mouse, to start tracking.
+%
+% Example video: <http://www.youtube.com/watch?v=pzVbhxx6aog>.
+%
+% Sources:
+%
+% * <https://docs.opencv.org/3.3.1/dc/d16/tutorial_akaze_tracking.html>
+% * <https://github.com/opencv/opencv/blob/3.3.1/samples/cpp/tutorial_code/features2D/AKAZE_tracking/planar_tracking.cpp>
+% * <https://github.com/opencv/opencv/blob/3.3.1/samples/python/plane_tracker.py>
+%
+
+function varargout = planar_tracker_demo(fname)
+    % initialize app state and options
+    app = defaultOptions();
+
+    % load video
+    if nargin < 1
+        fname = fullfile(mexopencv.root(), 'test', 'blais.mp4');
+        win = [136 0 366 433];     % book
+        %win = [135 165 285 175];  % face
+        if exist(fname, 'file') ~= 2
+            error('Missing "blais.mp4" video, download it from here: %s', ...
+                'https://docs.google.com/file/d/0B72G7D4snftJandBb0taLVJHMFk')
+        end
+    else
+        win = [];
+    end
+    vid = cv.VideoCapture(fname);
+    assert(vid.isOpened(), 'Failed to open video');
+
+    % get first frame
+    frame = vid.read();
+    assert(~isempty(frame), 'Failed to read frames');
+
+    % prompt user for an object ROI
+    if isempty(win)
+        win = selectROI(frame)
+        assert(~isempty(win), 'No object specified');
+    end
+
+    % store first frame and bounding box points
+    app.sz = size(frame);
+    app.frame0 = frame;
+    app.bb0 = bsxfun(@plus, win(1:2), [0 0; win(3) 0; win(3:4); 0 win(4)]);
+
+    % create feature detectors and descriptor matchers objects
+    %names = {'AKAZE', 'KAZE', 'ORB', 'BRISK', 'SIFT', 'SURF'};
+    names = {'AKAZE', 'ORB'};
+    f = createTrackers(app, names);
+
+    % detect keypoints and compute descriptors in first frame (ROI region)
+    for i=1:numel(f)
+        if true && i>1 && strcmp(f(i).name, 'ORB')
+            % to ensure detectors locate roughly same number of keypoints
+            f(i).detector.MaxFeatures = f(1).stats(1);
+        end
+        [f(i).kp0, f(i).desc0, f(i).stats] = processFirstFrame(f(i), app);
+    end
+    stats = cat(1, f.stats);
+
+    % prepare plot
+    h = createUI(f, app);
+    if nargout > 0, varargout{1} = h; end
+
+    % main loop
+    counter = 0;
+    while ishghandle(h(1).img)
+        % get next frame
+        counter = counter + 1;
+        frame = vid.read();
+        if isempty(frame), break; end
+        if rem(counter, app.show_every_frame) > 0, continue; end
+
+        for i=1:numel(f)
+            % feature matching + homography to track object
+            [out, bb, f(i).stats] = processFrame(f(i), app, frame);
+
+            % check quality of match
+            if all(f(i).stats(3:4) >= [app.min_inliers app.min_inliers_ratio])
+                lin_opts = {'LineWidth',2, 'LineStyle','-'};
+            else
+                % uncertain: not enough matches and/or too many outliers
+                lin_opts = {'LineWidth',0.5, 'LineStyle',':'};
+            end
+
+            % show results
+            set(h(i).txt, 'String',printStats(f(i).stats));
+            set(h(i).lin, 'XData',bb([1:end 1],1) + app.sz(2), ...
+                'YData',bb([1:end 1],2), lin_opts{:});
+            set(h(i).img, 'CData',out);
+        end
+        stats = stats + cat(1, f.stats);
+        drawnow;
+    end
+    vid.release();
+
+    % show average stats
+    stats = stats ./ (counter / app.show_every_frame);
+    stats(:,1:3) = round(stats(:,1:3));
+    for i=1:numel(f)
+        disp(['REPLACE_WITH_DASH_DASH ' f(i).name ' REPLACE_WITH_DASH_DASH']);
+        cellfun(@disp, printStats(stats(i,:)));
+    end
+end
+
+%% Helper functions
+
+function app = defaultOptions()
+    %DEFAULTOPTIONS  Create default options structure
+
+    app = struct();
+    app.akaze_thresh = 3e-4;     % AKAZE threshold set to locate ~1000 keypoints
+    app.ransac_thresh = 2.5;     % RANSAC inlier threshold
+    app.match_ratio = 0.8;       % nearest-neighbour matching ratio
+    app.min_inliers = 100;       % minimal number of inliers to draw bounding box
+    app.min_inliers_ratio = 0.2; % minimal inliers ratio to draw bounding box
+    app.draw_top_matches = 100;  % draw the top 50 matches only
+    app.show_every_frame = 3;    % display every 3 frames to maintain high fps
+end
+
+function win = selectROI(img)
+    %SELECTROI  Interactively select region with mouse
+
+    hImg = imshow(img);
+    axis on
+    hRect = imrect();
+    win = wait(hRect);
+    close(ancestor(hImg, 'Figure'));
+    if ~isempty(win)
+        win(1:2) = win(1:2) - 1;
+    end
+end
+
+function f = createTrackers(app, names)
+    %CREATETRACKERS  Create detectors and matchers objects
+
+    f = struct();
+    for i=1:numel(names)
+        % create detector object
+        f(i).name = names{i};
+        switch names{i}
+            case 'AKAZE'
+                f(i).detector = cv.AKAZE('Threshold',app.akaze_thresh);
+            case 'KAZE'
+                f(i).detector = cv.KAZE('Threshold',app.akaze_thresh);
+            case 'ORB'
+                f(i).detector = cv.ORB('MaxFeatures',1000);
+            case 'BRISK'
+                f(i).detector = cv.BRISK();
+            case 'SIFT'
+                f(i).detector = cv.SIFT();
+            case 'SURF'
+                f(i).detector = cv.SURF();
+            otherwise
+                error('Unexpected detector type')
+        end
+
+        % create matcher object
+        if true
+            if false
+                opts = {'CrossCheck',true};
+            else
+                opts = {};
+            end
+            f(i).matcher = cv.DescriptorMatcher('BFMatcher', ...
+                'NormType',f(i).detector.defaultNorm(), opts{:});
+        else
+            f(i).matcher = cv.DescriptorMatcher('FlannBasedMatcher', ...
+                'Index',...
+                {'LSH', 'TableNumber',6, 'KeySize',12, 'MultiProbeLevel',1});
+        end
+    end
+end
+
+function h = createUI(f, app)
+    %CREATEUI  Creates the UI
+
+    x = app.bb0([1:end 1], 1);
+    y = app.bb0([1:end 1], 2);
+    lin_opts = {'Color','b', 'LineWidth',2, 'LineStyle','-'};
+
+    % plot images, objects, and stats
+    h = struct();
+    figure('Position',get(0, 'DefaultFigurePosition') .* [0.4 0.2 1.5 1.7])
+    for i=1:numel(f)
+        subplot(numel(f),1,i)
+        h(i).img = imshow([app.frame0, app.frame0]);
+        line(x, y, lin_opts{:})
+        h(i).lin = line(x + app.sz(2), y, lin_opts{:});
+        h(i).txt = text(2*app.sz(2), app.sz(1), printStats(f(i).stats), ...
+            'Color','y', 'HorizontalAlignment','right', 'VerticalAlignment','bottom');
+        title(sprintf('%s, %d keypoints', f(i).name, f(i).stats(1)))
+    end
+end
+
+function str = printStats(stats)
+    %PRINTSTATS  Pretty print matching statistics
+
+    str = {
+        sprintf('Keypoints: %d', stats(1))
+        sprintf('Matches: %d', stats(2))
+        sprintf('Inliers: %d', stats(3))
+        sprintf('Inliers Ratio: %.0f%%', stats(4)*100)
+        sprintf('FPS: %.2f', stats(5))
+    };
+end
+
+function [kp, desc, stats] = processFirstFrame(f, app)
+    %PROCESSFIRSTFRAME Process first frame
+
+    % init stats
+    stats = [0, 0, 0, 0, 0];
+
+    % create ROI mask
+    mask = zeros(app.sz(1:2), 'uint8');
+    mask = cv.fillPoly(mask, app.bb0, 'Color',255);
+
+    tm = cv.TickMeter();
+    tm.start();
+
+    % detect and compute features of first frame in ROI region
+    [kp, desc] = f.detector.detectAndCompute(app.frame0, 'Mask',mask);
+    assert(~isempty(kp), 'No keypoints detected in first frame');
+    stats(1) = numel(kp);
+
+    tm.stop();
+    stats(5) = 1 / tm.TimeSec;
+end
+
+function [out, bb1, stats] = processFrame(f, app, frame1)
+    %PROCESSFRAME  Process subsequent frames
+
+    % initialize output
+    out = [app.frame0, frame1];
+    bb1 = nan(size(app.bb0));
+    stats = [0 0 0 0 0];
+
+    tm = cv.TickMeter();
+    tm.start();
+
+    % detect and compute features in current frame
+    [kp1, desc1] = f.detector.detectAndCompute(frame1);
+    stats(1) = numel(kp1);
+    if numel(kp1) < 2, return; end
+
+    % match against first frame features
+    if true
+        % 2-NN matching with ratio test (if closest match is MATCH_RATIO
+        % closer than the second closest one, then its a good match)
+        matches = f.matcher.knnMatch(f.desc0, desc1, 2);
+        idx = cellfun(@(m) numel(m) == 2 && ...
+            (m(1).distance < app.match_ratio * m(2).distance), matches);
+        matches = cellfun(@(m) m(1), matches(idx));
+    elseif false
+        matches = f.matcher.knnMatch(f.desc0, desc1, 1);
+        matches = [matches{:}];
+    else
+        matches = f.matcher.match(f.desc0, desc1);
+    end
+    stats(2) = numel(matches);
+    if numel(matches) < 4, return; end
+
+    % estimate homography using RANSAC
+    pt0 = cat(1, f.kp0([matches.queryIdx] + 1).pt);
+    pt1 = cat(1, kp1([matches.trainIdx] + 1).pt);
+    [H, inliers] = cv.findHomography(pt0, pt1, ...
+        'Method','Ransac', 'RansacReprojThreshold',app.ransac_thresh);
+    inliers = logical(inliers);
+    stats(3) = nnz(inliers);
+    stats(4) = stats(3) / stats(2);
+    if isempty(H), return; end
+
+    tm.stop();
+    stats(5) = 1 / tm.TimeSec;
+
+    % project object bounding box using homography to locate it in new frame
+    bb1 = cv.perspectiveTransform(app.bb0, H);
+
+    % draw matches
+    if app.draw_top_matches > 0
+        % only draw top inlier matches (sorted by distance) to reduce clutter
+        [~,idx] = sort([matches.distance]);
+        idx(~inliers(idx)) = [];
+        inliers(idx(app.draw_top_matches+1:end)) = false;
+    end
+    out = cv.drawMatches(app.frame0, f.kp0, frame1, kp1, matches, ...
+        'MatchesMask',inliers, ...
+        'MatchColor',[255 0 0], 'SinglePointColor',[255 0 255]);
+end
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

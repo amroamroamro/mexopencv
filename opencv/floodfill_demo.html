@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Flood-Fill demo</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="floodfill_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Flood-Fill demo</h1>
+         <!--introduction-->
+         <p>Demonstrates how to use <tt>cv.floodFill</tt>.
+         </p>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Input image and mask</a></li>
+               <li><a href="#6">Flood-Filling without masking</a></li>
+               <li><a href="#8">Flood-Filling with masking</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Input image and mask</h2>
+         <p>some color image with defined connected components (as squares)</p><pre class="codeinput">img = zeros([256,256,3],<span class="string">'uint8'</span>);
+img(:,:,1) = 255;
+img = cv.rectangle(img, [0 0], [255 255], <span class="string">'Thickness'</span>,15);
+img = cv.rectangle(img, [30 40 100 100], <span class="string">'Thickness'</span>,<span class="string">'Filled'</span>, <span class="string">'Color'</span>,[0 0 255]);
+img = cv.rectangle(img, [150 160 75 75], <span class="string">'Thickness'</span>,<span class="string">'Filled'</span>, <span class="string">'Color'</span>,[255 255 0]);
+
+imshow(img)</pre><img src="floodfill_demo_01.png"><p>seed starting point</p><pre class="codeinput">seed = [200 100];</pre><p>mask: zeros allowed to change, non-zeros are not changed (must be 2 pixels taller/wider)</p><pre class="codeinput">mask = zeros(size(img,1), size(img,2), <span class="string">'uint8'</span>);
+mask(:,1:100) = 128;
+mask = cv.copyMakeBorder(mask, [1 1 1 1], <span class="string">'BorderType'</span>,<span class="string">'Constant'</span>, <span class="string">'Value'</span>,0);
+
+imshow(mask)</pre><img src="floodfill_demo_02.png"><p>Alternative images</p><pre class="codeinput"><span class="keyword">if</span> false
+    img = imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'pic3.png'</span>));
+    seed = [200 200];
+    mask = zeros(size(img,1)+2, size(img,2)+2, <span class="string">'uint8'</span>);
+    mask(:,290:end) = 128;
+<span class="keyword">elseif</span> false
+    img = imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'pic5.png'</span>));
+    seed = [300 200];
+    mask = zeros(size(img,1)+2, size(img,2)+2, <span class="string">'uint8'</span>);
+    mask(230:end,:) = 128;
+<span class="keyword">end</span></pre><h2 id="6">Flood-Filling without masking</h2>
+         <p>we specify 8-connectivity, a floating range, and max lower/uppder diffs</p><pre class="codeinput">[out,r1,a1] = cv.floodFill(img, seed, [0 255 0], <span class="keyword">...</span>
+    <span class="string">'Connectivity'</span>,8, <span class="string">'FixedRange'</span>,false, <span class="keyword">...</span>
+    <span class="string">'LoDiff'</span>,[0 0 0]+0, <span class="string">'UpDiff'</span>,[0 0 0]+0);</pre><p>show output image, along with seed point and bounding box</p><pre class="codeinput">imshow(out), title(<span class="string">'Flood-Filled image'</span>)
+line(seed(1), seed(2), <span class="string">'Color'</span>,<span class="string">'m'</span>, <span class="string">'Marker'</span>,<span class="string">'x'</span>, <span class="keyword">...</span>
+    <span class="string">'LineStyle'</span>,<span class="string">'none'</span>, <span class="string">'LineWidth'</span>,2)
+rectangle(<span class="string">'Position'</span>,r1+[0.5 0.5 0 0], <span class="string">'EdgeColor'</span>,<span class="string">'m'</span>, <span class="keyword">...</span>
+    <span class="string">'LineStyle'</span>,<span class="string">'--'</span>, <span class="string">'LineWidth'</span>,2);
+xlabel(sprintf(<span class="string">'Area filled\n%d pixels'</span>,a1))</pre><img src="floodfill_demo_03.png"><h2 id="8">Flood-Filling with masking</h2>
+         <p>we fill both image and mask, and update mask with a fill value of 255</p><pre class="codeinput">[out2,r2,a2,mask2] = cv.floodFill(img, seed, [0 255 0], <span class="keyword">...</span>
+    <span class="string">'Mask'</span>,mask, <span class="string">'MaskOnly'</span>,false, <span class="string">'MaskFillValue'</span>,255);
+
+<span class="comment">% trim padded border</span>
+mask2 = mask2(2:end-1,2:end-1);</pre><p>show updated mask, along with seed point and bounding box</p><pre class="codeinput">imshow(mask2), title(<span class="string">'Flood-Filled mask'</span>)
+line(seed(1), seed(2), <span class="string">'Color'</span>,<span class="string">'m'</span>, <span class="string">'Marker'</span>,<span class="string">'x'</span>, <span class="keyword">...</span>
+    <span class="string">'LineStyle'</span>,<span class="string">'none'</span>, <span class="string">'LineWidth'</span>,2)
+rectangle(<span class="string">'Position'</span>,r2+[0.5 0.5 0 0], <span class="string">'EdgeColor'</span>,<span class="string">'m'</span>, <span class="keyword">...</span>
+    <span class="string">'LineStyle'</span>,<span class="string">'--'</span>, <span class="string">'LineWidth'</span>,2);
+xlabel(sprintf(<span class="string">'Area filled\n%d pixels'</span>,a2))</pre><img src="floodfill_demo_04.png"><p>show filled image, along with seed point and bounding box</p><pre class="codeinput">imshow(out2), title(<span class="string">'Flood-Filled image'</span>)
+line(seed(1), seed(2), <span class="string">'Color'</span>,<span class="string">'m'</span>, <span class="string">'Marker'</span>,<span class="string">'x'</span>, <span class="keyword">...</span>
+    <span class="string">'LineStyle'</span>,<span class="string">'none'</span>, <span class="string">'LineWidth'</span>,2)
+rectangle(<span class="string">'Position'</span>,r2+[0.5 0.5 0 0], <span class="string">'EdgeColor'</span>,<span class="string">'m'</span>, <span class="keyword">...</span>
+    <span class="string">'LineStyle'</span>,<span class="string">'--'</span>, <span class="string">'LineWidth'</span>,2);
+xlabel(sprintf(<span class="string">'Area filled\n%d pixels'</span>,a2))</pre><img src="floodfill_demo_05.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Flood-Fill demo
+% Demonstrates how to use |cv.floodFill|.
+%
+
+%% Input image and mask
+% some color image with defined connected components (as squares)
+img = zeros([256,256,3],'uint8');
+img(:,:,1) = 255;
+img = cv.rectangle(img, [0 0], [255 255], 'Thickness',15);
+img = cv.rectangle(img, [30 40 100 100], 'Thickness','Filled', 'Color',[0 0 255]);
+img = cv.rectangle(img, [150 160 75 75], 'Thickness','Filled', 'Color',[255 255 0]);
+
+imshow(img)
+
+%%
+% seed starting point
+seed = [200 100];
+
+%%
+% mask: zeros allowed to change, non-zeros are not changed
+% (must be 2 pixels taller/wider)
+mask = zeros(size(img,1), size(img,2), 'uint8');
+mask(:,1:100) = 128;
+mask = cv.copyMakeBorder(mask, [1 1 1 1], 'BorderType','Constant', 'Value',0);
+
+imshow(mask)
+
+%%
+% Alternative images
+if false
+    img = imread(fullfile(mexopencv.root(),'test','pic3.png'));
+    seed = [200 200];
+    mask = zeros(size(img,1)+2, size(img,2)+2, 'uint8');
+    mask(:,290:end) = 128;
+elseif false
+    img = imread(fullfile(mexopencv.root(),'test','pic5.png'));
+    seed = [300 200];
+    mask = zeros(size(img,1)+2, size(img,2)+2, 'uint8');
+    mask(230:end,:) = 128;
+end
+
+%% Flood-Filling without masking
+% we specify 8-connectivity, a floating range, and max lower/uppder diffs
+[out,r1,a1] = cv.floodFill(img, seed, [0 255 0], ...
+    'Connectivity',8, 'FixedRange',false, ...
+    'LoDiff',[0 0 0]+0, 'UpDiff',[0 0 0]+0);
+
+%%
+% show output image, along with seed point and bounding box
+imshow(out), title('Flood-Filled image')
+line(seed(1), seed(2), 'Color','m', 'Marker','x', ...
+    'LineStyle','none', 'LineWidth',2)
+rectangle('Position',r1+[0.5 0.5 0 0], 'EdgeColor','m', ...
+    'LineStyle','REPLACE_WITH_DASH_DASH', 'LineWidth',2);
+xlabel(sprintf('Area filled\n%d pixels',a1))
+
+%% Flood-Filling with masking
+% we fill both image and mask, and update mask with a fill value of 255
+[out2,r2,a2,mask2] = cv.floodFill(img, seed, [0 255 0], ...
+    'Mask',mask, 'MaskOnly',false, 'MaskFillValue',255);
+
+% trim padded border
+mask2 = mask2(2:end-1,2:end-1);
+
+%%
+% show updated mask, along with seed point and bounding box
+imshow(mask2), title('Flood-Filled mask')
+line(seed(1), seed(2), 'Color','m', 'Marker','x', ...
+    'LineStyle','none', 'LineWidth',2)
+rectangle('Position',r2+[0.5 0.5 0 0], 'EdgeColor','m', ...
+    'LineStyle','REPLACE_WITH_DASH_DASH', 'LineWidth',2);
+xlabel(sprintf('Area filled\n%d pixels',a2))
+
+%%
+% show filled image, along with seed point and bounding box
+imshow(out2), title('Flood-Filled image')
+line(seed(1), seed(2), 'Color','m', 'Marker','x', ...
+    'LineStyle','none', 'LineWidth',2)
+rectangle('Position',r2+[0.5 0.5 0 0], 'EdgeColor','m', ...
+    'LineStyle','REPLACE_WITH_DASH_DASH', 'LineWidth',2);
+xlabel(sprintf('Area filled\n%d pixels',a2))
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

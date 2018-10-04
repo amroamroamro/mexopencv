@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Fast Hough transform demo</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="fast_hough_transform_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Fast Hough transform demo</h1>
+         <!--introduction-->
+         <p>This program demonstrates line finding with the Fast Hough transform.</p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/ximgproc/samples/fast_hough_transform.cpp">https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/ximgproc/samples/fast_hough_transform.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Image</a></li>
+               <li><a href="#3">Edges</a></li>
+               <li><a href="#4">Fast Hough Transform</a></li>
+               <li><a href="#5">Find local maximums on FHT image</a></li>
+               <li><a href="#6">Build line segments</a></li>
+               <li><a href="#7">Show FHT</a></li>
+               <li><a href="#8">Show lines</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Image</h2><pre class="codeinput">img = cv.imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'building.jpg'</span>), <span class="string">'Grayscale'</span>,true);
+assert(~isempty(img), <span class="string">'Failed to load image'</span>);
+
+scale = min(min([500 1000] ./ size(img)), 1.0);
+rescale = @(im) cv.resize(im, scale, scale, <span class="string">'Interpolation'</span>,<span class="string">'Area'</span>);
+
+imshow(rescale(img)), title(<span class="string">'Image'</span>)</pre><img src="fast_hough_transform_demo_01.png"><h2 id="3">Edges</h2><pre class="codeinput">canny = cv.Canny(img, [50 200], <span class="string">'ApertureSize'</span>,3);
+imshow(rescale(canny)), title(<span class="string">'Canny Edges'</span>)</pre><img src="fast_hough_transform_demo_02.png"><h2 id="4">Fast Hough Transform</h2><pre class="codeinput">houghDepth = <span class="string">'int32'</span>;
+houghAngleRange = <span class="string">'ARO_315_135'</span>;
+houghOperator = <span class="string">'Average'</span>;
+houghSkew = <span class="string">'Deskew'</span>;
+
+tic
+hough = cv.FastHoughTransform(canny, <span class="string">'DDepth'</span>,houghDepth, <span class="keyword">...</span>
+    <span class="string">'AngleRange'</span>,houghAngleRange, <span class="string">'Op'</span>,houghOperator, <span class="string">'MakeSkew'</span>,houghSkew);
+toc</pre><pre class="codeoutput">Elapsed time is 0.061526 seconds.
+</pre><h2 id="5">Find local maximums on FHT image</h2><pre class="codeinput">minWeight = 255 * 0.3 * min(size(img));
+maxCount = 50;
+
+<span class="keyword">if</span> true
+    points = houghpeaks(double(hough), maxCount, <span class="string">'Threshold'</span>,minWeight);
+<span class="keyword">else</span>
+    localExtr = imextendedmax(hough, minWeight);  <span class="comment">% local extremum (logical)</span>
+    [rows,cols,vals] = find(immultiply(hough, localExtr));
+    [~,idx] = sort(vals, <span class="string">'descend'</span>);  <span class="comment">% sort by strongest hough values</span>
+    idx(maxCount+1:end) = [];         <span class="comment">% keep best N</span>
+    points = [rows(idx) cols(idx)];
+<span class="keyword">end</span></pre><h2 id="6">Build line segments</h2><pre class="codeinput">lines = zeros(size(points,1), 4, <span class="string">'int32'</span>);
+<span class="keyword">for</span> i=1:size(points,1)
+    lines(i,:) = cv.HoughPoint2Line(points(i,[2 1])-1, canny, <span class="keyword">...</span>
+        <span class="string">'AngleRange'</span>,houghAngleRange, <span class="string">'MakeSkew'</span>,houghSkew);
+<span class="keyword">end</span></pre><h2 id="7">Show FHT</h2><pre class="codeinput">imagesc(hough)
+line(points(:,2), points(:,1), <span class="string">'Color'</span>,<span class="string">'r'</span>, <span class="string">'LineStyle'</span>,<span class="string">'none'</span>, <span class="string">'Marker'</span>,<span class="string">'s'</span>)
+title(<span class="string">'Fast Hough Transform'</span>)</pre><img src="fast_hough_transform_demo_03.png"><h2 id="8">Show lines</h2><pre class="codeinput">out = cv.cvtColor(canny, <span class="string">'GRAY2RGB'</span>);
+<span class="keyword">for</span> i=1:size(lines,1)
+    out = cv.line(out, lines(i,[1 2]), lines(i,[3 4]), <span class="keyword">...</span>
+        <span class="string">'Color'</span>,[255 0 0], <span class="string">'Thickness'</span>,1, <span class="string">'LineType'</span>,<span class="string">'AA'</span>);
+<span class="keyword">end</span>
+imshow(rescale(out)), title(<span class="string">'Lines'</span>)</pre><img src="fast_hough_transform_demo_04.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Fast Hough transform demo
+% This program demonstrates line finding with the Fast Hough transform.
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/ximgproc/samples/fast_hough_transform.cpp>
+%
+
+%% Image
+img = cv.imread(fullfile(mexopencv.root(),'test','building.jpg'), 'Grayscale',true);
+assert(~isempty(img), 'Failed to load image');
+
+scale = min(min([500 1000] ./ size(img)), 1.0);
+rescale = @(im) cv.resize(im, scale, scale, 'Interpolation','Area');
+
+imshow(rescale(img)), title('Image')
+
+%% Edges
+canny = cv.Canny(img, [50 200], 'ApertureSize',3);
+imshow(rescale(canny)), title('Canny Edges')
+
+%% Fast Hough Transform
+houghDepth = 'int32';
+houghAngleRange = 'ARO_315_135';
+houghOperator = 'Average';
+houghSkew = 'Deskew';
+
+tic
+hough = cv.FastHoughTransform(canny, 'DDepth',houghDepth, ...
+    'AngleRange',houghAngleRange, 'Op',houghOperator, 'MakeSkew',houghSkew);
+toc
+
+%% Find local maximums on FHT image
+minWeight = 255 * 0.3 * min(size(img));
+maxCount = 50;
+
+if true
+    points = houghpeaks(double(hough), maxCount, 'Threshold',minWeight);
+else
+    localExtr = imextendedmax(hough, minWeight);  % local extremum (logical)
+    [rows,cols,vals] = find(immultiply(hough, localExtr));
+    [~,idx] = sort(vals, 'descend');  % sort by strongest hough values
+    idx(maxCount+1:end) = [];         % keep best N
+    points = [rows(idx) cols(idx)];
+end
+
+%% Build line segments
+lines = zeros(size(points,1), 4, 'int32');
+for i=1:size(points,1)
+    lines(i,:) = cv.HoughPoint2Line(points(i,[2 1])-1, canny, ...
+        'AngleRange',houghAngleRange, 'MakeSkew',houghSkew);
+end
+
+%% Show FHT
+imagesc(hough)
+line(points(:,2), points(:,1), 'Color','r', 'LineStyle','none', 'Marker','s')
+title('Fast Hough Transform')
+
+%% Show lines
+out = cv.cvtColor(canny, 'GRAY2RGB');
+for i=1:size(lines,1)
+    out = cv.line(out, lines(i,[1 2]), lines(i,[3 4]), ...
+        'Color',[255 0 0], 'Thickness',1, 'LineType','AA');
+end
+imshow(rescale(out)), title('Lines')
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

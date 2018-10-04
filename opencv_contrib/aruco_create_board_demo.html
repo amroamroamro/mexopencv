@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>ArUco Grid Board Image Demo</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="aruco_create_board_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">ArUco Grid Board Image Demo</h1>
+         <!--introduction-->
+         <p>This example shows how to create an ArUco grid board image.</p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/aruco/samples/create_board.cpp">https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/aruco/samples/create_board.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Board</a></li>
+               <li><a href="#3">Display</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Board</h2><pre class="codeinput"><span class="comment">% params</span>
+markersX = 5;                <span class="comment">% Number of markers in X direction</span>
+markersY = 7;                <span class="comment">% Number of markers in Y direction</span>
+markerLength = 60;           <span class="comment">% Marker side length (in pixels)</span>
+markerSeparation = 15;       <span class="comment">% Separation between two consecutive markers in the grid (in pixels)</span>
+dictionaryId = <span class="string">'6x6_250'</span>;    <span class="comment">% dictionary id</span>
+margins = markerSeparation;  <span class="comment">% Margins size (in pixels)</span>
+borderBits = 1;              <span class="comment">% Number of bits in marker borders</span>
+
+imageSize = [markersY, markersX] .* <span class="keyword">...</span>
+    (markerLength + markerSeparation) - markerSeparation + 2 * margins;
+
+<span class="comment">% create board</span>
+dictionary = {<span class="string">'Predefined'</span>, dictionaryId};
+board = {<span class="string">'GridBoard'</span>, <span class="keyword">...</span>
+    markersX, markersY, markerLength, markerSeparation, dictionary};</pre><h2 id="3">Display</h2><pre class="codeinput"><span class="comment">% show created board</span>
+boardImage = cv.drawPlanarBoard(board, fliplr(imageSize), <span class="keyword">...</span>
+    <span class="string">'MarginSize'</span>,margins, <span class="string">'BorderBits'</span>,borderBits);
+imshow(boardImage), title(<span class="string">'GridBoard'</span>)
+
+<span class="comment">% save image</span>
+imwrite(boardImage, fullfile(tempdir(),<span class="string">'GridBoard.png'</span>));</pre><img src="aruco_create_board_demo_01.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% ArUco Grid Board Image Demo
+% This example shows how to create an ArUco grid board image.
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/aruco/samples/create_board.cpp>
+%
+
+%% Board
+
+% params
+markersX = 5;                % Number of markers in X direction
+markersY = 7;                % Number of markers in Y direction
+markerLength = 60;           % Marker side length (in pixels)
+markerSeparation = 15;       % Separation between two consecutive markers in the grid (in pixels)
+dictionaryId = '6x6_250';    % dictionary id
+margins = markerSeparation;  % Margins size (in pixels)
+borderBits = 1;              % Number of bits in marker borders
+
+imageSize = [markersY, markersX] .* ...
+    (markerLength + markerSeparation) - markerSeparation + 2 * margins;
+
+% create board
+dictionary = {'Predefined', dictionaryId};
+board = {'GridBoard', ...
+    markersX, markersY, markerLength, markerSeparation, dictionary};
+
+%% Display
+
+% show created board
+boardImage = cv.drawPlanarBoard(board, fliplr(imageSize), ...
+    'MarginSize',margins, 'BorderBits',borderBits);
+imshow(boardImage), title('GridBoard')
+
+% save image
+imwrite(boardImage, fullfile(tempdir(),'GridBoard.png'));
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

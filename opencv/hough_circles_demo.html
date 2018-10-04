@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Hough Circle Transform</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="hough_circles_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Hough Circle Transform</h1>
+         <!--introduction-->
+         <p>An example using the Hough circle detector.</p>
+         <p>This program demonstrates circle finding with the Hough transform. We show how to use the OpenCV function <tt>cv.HoughCircles</tt> to detect circles in an image.
+         </p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/houghcircles.cpp">https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/houghcircles.cpp</a></li>
+               <li><a href="https://github.com/opencv/opencv/blob/3.2.0/samples/python/houghcircles.py">https://github.com/opencv/opencv/blob/3.2.0/samples/python/houghcircles.py</a></li>
+               <li><a href="https://docs.opencv.org/3.2.0/d4/d70/tutorial_hough_circle.html">https://docs.opencv.org/3.2.0/d4/d70/tutorial_hough_circle.html</a></li>
+               <li><a href="https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/tutorial_code/ImgTrans/HoughCircle_Demo.cpp">https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/tutorial_code/ImgTrans/HoughCircle_Demo.cpp</a></li>
+               <li><a href="https://docs.opencv.org/3.2.0/da/d53/tutorial_py_houghcircles.html">https://docs.opencv.org/3.2.0/da/d53/tutorial_py_houghcircles.html</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Theory</a></li>
+               <li><a href="#3">Code</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Theory</h2>
+         <p>The Hough Circle Transform works in a roughly analogous way to the Hough Line Transform.</p>
+         <p>In the line detection case, a line was defined by two parameters <img src="hough_circles_demo_eq02667120866101606761.png" alt="$(r, \theta)$" class="equation" width="29" height="15">. In the circle case, we need three parameters to define a circle:
+         </p>
+         <p><img src="hough_circles_demo_eq14489364207303955050.png" alt="$$C : ( x_{center}, y_{center}, r )$$" class="equation" width="128" height="15"></p>
+         <p>where <img src="hough_circles_demo_eq04681736388482831340.png" alt="$(x_{center}, y_{center})$" class="equation" width="91" height="15"> define the center position (green point) and <img src="hough_circles_demo_eq04958265083611378313.png" alt="$r$" class="equation" width="7" height="7"> is the radius, which allows us to completely define a circle, as it can be seen below:
+         </p>
+         <p><img src="https://docs.opencv.org/3.2.0/Hough_Circle_Tutorial_Theory_0.jpg"></p>
+         <p>For sake of efficiency, OpenCV implements a detection method slightly trickier than the standard Hough Transform: <i>The Hough gradient method</i>, which is made up of two main stages:
+         </p>
+         <div>
+            <ul>
+               <li>the first stage involves edge detection and finding the possible circle   centers</li>
+               <li>the second stage finds the best radius for each candidate center</li>
+            </ul>
+         </div>
+         <p>For more details, please check the book <i>Learning OpenCV</i> or your favorite Computer Vision bibliography.
+         </p>
+         <h2 id="3">Code</h2>
+         <p>This program:</p>
+         <div>
+            <ul>
+               <li>Loads an image and blur it to reduce the noise</li>
+               <li>Applies the <i>Hough Circle Transform</i> to the blurred image .
+               </li>
+               <li>Display the detected circle in a window.</li>
+            </ul>
+         </div>
+         <p>Input image</p><pre class="codeinput"><span class="keyword">if</span> ~mexopencv.isOctave() &amp;&amp; mexopencv.require(<span class="string">'images'</span>)
+    fname = which(<span class="string">'coins.png'</span>);
+<span class="keyword">else</span>
+    fname = fullfile(mexopencv.root(), <span class="string">'test'</span>, <span class="string">'detect_blob.png'</span>);
+<span class="keyword">end</span>
+assert(~isempty(fname) &amp;&amp; exist(fname,<span class="string">'file'</span>)==2, <span class="string">'Image not found'</span>);
+img = cv.imread(fname, <span class="string">'Color'</span>,true);
+figure, imshow(img), title(<span class="string">'source'</span>)</pre><img src="hough_circles_demo_01.png"><p>convert it to grayscale, and reduce noise to avoid false circles detection</p><pre class="codeinput">gray = cv.cvtColor(img, <span class="string">'RGB2GRAY'</span>);
+<span class="keyword">if</span> true
+    gray = cv.medianBlur(gray, <span class="string">'KSize'</span>,5);
+<span class="keyword">else</span>
+    gray = cv.GaussianBlur(gray, <span class="string">'KSize'</span>,[7,7], <span class="string">'SigmaX'</span>,0.9, <span class="string">'SigmaY'</span>,0.9);
+<span class="keyword">end</span></pre><p>Hough Circle Transform</p>
+         <div>
+            <ul>
+               <li>change <tt>MinDist</tt> to detect circles with different distances to each other
+               </li>
+               <li>change <tt>MinRadius</tt> and <tt>MaxRadius</tt> to detect circles of different sizes
+               </li>
+            </ul>
+         </div><pre class="codeinput">tic
+circles = cv.HoughCircles(gray, <span class="string">'Method'</span>,<span class="string">'Gradient'</span>, <span class="string">'DP'</span>,2, <span class="keyword">...</span>
+    <span class="string">'MinDist'</span>,size(gray,1)/8, <span class="string">'Param1'</span>,200, <span class="string">'Param2'</span>,100, <span class="keyword">...</span>
+    <span class="string">'MinRadius'</span>,20, <span class="string">'MaxRadius'</span>,80);
+toc</pre><pre class="codeoutput">Elapsed time is 0.023248 seconds.
+</pre><p>draw detected circles (outlines and centers), and display the result</p><pre class="codeinput">circles = cat(1, circles{:});
+center = round(circles(:,1:2));
+radius = round(circles(:,3));
+out = cv.circle(img, center, radius, <span class="string">'Color'</span>,[0 0 255], <span class="keyword">...</span>
+    <span class="string">'Thickness'</span>,2, <span class="string">'LineType'</span>,<span class="string">'AA'</span>);
+out = cv.circle(out, center, 3, <span class="string">'Color'</span>,[0 255 0], <span class="keyword">...</span>
+    <span class="string">'Thickness'</span>,<span class="string">'Filled'</span>, <span class="string">'LineType'</span>,<span class="string">'AA'</span>);
+figure, imshow(out), title(<span class="string">'detected circles'</span>)</pre><img src="hough_circles_demo_02.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div><script type="text/x-mathjax-config">
+  // https://stackoverflow.com/a/14631703/97160
+  MathJax.Extension.myImg2jax = {
+    version: "1.0",
+    PreProcess: function (element) {
+      var images = element.getElementsByTagName("img");
+      for (var i = images.length - 1; i >= 0; i--) {
+        var img = images[i];
+        if (img.className === "equation") {
+          var match = img.alt.match(/^(\$\$?)([\s\S]*)\1$/m);
+          if (!match) continue;
+          var script = document.createElement("script");
+          script.type = "math/tex";
+          if (match[1] === "$$") {script.type += ";mode=display"}
+          MathJax.HTML.setScript(script, match[2]);
+          img.parentNode.replaceChild(script, img);
+        }
+      }
+    }
+  };
+  MathJax.Hub.Register.PreProcessor(["PreProcess", MathJax.Extension.myImg2jax]);
+  </script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML"></script>
+      <!--
+##### SOURCE BEGIN #####
+%% Hough Circle Transform
+% An example using the Hough circle detector.
+%
+% This program demonstrates circle finding with the Hough transform. We show
+% how to use the OpenCV function |cv.HoughCircles| to detect circles in an
+% image.
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/houghcircles.cpp>
+% * <https://github.com/opencv/opencv/blob/3.2.0/samples/python/houghcircles.py>
+% * <https://docs.opencv.org/3.2.0/d4/d70/tutorial_hough_circle.html>
+% * <https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/tutorial_code/ImgTrans/HoughCircle_Demo.cpp>
+% * <https://docs.opencv.org/3.2.0/da/d53/tutorial_py_houghcircles.html>
+%
+
+%% Theory
+%
+% The Hough Circle Transform works in a roughly analogous way to the
+% Hough Line Transform.
+%
+% In the line detection case, a line was defined by two parameters
+% $(r, \theta)$. In the circle case, we need three parameters to define a
+% circle:
+%
+% $$C : ( x_{center}, y_{center}, r )$$
+%
+% where $(x_{center}, y_{center})$ define the center position (green point)
+% and $r$ is the radius, which allows us to completely define a circle, as it
+% can be seen below:
+%
+% <<https://docs.opencv.org/3.2.0/Hough_Circle_Tutorial_Theory_0.jpg>>
+%
+% For sake of efficiency, OpenCV implements a detection method slightly
+% trickier than the standard Hough Transform: _The Hough gradient method_,
+% which is made up of two main stages:
+%
+% * the first stage involves edge detection and finding the possible circle
+%   centers
+% * the second stage finds the best radius for each candidate center
+%
+% For more details, please check the book _Learning OpenCV_ or your favorite
+% Computer Vision bibliography.
+%
+
+%% Code
+%
+% This program:
+%
+% * Loads an image and blur it to reduce the noise
+% * Applies the _Hough Circle Transform_ to the blurred image .
+% * Display the detected circle in a window.
+%
+
+%%
+% Input image
+if ~mexopencv.isOctave() && mexopencv.require('images')
+    fname = which('coins.png');
+else
+    fname = fullfile(mexopencv.root(), 'test', 'detect_blob.png');
+end
+assert(~isempty(fname) && exist(fname,'file')==2, 'Image not found');
+img = cv.imread(fname, 'Color',true);
+figure, imshow(img), title('source')
+
+%%
+% convert it to grayscale, and reduce noise to avoid false circles detection
+gray = cv.cvtColor(img, 'RGB2GRAY');
+if true
+    gray = cv.medianBlur(gray, 'KSize',5);
+else
+    gray = cv.GaussianBlur(gray, 'KSize',[7,7], 'SigmaX',0.9, 'SigmaY',0.9);
+end
+
+%%
+% Hough Circle Transform
+%
+% * change |MinDist| to detect circles with different distances to each other
+% * change |MinRadius| and |MaxRadius| to detect circles of different sizes
+tic
+circles = cv.HoughCircles(gray, 'Method','Gradient', 'DP',2, ...
+    'MinDist',size(gray,1)/8, 'Param1',200, 'Param2',100, ...
+    'MinRadius',20, 'MaxRadius',80);
+toc
+
+%%
+% draw detected circles (outlines and centers), and display the result
+circles = cat(1, circles{:});
+center = round(circles(:,1:2));
+radius = round(circles(:,3));
+out = cv.circle(img, center, radius, 'Color',[0 0 255], ...
+    'Thickness',2, 'LineType','AA');
+out = cv.circle(out, center, 3, 'Color',[0 255 0], ...
+    'Thickness','Filled', 'LineType','AA');
+figure, imshow(out), title('detected circles')
+
+##### SOURCE END #####
+--></body>
+</html>

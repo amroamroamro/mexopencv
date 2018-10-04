@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>DBT Face Detection</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="dbt_face_detection_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">DBT Face Detection</h1>
+         <!--introduction-->
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/dbt_face_detection.cpp">https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/dbt_face_detection.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Create detector</a></li>
+               <li><a href="#3">Setup</a></li>
+               <li><a href="#4">Main loop</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Create detector</h2><pre class="codeinput">xmlfile = fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'lbpcascade_frontalface.xml'</span>); <span class="comment">% lbpcascade_frontalface_improved.xml</span>
+params = {};
+<span class="keyword">try</span>
+    detector = cv.DetectionBasedTracker(xmlfile, xmlfile, params{:});
+<span class="keyword">catch</span> ME
+    disp(<span class="string">'Note: This sample only works for UNIX or VS2013+'</span>);
+    rethrow(ME);
+<span class="keyword">end</span></pre><h2 id="3">Setup</h2><pre class="codeinput"><span class="comment">% set up camera</span>
+cap = createVideoCapture([], <span class="string">'lena'</span>);
+pause(1);
+assert(cap.isOpened(), <span class="string">'Cannot open video stream from camera'</span>);
+
+<span class="comment">% set up display</span>
+frame = cap.read();
+assert(~isempty(frame), <span class="string">'Failed to read frame'</span>);
+hImg = imshow(frame);</pre><img src="dbt_face_detection_demo_01.png"><h2 id="4">Main loop</h2><pre class="codeinput">assert(detector.run(), <span class="string">'Detector initialization failed'</span>);
+<span class="keyword">while</span> ishghandle(hImg)
+    <span class="comment">% grab frame</span>
+    frame = cap.read();
+    <span class="keyword">if</span> isempty(frame), <span class="keyword">break</span>; <span class="keyword">end</span>
+
+    <span class="comment">% detect faces</span>
+    gray = cv.cvtColor(frame, <span class="string">'RGB2GRAY'</span>);
+    detector.process(gray);
+    faces = detector.getObjects();
+
+    <span class="comment">% draw results</span>
+    <span class="keyword">for</span> i=1:numel(faces)
+        frame = cv.rectangle(frame, faces{i}, <span class="string">'Color'</span>,[0 255 0]);
+    <span class="keyword">end</span>
+
+    <span class="comment">% update</span>
+    set(hImg, <span class="string">'CData'</span>,frame);
+    drawnow;
+<span class="keyword">end</span>
+detector.stop();
+cap.release();</pre><img src="dbt_face_detection_demo_02.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% DBT Face Detection
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/dbt_face_detection.cpp>
+%
+
+%% Create detector
+xmlfile = fullfile(mexopencv.root(),'test','lbpcascade_frontalface.xml'); % lbpcascade_frontalface_improved.xml
+params = {};
+try
+    detector = cv.DetectionBasedTracker(xmlfile, xmlfile, params{:});
+catch ME
+    disp('Note: This sample only works for UNIX or VS2013+');
+    rethrow(ME);
+end
+
+%% Setup
+
+% set up camera
+cap = createVideoCapture([], 'lena');
+pause(1);
+assert(cap.isOpened(), 'Cannot open video stream from camera');
+
+% set up display
+frame = cap.read();
+assert(~isempty(frame), 'Failed to read frame');
+hImg = imshow(frame);
+
+%% Main loop
+assert(detector.run(), 'Detector initialization failed');
+while ishghandle(hImg)
+    % grab frame
+    frame = cap.read();
+    if isempty(frame), break; end
+
+    % detect faces
+    gray = cv.cvtColor(frame, 'RGB2GRAY');
+    detector.process(gray);
+    faces = detector.getObjects();
+
+    % draw results
+    for i=1:numel(faces)
+        frame = cv.rectangle(frame, faces{i}, 'Color',[0 255 0]);
+    end
+
+    % update
+    set(hImg, 'CData',frame);
+    drawnow;
+end
+detector.stop();
+cap.release();
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

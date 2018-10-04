@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Line descriptors radius matching demo</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="line_radius_matching_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Line descriptors radius matching demo</h1>
+         <!--introduction-->
+         <p>This example shows the functionalities of radius matching.</p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/line_descriptor/samples/radius_matching.cpp">https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/line_descriptor/samples/radius_matching.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Querying internal database</a></li>
+               <li><a href="#3">Images</a></li>
+               <li><a href="#4">Detect and Compute</a></li>
+               <li><a href="#5">Query</a></li>
+               <li><a href="#6">Radius match</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Querying internal database</h2>
+         <p>The <tt>cv.BynaryDescriptorMatcher</tt> class, owns an internal database that can be populated with descriptors extracted from different images and queried using
+            one of the modalities described in previous section. Population of internal dataset can be done using the <tt>add</tt> function; such function doesn't directly add new data to database, but it just stores it them locally. The real update happens
+            when function <tt>train</tt> is invoked or when any querying function is executed, since each of them invokes train before querying. When queried, internal
+            database not only returns required descriptors, but, for every returned match, it is able to tell which image matched descriptor
+            was extracted from. An example of internal dataset usage is described in the following code; after adding locally new descriptors,
+            a radius search is invoked. This provokes local data to be transferred to dataset, which, in turn, is then queried.
+         </p>
+         <h2 id="3">Images</h2><pre class="codeinput">images = {
+    fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'stuff.jpg'</span>)
+    fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'blox.jpg'</span>)
+    fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'books_left.jpg'</span>)
+    fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'books_right.jpg'</span>)
+    fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'detect_blob.png'</span>)
+};</pre><h2 id="4">Detect and Compute</h2><pre class="codeinput"><span class="comment">% create a BinaryDescriptor object</span>
+bd = cv.BinaryDescriptor();
+
+<span class="comment">% compute keylines and descriptors</span>
+descriptorsMat = cell(size(images));
+lines = cell(size(images));
+<span class="keyword">for</span> i=1:numel(images)
+    <span class="comment">% load image</span>
+    img = cv.imread(images{i}, <span class="string">'Grayscale'</span>,true);
+
+    <span class="comment">% compute lines and descriptors</span>
+    [lines{i}, descriptorsMat{i}] = bd.detectAndCompute(img);
+<span class="keyword">end</span>
+display(lines)
+display(descriptorsMat)</pre><pre class="codeoutput">lines =
+  5&times;1 cell array
+    [1&times;13  struct]
+    [1&times;50  struct]
+    [1&times;103 struct]
+    [1&times;90  struct]
+    [1&times;83  struct]
+descriptorsMat =
+  5&times;1 cell array
+    [ 13&times;32 uint8]
+    [ 50&times;32 uint8]
+    [103&times;32 uint8]
+    [ 90&times;32 uint8]
+    [ 83&times;32 uint8]
+</pre><h2 id="5">Query</h2>
+         <p>compose a queries matrix</p><pre class="codeinput">queries = zeros(0, size(descriptorsMat{1},2));
+<span class="keyword">for</span> i=1:numel(descriptorsMat)
+    <span class="keyword">if</span> size(descriptorsMat{i},1) &gt;= 5
+        queries = [queries; descriptorsMat{i}(1:5,:)];
+    <span class="keyword">else</span>
+        queries = [queries; descriptorsMat{i}];
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+fprintf(<span class="string">'Query matrix of %d descriptors\n'</span>, size(queries,1));
+fprintf(<span class="string">'Total taining descriptions: %d\n'</span>, <span class="keyword">...</span>
+    sum(cellfun(@(d)size(d,1), descriptorsMat, <span class="string">'UniformOutput'</span>,true)));</pre><pre class="codeoutput">Query matrix of 25 descriptors
+Total taining descriptions: 339
+</pre><h2 id="6">Radius match</h2><pre class="codeinput"><span class="comment">% create a BinaryDescriptorMatcher object</span>
+bdm = cv.BinaryDescriptorMatcher();
+
+<span class="comment">% populate matcher</span>
+bdm.add(descriptorsMat);
+
+<span class="comment">% compute matches</span>
+matches = bdm.radiusMatch(queries, 30)
+fprintf(<span class="string">'Found %d matches\n'</span>, numel(matches));
+
+<span class="keyword">for</span> i=1:numel(matches)
+    <span class="keyword">for</span> j=1:numel(matches{i})
+        fprintf(<span class="string">'  match: %3d &lt;-&gt; %3d = %g\n'</span>, <span class="keyword">...</span>
+            matches{i}(j).queryIdx, matches{i}(j).trainIdx, <span class="keyword">...</span>
+            matches{i}(j).distance);
+    <span class="keyword">end</span>
+<span class="keyword">end</span></pre><pre class="codeoutput">matches =
+  1&times;25 cell array
+  Columns 1 through 4
+    [1&times;4 struct]    [1&times;2 struct]    [1&times;2 struct]    [1&times;2 struct]
+  Columns 5 through 8
+    [1&times;2 struct]    [1&times;1 struct]    [1&times;1 struct]    [1&times;1 struct]
+  Columns 9 through 12
+    [1&times;1 struct]    [1&times;1 struct]    [1&times;2 struct]    [1&times;4 struct]
+  Columns 13 through 16
+    [1&times;1 struct]    [1&times;1 struct]    [1&times;1 struct]    [1&times;1 struct]
+  Columns 17 through 20
+    [1&times;1 struct]    [1&times;1 struct]    [1&times;1 struct]    [1&times;1 struct]
+  Columns 21 through 24
+    [1&times;1 struct]    [1&times;6 struct]    [1&times;6 struct]    [1&times;5 struct]
+  Column 25
+    [1&times;3 struct]
+Found 25 matches
+  match:   0 &lt;-&gt;   0 = 0
+  match:   0 &lt;-&gt; 162 = 27
+  match:   0 &lt;-&gt; 314 = 29
+  match:   0 &lt;-&gt; 319 = 29
+  match:   1 &lt;-&gt;   1 = 0
+  match:   1 &lt;-&gt;   2 = 16
+  match:   2 &lt;-&gt;   2 = 0
+  match:   2 &lt;-&gt;   1 = 16
+  match:   3 &lt;-&gt;   3 = 0
+  match:   3 &lt;-&gt;   4 = 27
+  match:   4 &lt;-&gt;   4 = 0
+  match:   4 &lt;-&gt;   3 = 27
+  match:   5 &lt;-&gt;  13 = 0
+  match:   6 &lt;-&gt;  14 = 0
+  match:   7 &lt;-&gt;  15 = 0
+  match:   8 &lt;-&gt;  16 = 0
+  match:   9 &lt;-&gt;  17 = 0
+  match:  10 &lt;-&gt;  63 = 0
+  match:  10 &lt;-&gt;  64 = 21
+  match:  11 &lt;-&gt;  64 = 0
+  match:  11 &lt;-&gt;  63 = 21
+  match:  11 &lt;-&gt; 317 = 29
+  match:  11 &lt;-&gt; 335 = 29
+  match:  12 &lt;-&gt;  65 = 0
+  match:  13 &lt;-&gt;  66 = 0
+  match:  14 &lt;-&gt;  67 = 0
+  match:  15 &lt;-&gt; 166 = 0
+  match:  16 &lt;-&gt; 167 = 0
+  match:  17 &lt;-&gt; 168 = 0
+  match:  18 &lt;-&gt; 169 = 0
+  match:  19 &lt;-&gt; 170 = 0
+  match:  20 &lt;-&gt; 256 = 0
+  match:  21 &lt;-&gt; 257 = 0
+  match:  21 &lt;-&gt; 258 = 2
+  match:  21 &lt;-&gt; 259 = 5
+  match:  21 &lt;-&gt;  69 = 26
+  match:  21 &lt;-&gt;  26 = 29
+  match:  21 &lt;-&gt;  81 = 30
+  match:  22 &lt;-&gt; 258 = 0
+  match:  22 &lt;-&gt; 257 = 2
+  match:  22 &lt;-&gt; 259 = 5
+  match:  22 &lt;-&gt;  69 = 26
+  match:  22 &lt;-&gt;  81 = 30
+  match:  22 &lt;-&gt; 164 = 30
+  match:  23 &lt;-&gt; 259 = 0
+  match:  23 &lt;-&gt; 257 = 5
+  match:  23 &lt;-&gt; 258 = 5
+  match:  23 &lt;-&gt;  69 = 23
+  match:  23 &lt;-&gt;  26 = 26
+  match:  24 &lt;-&gt; 260 = 0
+  match:  24 &lt;-&gt; 332 = 17
+  match:  24 &lt;-&gt; 327 = 28
+</pre><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Line descriptors radius matching demo
+% This example shows the functionalities of radius matching.
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/line_descriptor/samples/radius_matching.cpp>
+%
+
+%% Querying internal database
+% The |cv.BynaryDescriptorMatcher| class, owns an internal database that can
+% be populated with descriptors extracted from different images and queried
+% using one of the modalities described in previous section. Population of
+% internal dataset can be done using the |add| function; such function
+% doesn't directly add new data to database, but it just stores it them
+% locally. The real update happens when function |train| is invoked or when
+% any querying function is executed, since each of them invokes train before
+% querying. When queried, internal database not only returns required
+% descriptors, but, for every returned match, it is able to tell which image
+% matched descriptor was extracted from. An example of internal dataset usage
+% is described in the following code; after adding locally new descriptors,
+% a radius search is invoked. This provokes local data to be transferred to
+% dataset, which, in turn, is then queried.
+%
+
+%% Images
+images = {
+    fullfile(mexopencv.root(),'test','stuff.jpg')
+    fullfile(mexopencv.root(),'test','blox.jpg')
+    fullfile(mexopencv.root(),'test','books_left.jpg')
+    fullfile(mexopencv.root(),'test','books_right.jpg')
+    fullfile(mexopencv.root(),'test','detect_blob.png')
+};
+
+%% Detect and Compute
+
+% create a BinaryDescriptor object
+bd = cv.BinaryDescriptor();
+
+% compute keylines and descriptors
+descriptorsMat = cell(size(images));
+lines = cell(size(images));
+for i=1:numel(images)
+    % load image
+    img = cv.imread(images{i}, 'Grayscale',true);
+
+    % compute lines and descriptors
+    [lines{i}, descriptorsMat{i}] = bd.detectAndCompute(img);
+end
+display(lines)
+display(descriptorsMat)
+
+%% Query
+% compose a queries matrix
+queries = zeros(0, size(descriptorsMat{1},2));
+for i=1:numel(descriptorsMat)
+    if size(descriptorsMat{i},1) >= 5
+        queries = [queries; descriptorsMat{i}(1:5,:)];
+    else
+        queries = [queries; descriptorsMat{i}];
+    end
+end
+fprintf('Query matrix of %d descriptors\n', size(queries,1));
+fprintf('Total taining descriptions: %d\n', ...
+    sum(cellfun(@(d)size(d,1), descriptorsMat, 'UniformOutput',true)));
+
+%% Radius match
+
+% create a BinaryDescriptorMatcher object
+bdm = cv.BinaryDescriptorMatcher();
+
+% populate matcher
+bdm.add(descriptorsMat);
+
+% compute matches
+matches = bdm.radiusMatch(queries, 30)
+fprintf('Found %d matches\n', numel(matches));
+
+for i=1:numel(matches)
+    for j=1:numel(matches{i})
+        fprintf('  match: %3d <-> %3d = %g\n', ...
+            matches{i}(j).queryIdx, matches{i}(j).trainIdx, ...
+            matches{i}(j).distance);
+    end
+end
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

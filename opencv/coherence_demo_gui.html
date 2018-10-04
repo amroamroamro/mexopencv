@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Coherence-Enhancing Filtering</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="coherence_demo_gui.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Coherence-Enhancing Filtering</h1>
+         <p>Inspired by:</p>
+         <div>
+            <ul>
+               <li>Joachim Weickert, "Coherence-Enhancing Shock Filters"   <a href="http://www.mia.uni-saarland.de/Publications/weickert-dagm03.pdf">http://www.mia.uni-saarland.de/Publications/weickert-dagm03.pdf</a></li>
+            </ul>
+         </div>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv/blob/3.2.0/samples/python/coherence.py">https://github.com/opencv/opencv/blob/3.2.0/samples/python/coherence.py</a></li>
+            </ul>
+         </div><pre class="codeinput"><span class="keyword">function</span> varargout = coherence_demo_gui(im)
+    <span class="comment">% load color image</span>
+    <span class="keyword">if</span> nargin &lt; 1
+        im = fullfile(mexopencv.root(), <span class="string">'test'</span>, <span class="string">'img001.jpg'</span>);
+        img = cv.imread(im, <span class="string">'Color'</span>,true);
+    <span class="keyword">elseif</span> ischar(im)
+        img = cv.imread(im, <span class="string">'Color'</span>,true);
+    <span class="keyword">else</span>
+        img = im;
+    <span class="keyword">end</span>
+    assert(size(img,3) == 3, <span class="string">'RGB image expected'</span>);
+
+    <span class="comment">% create the UI</span>
+    h = buildGUI(img);
+    <span class="keyword">if</span> nargout &gt; 0, varargout{1} = h; <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> img = coherence_filter(img, sigma, str_sigma, blend, niter)
+    <span class="comment">%COHERENCE_FILTER  Coherence-enhancing filter</span>
+
+    <span class="keyword">for</span> i=1:niter
+        gray = cv.cvtColor(img, <span class="string">'RGB2GRAY'</span>);
+
+        <span class="comment">% dominant eigenvector</span>
+        eigen = cv.cornerEigenValsAndVecs(gray, <span class="string">'BlockSize'</span>,str_sigma);
+        x = eigen(:,:,3);  <span class="comment">% x1 eigenvector of lambda_1</span>
+        y = eigen(:,:,4);  <span class="comment">% y1 eigenvector of lambda_1</span>
+
+        <span class="comment">% second order derivatives</span>
+        opts = {<span class="string">'KSize'</span>,sigma, <span class="string">'DDepth'</span>,<span class="string">'single'</span>};
+        gxx = cv.Sobel(gray, <span class="string">'XOrder'</span>,2, <span class="string">'YOrder'</span>,0, opts{:});
+        gyy = cv.Sobel(gray, <span class="string">'XOrder'</span>,0, <span class="string">'YOrder'</span>,2, opts{:});
+        gxy = cv.Sobel(gray, <span class="string">'XOrder'</span>,1, <span class="string">'YOrder'</span>,1, opts{:});
+        gvv = x.*x.*gxx + 2*x.*y.*gxy + y.*y.*gyy;
+
+        <span class="comment">% dilation/erosion</span>
+        ero = cv.erode(img);
+        dil = cv.dilate(img);
+        <span class="keyword">if</span> true
+            img1 = cv.copyTo(dil, <span class="string">'Dest'</span>,ero, <span class="string">'Mask'</span>,gvv&lt;0);
+        <span class="keyword">else</span>
+            mask = repmat(gvv&lt;0, [1 1 size(img,3)]);
+            img1 = ero;
+            img1(mask) = dil(mask);
+        <span class="keyword">end</span>
+
+        <span class="comment">% blend</span>
+        img = cv.addWeighted(img,1-blend, img1,blend, 0);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> onChange(~,~,h)
+    <span class="comment">%ONCHANGE  Event handler for UI controls</span>
+
+    <span class="comment">% retrieve current values from UI controls</span>
+    niter = round(get(h.slid(1), <span class="string">'Value'</span>));
+    blend = get(h.slid(2), <span class="string">'Value'</span>);
+    sigma = round(get(h.slid(3), <span class="string">'Value'</span>));
+    str_sigma = round(get(h.slid(4), <span class="string">'Value'</span>));
+    set(h.txt(1), <span class="string">'String'</span>,sprintf(<span class="string">'Iterations: %d'</span>, niter));
+    set(h.txt(2), <span class="string">'String'</span>,sprintf(<span class="string">'Blend Coeff: %.2f'</span>, blend));
+    set(h.txt(3), <span class="string">'String'</span>,sprintf(<span class="string">'Integration Sigma: %d'</span>, sigma));
+    set(h.txt(4), <span class="string">'String'</span>,sprintf(<span class="string">'Structure Sigma: %d'</span>, str_sigma));
+
+    <span class="comment">% apply coherence-enhancing filter</span>
+    out = coherence_filter(h.src, sigma*2+1, str_sigma*2+1, blend, niter);
+
+    <span class="comment">% show result</span>
+    set(h.img, <span class="string">'CData'</span>,out);
+    drawnow;
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> h = buildGUI(img)
+    <span class="comment">%BUILDGUI  Creates the UI</span>
+
+    <span class="comment">% parameters</span>
+    sz = size(img);
+    sz(2) = max(sz(2), 300);  <span class="comment">% minimum figure width</span>
+
+    <span class="comment">% build the user interface (no resizing to keep it simple)</span>
+    h = struct();
+    h.src = img;
+    h.fig = figure(<span class="string">'Name'</span>,<span class="string">'Coherence'</span>, <span class="keyword">...</span>
+        <span class="string">'NumberTitle'</span>,<span class="string">'off'</span>, <span class="string">'Menubar'</span>,<span class="string">'none'</span>, <span class="string">'Resize'</span>,<span class="string">'off'</span>, <span class="keyword">...</span>
+        <span class="string">'Position'</span>,[200 200 sz(2) sz(1)+105-1]);
+    <span class="keyword">if</span> ~mexopencv.isOctave()
+        <span class="comment">%HACK: not implemented in Octave</span>
+        movegui(h.fig, <span class="string">'center'</span>);
+    <span class="keyword">end</span>
+    h.ax = axes(<span class="string">'Parent'</span>,h.fig, <span class="string">'Units'</span>,<span class="string">'pixels'</span>, <span class="string">'Position'</span>,[1 105 sz(2) sz(1)]);
+    <span class="keyword">if</span> ~mexopencv.isOctave()
+        h.img = imshow(img, <span class="string">'Parent'</span>,h.ax);
+    <span class="keyword">else</span>
+        <span class="comment">%HACK: https://savannah.gnu.org/bugs/index.php?45473</span>
+        axes(h.ax);
+        h.img = imshow(img);
+    <span class="keyword">end</span>
+    h.txt(1) = uicontrol(<span class="string">'Parent'</span>,h.fig, <span class="string">'Style'</span>,<span class="string">'text'</span>, <span class="keyword">...</span>
+        <span class="string">'FontSize'</span>,10, <span class="string">'HorizontalAlignment'</span>,<span class="string">'left'</span>, <span class="keyword">...</span>
+        <span class="string">'Position'</span>,[5 5 130 20], <span class="string">'String'</span>,<span class="string">'Iterations:'</span>);
+    h.txt(2) = uicontrol(<span class="string">'Parent'</span>,h.fig, <span class="string">'Style'</span>,<span class="string">'text'</span>, <span class="keyword">...</span>
+        <span class="string">'FontSize'</span>,10, <span class="string">'HorizontalAlignment'</span>,<span class="string">'left'</span>, <span class="keyword">...</span>
+        <span class="string">'Position'</span>,[5 30 130 20], <span class="string">'String'</span>,<span class="string">'Blend Coef:'</span>);
+    h.txt(3) = uicontrol(<span class="string">'Parent'</span>,h.fig, <span class="string">'Style'</span>,<span class="string">'text'</span>, <span class="keyword">...</span>
+        <span class="string">'FontSize'</span>,10, <span class="string">'HorizontalAlignment'</span>,<span class="string">'left'</span>, <span class="keyword">...</span>
+        <span class="string">'Position'</span>,[5 55 130 20], <span class="string">'String'</span>,<span class="string">'Integration Sigma:'</span>);
+    h.txt(4) = uicontrol(<span class="string">'Parent'</span>,h.fig, <span class="string">'Style'</span>,<span class="string">'text'</span>, <span class="keyword">...</span>
+        <span class="string">'FontSize'</span>,10, <span class="string">'HorizontalAlignment'</span>,<span class="string">'left'</span>, <span class="keyword">...</span>
+        <span class="string">'Position'</span>,[5 80 130 20], <span class="string">'String'</span>,<span class="string">'Structure Sigma:'</span>);
+    h.slid(1) = uicontrol(<span class="string">'Parent'</span>,h.fig, <span class="string">'Style'</span>,<span class="string">'slider'</span>, <span class="keyword">...</span>
+        <span class="string">'Value'</span>,4, <span class="string">'Min'</span>,0, <span class="string">'Max'</span>,20, <span class="string">'SliderStep'</span>,[1 4]./(20-0), <span class="keyword">...</span>
+        <span class="string">'Position'</span>,[135 5 sz(2)-135-5 20]);
+    h.slid(2) = uicontrol(<span class="string">'Parent'</span>,h.fig, <span class="string">'Style'</span>,<span class="string">'slider'</span>, <span class="keyword">...</span>
+        <span class="string">'Value'</span>,0.7, <span class="string">'Min'</span>,0, <span class="string">'Max'</span>,1, <span class="string">'SliderStep'</span>,[0.01 0.1], <span class="keyword">...</span>
+        <span class="string">'Position'</span>,[135 30 sz(2)-135-5 20]);
+    h.slid(3) = uicontrol(<span class="string">'Parent'</span>,h.fig, <span class="string">'Style'</span>,<span class="string">'slider'</span>, <span class="keyword">...</span>
+        <span class="string">'Value'</span>,9, <span class="string">'Min'</span>,0, <span class="string">'Max'</span>,15, <span class="string">'SliderStep'</span>,[1 3]./(15-0), <span class="keyword">...</span>
+        <span class="string">'Position'</span>,[135 55 sz(2)-135-5 20]);
+    h.slid(4) = uicontrol(<span class="string">'Parent'</span>,h.fig, <span class="string">'Style'</span>,<span class="string">'slider'</span>, <span class="keyword">...</span>
+        <span class="string">'Value'</span>,9, <span class="string">'Min'</span>,0, <span class="string">'Max'</span>,15, <span class="string">'SliderStep'</span>,[1 3]./(15-0), <span class="keyword">...</span>
+        <span class="string">'Position'</span>,[135 80 sz(2)-135-5 20]);
+
+    <span class="comment">% hook event handlers, and trigger default start</span>
+    set(h.slid, <span class="string">'Callback'</span>,{@onChange,h}, <span class="keyword">...</span>
+        <span class="string">'Interruptible'</span>,<span class="string">'off'</span>, <span class="string">'BusyAction'</span>,<span class="string">'cancel'</span>);
+    onChange([],[],h);
+<span class="keyword">end</span></pre><img src="coherence_demo_gui_01.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Coherence-Enhancing Filtering
+%
+% Inspired by:
+%
+% * Joachim Weickert, "Coherence-Enhancing Shock Filters"
+%   <http://www.mia.uni-saarland.de/Publications/weickert-dagm03.pdf>
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv/blob/3.2.0/samples/python/coherence.py>
+%
+
+function varargout = coherence_demo_gui(im)
+    % load color image
+    if nargin < 1
+        im = fullfile(mexopencv.root(), 'test', 'img001.jpg');
+        img = cv.imread(im, 'Color',true);
+    elseif ischar(im)
+        img = cv.imread(im, 'Color',true);
+    else
+        img = im;
+    end
+    assert(size(img,3) == 3, 'RGB image expected');
+
+    % create the UI
+    h = buildGUI(img);
+    if nargout > 0, varargout{1} = h; end
+end
+
+function img = coherence_filter(img, sigma, str_sigma, blend, niter)
+    %COHERENCE_FILTER  Coherence-enhancing filter
+
+    for i=1:niter
+        gray = cv.cvtColor(img, 'RGB2GRAY');
+
+        % dominant eigenvector
+        eigen = cv.cornerEigenValsAndVecs(gray, 'BlockSize',str_sigma);
+        x = eigen(:,:,3);  % x1 eigenvector of lambda_1
+        y = eigen(:,:,4);  % y1 eigenvector of lambda_1
+
+        % second order derivatives
+        opts = {'KSize',sigma, 'DDepth','single'};
+        gxx = cv.Sobel(gray, 'XOrder',2, 'YOrder',0, opts{:});
+        gyy = cv.Sobel(gray, 'XOrder',0, 'YOrder',2, opts{:});
+        gxy = cv.Sobel(gray, 'XOrder',1, 'YOrder',1, opts{:});
+        gvv = x.*x.*gxx + 2*x.*y.*gxy + y.*y.*gyy;
+
+        % dilation/erosion
+        ero = cv.erode(img);
+        dil = cv.dilate(img);
+        if true
+            img1 = cv.copyTo(dil, 'Dest',ero, 'Mask',gvv<0);
+        else
+            mask = repmat(gvv<0, [1 1 size(img,3)]);
+            img1 = ero;
+            img1(mask) = dil(mask);
+        end
+
+        % blend
+        img = cv.addWeighted(img,1-blend, img1,blend, 0);
+    end
+end
+
+function onChange(~,~,h)
+    %ONCHANGE  Event handler for UI controls
+
+    % retrieve current values from UI controls
+    niter = round(get(h.slid(1), 'Value'));
+    blend = get(h.slid(2), 'Value');
+    sigma = round(get(h.slid(3), 'Value'));
+    str_sigma = round(get(h.slid(4), 'Value'));
+    set(h.txt(1), 'String',sprintf('Iterations: %d', niter));
+    set(h.txt(2), 'String',sprintf('Blend Coeff: %.2f', blend));
+    set(h.txt(3), 'String',sprintf('Integration Sigma: %d', sigma));
+    set(h.txt(4), 'String',sprintf('Structure Sigma: %d', str_sigma));
+
+    % apply coherence-enhancing filter
+    out = coherence_filter(h.src, sigma*2+1, str_sigma*2+1, blend, niter);
+
+    % show result
+    set(h.img, 'CData',out);
+    drawnow;
+end
+
+function h = buildGUI(img)
+    %BUILDGUI  Creates the UI
+
+    % parameters
+    sz = size(img);
+    sz(2) = max(sz(2), 300);  % minimum figure width
+
+    % build the user interface (no resizing to keep it simple)
+    h = struct();
+    h.src = img;
+    h.fig = figure('Name','Coherence', ...
+        'NumberTitle','off', 'Menubar','none', 'Resize','off', ...
+        'Position',[200 200 sz(2) sz(1)+105-1]);
+    if ~mexopencv.isOctave()
+        %HACK: not implemented in Octave
+        movegui(h.fig, 'center');
+    end
+    h.ax = axes('Parent',h.fig, 'Units','pixels', 'Position',[1 105 sz(2) sz(1)]);
+    if ~mexopencv.isOctave()
+        h.img = imshow(img, 'Parent',h.ax);
+    else
+        %HACK: https://savannah.gnu.org/bugs/index.php?45473
+        axes(h.ax);
+        h.img = imshow(img);
+    end
+    h.txt(1) = uicontrol('Parent',h.fig, 'Style','text', ...
+        'FontSize',10, 'HorizontalAlignment','left', ...
+        'Position',[5 5 130 20], 'String','Iterations:');
+    h.txt(2) = uicontrol('Parent',h.fig, 'Style','text', ...
+        'FontSize',10, 'HorizontalAlignment','left', ...
+        'Position',[5 30 130 20], 'String','Blend Coef:');
+    h.txt(3) = uicontrol('Parent',h.fig, 'Style','text', ...
+        'FontSize',10, 'HorizontalAlignment','left', ...
+        'Position',[5 55 130 20], 'String','Integration Sigma:');
+    h.txt(4) = uicontrol('Parent',h.fig, 'Style','text', ...
+        'FontSize',10, 'HorizontalAlignment','left', ...
+        'Position',[5 80 130 20], 'String','Structure Sigma:');
+    h.slid(1) = uicontrol('Parent',h.fig, 'Style','slider', ...
+        'Value',4, 'Min',0, 'Max',20, 'SliderStep',[1 4]./(20-0), ...
+        'Position',[135 5 sz(2)-135-5 20]);
+    h.slid(2) = uicontrol('Parent',h.fig, 'Style','slider', ...
+        'Value',0.7, 'Min',0, 'Max',1, 'SliderStep',[0.01 0.1], ...
+        'Position',[135 30 sz(2)-135-5 20]);
+    h.slid(3) = uicontrol('Parent',h.fig, 'Style','slider', ...
+        'Value',9, 'Min',0, 'Max',15, 'SliderStep',[1 3]./(15-0), ...
+        'Position',[135 55 sz(2)-135-5 20]);
+    h.slid(4) = uicontrol('Parent',h.fig, 'Style','slider', ...
+        'Value',9, 'Min',0, 'Max',15, 'SliderStep',[1 3]./(15-0), ...
+        'Position',[135 80 sz(2)-135-5 20]);
+
+    % hook event handlers, and trigger default start
+    set(h.slid, 'Callback',{@onChange,h}, ...
+        'Interruptible','off', 'BusyAction','cancel');
+    onChange([],[],h);
+end
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

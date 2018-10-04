@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Adding image borders</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="padding_demo_gui.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Adding image borders</h1>
+         <!--introduction-->
+         <p>In this demo, we show how to use the OpenCV function <tt>cv.copyMakeBorder</tt> to set the borders (extra image padding).
+         </p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://docs.opencv.org/3.2.0/dc/da3/tutorial_copyMakeBorder.html">https://docs.opencv.org/3.2.0/dc/da3/tutorial_copyMakeBorder.html</a></li>
+               <li><a href="https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/tutorial_code/ImgTrans/copyMakeBorder_demo.cpp">https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/tutorial_code/ImgTrans/copyMakeBorder_demo.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Theory</a></li>
+               <li><a href="#3">Code</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Theory</h2>
+         <p>The explanation below belongs to the book <i>Learning OpenCV</i> by Bradski and Kaehler.
+         </p>
+         <p>One problem that naturally arises when performing convolution to operate on images is how to handle the boundaries. How can
+            we convolve them if the evaluated points are at the edge of the image?
+         </p>
+         <p>What most of OpenCV functions do is to copy a given image onto another slightly larger image and then automatically pads the
+            boundary (by any of the methods explained below). This way, the convolution can be performed over the needed pixels without
+            problems (the extra padding is cut after the operation is done).
+         </p>
+         <p>In this demo, we will briefly explore two ways of defining the extra padding (border) for an image:</p>
+         <div>
+            <ul>
+               <li>Constant: Pad the image with a constant value (i.e. black or 0)</li>
+               <li>Replicate: The row or column at the very edge of the original is   replicated to the extra border.</li>
+            </ul>
+         </div>
+         <h2 id="3">Code</h2>
+         <p>First we load an image. Next we let the user choose what kind of padding to use on the input image:</p>
+         <div>
+            <ul>
+               <li>Reflected border</li>
+               <li>Replicated border: The border will be replicated from the pixel values at   the edges of the original image.</li>
+               <li>Warped border</li>
+               <li>Constant value border: Applies a padding of a constant value for the whole   border. This value can be selected from a color
+                  picker dialog.
+               </li>
+            </ul>
+         </div><pre class="codeinput"><span class="keyword">function</span> varargout = padding_demo_gui(im)
+    <span class="comment">% load source image</span>
+    <span class="keyword">if</span> nargin &lt; 1
+        img = cv.imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'butterfly.jpg'</span>));
+    <span class="keyword">elseif</span> ischar(im)
+        img = cv.imread(im, <span class="string">'Color'</span>,true);
+    <span class="keyword">else</span>
+        img = im;
+    <span class="keyword">end</span>
+    <span class="keyword">if</span> size(img,3) == 1
+        img = cv.cvtColor(img, <span class="string">'GRAY2RGB'</span>);
+    <span class="keyword">end</span>
+
+    <span class="comment">% create the UI</span>
+    h = buildGUI(img);
+    <span class="keyword">if</span> nargout &gt; 0, varargout{1} = h; <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> padSz = padSize(sz)
+    <span class="comment">%PADSIZE  Size of image padding [top, bottom, left, right]</span>
+
+    <span class="comment">% pad by 5% of the image size</span>
+    padSz = round(sz([1 1 2 2]) * 0.05);
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> onType(~,e,h)
+    <span class="comment">%ONTYPE  Event handler for key press on figure</span>
+
+    <span class="comment">% handle keys</span>
+    <span class="keyword">switch</span> e.Key
+        <span class="keyword">case</span> <span class="string">'h'</span>
+            helpdlg({
+                <span class="string">'Hot keys:'</span>
+                <span class="string">'h - this help dialog'</span>
+                <span class="string">'q - quit the program'</span>
+                <span class="string">'f - pad the image by reflecting borders'</span>
+                <span class="string">'r - pad the image by replicating borders'</span>
+                <span class="string">'w - pad the image by wrapping borders'</span>
+                <span class="string">'c - pad the image with constant value'</span>
+                <span class="string">'s - save current image'</span>
+            });
+
+        <span class="keyword">case</span> {<span class="string">'q'</span>, <span class="string">'escape'</span>}
+            <span class="comment">% quit</span>
+            close(h.fig);
+
+        <span class="keyword">case</span> {<span class="string">'f'</span>, <span class="string">'r'</span>, <span class="string">'w'</span>, <span class="string">'c'</span>}
+            <span class="comment">% border type</span>
+            [~,idx] = ismember(e.Key, {<span class="string">'f'</span>, <span class="string">'r'</span>, <span class="string">'w'</span>, <span class="string">'c'</span>});
+            set(h.pop, <span class="string">'Value'</span>,idx);
+            onChange([], [], h);
+
+        <span class="keyword">case</span> {<span class="string">'s'</span>, <span class="string">'space'</span>}
+            <span class="comment">% save image</span>
+            img = get(h.img, <span class="string">'CData'</span>);
+            fname = fullfile(tempdir(), <span class="keyword">...</span>
+                sprintf(<span class="string">'out_%s.png'</span>, datestr(now(),<span class="string">'yyyymmddTHHMMSS'</span>)));
+            cv.imwrite(fname, img);
+            disp([<span class="string">'Saved '</span> fname]);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> onChange(~,~,h)
+    <span class="comment">%ONCHANGE  Event handler for UI controls</span>
+
+    <span class="comment">% border type</span>
+    types = get(h.pop, <span class="string">'String'</span>);
+    idx = get(h.pop, <span class="string">'Value'</span>);
+    props = {<span class="string">'BorderType'</span>,types{idx}};
+
+    <span class="comment">% border value</span>
+    <span class="keyword">if</span> strcmp(types{idx}, <span class="string">'Constant'</span>)
+        <span class="keyword">if</span> mexopencv.isOctave()
+            <span class="comment">%HACK: uisetcolor not implemented in Octave</span>
+            clr = randi([0 255], [1 3]);
+        <span class="keyword">else</span>
+            clr = round(uisetcolor() * 255);
+        <span class="keyword">end</span>
+        props = [props, <span class="string">'Value'</span>,clr];
+    <span class="keyword">end</span>
+
+    <span class="comment">% perform padding</span>
+    out = cv.copyMakeBorder(h.src, padSize(size(h.src)), props{:});
+
+    <span class="comment">% show result</span>
+    set(h.img, <span class="string">'CData'</span>,out);
+    drawnow;
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> h = buildGUI(img)
+    <span class="comment">%BUILDGUI  Creates the UI</span>
+
+    <span class="comment">% initial padding</span>
+    out = cv.copyMakeBorder(img, padSize(size(img)));
+    sz = size(out);
+
+    <span class="comment">% build the user interface (no resizing to keep it simple)</span>
+    h = struct();
+    h.src = img;
+    h.fig = figure(<span class="string">'Name'</span>,<span class="string">'CopyMakeBorder Demo'</span>, <span class="keyword">...</span>
+        <span class="string">'NumberTitle'</span>,<span class="string">'off'</span>, <span class="string">'Menubar'</span>,<span class="string">'none'</span>, <span class="string">'Resize'</span>,<span class="string">'off'</span>, <span class="keyword">...</span>
+        <span class="string">'Position'</span>,[200 200 sz(2) sz(1)+29]);
+    <span class="keyword">if</span> ~mexopencv.isOctave()
+        <span class="comment">%HACK: not implemented in Octave</span>
+        movegui(h.fig, <span class="string">'center'</span>);
+    <span class="keyword">end</span>
+    h.ax = axes(<span class="string">'Parent'</span>,h.fig, <span class="string">'Units'</span>,<span class="string">'pixels'</span>, <span class="string">'Position'</span>,[1 30 sz(2) sz(1)]);
+    <span class="keyword">if</span> ~mexopencv.isOctave()
+        h.img = imshow(out, <span class="string">'Parent'</span>,h.ax);
+    <span class="keyword">else</span>
+        <span class="comment">%HACK: https://savannah.gnu.org/bugs/index.php?45473</span>
+        axes(h.ax);
+        h.img = imshow(out);
+    <span class="keyword">end</span>
+    h.pop = uicontrol(<span class="string">'Parent'</span>,h.fig, <span class="string">'Style'</span>,<span class="string">'popupmenu'</span>, <span class="keyword">...</span>
+        <span class="string">'Position'</span>,[5 5 90 20], <span class="keyword">...</span>
+        <span class="string">'String'</span>,{<span class="string">'Reflect101'</span>,<span class="string">'Replicate'</span>,<span class="string">'Wrap'</span>,<span class="string">'Constant'</span>});
+
+    <span class="comment">% hook event handlers</span>
+    opts = {<span class="string">'Interruptible'</span>,<span class="string">'off'</span>, <span class="string">'BusyAction'</span>,<span class="string">'cancel'</span>};
+    set(h.fig, <span class="string">'WindowKeyPressFcn'</span>,{@onType,h}, opts{:});
+    set(h.pop, <span class="string">'Callback'</span>,{@onChange,h}, opts{:});
+<span class="keyword">end</span></pre><img src="padding_demo_gui_01.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Adding image borders
+%
+% In this demo, we show how to use the OpenCV function |cv.copyMakeBorder| to
+% set the borders (extra image padding).
+%
+% Sources:
+%
+% * <https://docs.opencv.org/3.2.0/dc/da3/tutorial_copyMakeBorder.html>
+% * <https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/tutorial_code/ImgTrans/copyMakeBorder_demo.cpp>
+%
+
+%% Theory
+%
+% The explanation below belongs to the book _Learning OpenCV_ by Bradski and
+% Kaehler.
+%
+% One problem that naturally arises when performing convolution to operate on
+% images is how to handle the boundaries. How can we convolve them if the
+% evaluated points are at the edge of the image?
+%
+% What most of OpenCV functions do is to copy a given image onto another
+% slightly larger image and then automatically pads the boundary (by any of
+% the methods explained below). This way, the convolution can be performed
+% over the needed pixels without problems (the extra padding is cut after the
+% operation is done).
+%
+% In this demo, we will briefly explore two ways of defining the extra padding
+% (border) for an image:
+%
+% * Constant: Pad the image with a constant value (i.e. black or 0)
+% * Replicate: The row or column at the very edge of the original is
+%   replicated to the extra border.
+%
+
+%% Code
+%
+% First we load an image. Next we let the user choose what kind of padding to
+% use on the input image:
+%
+% * Reflected border
+% * Replicated border: The border will be replicated from the pixel values at
+%   the edges of the original image.
+% * Warped border
+% * Constant value border: Applies a padding of a constant value for the whole
+%   border. This value can be selected from a color picker dialog.
+%
+
+function varargout = padding_demo_gui(im)
+    % load source image
+    if nargin < 1
+        img = cv.imread(fullfile(mexopencv.root(),'test','butterfly.jpg'));
+    elseif ischar(im)
+        img = cv.imread(im, 'Color',true);
+    else
+        img = im;
+    end
+    if size(img,3) == 1
+        img = cv.cvtColor(img, 'GRAY2RGB');
+    end
+
+    % create the UI
+    h = buildGUI(img);
+    if nargout > 0, varargout{1} = h; end
+end
+
+function padSz = padSize(sz)
+    %PADSIZE  Size of image padding [top, bottom, left, right]
+
+    % pad by 5% of the image size
+    padSz = round(sz([1 1 2 2]) * 0.05);
+end
+
+function onType(~,e,h)
+    %ONTYPE  Event handler for key press on figure
+
+    % handle keys
+    switch e.Key
+        case 'h'
+            helpdlg({
+                'Hot keys:'
+                'h - this help dialog'
+                'q - quit the program'
+                'f - pad the image by reflecting borders'
+                'r - pad the image by replicating borders'
+                'w - pad the image by wrapping borders'
+                'c - pad the image with constant value'
+                's - save current image'
+            });
+
+        case {'q', 'escape'}
+            % quit
+            close(h.fig);
+
+        case {'f', 'r', 'w', 'c'}
+            % border type
+            [~,idx] = ismember(e.Key, {'f', 'r', 'w', 'c'});
+            set(h.pop, 'Value',idx);
+            onChange([], [], h);
+
+        case {'s', 'space'}
+            % save image
+            img = get(h.img, 'CData');
+            fname = fullfile(tempdir(), ...
+                sprintf('out_%s.png', datestr(now(),'yyyymmddTHHMMSS')));
+            cv.imwrite(fname, img);
+            disp(['Saved ' fname]);
+    end
+end
+
+function onChange(~,~,h)
+    %ONCHANGE  Event handler for UI controls
+
+    % border type
+    types = get(h.pop, 'String');
+    idx = get(h.pop, 'Value');
+    props = {'BorderType',types{idx}};
+
+    % border value
+    if strcmp(types{idx}, 'Constant')
+        if mexopencv.isOctave()
+            %HACK: uisetcolor not implemented in Octave
+            clr = randi([0 255], [1 3]);
+        else
+            clr = round(uisetcolor() * 255);
+        end
+        props = [props, 'Value',clr];
+    end
+
+    % perform padding
+    out = cv.copyMakeBorder(h.src, padSize(size(h.src)), props{:});
+
+    % show result
+    set(h.img, 'CData',out);
+    drawnow;
+end
+
+function h = buildGUI(img)
+    %BUILDGUI  Creates the UI
+
+    % initial padding
+    out = cv.copyMakeBorder(img, padSize(size(img)));
+    sz = size(out);
+
+    % build the user interface (no resizing to keep it simple)
+    h = struct();
+    h.src = img;
+    h.fig = figure('Name','CopyMakeBorder Demo', ...
+        'NumberTitle','off', 'Menubar','none', 'Resize','off', ...
+        'Position',[200 200 sz(2) sz(1)+29]);
+    if ~mexopencv.isOctave()
+        %HACK: not implemented in Octave
+        movegui(h.fig, 'center');
+    end
+    h.ax = axes('Parent',h.fig, 'Units','pixels', 'Position',[1 30 sz(2) sz(1)]);
+    if ~mexopencv.isOctave()
+        h.img = imshow(out, 'Parent',h.ax);
+    else
+        %HACK: https://savannah.gnu.org/bugs/index.php?45473
+        axes(h.ax);
+        h.img = imshow(out);
+    end
+    h.pop = uicontrol('Parent',h.fig, 'Style','popupmenu', ...
+        'Position',[5 5 90 20], ...
+        'String',{'Reflect101','Replicate','Wrap','Constant'});
+
+    % hook event handlers
+    opts = {'Interruptible','off', 'BusyAction','cancel'};
+    set(h.fig, 'WindowKeyPressFcn',{@onType,h}, opts{:});
+    set(h.pop, 'Callback',{@onChange,h}, opts{:});
+end
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

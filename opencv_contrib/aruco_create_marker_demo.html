@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>ArUco Marker Image Demo</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="aruco_create_marker_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">ArUco Marker Image Demo</h1>
+         <!--introduction-->
+         <p>This example shows how to create an ArUco marker image.</p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/aruco/samples/create_marker.cpp">https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/aruco/samples/create_marker.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Marker</a></li>
+               <li><a href="#3">Display</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Marker</h2><pre class="codeinput"><span class="comment">% params</span>
+dictionaryId = <span class="string">'6x6_250'</span>;   <span class="comment">% dictionary id</span>
+markerId = randi([0 249]);  <span class="comment">% Marker id in the dictionary</span>
+borderBits = 1;             <span class="comment">% Number of bits in marker borders</span>
+markerSize = 200;           <span class="comment">% Marker size in pixels</span></pre><h2 id="3">Display</h2><pre class="codeinput"><span class="comment">% show marker</span>
+dictionary = {<span class="string">'Predefined'</span>, dictionaryId};
+markerImg = cv.drawMarkerAruco(dictionary, markerId, markerSize, <span class="keyword">...</span>
+    <span class="string">'BorderBits'</span>,borderBits);
+imshow(markerImg), title(<span class="string">'Marker'</span>)
+
+<span class="comment">% save image</span>
+imwrite(markerImg, fullfile(tempdir(),<span class="string">'Marker.png'</span>));</pre><img src="aruco_create_marker_demo_01.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% ArUco Marker Image Demo
+% This example shows how to create an ArUco marker image.
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/aruco/samples/create_marker.cpp>
+%
+
+%% Marker
+
+% params
+dictionaryId = '6x6_250';   % dictionary id
+markerId = randi([0 249]);  % Marker id in the dictionary
+borderBits = 1;             % Number of bits in marker borders
+markerSize = 200;           % Marker size in pixels
+
+%% Display
+
+% show marker
+dictionary = {'Predefined', dictionaryId};
+markerImg = cv.drawMarkerAruco(dictionary, markerId, markerSize, ...
+    'BorderBits',borderBits);
+imshow(markerImg), title('Marker')
+
+% save image
+imwrite(markerImg, fullfile(tempdir(),'Marker.png'));
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

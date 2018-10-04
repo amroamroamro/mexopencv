@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Delaunay triangulation</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="delaunay2_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Delaunay triangulation</h1>
+         <p>This program demostrates iterative construction of delaunay triangulation and voronoi tesselation.</p>
+         <p>It draws a random set of points in an image and then delaunay triangulates them.</p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv/blob/3.1.0/samples/cpp/delaunay2.cpp">https://github.com/opencv/opencv/blob/3.1.0/samples/cpp/delaunay2.cpp</a></li>
+            </ul>
+         </div><pre class="codeinput"><span class="keyword">function</span> delaunay2_demo()
+
+    <span class="comment">% prepare</span>
+    delay = 0.25;
+    active_facet_color = [0, 0, 255];
+    delaunay_color = [255, 255, 255];
+    rect = [0, 0, 600, 600];
+
+    window = figure(<span class="string">'KeyPressFcn'</span>,@(o,e)setappdata(o,<span class="string">'flag'</span>,true));
+    setappdata(window, <span class="string">'flag'</span>,false);
+
+    disp(<span class="string">'This program builds the traingulation interactively,'</span>);
+    disp(<span class="string">'you may stop this process by hitting any key.'</span>);
+
+    <span class="comment">% initialize</span>
+    subdiv = cv.Subdiv2D(rect);
+    img = zeros([rect(3:4) 3], <span class="string">'uint8'</span>);
+    h = imshow(img); title(<span class="string">'Delaunay Triangulation'</span>)
+
+    <span class="comment">%</span>
+    <span class="keyword">for</span> i=1:100
+        <span class="comment">% generate random 2D point</span>
+        fp = [randi([5 rect(3)-5]), randi([5 rect(4)-5])];
+
+        <span class="comment">% locate and draw triangle containing point</span>
+        img = locate_point(img, subdiv, fp, active_facet_color);
+
+        set(h, <span class="string">'CData'</span>,img), xlabel(num2str(i))
+        pause(delay)
+        flag = getappdata(window, <span class="string">'flag'</span>);
+        <span class="keyword">if</span> isempty(flag) || flag, <span class="keyword">break</span>; <span class="keyword">end</span>
+
+        <span class="comment">% add point and draw the new triangulation</span>
+        subdiv.insert(fp);
+
+        img(:) = 0;
+        img = draw_subdiv(img, subdiv, delaunay_color);
+
+        set(h, <span class="string">'CData'</span>,img)
+        pause(delay)
+        flag = getappdata(window, <span class="string">'flag'</span>);
+        <span class="keyword">if</span> isempty(flag) || flag, <span class="keyword">break</span>; <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    fprintf(<span class="string">'\nGenerated %d random points.\n'</span>, i);
+
+    <span class="comment">% draw the Voronoi diagram</span>
+    img(:) = 0;
+    img = paint_voronoi(img, subdiv);
+    <span class="comment">%img = draw_subdiv(img, subdiv, delaunay_color);</span>
+    figure, imshow(img), title(<span class="string">'Voronoi diagram'</span>)
+
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> img = locate_point(img, subdiv, fp, active_color)
+    [~, e0, vertex] = subdiv.locate(fp);
+
+    <span class="keyword">if</span> e0 &gt; 0
+        e = e0;
+        <span class="keyword">while</span> true
+            [ee1, org] = subdiv.edgeOrg(e);
+            [ee2, dst] = subdiv.edgeDst(e);
+            <span class="keyword">if</span> ee1 &gt; 0 &amp;&amp; ee2 &gt; 0
+                img = cv.line(img, org, dst, <span class="keyword">...</span>
+                    <span class="string">'Color'</span>,active_color, <span class="string">'Thickness'</span>,3, <span class="string">'LineType'</span>,<span class="string">'AA'</span>);
+            <span class="keyword">end</span>
+            e = subdiv.getEdge(e, <span class="string">'NextAroundLeft'</span>);
+            <span class="keyword">if</span> e == e0
+                <span class="keyword">break</span>;
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    <span class="comment">% draw_subdiv_point</span>
+    img = cv.circle(img, fp, 5, <span class="keyword">...</span>
+        <span class="string">'Color'</span>,fliplr(active_color), <span class="string">'Thickness'</span>,<span class="string">'Filled'</span>, <span class="string">'LineType'</span>,8);
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> img = draw_subdiv(img, subdiv, delaunay_color)
+    opts = {<span class="string">'Color'</span>,delaunay_color, <span class="string">'Thickness'</span>,1, <span class="string">'LineType'</span>,<span class="string">'AA'</span>};
+    <span class="keyword">if</span> true
+        triangleList = subdiv.getTriangleList();
+        <span class="comment">% faster implementation</span>
+        triangleList = cellfun(@(t) num2cell(reshape(round(t),2,3),1), <span class="keyword">...</span>
+            triangleList, <span class="string">'UniformOutput'</span>,false);
+        img = cv.polylines(img, triangleList, <span class="string">'Closed'</span>,true, opts{:});
+        <span class="comment">% slower</span>
+<span class="comment">        %{
+</span><span class="comment">        for i=1:numel(triangleList)
+</span><span class="comment">            t = round(triangleList{i});
+</span><span class="comment">            img = cv.line(img, t(1:2), t(3:4), opts{:});
+</span><span class="comment">            img = cv.line(img, t(3:4), t(5:6), opts{:});
+</span><span class="comment">            img = cv.line(img, t(5:6), t(1:2), opts{:});
+</span><span class="comment">        end
+</span><span class="comment">        %}
+</span>    <span class="keyword">else</span>
+        edgeList = subdiv.getEdgeList();
+        <span class="comment">% faster implementation</span>
+        edgeList = cellfun(@(e) num2cell(reshape(round(e),2,2),1), <span class="keyword">...</span>
+            edgeList, <span class="string">'UniformOutput'</span>,false);
+        img = cv.polylines(img, edgeList, <span class="string">'Closed'</span>,true, opts{:});
+        <span class="comment">% slower</span>
+<span class="comment">        %{
+</span><span class="comment">        for i=1:numel(edgeList)
+</span><span class="comment">            e = round(edgeList{i});
+</span><span class="comment">            img = cv.line(img, e(1:2), e(3:4), opts{:});
+</span><span class="comment">        end
+</span><span class="comment">        %}
+</span>    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> img = paint_voronoi(img, subdiv)
+    <span class="comment">% get Voronoi faces and corresponding centers</span>
+    [facets, centers] = subdiv.getVoronoiFacetList([]);
+
+    <span class="keyword">for</span> i=1:numel(facets)
+        <span class="comment">% draw face as a colored closed patch</span>
+        color = randi([0 255], [1 3]);
+        img = cv.fillConvexPoly(img, facets{i}, <span class="string">'Color'</span>,color, <span class="string">'LineType'</span>,8);
+
+        <span class="comment">% draw the center as a dot</span>
+        img = cv.circle(img, centers{i}, 3, <span class="keyword">...</span>
+            <span class="string">'Thickness'</span>,<span class="string">'Filled'</span>, <span class="string">'LineType'</span>,<span class="string">'AA'</span>);
+    <span class="keyword">end</span>
+
+    <span class="comment">% draw the borders</span>
+    img = cv.polylines(img, facets, <span class="string">'Closed'</span>,true, <span class="keyword">...</span>
+        <span class="string">'Thickness'</span>,1, <span class="string">'LineType'</span>,<span class="string">'AA'</span>);
+<span class="keyword">end</span></pre><pre class="codeoutput">This program builds the traingulation interactively,
+you may stop this process by hitting any key.
+
+Generated 6 random points.
+</pre><img src="delaunay2_demo_01.png"><img src="delaunay2_demo_02.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Delaunay triangulation
+% This program demostrates iterative construction of
+% delaunay triangulation and voronoi tesselation.
+%
+% It draws a random set of points in an image and then
+% delaunay triangulates them.
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv/blob/3.1.0/samples/cpp/delaunay2.cpp>
+%
+
+function delaunay2_demo()
+
+    % prepare
+    delay = 0.25;
+    active_facet_color = [0, 0, 255];
+    delaunay_color = [255, 255, 255];
+    rect = [0, 0, 600, 600];
+
+    window = figure('KeyPressFcn',@(o,e)setappdata(o,'flag',true));
+    setappdata(window, 'flag',false);
+
+    disp('This program builds the traingulation interactively,');
+    disp('you may stop this process by hitting any key.');
+
+    % initialize
+    subdiv = cv.Subdiv2D(rect);
+    img = zeros([rect(3:4) 3], 'uint8');
+    h = imshow(img); title('Delaunay Triangulation')
+
+    %
+    for i=1:100
+        % generate random 2D point
+        fp = [randi([5 rect(3)-5]), randi([5 rect(4)-5])];
+
+        % locate and draw triangle containing point
+        img = locate_point(img, subdiv, fp, active_facet_color);
+
+        set(h, 'CData',img), xlabel(num2str(i))
+        pause(delay)
+        flag = getappdata(window, 'flag');
+        if isempty(flag) || flag, break; end
+
+        % add point and draw the new triangulation
+        subdiv.insert(fp);
+
+        img(:) = 0;
+        img = draw_subdiv(img, subdiv, delaunay_color);
+
+        set(h, 'CData',img)
+        pause(delay)
+        flag = getappdata(window, 'flag');
+        if isempty(flag) || flag, break; end
+    end
+    fprintf('\nGenerated %d random points.\n', i);
+
+    % draw the Voronoi diagram
+    img(:) = 0;
+    img = paint_voronoi(img, subdiv);
+    %img = draw_subdiv(img, subdiv, delaunay_color);
+    figure, imshow(img), title('Voronoi diagram')
+
+end
+
+function img = locate_point(img, subdiv, fp, active_color)
+    [~, e0, vertex] = subdiv.locate(fp);
+
+    if e0 > 0
+        e = e0;
+        while true
+            [ee1, org] = subdiv.edgeOrg(e);
+            [ee2, dst] = subdiv.edgeDst(e);
+            if ee1 > 0 && ee2 > 0
+                img = cv.line(img, org, dst, ...
+                    'Color',active_color, 'Thickness',3, 'LineType','AA');
+            end
+            e = subdiv.getEdge(e, 'NextAroundLeft');
+            if e == e0
+                break;
+            end
+        end
+    end
+
+    % draw_subdiv_point
+    img = cv.circle(img, fp, 5, ...
+        'Color',fliplr(active_color), 'Thickness','Filled', 'LineType',8);
+end
+
+function img = draw_subdiv(img, subdiv, delaunay_color)
+    opts = {'Color',delaunay_color, 'Thickness',1, 'LineType','AA'};
+    if true
+        triangleList = subdiv.getTriangleList();
+        % faster implementation
+        triangleList = cellfun(@(t) num2cell(reshape(round(t),2,3),1), ...
+            triangleList, 'UniformOutput',false);
+        img = cv.polylines(img, triangleList, 'Closed',true, opts{:});
+        % slower
+        %{
+        for i=1:numel(triangleList)
+            t = round(triangleList{i});
+            img = cv.line(img, t(1:2), t(3:4), opts{:});
+            img = cv.line(img, t(3:4), t(5:6), opts{:});
+            img = cv.line(img, t(5:6), t(1:2), opts{:});
+        end
+        %}
+    else
+        edgeList = subdiv.getEdgeList();
+        % faster implementation
+        edgeList = cellfun(@(e) num2cell(reshape(round(e),2,2),1), ...
+            edgeList, 'UniformOutput',false);
+        img = cv.polylines(img, edgeList, 'Closed',true, opts{:});
+        % slower
+        %{
+        for i=1:numel(edgeList)
+            e = round(edgeList{i});
+            img = cv.line(img, e(1:2), e(3:4), opts{:});
+        end
+        %}
+    end
+end
+
+function img = paint_voronoi(img, subdiv)
+    % get Voronoi faces and corresponding centers
+    [facets, centers] = subdiv.getVoronoiFacetList([]);
+
+    for i=1:numel(facets)
+        % draw face as a colored closed patch
+        color = randi([0 255], [1 3]);
+        img = cv.fillConvexPoly(img, facets{i}, 'Color',color, 'LineType',8);
+
+        % draw the center as a dot
+        img = cv.circle(img, centers{i}, 3, ...
+            'Thickness','Filled', 'LineType','AA');
+    end
+
+    % draw the borders
+    img = cv.polylines(img, facets, 'Closed',true, ...
+        'Thickness',1, 'LineType','AA');
+end
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

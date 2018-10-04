@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Face landmark detection in a video</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2018-02-21">
+      <meta name="DC.source" content="facemark_kazemi_detect_vid_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Face landmark detection in a video</h1>
+         <!--introduction-->
+         <p>Face landmark detection in a video running at real time.</p>
+         <p>This demos lets you detect landmarks of detected faces in a video. It first detects faces in a current video frame and then
+            finds their facial landmarks.
+         </p>
+         <p>Example video: <a href="http://www.youtube.com/watch?v=ZtaV07T90D8">http://www.youtube.com/watch?v=ZtaV07T90D8</a>.
+         </p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/face/samples/sampleDetectLandmarksvideo.cpp">https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/face/samples/sampleDetectLandmarksvideo.cpp</a></li>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/face/tutorials/face_landmark/face_landmark_video.markdown">https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/face/tutorials/face_landmark/face_landmark_video.markdown</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Options</a></li>
+               <li><a href="#3">Init</a></li>
+               <li><a href="#4">Video</a></li>
+               <li><a href="#5">Detect</a></li>
+               <li><a href="#6">Helper function</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Options</h2><pre class="codeinput"><span class="comment">% [INPUT] path to input video</span>
+vid = fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'dudek.webm'</span>);
+
+<span class="comment">% [INPUT] path to binary file storing the trained model to load</span>
+modelFile = fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'face_landmark_model.dat'</span>);
+<span class="keyword">if</span> exist(modelFile, <span class="string">'file'</span>) ~= 2
+    <span class="comment">% download model from GitHub</span>
+    disp(<span class="string">'Downloading model (~ 69MB)...'</span>)
+    url = <span class="string">'https://cdn.rawgit.com/opencv/opencv_3rdparty/contrib_face_alignment_20170818/face_landmark_model.dat'</span>;
+    urlwrite(url, modelFile);
+<span class="keyword">end</span>
+
+<span class="comment">% [INPUT] path to the cascade xml file for the face detector</span>
+xmlFace = fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'lbpcascade_frontalface.xml'</span>);
+download_classifier_xml(xmlFace);
+
+<span class="comment">% name of user-defined face detector function</span>
+faceDetectFcn = <span class="string">'myFaceDetector'</span>;
+assert(exist([faceDetectFcn <span class="string">'.m'</span>], <span class="string">'file'</span>) == 2, <span class="string">'missing face detect function'</span>);
+
+<span class="comment">% width/height to scale images, as larger images are slower to process</span>
+scale = [600 600];</pre><h2 id="3">Init</h2>
+         <p>create instance of the face landmark detection class, and set the face detector function, then load the pre-trained model</p><pre class="codeinput">obj = cv.FacemarkKazemi();
+obj.setFaceDetector(faceDetectFcn);
+obj.loadModel(modelFile);</pre><h2 id="4">Video</h2>
+         <p>open video, and prepare figure</p><pre class="codeinput">cap = cv.VideoCapture(vid);
+assert(cap.isOpened(), <span class="string">'Failed to load video'</span>);
+img = cap.read();
+assert(~isempty(img), <span class="string">'Failed to read frame'</span>);
+hImg = imshow(img);</pre><img src="facemark_kazemi_detect_vid_demo_01.png"><h2 id="5">Detect</h2>
+         <p>main loop: read each frame and detect faces and the landmarks corresponding to each shape detected, then display the current
+            frame
+         </p><pre class="codeinput"><span class="keyword">while</span> ishghandle(hImg)
+    <span class="comment">% read frame</span>
+    img = cap.read();
+    <span class="keyword">if</span> isempty(img), <span class="keyword">break</span>; <span class="keyword">end</span>
+
+    <span class="comment">% detect faces</span>
+    <span class="comment">%img = cv.resize(img, scale);</span>
+    faces = obj.getFaces(img);
+    <span class="keyword">if</span> ~isempty(faces)
+        <span class="comment">% draw bounding box</span>
+        img = cv.rectangle(img, faces, <span class="string">'Color'</span>,[0 255 0]);
+
+        <span class="comment">% detect face landmarks</span>
+        [shapes, success] = obj.fit(img, faces);
+        <span class="keyword">if</span> success
+            <span class="comment">% draw face landmarks</span>
+            <span class="keyword">for</span> i=1:numel(shapes)
+                img = cv.circle(img, shapes{i}, 3, <span class="string">'Color'</span>,[0 0 255], <span class="string">'Thickness'</span>,<span class="string">'Filled'</span>);
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    <span class="comment">% show frame + results</span>
+    set(hImg, <span class="string">'CData'</span>,img)
+    drawnow
+<span class="keyword">end</span>
+cap.release();</pre><img src="facemark_kazemi_detect_vid_demo_02.png"><h2 id="6">Helper function</h2><pre class="codeinput"><span class="keyword">function</span> download_classifier_xml(fname)
+    <span class="keyword">if</span> exist(fname, <span class="string">'file'</span>) ~= 2
+        <span class="comment">% attempt to download trained Haar/LBP/HOG classifier from Github</span>
+        url = <span class="string">'https://cdn.rawgit.com/opencv/opencv/3.4.0/data/'</span>;
+        [~, f, ext] = fileparts(fname);
+        <span class="keyword">if</span> strncmpi(f, <span class="string">'haarcascade_'</span>, length(<span class="string">'haarcascade_'</span>))
+            url = [url, <span class="string">'haarcascades/'</span>];
+        <span class="keyword">elseif</span> strncmpi(f, <span class="string">'lbpcascade_'</span>, length(<span class="string">'lbpcascade_'</span>))
+            url = [url, <span class="string">'lbpcascades/'</span>];
+        <span class="keyword">elseif</span> strncmpi(f, <span class="string">'hogcascade_'</span>, length(<span class="string">'hogcascade_'</span>))
+            url = [url, <span class="string">'hogcascades/'</span>];
+        <span class="keyword">else</span>
+            error(<span class="string">'File not found'</span>);
+        <span class="keyword">end</span>
+        urlwrite([url f ext], fname);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">% The facemark API provides the functionality to the user to use their own</span>
+<span class="comment">% face detector. The code below implements a sample face detector. This</span>
+<span class="comment">% function must be saved in its own M-function to be used by the facemark API.</span>
+<span class="keyword">function</span> faces = myFaceDetector(img)
+    <span class="keyword">persistent</span> obj
+    <span class="keyword">if</span> isempty(obj)
+        obj = cv.CascadeClassifier();
+        obj.load(xmlFace);
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> size(img,3) &gt; 1
+        gray = cv.cvtColor(img, <span class="string">'RGB2GRAY'</span>);
+    <span class="keyword">else</span>
+        gray = img;
+    <span class="keyword">end</span>
+    gray = cv.equalizeHist(gray);
+    faces = obj.detect(gray, <span class="string">'ScaleFactor'</span>,1.4, <span class="string">'MinNeighbors'</span>,2, <span class="keyword">...</span>
+        <span class="string">'ScaleImage'</span>,true, <span class="string">'MinSize'</span>,[30 30]);
+<span class="keyword">end</span></pre><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Face landmark detection in a video
+% Face landmark detection in a video running at real time.
+%
+% This demos lets you detect landmarks of detected faces in a video. It first
+% detects faces in a current video frame and then finds their facial landmarks.
+%
+% Example video: <http://www.youtube.com/watch?v=ZtaV07T90D8>.
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/face/samples/sampleDetectLandmarksvideo.cpp>
+% * <https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/face/tutorials/face_landmark/face_landmark_video.markdown>
+%
+
+%% Options
+
+% [INPUT] path to input video
+vid = fullfile(mexopencv.root(),'test','dudek.webm');
+
+% [INPUT] path to binary file storing the trained model to load
+modelFile = fullfile(mexopencv.root(),'test','face_landmark_model.dat');
+if exist(modelFile, 'file') ~= 2
+    % download model from GitHub
+    disp('Downloading model (~ 69MB)...')
+    url = 'https://cdn.rawgit.com/opencv/opencv_3rdparty/contrib_face_alignment_20170818/face_landmark_model.dat';
+    urlwrite(url, modelFile);
+end
+
+% [INPUT] path to the cascade xml file for the face detector
+xmlFace = fullfile(mexopencv.root(),'test','lbpcascade_frontalface.xml');
+download_classifier_xml(xmlFace);
+
+% name of user-defined face detector function
+faceDetectFcn = 'myFaceDetector';
+assert(exist([faceDetectFcn '.m'], 'file') == 2, 'missing face detect function');
+
+% width/height to scale images, as larger images are slower to process
+scale = [600 600];
+
+%% Init
+% create instance of the face landmark detection class,
+% and set the face detector function, then load the pre-trained model
+obj = cv.FacemarkKazemi();
+obj.setFaceDetector(faceDetectFcn);
+obj.loadModel(modelFile);
+
+%% Video
+% open video, and prepare figure
+cap = cv.VideoCapture(vid);
+assert(cap.isOpened(), 'Failed to load video');
+img = cap.read();
+assert(~isempty(img), 'Failed to read frame');
+hImg = imshow(img);
+
+%% Detect
+% main loop: read each frame and detect faces and the landmarks corresponding
+% to each shape detected, then display the current frame
+while ishghandle(hImg)
+    % read frame
+    img = cap.read();
+    if isempty(img), break; end
+
+    % detect faces
+    %img = cv.resize(img, scale);
+    faces = obj.getFaces(img);
+    if ~isempty(faces)
+        % draw bounding box
+        img = cv.rectangle(img, faces, 'Color',[0 255 0]);
+
+        % detect face landmarks
+        [shapes, success] = obj.fit(img, faces);
+        if success
+            % draw face landmarks
+            for i=1:numel(shapes)
+                img = cv.circle(img, shapes{i}, 3, 'Color',[0 0 255], 'Thickness','Filled');
+            end
+        end
+    end
+
+    % show frame + results
+    set(hImg, 'CData',img)
+    drawnow
+end
+cap.release();
+
+%% Helper function
+
+function download_classifier_xml(fname)
+    if exist(fname, 'file') ~= 2
+        % attempt to download trained Haar/LBP/HOG classifier from Github
+        url = 'https://cdn.rawgit.com/opencv/opencv/3.4.0/data/';
+        [~, f, ext] = fileparts(fname);
+        if strncmpi(f, 'haarcascade_', length('haarcascade_'))
+            url = [url, 'haarcascades/'];
+        elseif strncmpi(f, 'lbpcascade_', length('lbpcascade_'))
+            url = [url, 'lbpcascades/'];
+        elseif strncmpi(f, 'hogcascade_', length('hogcascade_'))
+            url = [url, 'hogcascades/'];
+        else
+            error('File not found');
+        end
+        urlwrite([url f ext], fname);
+    end
+end
+
+% The facemark API provides the functionality to the user to use their own
+% face detector. The code below implements a sample face detector. This
+% function must be saved in its own M-function to be used by the facemark API.
+function faces = myFaceDetector(img)
+    persistent obj
+    if isempty(obj)
+        obj = cv.CascadeClassifier();
+        obj.load(xmlFace);
+    end
+
+    if size(img,3) > 1
+        gray = cv.cvtColor(img, 'RGB2GRAY');
+    else
+        gray = img;
+    end
+    gray = cv.equalizeHist(gray);
+    faces = obj.detect(gray, 'ScaleFactor',1.4, 'MinNeighbors',2, ...
+        'ScaleImage',true, 'MinSize',[30 30]);
+end
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

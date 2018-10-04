@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Detection of Diamond Markers Demo</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="aruco_detect_diamonds_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Detection of Diamond Markers Demo</h1>
+         <!--introduction-->
+         <p>Detection and pose estimation using ChArUco markers.</p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://docs.opencv.org/3.1.0/d5/d07/tutorial_charuco_diamond_detection.html">https://docs.opencv.org/3.1.0/d5/d07/tutorial_charuco_diamond_detection.html</a></li>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/aruco/samples/detect_diamonds.cpp">https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/aruco/samples/detect_diamonds.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Parameters</a></li>
+               <li><a href="#3">Input source</a></li>
+               <li><a href="#4">Main loop</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Parameters</h2><pre class="codeinput"><span class="comment">% options</span>
+vidFile = <span class="string">''</span>;              <span class="comment">% Use video file instead of camera as input</span>
+squareLength = 120;        <span class="comment">% Square side length (in pixels)</span>
+markerLength = 60;         <span class="comment">% Marker side length (in pixels)</span>
+dictionaryId = <span class="string">'6x6_250'</span>;  <span class="comment">% Dictionary id</span>
+showRejected = false;      <span class="comment">% Show rejected candidates too</span>
+estimatePose = true;       <span class="comment">% Wheather to estimate pose or not</span>
+<span class="keyword">if</span> estimatePose
+    <span class="comment">% calibrated camera parameters</span>
+    load <span class="string">camera_parameters.mat</span> <span class="string">-mat</span> <span class="string">camMatrix</span> <span class="string">distCoeffs</span>
+    <span class="comment">%camMatrix = eye(3);</span>
+    <span class="comment">%distCoeffs = zeros(1,5);</span>
+<span class="keyword">else</span>
+    camMatrix = [];
+    distCoeffs = [];
+<span class="keyword">end</span>
+autoScale = false;
+autoScaleFactor = 1.0;     <span class="comment">% Automatic scale. The provided number is multiplied</span>
+                           <span class="comment">% by the last diamond id becoming an indicator of</span>
+                           <span class="comment">% the square length. In this case, the squareLength</span>
+                           <span class="comment">% and markerLength values are only used to know the</span>
+                           <span class="comment">% relative length relation between squares and</span>
+                           <span class="comment">% markers</span>
+
+<span class="comment">% marker detector parameters</span>
+detectorParams = struct();
+<span class="keyword">if</span> false
+    <span class="comment">%detectorParams.nMarkers = 1024;</span>
+    detectorParams.adaptiveThreshWinSizeMin = 3;
+    detectorParams.adaptiveThreshWinSizeMax = 23;
+    detectorParams.adaptiveThreshWinSizeStep = 10;
+    detectorParams.adaptiveThreshConstant = 7;
+    detectorParams.minMarkerPerimeterRate = 0.03;
+    detectorParams.maxMarkerPerimeterRate = 4.0;
+    detectorParams.polygonalApproxAccuracyRate = 0.05;
+    detectorParams.minCornerDistanceRate = 0.05;
+    detectorParams.minDistanceToBorder = 3;
+    detectorParams.minMarkerDistanceRate = 0.05;
+    detectorParams.cornerRefinementMethod = <span class="string">'None'</span>;
+    detectorParams.cornerRefinementWinSize = 5;
+    detectorParams.cornerRefinementMaxIterations = 30;
+    detectorParams.cornerRefinementMinAccuracy = 0.1;
+    detectorParams.markerBorderBits = 1;
+    detectorParams.perspectiveRemovePixelPerCell = 8;
+    detectorParams.perspectiveRemoveIgnoredMarginPerCell = 0.13;
+    detectorParams.maxErroneousBitsInBorderRate = 0.04;
+    detectorParams.minOtsuStdDev = 5.0;
+    detectorParams.errorCorrectionRate = 0.6;
+<span class="keyword">end</span>
+
+<span class="comment">% dictionary</span>
+dictionary = {<span class="string">'Predefined'</span>, dictionaryId};</pre><h2 id="3">Input source</h2><pre class="codeinput"><span class="keyword">if</span> ~isempty(vidFile) &amp;&amp; exist(vidFile, <span class="string">'file'</span>) == 2
+    vid = cv.VideoCapture(vidFile);
+    waitTime = 1;     <span class="comment">% 1 sec</span>
+<span class="keyword">else</span>
+    vid = createVideoCapture([], <span class="string">'charuco'</span>);
+    waitTime = 0.01;  <span class="comment">% 10 msec</span>
+<span class="keyword">end</span>
+<span class="keyword">if</span> ~vid.isOpened(), error(<span class="string">'failed to initialize VideoCapture'</span>); <span class="keyword">end</span></pre><h2 id="4">Main loop</h2><pre class="codeinput">totalTime = 0;
+totalIterations = 0;
+hImg = [];
+<span class="keyword">while</span> true
+    <span class="comment">% grab frame</span>
+    img = vid.read();
+    <span class="keyword">if</span> isempty(img), <span class="keyword">break</span>; <span class="keyword">end</span>
+
+    tId = tic();
+
+    <span class="comment">% detect markers</span>
+    [markerCorners, markerIds, rejectedMarkers] = cv.detectMarkers(<span class="keyword">...</span>
+        img, dictionary, <span class="string">'DetectorParameters'</span>,detectorParams);
+
+    <span class="comment">% detect diamonds</span>
+    <span class="keyword">if</span> ~isempty(markerIds)
+        [diamondCorners, diamondIds] = cv.detectCharucoDiamond(<span class="keyword">...</span>
+            img, markerCorners, markerIds, squareLength / markerLength, <span class="keyword">...</span>
+            <span class="string">'CameraMatrix'</span>,camMatrix, <span class="string">'DistCoeffs'</span>,distCoeffs);
+    <span class="keyword">end</span>
+
+    <span class="comment">% estimate diamond pose</span>
+    <span class="keyword">if</span> estimatePose &amp;&amp; ~isempty(diamondIds)
+        <span class="keyword">if</span> ~autoScale
+            [rvecs, tvecs] = cv.estimatePoseSingleMarkers(<span class="keyword">...</span>
+                diamondCorners, squareLength, camMatrix, distCoeffs);
+        <span class="keyword">else</span>
+            <span class="comment">% if autoscale, extract square size from last diamond id</span>
+            rvecs = cell(size(diamondCorners));
+            tvecs = cell(size(diamondCorners));
+            <span class="keyword">for</span> i=1:numel(diamondCorners)
+                autoSquareLength = autoScaleFactor * double(diamondIds{i}(4));
+                currentCorners = {diamondCorners{i}};
+                [currentRvec, currentTvec] = cv.estimatePoseSingleMarkers(<span class="keyword">...</span>
+                    currentCorners, autoSquareLength, camMatrix, distCoeffs);
+                rvecs{i} = currentRvec{1};
+                tvecs{i} = currentTvec{1};
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    <span class="comment">% tic/toc</span>
+    currentTime = toc(tId);
+    totalTime = totalTime + currentTime;
+    totalIterations = totalIterations + 1;
+    <span class="keyword">if</span> mod(totalIterations, 30) == 0
+        fprintf(<span class="string">'Detection time = %f ms (Mean = %f ms)\n'</span>, <span class="keyword">...</span>
+            1000*currentTime, 1000*totalTime/totalIterations);
+    <span class="keyword">end</span>
+
+    <span class="comment">% draw results</span>
+    <span class="keyword">if</span> ~isempty(markerIds)
+        img = cv.drawDetectedMarkers(img, markerCorners);  <span class="comment">% 'IDs',markerIds</span>
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> showRejected &amp;&amp; ~isempty(rejectedMarkers)
+        img = cv.drawDetectedMarkers(img, rejectedMarkers, <span class="keyword">...</span>
+            <span class="string">'BorderColor'</span>,[255 0 100]);
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> ~isempty(markerIds) &amp;&amp; ~isempty(diamondIds)
+        img = cv.drawDetectedDiamonds(img, diamondCorners, <span class="string">'IDs'</span>,diamondIds);
+
+        <span class="keyword">if</span> estimatePose
+            <span class="keyword">for</span> i=1:numel(diamondIds)
+                img = cv.drawAxis(img, camMatrix, distCoeffs, <span class="keyword">...</span>
+                    rvecs{i}, tvecs{i}, squareLength * 0.5);
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> isempty(hImg)
+        hImg = imshow(img);
+    <span class="keyword">elseif</span> ishghandle(hImg)
+        set(hImg, <span class="string">'CData'</span>,img);
+    <span class="keyword">else</span>
+        <span class="keyword">break</span>;
+    <span class="keyword">end</span>
+    drawnow; pause(waitTime);
+<span class="keyword">end</span>
+vid.release();</pre><pre class="codeoutput">Detection time = 92.399476 ms (Mean = 95.749196 ms)
+Detection time = 91.688747 ms (Mean = 93.386428 ms)
+</pre><img src="aruco_detect_diamonds_demo_01.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Detection of Diamond Markers Demo
+% Detection and pose estimation using ChArUco markers.
+%
+% Sources:
+%
+% * <https://docs.opencv.org/3.1.0/d5/d07/tutorial_charuco_diamond_detection.html>
+% * <https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/aruco/samples/detect_diamonds.cpp>
+%
+
+%% Parameters
+
+% options
+vidFile = '';              % Use video file instead of camera as input
+squareLength = 120;        % Square side length (in pixels)
+markerLength = 60;         % Marker side length (in pixels)
+dictionaryId = '6x6_250';  % Dictionary id
+showRejected = false;      % Show rejected candidates too
+estimatePose = true;       % Wheather to estimate pose or not
+if estimatePose
+    % calibrated camera parameters
+    load camera_parameters.mat -mat camMatrix distCoeffs
+    %camMatrix = eye(3);
+    %distCoeffs = zeros(1,5);
+else
+    camMatrix = [];
+    distCoeffs = [];
+end
+autoScale = false;
+autoScaleFactor = 1.0;     % Automatic scale. The provided number is multiplied
+                           % by the last diamond id becoming an indicator of
+                           % the square length. In this case, the squareLength
+                           % and markerLength values are only used to know the
+                           % relative length relation between squares and
+                           % markers
+
+% marker detector parameters
+detectorParams = struct();
+if false
+    %detectorParams.nMarkers = 1024;
+    detectorParams.adaptiveThreshWinSizeMin = 3;
+    detectorParams.adaptiveThreshWinSizeMax = 23;
+    detectorParams.adaptiveThreshWinSizeStep = 10;
+    detectorParams.adaptiveThreshConstant = 7;
+    detectorParams.minMarkerPerimeterRate = 0.03;
+    detectorParams.maxMarkerPerimeterRate = 4.0;
+    detectorParams.polygonalApproxAccuracyRate = 0.05;
+    detectorParams.minCornerDistanceRate = 0.05;
+    detectorParams.minDistanceToBorder = 3;
+    detectorParams.minMarkerDistanceRate = 0.05;
+    detectorParams.cornerRefinementMethod = 'None';
+    detectorParams.cornerRefinementWinSize = 5;
+    detectorParams.cornerRefinementMaxIterations = 30;
+    detectorParams.cornerRefinementMinAccuracy = 0.1;
+    detectorParams.markerBorderBits = 1;
+    detectorParams.perspectiveRemovePixelPerCell = 8;
+    detectorParams.perspectiveRemoveIgnoredMarginPerCell = 0.13;
+    detectorParams.maxErroneousBitsInBorderRate = 0.04;
+    detectorParams.minOtsuStdDev = 5.0;
+    detectorParams.errorCorrectionRate = 0.6;
+end
+
+% dictionary
+dictionary = {'Predefined', dictionaryId};
+
+%% Input source
+if ~isempty(vidFile) && exist(vidFile, 'file') == 2
+    vid = cv.VideoCapture(vidFile);
+    waitTime = 1;     % 1 sec
+else
+    vid = createVideoCapture([], 'charuco');
+    waitTime = 0.01;  % 10 msec
+end
+if ~vid.isOpened(), error('failed to initialize VideoCapture'); end
+
+%% Main loop
+totalTime = 0;
+totalIterations = 0;
+hImg = [];
+while true
+    % grab frame
+    img = vid.read();
+    if isempty(img), break; end
+
+    tId = tic();
+
+    % detect markers
+    [markerCorners, markerIds, rejectedMarkers] = cv.detectMarkers(...
+        img, dictionary, 'DetectorParameters',detectorParams);
+
+    % detect diamonds
+    if ~isempty(markerIds)
+        [diamondCorners, diamondIds] = cv.detectCharucoDiamond(...
+            img, markerCorners, markerIds, squareLength / markerLength, ...
+            'CameraMatrix',camMatrix, 'DistCoeffs',distCoeffs);
+    end
+
+    % estimate diamond pose
+    if estimatePose && ~isempty(diamondIds)
+        if ~autoScale
+            [rvecs, tvecs] = cv.estimatePoseSingleMarkers(...
+                diamondCorners, squareLength, camMatrix, distCoeffs);
+        else
+            % if autoscale, extract square size from last diamond id
+            rvecs = cell(size(diamondCorners));
+            tvecs = cell(size(diamondCorners));
+            for i=1:numel(diamondCorners)
+                autoSquareLength = autoScaleFactor * double(diamondIds{i}(4));
+                currentCorners = {diamondCorners{i}};
+                [currentRvec, currentTvec] = cv.estimatePoseSingleMarkers(...
+                    currentCorners, autoSquareLength, camMatrix, distCoeffs);
+                rvecs{i} = currentRvec{1};
+                tvecs{i} = currentTvec{1};
+            end
+        end
+    end
+
+    % tic/toc
+    currentTime = toc(tId);
+    totalTime = totalTime + currentTime;
+    totalIterations = totalIterations + 1;
+    if mod(totalIterations, 30) == 0
+        fprintf('Detection time = %f ms (Mean = %f ms)\n', ...
+            1000*currentTime, 1000*totalTime/totalIterations);
+    end
+
+    % draw results
+    if ~isempty(markerIds)
+        img = cv.drawDetectedMarkers(img, markerCorners);  % 'IDs',markerIds
+    end
+
+    if showRejected && ~isempty(rejectedMarkers)
+        img = cv.drawDetectedMarkers(img, rejectedMarkers, ...
+            'BorderColor',[255 0 100]);
+    end
+
+    if ~isempty(markerIds) && ~isempty(diamondIds)
+        img = cv.drawDetectedDiamonds(img, diamondCorners, 'IDs',diamondIds);
+
+        if estimatePose
+            for i=1:numel(diamondIds)
+                img = cv.drawAxis(img, camMatrix, distCoeffs, ...
+                    rvecs{i}, tvecs{i}, squareLength * 0.5);
+            end
+        end
+    end
+
+    if isempty(hImg)
+        hImg = imshow(img);
+    elseif ishghandle(hImg)
+        set(hImg, 'CData',img);
+    else
+        break;
+    end
+    drawnow; pause(waitTime);
+end
+vid.release();
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

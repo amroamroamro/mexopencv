@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>White Balance Demo</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="color_balance_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">White Balance Demo</h1>
+         <!--introduction-->
+         <p>OpenCV color balance demonstration sample.</p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.2.0/modules/xphoto/samples/color_balance.cpp">https://github.com/opencv/opencv_contrib/blob/3.2.0/modules/xphoto/samples/color_balance.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Load input image</a></li>
+               <li><a href="#3">Options</a></li>
+               <li><a href="#4">Create white balancer</a></li>
+               <li><a href="#5">Apply</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Load input image</h2><pre class="codeinput">src = cv.imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'test1.png'</span>), <span class="string">'Color'</span>,true);</pre><h2 id="3">Options</h2><pre class="codeinput">alg = <span class="string">'grayworld'</span>;  <span class="comment">% color balance algorithm</span>
+modelFilename = <span class="string">''</span>; <span class="comment">% path to the model for the learning-based algorithm (optional)</span></pre><h2 id="4">Create white balancer</h2><pre class="codeinput"><span class="keyword">switch</span> alg
+    <span class="keyword">case</span> <span class="string">'simple'</span>
+        wb = cv.SimpleWB();
+    <span class="keyword">case</span> <span class="string">'grayworld'</span>
+        wb = cv.GrayworldWB();
+    <span class="keyword">case</span> <span class="string">'learning_based'</span>
+        args = {};
+        <span class="keyword">if</span> ~isempty(modelFilename)
+            args = {<span class="string">'PathToModel'</span>,modelFilename};
+        <span class="keyword">end</span>
+        wb = cv.LearningBasedWB(args{:});
+    <span class="keyword">otherwise</span>
+        error(<span class="string">'Unrecognized algorithm %s'</span>, alg);
+<span class="keyword">end</span></pre><h2 id="5">Apply</h2><pre class="codeinput">dst = wb.balanceWhite(src);
+subplot(121), imshow(src), title(<span class="string">'Source'</span>)
+subplot(122), imshow(dst), title(<span class="string">'after white balance'</span>)
+
+psnr = cv.PSNR(src, dst);
+fprintf(<span class="string">'PSNR = %f\n'</span>, psnr);</pre><pre class="codeoutput">PSNR = 20.027759
+</pre><img src="color_balance_demo_01.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% White Balance Demo
+% OpenCV color balance demonstration sample.
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv_contrib/blob/3.2.0/modules/xphoto/samples/color_balance.cpp>
+%
+
+%% Load input image
+src = cv.imread(fullfile(mexopencv.root(),'test','test1.png'), 'Color',true);
+
+%% Options
+alg = 'grayworld';  % color balance algorithm
+modelFilename = ''; % path to the model for the learning-based algorithm (optional)
+
+%% Create white balancer
+switch alg
+    case 'simple'
+        wb = cv.SimpleWB();
+    case 'grayworld'
+        wb = cv.GrayworldWB();
+    case 'learning_based'
+        args = {};
+        if ~isempty(modelFilename)
+            args = {'PathToModel',modelFilename};
+        end
+        wb = cv.LearningBasedWB(args{:});
+    otherwise
+        error('Unrecognized algorithm %s', alg);
+end
+
+%% Apply
+dst = wb.balanceWhite(src);
+subplot(121), imshow(src), title('Source')
+subplot(122), imshow(dst), title('after white balance')
+
+psnr = cv.PSNR(src, dst);
+fprintf('PSNR = %f\n', psnr);
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

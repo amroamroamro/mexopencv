@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>ChArUco Marker Image Demo</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="aruco_create_diamond_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">ChArUco Marker Image Demo</h1>
+         <!--introduction-->
+         <p>This example shows how to create a ChArUco marker image.</p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/aruco/samples/create_diamond.cpp">https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/aruco/samples/create_diamond.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Diamond</a></li>
+               <li><a href="#3">Display</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Diamond</h2><pre class="codeinput"><span class="comment">% params</span>
+squareLength = 120;           <span class="comment">% Square side length (in pixels)</span>
+markerLength = 60;            <span class="comment">% Marker side length (in pixels)</span>
+dictionaryId = <span class="string">'6x6_250'</span>;     <span class="comment">% dictionary id</span>
+ids = randi([0 249], [1 4]);  <span class="comment">% Four ids for the ChArUco marker: id1,id2,id3,id4</span>
+margins = 0;                  <span class="comment">% Margins size (in pixels)</span>
+borderBits = 1;               <span class="comment">% Number of bits in marker borders</span></pre><h2 id="3">Display</h2><pre class="codeinput"><span class="comment">% show marker</span>
+dictionary = {<span class="string">'Predefined'</span>, dictionaryId};
+markerImg = cv.drawCharucoDiamond(dictionary, ids, <span class="keyword">...</span>
+    squareLength, markerLength, <span class="string">'MarginSize'</span>,margins, <span class="string">'BorderBits'</span>,borderBits);
+imshow(markerImg), title(<span class="string">'DiamondMarker'</span>)
+
+<span class="comment">% save image</span>
+imwrite(markerImg, fullfile(tempdir(),<span class="string">'DiamondMarker.png'</span>));</pre><img src="aruco_create_diamond_demo_01.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% ChArUco Marker Image Demo
+% This example shows how to create a ChArUco marker image.
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/aruco/samples/create_diamond.cpp>
+%
+
+%% Diamond
+
+% params
+squareLength = 120;           % Square side length (in pixels)
+markerLength = 60;            % Marker side length (in pixels)
+dictionaryId = '6x6_250';     % dictionary id
+ids = randi([0 249], [1 4]);  % Four ids for the ChArUco marker: id1,id2,id3,id4
+margins = 0;                  % Margins size (in pixels)
+borderBits = 1;               % Number of bits in marker borders
+
+%% Display
+
+% show marker
+dictionary = {'Predefined', dictionaryId};
+markerImg = cv.drawCharucoDiamond(dictionary, ids, ...
+    squareLength, markerLength, 'MarginSize',margins, 'BorderBits',borderBits);
+imshow(markerImg), title('DiamondMarker')
+
+% save image
+imwrite(markerImg, fullfile(tempdir(),'DiamondMarker.png'));
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Farneback Optical Flow</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="fback_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Farneback Optical Flow</h1>
+         <!--introduction-->
+         <p>This program demonstrates dense optical flow algorithm by Gunnar Farneback, mainly the function <tt>cv.calcOpticalFlowFarneback</tt>. It captures from the camera by default.
+         </p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/fback.cpp">https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/fback.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Input video</a></li>
+               <li><a href="#4">Prepare</a></li>
+               <li><a href="#6">Main loop</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Input video</h2>
+         <p>setup video capture</p><pre class="codeinput">cap = createVideoCapture([], <span class="string">'chess'</span>);
+pause(1);
+assert(cap.isOpened(), <span class="string">'Could not initialize capturing'</span>);</pre><p>grab first frame</p><pre class="codeinput">frame = cap.read();
+assert(~isempty(frame), <span class="string">'Could not read frame'</span>);
+prev = cv.cvtColor(frame, <span class="string">'RGB2GRAY'</span>);</pre><h2 id="4">Prepare</h2>
+         <p>grid over which to plot vector field</p><pre class="codeinput">step = 16;  <span class="comment">% subsample in x/y directions for less dense plot</span>
+sz = size(frame);
+xstep = 1:step:sz(2);
+ystep = 1:step:sz(1);
+[X,Y] = meshgrid(xstep, ystep);</pre><p>plot</p><pre class="codeinput">out = frame;
+hImg = imshow(out);
+hold <span class="string">on</span>
+hQ = quiver(X(:), Y(:), X(:)*0, Y(:)*0, 0, <span class="string">'Color'</span>,<span class="string">'g'</span>);
+hold <span class="string">off</span>, title(<span class="string">'Farneback [Dense]'</span>)</pre><img src="fback_demo_01.png"><h2 id="6">Main loop</h2><pre class="codeinput">counter = 0;
+tid = tic();
+<span class="keyword">while</span> ishghandle(hImg)
+    <span class="comment">% grab frame</span>
+    counter = counter + 1;
+    frame = cap.read();
+    <span class="keyword">if</span> isempty(frame), <span class="keyword">break</span>; <span class="keyword">end</span>
+
+    <span class="comment">% calculate optical flow</span>
+    <span class="comment">% (a 2-channel array with optical flow vectors (u,v))</span>
+    next = cv.cvtColor(frame, <span class="string">'RGB2GRAY'</span>);
+    flow = cv.calcOpticalFlowFarneback(prev, next, <span class="keyword">...</span>
+        <span class="string">'Levels'</span>,3, <span class="string">'WinSize'</span>,15, <span class="string">'Iterations'</span>,3, <span class="string">'PolySigma'</span>,1.2);
+
+    <span class="comment">% plot optical flow map</span>
+    U = flow(ystep,xstep,1);
+    V = flow(ystep,xstep,2);
+    set(hQ, <span class="string">'UData'</span>,U(:), <span class="string">'VData'</span>,V(:));
+
+    <span class="comment">% show output + FPS</span>
+    out = cv.putText(out, sprintf(<span class="string">'FPS = %.2f'</span>, counter/toc(tid)), [10 20], <span class="keyword">...</span>
+        <span class="string">'FontFace'</span>,<span class="string">'HersheyPlain'</span>, <span class="string">'LineType'</span>,<span class="string">'AA'</span>, <span class="string">'Color'</span>,[255 255 0]);
+    set(hImg, <span class="string">'CData'</span>,out);
+    drawnow;
+
+    <span class="comment">% next iteration</span>
+    out = frame;
+    prev = next;
+<span class="keyword">end</span>
+cap.release();  <span class="comment">% close camera feed</span></pre><img src="fback_demo_02.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Farneback Optical Flow
+% This program demonstrates dense optical flow algorithm by Gunnar Farneback,
+% mainly the function |cv.calcOpticalFlowFarneback|.
+% It captures from the camera by default.
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/fback.cpp>
+%
+
+%% Input video
+% setup video capture
+cap = createVideoCapture([], 'chess');
+pause(1);
+assert(cap.isOpened(), 'Could not initialize capturing');
+
+%%
+% grab first frame
+frame = cap.read();
+assert(~isempty(frame), 'Could not read frame');
+prev = cv.cvtColor(frame, 'RGB2GRAY');
+
+%% Prepare
+% grid over which to plot vector field
+step = 16;  % subsample in x/y directions for less dense plot
+sz = size(frame);
+xstep = 1:step:sz(2);
+ystep = 1:step:sz(1);
+[X,Y] = meshgrid(xstep, ystep);
+
+%%
+% plot
+out = frame;
+hImg = imshow(out);
+hold on
+hQ = quiver(X(:), Y(:), X(:)*0, Y(:)*0, 0, 'Color','g');
+hold off, title('Farneback [Dense]')
+
+%% Main loop
+counter = 0;
+tid = tic();
+while ishghandle(hImg)
+    % grab frame
+    counter = counter + 1;
+    frame = cap.read();
+    if isempty(frame), break; end
+
+    % calculate optical flow
+    % (a 2-channel array with optical flow vectors (u,v))
+    next = cv.cvtColor(frame, 'RGB2GRAY');
+    flow = cv.calcOpticalFlowFarneback(prev, next, ...
+        'Levels',3, 'WinSize',15, 'Iterations',3, 'PolySigma',1.2);
+
+    % plot optical flow map
+    U = flow(ystep,xstep,1);
+    V = flow(ystep,xstep,2);
+    set(hQ, 'UData',U(:), 'VData',V(:));
+
+    % show output + FPS
+    out = cv.putText(out, sprintf('FPS = %.2f', counter/toc(tid)), [10 20], ...
+        'FontFace','HersheyPlain', 'LineType','AA', 'Color',[255 255 0]);
+    set(hImg, 'CData',out);
+    drawnow;
+
+    % next iteration
+    out = frame;
+    prev = next;
+end
+cap.release();  % close camera feed
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>niblack_thresholding_demo</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="niblack_thresholding_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#1">Niblack Image Thresholding</a></li>
+               <li><a href="#2">Helper function</a></li>
+            </ul>
+         </div>
+         <h2 id="1">Niblack Image Thresholding</h2>
+         <p>Sample to compare Niblack thresholding against other algorithms (global thresholding and adaptive thresholding) for an image
+            with varying illumination.
+         </p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.2.0/modules/ximgproc/samples/niblack_thresholding.cpp">https://github.com/opencv/opencv_contrib/blob/3.2.0/modules/ximgproc/samples/niblack_thresholding.cpp</a></li>
+               <li><a href="https://docs.opencv.org/3.2.0/d7/d4d/tutorial_py_thresholding.html">https://docs.opencv.org/3.2.0/d7/d4d/tutorial_py_thresholding.html</a></li>
+            </ul>
+         </div><pre class="codeinput"><span class="keyword">function</span> niblack_thresholding_demo()
+    <span class="comment">% Input 8-bit grayscale image + Parameters</span>
+    <span class="comment">% - BS: block size (local neighborhood) [niblack, adaptive]</span>
+    <span class="comment">% - K : constant multiplied by std dev next subtracted from mean [niblack]</span>
+    <span class="comment">% - C : constant subtracted from mean [adaptive]</span>
+    <span class="keyword">if</span> ~mexopencv.isOctave() &amp;&amp; mexopencv.require(<span class="string">'images'</span>)
+        <span class="comment">% image with dark pixels being foreground</span>
+        im = which(<span class="string">'printedtext.png'</span>);
+        K = -0.7;
+        C = 7;
+    <span class="keyword">elseif</span> true
+        <span class="comment">% image with dark pixels being foreground</span>
+        im = fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'sudoku.jpg'</span>);
+        K = -0.7;
+        C = 7;
+    <span class="keyword">elseif</span> ~mexopencv.isOctave() &amp;&amp; mexopencv.require(<span class="string">'images'</span>)
+        <span class="comment">% image with white pixels being foreground</span>
+        im = which(<span class="string">'rice.png'</span>);
+        K = 0.7;
+        C = -17;
+    <span class="keyword">end</span>
+    assert(~isempty(im) &amp;&amp; exist(im, <span class="string">'file'</span>) == 2);
+    img = cv.imread(im, <span class="string">'Grayscale'</span>,true);
+    BS = min(floor(size(img)/16) * 2 + 1);
+    assert(~isempty(img), <span class="string">'Failed to load image'</span>);
+
+    <span class="comment">% Preprocess image</span>
+    <span class="keyword">if</span> true
+        <span class="comment">% no processing</span>
+        src = img;
+    <span class="keyword">elseif</span> false
+        src = cv.medianBlur(img, <span class="string">'KSize'</span>,3);
+    <span class="keyword">elseif</span> true
+        <span class="comment">% really effective for global thresholding [otsu]</span>
+        src = localNormalization(img, 11, 33);
+    <span class="keyword">else</span>
+        <span class="comment">% rice image, estimate and subtract non-uniform illumination background</span>
+        <span class="comment">% (see NonuniformIlluminationExample.mlx example)</span>
+        <span class="keyword">if</span> mexopencv.require(<span class="string">'images'</span>)
+            src = imtophat(img, strel(<span class="string">'disk'</span>,15));
+            src = imadjust(src);
+        <span class="keyword">else</span>
+            el = cv.getStructuringElement(<span class="string">'Shape'</span>,<span class="string">'Ellipse'</span>, <span class="string">'KSize'</span>,[15 15]*2-1);
+            src = cv.morphologyEx(img, <span class="string">'Tophat'</span>, <span class="string">'Element'</span>,el);
+            obj = cv.SimpleWB();
+            src = obj.balanceWhite(src);
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    <span class="comment">% Threshold</span>
+    opts = {<span class="string">'Type'</span>,<span class="string">'Binary'</span>, <span class="string">'MaxValue'</span>,255};
+    bw1 = cv.threshold(src, <span class="string">'Otsu'</span>, opts{:});
+    bw2 = cv.adaptiveThreshold(src, <span class="string">'Method'</span>,<span class="string">'Mean'</span>, <span class="keyword">...</span>
+        <span class="string">'C'</span>,C, <span class="string">'BlockSize'</span>,BS, opts{:});
+    bw3 = cv.adaptiveThreshold(src, <span class="string">'Method'</span>,<span class="string">'Gaussian'</span>, <span class="keyword">...</span>
+        <span class="string">'C'</span>,C, <span class="string">'BlockSize'</span>,BS, opts{:});
+    bw4 = cv.niBlackThreshold(src, K, <span class="string">'Method'</span>,<span class="string">'Niblack'</span>, <span class="keyword">...</span>
+        <span class="string">'BlockSize'</span>,BS, opts{:});
+    bw5 = cv.niBlackThreshold(src, -K, <span class="string">'Method'</span>,<span class="string">'Sauvola'</span>, <span class="keyword">...</span>
+        <span class="string">'BlockSize'</span>,BS, opts{:});
+    bw6 = cv.niBlackThreshold(src, -K, <span class="string">'Method'</span>,<span class="string">'Wolf'</span>, <span class="keyword">...</span>
+        <span class="string">'BlockSize'</span>,BS, opts{:});
+    bw7 = cv.niBlackThreshold(src, K, <span class="string">'Method'</span>,<span class="string">'Nick'</span>, <span class="keyword">...</span>
+        <span class="string">'BlockSize'</span>,BS, opts{:});
+    <span class="comment">%bw8 = my_niblack(src, K, BS);</span>
+
+    <span class="comment">% Results</span>
+    subplot(331), imshow(img), title(<span class="string">'Source'</span>)
+    subplot(332), imshow(src), title(<span class="string">'Processed'</span>)
+    subplot(333), imshow(bw1), title(<span class="string">'Otsu'</span>)
+    subplot(334), imshow(bw2), title(<span class="string">'Adaptive Mean'</span>)
+    subplot(335), imshow(bw3), title(<span class="string">'Adaptive Gaussian'</span>)
+    subplot(336), imshow(bw4), title(<span class="string">'Niblack'</span>)
+    subplot(337), imshow(bw5), title(<span class="string">'Sauvola'</span>)
+    subplot(338), imshow(bw6), title(<span class="string">'Wolf'</span>)
+    subplot(339), imshow(bw7), title(<span class="string">'Nick'</span>)
+<span class="keyword">end</span></pre><img src="niblack_thresholding_demo_01.png"><h2 id="2">Helper function</h2><pre class="codeinput"><span class="keyword">function</span> out = localNormalization(img, s1, s2)
+    <span class="comment">%LOCALNORMALIZATION  local normalization to get uniform local mean and variance</span>
+    <span class="comment">%</span>
+    <span class="comment">%     out = localNormalization(img)</span>
+    <span class="comment">%     out = localNormalization(img, s1, s2)</span>
+    <span class="comment">%</span>
+    <span class="comment">% The local normalization tends to uniformize the mean and variance of an</span>
+    <span class="comment">% image around a local neighborhood. This is especially useful for correct</span>
+    <span class="comment">% non-uniform illumination or shading artifacts.</span>
+    <span class="comment">%</span>
+    <span class="comment">% ## Input</span>
+    <span class="comment">% * __img__ 8-bit input image</span>
+    <span class="comment">%</span>
+    <span class="comment">% ## Output</span>
+    <span class="comment">% * __out__ output image of same size and type.</span>
+    <span class="comment">%</span>
+    <span class="comment">% ## Options</span>
+    <span class="comment">% * __s1__ sigma to estimate the local mean. default 5</span>
+    <span class="comment">% * __s2__ sigma to estimate the local variance. Often `s2` should be</span>
+    <span class="comment">%   larger than `s1`. default 15</span>
+    <span class="comment">%</span>
+    <span class="comment">% ## References</span>
+    <span class="comment">% &gt; http://bigwww.epfl.ch/sage/soft/localnormalization/</span>
+    <span class="comment">%</span>
+
+    <span class="comment">% check arguments</span>
+    <span class="keyword">if</span> nargin &lt; 2, s1 = 5; <span class="keyword">end</span>
+    <span class="keyword">if</span> nargin &lt; 3, s2 = 15; <span class="keyword">end</span>
+    validateattributes(img, {<span class="string">'uint8'</span>}, {});
+
+    <span class="comment">% convert to grayscale</span>
+    <span class="keyword">if</span> size(img,3) == 3
+        gray = cv.cvtColor(img, <span class="string">'RGB2GRAY'</span>);
+    <span class="keyword">else</span>
+        gray = img;
+    <span class="keyword">end</span>
+
+    <span class="comment">% convert to floating-point image</span>
+    gray = cv.convertTo(gray, <span class="string">'RType'</span>,<span class="string">'single'</span>, <span class="string">'Alpha'</span>,1.0/255.0);
+
+    <span class="comment">% numerator = img - gauss_blur(img)</span>
+    blur = cv.GaussianBlur(gray, <span class="string">'KSize'</span>,[0 0], <span class="string">'SigmaX'</span>,s1, <span class="string">'SigmaY'</span>,s1);
+    num = gray - blur;
+
+    <span class="comment">% denominator = sqrt(gauss_blur(img^2))</span>
+    den = sqrt(cv.GaussianBlur(num.^2, <span class="string">'KSize'</span>,[0 0], <span class="string">'SigmaX'</span>,s2, <span class="string">'SigmaY'</span>,s2));
+
+    <span class="comment">% output = numerator / denominator</span>
+    out = num ./ den;
+
+    <span class="comment">% normalize output into [0,1]</span>
+    out = cv.normalize(out, <span class="string">'Alpha'</span>,0.0, <span class="string">'Beta'</span>,1.0, <span class="string">'NormType'</span>,<span class="string">'MinMax'</span>);
+
+    <span class="comment">% convert to 8-bit</span>
+    out = cv.convertTo(out, <span class="string">'RType'</span>,<span class="string">'uint8'</span>, <span class="string">'Alpha'</span>,255.0);
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> bw = my_niblack(img, K, BS)
+    <span class="comment">%MY_NIBLACK  Manual implementation of Niblack thresholding</span>
+
+    img = im2double(img);
+    mu = imboxfilt(img, [BS BS]);
+    sd = sqrt(imboxfilt(img.^2, [BS BS]) - mu.^2);
+    bw = img &gt; (mu + K*sd);
+<span class="keyword">end</span></pre><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Niblack Image Thresholding
+% Sample to compare Niblack thresholding against other algorithms
+% (global thresholding and adaptive thresholding) for an image with varying
+% illumination.
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv_contrib/blob/3.2.0/modules/ximgproc/samples/niblack_thresholding.cpp>
+% * <https://docs.opencv.org/3.2.0/d7/d4d/tutorial_py_thresholding.html>
+%
+
+function niblack_thresholding_demo()
+    % Input 8-bit grayscale image + Parameters
+    % - BS: block size (local neighborhood) [niblack, adaptive]
+    % - K : constant multiplied by std dev next subtracted from mean [niblack]
+    % - C : constant subtracted from mean [adaptive]
+    if ~mexopencv.isOctave() && mexopencv.require('images')
+        % image with dark pixels being foreground
+        im = which('printedtext.png');
+        K = -0.7;
+        C = 7;
+    elseif true
+        % image with dark pixels being foreground
+        im = fullfile(mexopencv.root(),'test','sudoku.jpg');
+        K = -0.7;
+        C = 7;
+    elseif ~mexopencv.isOctave() && mexopencv.require('images')
+        % image with white pixels being foreground
+        im = which('rice.png');
+        K = 0.7;
+        C = -17;
+    end
+    assert(~isempty(im) && exist(im, 'file') == 2);
+    img = cv.imread(im, 'Grayscale',true);
+    BS = min(floor(size(img)/16) * 2 + 1);
+    assert(~isempty(img), 'Failed to load image');
+
+    % Preprocess image
+    if true
+        % no processing
+        src = img;
+    elseif false
+        src = cv.medianBlur(img, 'KSize',3);
+    elseif true
+        % really effective for global thresholding [otsu]
+        src = localNormalization(img, 11, 33);
+    else
+        % rice image, estimate and subtract non-uniform illumination background
+        % (see NonuniformIlluminationExample.mlx example)
+        if mexopencv.require('images')
+            src = imtophat(img, strel('disk',15));
+            src = imadjust(src);
+        else
+            el = cv.getStructuringElement('Shape','Ellipse', 'KSize',[15 15]*2-1);
+            src = cv.morphologyEx(img, 'Tophat', 'Element',el);
+            obj = cv.SimpleWB();
+            src = obj.balanceWhite(src);
+        end
+    end
+
+    % Threshold
+    opts = {'Type','Binary', 'MaxValue',255};
+    bw1 = cv.threshold(src, 'Otsu', opts{:});
+    bw2 = cv.adaptiveThreshold(src, 'Method','Mean', ...
+        'C',C, 'BlockSize',BS, opts{:});
+    bw3 = cv.adaptiveThreshold(src, 'Method','Gaussian', ...
+        'C',C, 'BlockSize',BS, opts{:});
+    bw4 = cv.niBlackThreshold(src, K, 'Method','Niblack', ...
+        'BlockSize',BS, opts{:});
+    bw5 = cv.niBlackThreshold(src, -K, 'Method','Sauvola', ...
+        'BlockSize',BS, opts{:});
+    bw6 = cv.niBlackThreshold(src, -K, 'Method','Wolf', ...
+        'BlockSize',BS, opts{:});
+    bw7 = cv.niBlackThreshold(src, K, 'Method','Nick', ...
+        'BlockSize',BS, opts{:});
+    %bw8 = my_niblack(src, K, BS);
+
+    % Results
+    subplot(331), imshow(img), title('Source')
+    subplot(332), imshow(src), title('Processed')
+    subplot(333), imshow(bw1), title('Otsu')
+    subplot(334), imshow(bw2), title('Adaptive Mean')
+    subplot(335), imshow(bw3), title('Adaptive Gaussian')
+    subplot(336), imshow(bw4), title('Niblack')
+    subplot(337), imshow(bw5), title('Sauvola')
+    subplot(338), imshow(bw6), title('Wolf')
+    subplot(339), imshow(bw7), title('Nick')
+end
+
+%% Helper function
+
+function out = localNormalization(img, s1, s2)
+    %LOCALNORMALIZATION  local normalization to get uniform local mean and variance
+    %
+    %     out = localNormalization(img)
+    %     out = localNormalization(img, s1, s2)
+    %
+    % The local normalization tends to uniformize the mean and variance of an
+    % image around a local neighborhood. This is especially useful for correct
+    % non-uniform illumination or shading artifacts.
+    %
+    % ## Input
+    % * __img__ 8-bit input image
+    %
+    % ## Output
+    % * __out__ output image of same size and type.
+    %
+    % ## Options
+    % * __s1__ sigma to estimate the local mean. default 5
+    % * __s2__ sigma to estimate the local variance. Often `s2` should be
+    %   larger than `s1`. default 15
+    %
+    % ## References
+    % > http://bigwww.epfl.ch/sage/soft/localnormalization/
+    %
+
+    % check arguments
+    if nargin < 2, s1 = 5; end
+    if nargin < 3, s2 = 15; end
+    validateattributes(img, {'uint8'}, {});
+
+    % convert to grayscale
+    if size(img,3) == 3
+        gray = cv.cvtColor(img, 'RGB2GRAY');
+    else
+        gray = img;
+    end
+
+    % convert to floating-point image
+    gray = cv.convertTo(gray, 'RType','single', 'Alpha',1.0/255.0);
+
+    % numerator = img - gauss_blur(img)
+    blur = cv.GaussianBlur(gray, 'KSize',[0 0], 'SigmaX',s1, 'SigmaY',s1);
+    num = gray - blur;
+
+    % denominator = sqrt(gauss_blur(img^2))
+    den = sqrt(cv.GaussianBlur(num.^2, 'KSize',[0 0], 'SigmaX',s2, 'SigmaY',s2));
+
+    % output = numerator / denominator
+    out = num ./ den;
+
+    % normalize output into [0,1]
+    out = cv.normalize(out, 'Alpha',0.0, 'Beta',1.0, 'NormType','MinMax');
+
+    % convert to 8-bit
+    out = cv.convertTo(out, 'RType','uint8', 'Alpha',255.0);
+end
+
+function bw = my_niblack(img, K, BS)
+    %MY_NIBLACK  Manual implementation of Niblack thresholding
+
+    img = im2double(img);
+    mu = imboxfilt(img, [BS BS]);
+    sd = sqrt(imboxfilt(img.^2, [BS BS]) - mu.^2);
+    bw = img > (mu + K*sd);
+end
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Evaluation of background subtraction algorithms on synthetic sequence</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2018-02-21">
+      <meta name="DC.source" content="bgsegm_synthetic_seq_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Evaluation of background subtraction algorithms on synthetic sequence</h1>
+         <!--introduction-->
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/bgsegm/samples/viz.py">https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/bgsegm/samples/viz.py</a></li>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/bgsegm/samples/viz_synthetic_seq.py">https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/bgsegm/samples/viz_synthetic_seq.py</a></li>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/bgsegm/samples/evaluation.py">https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/bgsegm/samples/evaluation.py</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <p>several presets with different settings are available, tradeoff between quality metrics and speed.</p><pre class="codeinput"><span class="keyword">if</span> true
+    <span class="comment">% GSOC</span>
+    bs = cv.BackgroundSubtractorGSOC();
+<span class="keyword">elseif</span> true
+    <span class="comment">% GSOC-camera-motion-compensation</span>
+    bs = cv.BackgroundSubtractorGSOC(<span class="string">'MotionCompensation'</span>,<span class="string">'LK'</span>);
+<span class="keyword">elseif</span> true
+    <span class="comment">% LSBP-vanilla</span>
+    bs = cv.BackgroundSubtractorLSBP(<span class="string">'NSamples'</span>,20, <span class="string">'LSBPRadius'</span>,4, <span class="keyword">...</span>
+        <span class="string">'TLower'</span>,2.0, <span class="string">'TUpper'</span>,200.0, <span class="string">'TInc'</span>,1.0, <span class="string">'TDec'</span>,0.05, <span class="keyword">...</span>
+        <span class="string">'RScale'</span>,5.0, <span class="string">'RIncDec'</span>,0.05, <span class="string">'LSBPThreshold'</span>,8);
+<span class="keyword">elseif</span> true
+    <span class="comment">% LSBP-speed</span>
+    bs = cv.BackgroundSubtractorLSBP(<span class="string">'NSamples'</span>,10, <span class="string">'LSBPRadius'</span>,16, <span class="keyword">...</span>
+        <span class="string">'TLower'</span>,2.0, <span class="string">'TUpper'</span>,32.0, <span class="string">'TInc'</span>,1.0, <span class="string">'TDec'</span>,0.05, <span class="keyword">...</span>
+        <span class="string">'RScale'</span>,10.0, <span class="string">'RIncDec'</span>,0.005, <span class="string">'LSBPThreshold'</span>,8);
+<span class="keyword">elseif</span> true
+    <span class="comment">% LSBP-quality</span>
+    bs = cv.BackgroundSubtractorLSBP(<span class="string">'NSamples'</span>,20, <span class="string">'LSBPRadius'</span>,16, <span class="keyword">...</span>
+        <span class="string">'TLower'</span>,2.0, <span class="string">'TUpper'</span>,32.0, <span class="string">'TInc'</span>,1.0, <span class="string">'TDec'</span>,0.05, <span class="keyword">...</span>
+        <span class="string">'RScale'</span>,10.0, <span class="string">'RIncDec'</span>,0.005, <span class="string">'LSBPThreshold'</span>,8);
+<span class="keyword">elseif</span> true
+    <span class="comment">% LSBP-camera-motion-compensation</span>
+    bs = cv.BackgroundSubtractorLSBP(<span class="string">'MotionCompensation'</span>,<span class="string">'LK'</span>);
+<span class="keyword">elseif</span> true
+    <span class="comment">% MOG2</span>
+    bs = cv.BackgroundSubtractorMOG2();
+<span class="keyword">elseif</span> true
+    <span class="comment">% KNN</span>
+    bs = cv.BackgroundSubtractorKNN();
+<span class="keyword">elseif</span> true
+    <span class="comment">% MOG</span>
+    bs = cv.BackgroundSubtractorMOG();
+<span class="keyword">elseif</span> true
+    <span class="comment">% GMG</span>
+    bs = cv.BackgroundSubtractorGMG();
+<span class="keyword">else</span>
+    <span class="comment">% CNT</span>
+    bs = cv.BackgroundSubtractorCNT();
+<span class="keyword">end</span></pre><p>initialize frame sequence generator</p><pre class="codeinput">bg = imread(fullfile(mexopencv.root(), <span class="string">'test'</span>, <span class="string">'fruits.jpg'</span>));
+fg = imread(fullfile(mexopencv.root(), <span class="string">'test'</span>, <span class="string">'img001.jpg'</span>));
+fg = cv.resize(fg, [100 100]);
+gen = cv.SyntheticSequenceGenerator(bg, fg);</pre><p>prepare UI</p><pre class="codeinput">[frame, gtMask] = gen.getNextFrame();
+subplot(221), hImg(1) = imshow(frame); title(<span class="string">'frame'</span>)
+subplot(222), hImg(2) = imshow(gtMask); title(<span class="string">'ground-truth mask'</span>)
+subplot(223), hImg(3) = imshow(frame); title(<span class="string">'BG model'</span>)
+subplot(224), hImg(4) = imshow(gtMask); title(<span class="string">'FG mask'</span>)</pre><img src="bgsegm_synthetic_seq_demo_01.png"><p>main loop</p><pre class="codeinput">f1 = 0;
+count = 0;
+<span class="keyword">for</span> n=1:400
+    <span class="comment">% grab new frame and ground-truth mask</span>
+    [frame, gtMask] = gen.getNextFrame();
+
+    <span class="comment">% background subtraction</span>
+    mask = bs.apply(frame);
+    <span class="keyword">try</span>
+        im = bs.getBackgroundImage();
+    <span class="keyword">catch</span>
+        <span class="comment">% some algorithms dont implement a BG model (MOG, GMG)</span>
+        im = [];
+    <span class="keyword">end</span>
+
+    <span class="comment">% show results</span>
+    set(hImg(1), <span class="string">'CData'</span>,frame)
+    set(hImg(2), <span class="string">'CData'</span>,gtMask)
+    set(hImg(3), <span class="string">'CData'</span>,im)
+    set(hImg(4), <span class="string">'CData'</span>,mask)
+    drawnow
+
+    <span class="comment">% give the algorithm some time for proper background model inference.</span>
+    <span class="comment">% Almost all background subtraction algorithms have a problem with cold</span>
+    <span class="comment">% start and require some time for background model initialization.</span>
+    <span class="comment">% So we will not count first part of the frames in the score.</span>
+    <span class="keyword">if</span> n &gt; 300
+        tp = nnz(cv.bitwise_and(mask == 255, gtMask == 255));
+        fp = nnz(cv.bitwise_and(mask == 255, gtMask ==   0));
+        fn = nnz(cv.bitwise_and(mask ==   0, gtMask == 255));
+        <span class="keyword">if</span> (tp + fn + fp) &gt; 0
+            f1 = f1 + 2*tp / (2*tp + fn + fp);
+            count = count + 1;
+            xlabel(sprintf(<span class="string">'avg F1 score = %.2f'</span>, f1 / count))
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span></pre><img src="bgsegm_synthetic_seq_demo_02.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Evaluation of background subtraction algorithms on synthetic sequence
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/bgsegm/samples/viz.py>
+% * <https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/bgsegm/samples/viz_synthetic_seq.py>
+% * <https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/bgsegm/samples/evaluation.py>
+%
+
+%%
+% several presets with different settings are available,
+% tradeoff between quality metrics and speed.
+if true
+    % GSOC
+    bs = cv.BackgroundSubtractorGSOC();
+elseif true
+    % GSOC-camera-motion-compensation
+    bs = cv.BackgroundSubtractorGSOC('MotionCompensation','LK');
+elseif true
+    % LSBP-vanilla
+    bs = cv.BackgroundSubtractorLSBP('NSamples',20, 'LSBPRadius',4, ...
+        'TLower',2.0, 'TUpper',200.0, 'TInc',1.0, 'TDec',0.05, ...
+        'RScale',5.0, 'RIncDec',0.05, 'LSBPThreshold',8);
+elseif true
+    % LSBP-speed
+    bs = cv.BackgroundSubtractorLSBP('NSamples',10, 'LSBPRadius',16, ...
+        'TLower',2.0, 'TUpper',32.0, 'TInc',1.0, 'TDec',0.05, ...
+        'RScale',10.0, 'RIncDec',0.005, 'LSBPThreshold',8);
+elseif true
+    % LSBP-quality
+    bs = cv.BackgroundSubtractorLSBP('NSamples',20, 'LSBPRadius',16, ...
+        'TLower',2.0, 'TUpper',32.0, 'TInc',1.0, 'TDec',0.05, ...
+        'RScale',10.0, 'RIncDec',0.005, 'LSBPThreshold',8);
+elseif true
+    % LSBP-camera-motion-compensation
+    bs = cv.BackgroundSubtractorLSBP('MotionCompensation','LK');
+elseif true
+    % MOG2
+    bs = cv.BackgroundSubtractorMOG2();
+elseif true
+    % KNN
+    bs = cv.BackgroundSubtractorKNN();
+elseif true
+    % MOG
+    bs = cv.BackgroundSubtractorMOG();
+elseif true
+    % GMG
+    bs = cv.BackgroundSubtractorGMG();
+else
+    % CNT
+    bs = cv.BackgroundSubtractorCNT();
+end
+
+%%
+% initialize frame sequence generator
+bg = imread(fullfile(mexopencv.root(), 'test', 'fruits.jpg'));
+fg = imread(fullfile(mexopencv.root(), 'test', 'img001.jpg'));
+fg = cv.resize(fg, [100 100]);
+gen = cv.SyntheticSequenceGenerator(bg, fg);
+
+%%
+% prepare UI
+[frame, gtMask] = gen.getNextFrame();
+subplot(221), hImg(1) = imshow(frame); title('frame')
+subplot(222), hImg(2) = imshow(gtMask); title('ground-truth mask')
+subplot(223), hImg(3) = imshow(frame); title('BG model')
+subplot(224), hImg(4) = imshow(gtMask); title('FG mask')
+
+%%
+% main loop
+f1 = 0;
+count = 0;
+for n=1:400
+    % grab new frame and ground-truth mask
+    [frame, gtMask] = gen.getNextFrame();
+
+    % background subtraction
+    mask = bs.apply(frame);
+    try
+        im = bs.getBackgroundImage();
+    catch
+        % some algorithms dont implement a BG model (MOG, GMG)
+        im = [];
+    end
+
+    % show results
+    set(hImg(1), 'CData',frame)
+    set(hImg(2), 'CData',gtMask)
+    set(hImg(3), 'CData',im)
+    set(hImg(4), 'CData',mask)
+    drawnow
+
+    % give the algorithm some time for proper background model inference.
+    % Almost all background subtraction algorithms have a problem with cold
+    % start and require some time for background model initialization.
+    % So we will not count first part of the frames in the score.
+    if n > 300
+        tp = nnz(cv.bitwise_and(mask == 255, gtMask == 255));
+        fp = nnz(cv.bitwise_and(mask == 255, gtMask ==   0));
+        fn = nnz(cv.bitwise_and(mask ==   0, gtMask == 255));
+        if (tp + fn + fp) > 0
+            f1 = f1 + 2*tp / (2*tp + fn + fp);
+            count = count + 1;
+            xlabel(sprintf('avg F1 score = %.2f', f1 / count))
+        end
+    end
+end
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

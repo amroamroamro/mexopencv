@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Fast Line Detector demo</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="fld_lines_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Fast Line Detector demo</h1>
+         <!--introduction-->
+         <p>Compares <tt>cv.FastLineDetector</tt> against <tt>cv.LineSegmentDetector</tt>.
+         </p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.2.0/modules/ximgproc/samples/fld_lines.cpp">https://github.com/opencv/opencv_contrib/blob/3.2.0/modules/ximgproc/samples/fld_lines.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <p>input image</p><pre class="codeinput">img = imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'corridor.jpg'</span>));
+gray = cv.cvtColor(img, <span class="string">'RGB2GRAY'</span>);</pre><p>create LSD and FLD detectors</p><pre class="codeinput">lsd = cv.LineSegmentDetector();
+fld = cv.FastLineDetector();</pre><p>detect the lines</p><pre class="codeinput">tic, lines_lsd = lsd.detect(gray); toc
+tic, lines_fld = fld.detect(gray); toc</pre><pre class="codeoutput">Elapsed time is 0.076713 seconds.
+Elapsed time is 0.817230 seconds.
+</pre><p>show found lines</p><pre class="codeinput">out_lsd = lsd.drawSegments(img, lines_lsd);
+out_fld = fld.drawSegments(img, lines_fld);
+subplot(121), imshow(out_lsd), title(<span class="string">'LSD result'</span>)
+subplot(122), imshow(out_fld), title(<span class="string">'FLD result'</span>)</pre><img src="fld_lines_demo_01.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Fast Line Detector demo
+% Compares |cv.FastLineDetector| against |cv.LineSegmentDetector|.
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv_contrib/blob/3.2.0/modules/ximgproc/samples/fld_lines.cpp>
+%
+
+%%
+% input image
+img = imread(fullfile(mexopencv.root(),'test','corridor.jpg'));
+gray = cv.cvtColor(img, 'RGB2GRAY');
+
+%%
+% create LSD and FLD detectors
+lsd = cv.LineSegmentDetector();
+fld = cv.FastLineDetector();
+
+%%
+% detect the lines
+tic, lines_lsd = lsd.detect(gray); toc
+tic, lines_fld = fld.detect(gray); toc
+
+%%
+% show found lines
+out_lsd = lsd.drawSegments(img, lines_lsd);
+out_fld = fld.drawSegments(img, lines_fld);
+subplot(121), imshow(out_lsd), title('LSD result')
+subplot(122), imshow(out_fld), title('FLD result')
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

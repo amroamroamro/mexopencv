@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Training face landmark detector</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2018-02-21">
+      <meta name="DC.source" content="facemark_kazemi_train2_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Training face landmark detector</h1>
+         <!--introduction-->
+         <p>This demo helps to train your own face landmark detector. The user should provide the list of training images accompanied
+            by their corresponding landmarks location in separated files.
+         </p>
+         <p>Examples of datasets are available at <a href="https://ibug.doc.ic.ac.uk/resources/facial-point-annotations/">https://ibug.doc.ic.ac.uk/resources/facial-point-annotations/</a>.
+         </p>
+         <p>We suggest you to download the HELEN dataset which can be retrieved at <a href="https://ibug.doc.ic.ac.uk/download/annotations/helen.zip">https://ibug.doc.ic.ac.uk/download/annotations/helen.zip</a> (Caution: The algorithm requires considerable RAM to train on this dataset).
+         </p>
+         <p>Example of contents for <tt>images.txt</tt> file:
+         </p><pre>/data/helen/100032540_1.jpg
+/data/helen/100040721_1.jpg
+/data/helen/100040721_2.jpg
+...</pre><p>Example of contents for <tt>annotations.txt</tt> file:
+         </p><pre>/data/helen/100032540_1.pts
+/data/helen/100040721_1.pts
+/data/helen/100040721_2.pts
+...</pre><p>where a <tt>.pts</tt> file contains the position of each face landmark. Example of contents for <tt>.pts</tt> files:
+         </p><pre>version: 1
+n_points:  68
+{
+212.716603 499.771793
+230.232816 566.290071
+...
+}</pre><p>For a description of training parameters used in <tt>configFile</tt>, see the demo <tt>facemark_kazemi_train_config_demo.m</tt>.
+         </p>
+         <p><img src="https://docs.opencv.org/3.4.0/2.jpg"></p>
+         <p>You can also download a pre-trained model <tt>face_landmark_model.dat</tt>, see the demo <tt>facemark_kazemi_detect_img_demo</tt>. (that way you can skip training and simply load the model).
+         </p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/face/samples/sample_train_landmark_detector2.cpp">https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/face/samples/sample_train_landmark_detector2.cpp</a></li>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/face/tutorials/face_landmark/face_landmark_trainer.markdown">https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/face/tutorials/face_landmark/face_landmark_trainer.markdown</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Options</a></li>
+               <li><a href="#3">Data</a></li>
+               <li><a href="#4">Init</a></li>
+               <li><a href="#5">Train</a></li>
+               <li><a href="#7">Helper functions</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Options</h2><pre class="codeinput"><span class="comment">% [INPUT] path of a text file contains the list of paths to all training images</span>
+imgList = fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'facemark'</span>,<span class="string">'helen'</span>,<span class="string">'images.lst'</span>);
+assert(exist(imgList, <span class="string">'file'</span>) == 2, <span class="string">'missing images list file'</span>);
+
+<span class="comment">% [INPUT] path of a text file contains the list of paths to all annotations files</span>
+ptsList = fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'facemark'</span>,<span class="string">'helen'</span>,<span class="string">'annotations.lst'</span>);
+assert(exist(ptsList, <span class="string">'file'</span>) == 2, <span class="string">'missing annotations list file'</span>);
+
+<span class="comment">% [INPUT] path to configuration xml file containing parameters for training</span>
+<span class="comment">% https://github.com/opencv/opencv_contrib/raw/3.4.0/modules/face/samples/sample_config_file.xml</span>
+configFile = fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'facemark'</span>,<span class="string">'config.xml'</span>);
+assert(exist(configFile, <span class="string">'file'</span>) == 2, <span class="string">'missing train config file'</span>);
+
+<span class="comment">% [OUTPUT] path for saving the trained model</span>
+modelFile = fullfile(tempdir(), <span class="string">'model_kazemi.dat'</span>);
+
+<span class="comment">% [INPUT] path to the cascade xml file for the face detector</span>
+xmlFace = fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'lbpcascade_frontalface.xml'</span>);
+download_classifier_xml(xmlFace);
+
+<span class="comment">% name of user-defined face detector function</span>
+faceDetectFcn = <span class="string">'myFaceDetector'</span>;
+assert(exist([faceDetectFcn <span class="string">'.m'</span>], <span class="string">'file'</span>) == 2, <span class="string">'missing face detect function'</span>);
+
+<span class="comment">% width/height which you want all images to get to scale the annotations.</span>
+<span class="comment">% larger images are slower to process</span>
+scale = [460 460];</pre><h2 id="3">Data</h2><pre class="codeinput"><span class="comment">% load names of images and annotation files</span>
+disp(<span class="string">'Loading data...'</span>)
+[imgFiles, ptsFiles] = cv.Facemark.loadDatasetList(imgList, ptsList);
+
+<span class="comment">% load images and their corresponding landmarks</span>
+imgs = cell(size(imgFiles));
+pts = cell(size(ptsFiles));
+<span class="keyword">for</span> i=1:numel(imgFiles)
+    imgs{i} = cv.imread(imgFiles{i});
+    pts{i} = cv.Facemark.loadFacePoints(ptsFiles{i});
+<span class="keyword">end</span></pre><pre class="codeoutput">Loading data...
+</pre><h2 id="4">Init</h2>
+         <p>create instance of the face landmark detection class, and set the face detector function</p><pre class="codeinput">obj = cv.FacemarkKazemi(<span class="string">'ConfigFile'</span>,configFile);
+obj.setFaceDetector(faceDetectFcn);</pre><h2 id="5">Train</h2>
+         <p>perform training</p><pre class="codeinput">disp(<span class="string">'Training...'</span>)
+tic
+success = obj.training(imgs, pts, configFile, scale, <span class="string">'ModelFilename'</span>,modelFile);
+toc
+<span class="keyword">if</span> success
+    disp(<span class="string">'Training successful'</span>)
+<span class="keyword">else</span>
+    disp(<span class="string">'Training failed'</span>)
+<span class="keyword">end</span></pre><pre class="codeoutput">Training...
+Elapsed time is 78.617735 seconds.
+Training successful
+</pre><p>In the above call, <tt>scale</tt> is passed to scale all images and their corresponding landmarks, as it takes greater time to process large images. After
+            scaling data it calculates mean shape of the data which is used as initial shape while training. It trains the model and stores
+            the trained model file with the specified filename. As the training starts, you will see something like this:
+         </p>
+         <p><img src="https://docs.opencv.org/3.4.0/train1.png"></p>
+         <p>The error rate on trained images depends on the number of images used for training:</p>
+         <p><img src="https://docs.opencv.org/3.4.0/train.png"></p>
+         <p>The error rate on test images depends on the number of images used for training:</p>
+         <p><img src="https://docs.opencv.org/3.4.0/test.png"></p>
+         <h2 id="7">Helper functions</h2><pre class="codeinput"><span class="keyword">function</span> download_classifier_xml(fname)
+    <span class="keyword">if</span> exist(fname, <span class="string">'file'</span>) ~= 2
+        <span class="comment">% attempt to download trained Haar/LBP/HOG classifier from Github</span>
+        url = <span class="string">'https://cdn.rawgit.com/opencv/opencv/3.4.0/data/'</span>;
+        [~, f, ext] = fileparts(fname);
+        <span class="keyword">if</span> strncmpi(f, <span class="string">'haarcascade_'</span>, length(<span class="string">'haarcascade_'</span>))
+            url = [url, <span class="string">'haarcascades/'</span>];
+        <span class="keyword">elseif</span> strncmpi(f, <span class="string">'lbpcascade_'</span>, length(<span class="string">'lbpcascade_'</span>))
+            url = [url, <span class="string">'lbpcascades/'</span>];
+        <span class="keyword">elseif</span> strncmpi(f, <span class="string">'hogcascade_'</span>, length(<span class="string">'hogcascade_'</span>))
+            url = [url, <span class="string">'hogcascades/'</span>];
+        <span class="keyword">else</span>
+            error(<span class="string">'File not found'</span>);
+        <span class="keyword">end</span>
+        urlwrite([url f ext], fname);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">% The facemark API provides the functionality to the user to use their own</span>
+<span class="comment">% face detector. The code below implements a sample face detector. This</span>
+<span class="comment">% function must be saved in its own M-function to be used by the facemark API.</span>
+<span class="keyword">function</span> faces = myFaceDetector(img)
+    <span class="keyword">persistent</span> obj
+    <span class="keyword">if</span> isempty(obj)
+        obj = cv.CascadeClassifier();
+        obj.load(xmlFace);
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> size(img,3) &gt; 1
+        gray = cv.cvtColor(img, <span class="string">'RGB2GRAY'</span>);
+    <span class="keyword">else</span>
+        gray = img;
+    <span class="keyword">end</span>
+    gray = cv.equalizeHist(gray);
+    faces = obj.detect(gray, <span class="string">'ScaleFactor'</span>,1.4, <span class="string">'MinNeighbors'</span>,2, <span class="keyword">...</span>
+        <span class="string">'ScaleImage'</span>,true, <span class="string">'MinSize'</span>,[30 30]);
+<span class="keyword">end</span></pre><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Training face landmark detector
+%
+% This demo helps to train your own face landmark detector.
+% The user should provide the list of training images accompanied by their
+% corresponding landmarks location in separated files.
+%
+% Examples of datasets are available at
+% <https://ibug.doc.ic.ac.uk/resources/facial-point-annotations/>.
+%
+% We suggest you to download the HELEN dataset which can be retrieved at
+% <https://ibug.doc.ic.ac.uk/download/annotations/helen.zip>
+% (Caution: The algorithm requires considerable RAM to train on this dataset).
+%
+% Example of contents for |images.txt| file:
+%
+%  /data/helen/100032540_1.jpg
+%  /data/helen/100040721_1.jpg
+%  /data/helen/100040721_2.jpg
+%  ...
+%
+% Example of contents for |annotations.txt| file:
+%
+%  /data/helen/100032540_1.pts
+%  /data/helen/100040721_1.pts
+%  /data/helen/100040721_2.pts
+%  ...
+%
+% where a |.pts| file contains the position of each face landmark.
+% Example of contents for |.pts| files:
+%
+%  version: 1
+%  n_points:  68
+%  {
+%  212.716603 499.771793
+%  230.232816 566.290071
+%  ...
+%  }
+%
+% For a description of training parameters used in |configFile|, see the demo
+% |facemark_kazemi_train_config_demo.m|.
+%
+% <<https://docs.opencv.org/3.4.0/2.jpg>>
+%
+% You can also download a pre-trained model |face_landmark_model.dat|,
+% see the demo |facemark_kazemi_detect_img_demo|.
+% (that way you can skip training and simply load the model).
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/face/samples/sample_train_landmark_detector2.cpp>
+% * <https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/face/tutorials/face_landmark/face_landmark_trainer.markdown>
+%
+
+%% Options
+
+% [INPUT] path of a text file contains the list of paths to all training images
+imgList = fullfile(mexopencv.root(),'test','facemark','helen','images.lst');
+assert(exist(imgList, 'file') == 2, 'missing images list file');
+
+% [INPUT] path of a text file contains the list of paths to all annotations files
+ptsList = fullfile(mexopencv.root(),'test','facemark','helen','annotations.lst');
+assert(exist(ptsList, 'file') == 2, 'missing annotations list file');
+
+% [INPUT] path to configuration xml file containing parameters for training
+% https://github.com/opencv/opencv_contrib/raw/3.4.0/modules/face/samples/sample_config_file.xml
+configFile = fullfile(mexopencv.root(),'test','facemark','config.xml');
+assert(exist(configFile, 'file') == 2, 'missing train config file');
+
+% [OUTPUT] path for saving the trained model
+modelFile = fullfile(tempdir(), 'model_kazemi.dat');
+
+% [INPUT] path to the cascade xml file for the face detector
+xmlFace = fullfile(mexopencv.root(),'test','lbpcascade_frontalface.xml');
+download_classifier_xml(xmlFace);
+
+% name of user-defined face detector function
+faceDetectFcn = 'myFaceDetector';
+assert(exist([faceDetectFcn '.m'], 'file') == 2, 'missing face detect function');
+
+% width/height which you want all images to get to scale the annotations.
+% larger images are slower to process
+scale = [460 460];
+
+%% Data
+
+% load names of images and annotation files
+disp('Loading data...')
+[imgFiles, ptsFiles] = cv.Facemark.loadDatasetList(imgList, ptsList);
+
+% load images and their corresponding landmarks
+imgs = cell(size(imgFiles));
+pts = cell(size(ptsFiles));
+for i=1:numel(imgFiles)
+    imgs{i} = cv.imread(imgFiles{i});
+    pts{i} = cv.Facemark.loadFacePoints(ptsFiles{i});
+end
+
+%% Init
+% create instance of the face landmark detection class,
+% and set the face detector function
+obj = cv.FacemarkKazemi('ConfigFile',configFile);
+obj.setFaceDetector(faceDetectFcn);
+
+%% Train
+% perform training
+disp('Training...')
+tic
+success = obj.training(imgs, pts, configFile, scale, 'ModelFilename',modelFile);
+toc
+if success
+    disp('Training successful')
+else
+    disp('Training failed')
+end
+
+%%
+% In the above call, |scale| is passed to scale all images and their
+% corresponding landmarks, as it takes greater time to process large images.
+% After scaling data it calculates mean shape of the data which is used as
+% initial shape while training. It trains the model and stores the trained
+% model file with the specified filename. As the training starts, you will see
+% something like this:
+%
+% <<https://docs.opencv.org/3.4.0/train1.png>>
+%
+% The error rate on trained images depends on the number of images used for
+% training:
+%
+% <<https://docs.opencv.org/3.4.0/train.png>>
+%
+% The error rate on test images depends on the number of images used for
+% training:
+%
+% <<https://docs.opencv.org/3.4.0/test.png>>
+%
+
+%% Helper functions
+
+function download_classifier_xml(fname)
+    if exist(fname, 'file') ~= 2
+        % attempt to download trained Haar/LBP/HOG classifier from Github
+        url = 'https://cdn.rawgit.com/opencv/opencv/3.4.0/data/';
+        [~, f, ext] = fileparts(fname);
+        if strncmpi(f, 'haarcascade_', length('haarcascade_'))
+            url = [url, 'haarcascades/'];
+        elseif strncmpi(f, 'lbpcascade_', length('lbpcascade_'))
+            url = [url, 'lbpcascades/'];
+        elseif strncmpi(f, 'hogcascade_', length('hogcascade_'))
+            url = [url, 'hogcascades/'];
+        else
+            error('File not found');
+        end
+        urlwrite([url f ext], fname);
+    end
+end
+
+% The facemark API provides the functionality to the user to use their own
+% face detector. The code below implements a sample face detector. This
+% function must be saved in its own M-function to be used by the facemark API.
+function faces = myFaceDetector(img)
+    persistent obj
+    if isempty(obj)
+        obj = cv.CascadeClassifier();
+        obj.load(xmlFace);
+    end
+
+    if size(img,3) > 1
+        gray = cv.cvtColor(img, 'RGB2GRAY');
+    else
+        gray = img;
+    end
+    gray = cv.equalizeHist(gray);
+    faces = obj.detect(gray, 'ScaleFactor',1.4, 'MinNeighbors',2, ...
+        'ScaleImage',true, 'MinSize',[30 30]);
+end
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

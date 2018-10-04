@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Collect Calibration Pattern Images</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="calibration_capture_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Collect Calibration Pattern Images</h1>
+         <!--introduction-->
+         <p>This sample is used to take snapshots of a calibration pattern from live webcam. These images can be later used for camera
+            calibration.
+         </p>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Camera Calibration and 3D Reconstruction</a></li>
+               <li><a href="#3">Code</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Camera Calibration and 3D Reconstruction</h2>
+         <p>The functions in the <i>calib3d</i> module use a so-called pinhole camera model. In this model, a scene view is formed by projecting 3D points into the image
+            plane using a perspective transformation.
+         </p>
+         <p><img src="calibration_capture_demo_eq08767010039705869576.png" alt="$$s \; m' = A [R|t] M'$$" class="equation" width="105" height="16"></p>
+         <p>or</p>
+         <p><img src="calibration_capture_demo_eq05685871777969449710.png" alt="$$ s \left[ {\matrix{ u \cr v \cr 1 }} \right] =&#xA;     \left[ {\matrix{ f_x &amp; 0 &amp; c_x \cr&#xA;                      0 &amp; f_y &amp; c_y \cr&#xA;                      0 &amp; 0 &amp; 1 }} \right]&#xA;     \left[ {\matrix{ r_{11} &amp; r_{12} &amp; r_{13} &amp; t_1 \cr&#xA;                      r_{21} &amp; r_{22} &amp; r_{23} &amp; t_2 \cr&#xA;                      r_{31} &amp; r_{32} &amp; r_{33} &amp; t_3 }} \right]&#xA;     \left[ {\matrix{ X \cr Y \cr Z \cr 1 }} \right]$$" class="equation" width="326" height="63"></p>
+         <p>where:</p>
+         <div>
+            <ul>
+               <li><img src="calibration_capture_demo_eq13426029829903273347.png" alt="$(X,Y,Z)$" class="equation" width="55" height="15"> are the coordinates of a 3D point in the world coordinate space
+               </li>
+               <li><img src="calibration_capture_demo_eq09496338466564753964.png" alt="$(u,v)$" class="equation" width="32" height="15"> are the coordinates of the projection point in pixels
+               </li>
+               <li><img src="calibration_capture_demo_eq05147331747641807187.png" alt="$A$" class="equation" width="10" height="11"> is a camera matrix, or a matrix of intrinsic parameters
+               </li>
+               <li><img src="calibration_capture_demo_eq07188613026682565757.png" alt="$(cx,cy)$" class="equation" width="45" height="15"> is a principal point that is usually at the image center
+               </li>
+               <li><img src="calibration_capture_demo_eq07957226719001353700.png" alt="$fx, fy$" class="equation" width="40" height="14"> are the focal lengths expressed in pixel units
+               </li>
+            </ul>
+         </div>
+         <p>Thus, if an image from the camera is scaled by a factor, all of these parameters should be scaled (multiplied/divided, respectively)
+            by the same factor. The matrix of intrinsic parameters does not depend on the scene viewed. So once estimated, it can be re-used
+            as long as the focal length is fixed (in case of zoom lens). The joint rotation-translation matrix <img src="calibration_capture_demo_eq07401846093486942537.png" alt="$[R|t]$" class="equation" width="26" height="15"> is called a matrix of extrinsic parameters. It is used to describe the camera motion around a static scene, or vice versa,
+            rigid motion of an object in front of a still camera. That is, <img src="calibration_capture_demo_eq07401846093486942537.png" alt="$[R|t]$" class="equation" width="26" height="15"> translates coordinates of a point <img src="calibration_capture_demo_eq17543869120963915626.png" alt="$(X, Y, Z)$" class="equation" width="55" height="15"> to a coordinate system, fixed with respect to the camera. The transformation above is equivalent to the following (when <img src="calibration_capture_demo_eq02944026891454015567.png" alt="$z \ne 0$" class="equation" width="34" height="14">):
+         </p>
+         <p><img src="calibration_capture_demo_eq10538098756117418574.png" alt="$$\begin{array}{l}&#xA;\left[ {\matrix{ x \cr y \cr z }} \right] =&#xA;    R \left[ {\matrix{ X \cr Y \cr Z }} \right] + t \\&#xA;x' = x/z \\&#xA;y' = y/z \\&#xA;u = f_x*x' + c_x \\&#xA;v = f_y*y' + c_y&#xA;\end{array}$$" class="equation" width="127" height="123"></p>
+         <p>The following figure illustrates the pinhole camera model.</p>
+         <p><img src="https://docs.opencv.org/3.2.0/pinhole_camera_model.png"></p>
+         <p>Real lenses usually have some distortion, mostly radial distortion and slight tangential distortion. So, the above model is
+            extended as:
+         </p>
+         <p><img src="calibration_capture_demo_eq15095872539629368533.png" alt="$$\begin{array}{l}&#xA;\left[ {\matrix{ x \cr y \cr z }} \right] =&#xA;    R \left[ {\matrix{ X \cr Y \cr Z }} \right] + t \\&#xA;x' = x/z \\&#xA;y' = y/z \\&#xA;x'' = x' \frac{1 + k_1 r^2 + k_2 r^4 + k_3 r^6}&#xA;              {1 + k_4 r^2 + k_5 r^4 + k_6 r^6} +&#xA;              2 p_1 x' y' + p_2(r^2 + 2 x'^2) + s_1 r^2 + s_2 r^4 \\&#xA;y'' = y' \frac{1 + k_1 r^2 + k_2 r^4 + k_3 r^6}&#xA;              {1 + k_4 r^2 + k_5 r^4 + k_6 r^6} +&#xA;              p_1 (r^2 + 2 y'^2) + 2 p_2 x' y' + s_3 r^2 + s_4 r^4 \\&#xA;\textrm{where} \quad r^2 = x'^2 + y'^2 \\&#xA;u = f_x*x'' + c_x \\&#xA;v = f_y*y'' + c_y&#xA;\end{array}$$" class="equation" width="382" height="183"></p>
+         <p><img src="calibration_capture_demo_eq12782267039782113450.png" alt="$k_1$" class="equation" width="12" height="13">, <img src="calibration_capture_demo_eq00029312330466126760.png" alt="$k_2$" class="equation" width="13" height="13">, <img src="calibration_capture_demo_eq11962429531597143841.png" alt="$k_3$" class="equation" width="13" height="13">, <img src="calibration_capture_demo_eq17480565951290969875.png" alt="$k_4$" class="equation" width="13" height="13">, <img src="calibration_capture_demo_eq09506814423952620832.png" alt="$k_5$" class="equation" width="13" height="13">, and <img src="calibration_capture_demo_eq13781057718183717807.png" alt="$k_6$" class="equation" width="13" height="13"> are radial distortion coefficients. <img src="calibration_capture_demo_eq13137298398265577444.png" alt="$p_1$" class="equation" width="13" height="10"> and <img src="calibration_capture_demo_eq03052410687656979467.png" alt="$p_2$" class="equation" width="13" height="10"> are tangential distortion coefficients. <img src="calibration_capture_demo_eq07321093866910478120.png" alt="$s_1$" class="equation" width="11" height="9">, <img src="calibration_capture_demo_eq02528398420120749975.png" alt="$s_2$" class="equation" width="12" height="9">, <img src="calibration_capture_demo_eq13872115133303228341.png" alt="$s_3$" class="equation" width="12" height="9">, and <img src="calibration_capture_demo_eq03411213129553931052.png" alt="$s_4$" class="equation" width="12" height="9">, are the thin prism distortion coefficients. Higher-order coefficients are not considered in OpenCV.
+         </p>
+         <p>The next figure shows two common types of radial distortion: barrel distortion (typically <img src="calibration_capture_demo_eq11219656349722778293.png" alt="$k_1 &gt; 0$" class="equation" width="40" height="13"> and pincushion distortion (typically <img src="calibration_capture_demo_eq07339189725685614798.png" alt="$k_1 < 0$" class="equation" width="40" height="13">).
+         </p>
+         <p><img src="https://docs.opencv.org/3.2.0/distortion_examples.png"></p>
+         <p>In some cases the image sensor may be tilted in order to focus an oblique plane in front of the camera (Scheimpfug condition).
+            This can be useful for particle image velocimetry (PIV) or triangulation with a laser fan. The tilt causes a perspective distortion
+            of <img src="calibration_capture_demo_eq16590225365786982814.png" alt="$x''$" class="equation" width="15" height="12"> and <img src="calibration_capture_demo_eq06678431424033889568.png" alt="$y''$" class="equation" width="14" height="15">. This distortion can be modelled in the following way, see e.g. [Louhichi07].
+         </p>
+         <p><img src="calibration_capture_demo_eq00478952900063731170.png" alt="$$\begin{array}{l}&#xA;s \left[ {\matrix{ x''' \cr y''' \cr 1 }} \right] =&#xA;  \left[ {\matrix{ R_{33}(\tau_x, \tau_y) &amp; 0 &amp; -R_{13}(\tau_x, \tau_y) \cr&#xA;                   0 &amp; R_{33}(\tau_x, \tau_y) &amp; -R_{23}(\tau_x, \tau_y) \cr&#xA;                   0 &amp; 0 &amp; 1 }} \right]&#xA;  R(\tau_x, \tau_y)&#xA;  \left[ {\matrix{ x'' \cr y'' \cr 1 }} \right] \\&#xA;u = f_x*x''' + c_x \\&#xA;v = f_y*y''' + c_y&#xA;\end{array}$$" class="equation" width="427" height="88"></p>
+         <p>where the matrix <img src="calibration_capture_demo_eq13764506652934951925.png" alt="$R(\tau_x, \tau_y)$" class="equation" width="53" height="16"> is defined by two rotations with angular parameter <img src="calibration_capture_demo_eq08277787918206461041.png" alt="$\tau_x$" class="equation" width="12" height="9"> and <img src="calibration_capture_demo_eq16752083272687361943.png" alt="$\tau_y$" class="equation" width="12" height="11">, respectively,
+         </p>
+         <p><img src="calibration_capture_demo_eq13338896070666589422.png" alt="$$R(\tau_x, \tau_y) =&#xA;\left[ {\matrix{&#xA;  \cos(\tau_y) &amp; 0 &amp; -\sin(\tau_y) \cr&#xA;  0 &amp; 1 &amp; 0 \cr&#xA;  \sin(\tau_y) &amp; 0 &amp; \cos(\tau_y)&#xA;}} \right]&#xA;\left[ {\matrix{&#xA;  1 &amp; 0 &amp; 0 \cr&#xA;  0 &amp; \cos(\tau_x) &amp; \sin(\tau_x) \cr&#xA;  0 &amp; -\sin(\tau_x) &amp; \cos(\tau_x)&#xA;}} \right] =&#xA;\left[ {\matrix{&#xA;  \cos(\tau_y) &amp; \sin(\tau_y)\sin(\tau_x) &amp; -\sin(\tau_y)\cos(\tau_x) \cr&#xA;  0 &amp; \cos(\tau_x) &amp; \sin(\tau_x) \cr&#xA;  \sin(\tau_y) &amp; -\cos(\tau_y)\sin(\tau_x) &amp; \cos(\tau_y)\cos(\tau_x)&#xA;}} \right]$$" class="equation" width="715" height="53"></p>
+         <p>In the functions below the coefficients are passed or returned as vector:</p>
+         <p><img src="calibration_capture_demo_eq06756432119522545292.png" alt="$$(k_1, k_2, p_1, p_2[, k_3[, k_4, k_5, k_6 [, s_1, s_2, s_3, s_4[, \tau_x, \tau_y]]]])$$" class="equation" width="311" height="16"></p>
+         <p>That is, if the vector contains four elements, it means that <img src="calibration_capture_demo_eq11386293174202341589.png" alt="$k_3=0$" class="equation" width="40" height="13">. The distortion coefficients do not depend on the scene viewed. Thus, they also belong to the intrinsic camera parameters.
+            And they remain the same regardless of the captured image resolution. If, for example, a camera has been calibrated on images
+            of 320x240 resolution, absolutely the same distortion coefficients can be used for 640x480 images from the same camera while
+            <img src="calibration_capture_demo_eq13223538974671168557.png" alt="$f_x$" class="equation" width="13" height="14">, <img src="calibration_capture_demo_eq05403568010390334380.png" alt="$f_y$" class="equation" width="12" height="15">, <img src="calibration_capture_demo_eq07302801042309355635.png" alt="$c_x$" class="equation" width="12" height="9">, and <img src="calibration_capture_demo_eq04711604688797101217.png" alt="$c_y$" class="equation" width="11" height="11"> need to be scaled appropriately.
+         </p>
+         <p>The functions in the calib3d module use the above model to do the following:</p>
+         <div>
+            <ul>
+               <li>Project 3D points to the image plane given intrinsic and extrinsic   parameters.</li>
+               <li>Compute extrinsic parameters given intrinsic parameters, a few 3D points,   and their projections.</li>
+               <li>Estimate intrinsic and extrinsic camera parameters from several views of a   known calibration pattern (every view is described
+                  by several 3D-2D point   correspondences).
+               </li>
+               <li>Estimate the relative position and orientation of the stereo camera   "heads" and compute the <i>rectification</i> transformation that makes the   camera optical axes parallel.
+               </li>
+            </ul>
+         </div>
+         <h2 id="3">Code</h2>
+         <p>specify pattern type and board size</p><pre class="codeinput">pattern = <span class="string">'chessboard'</span>;
+<span class="keyword">switch</span> pattern
+    <span class="keyword">case</span> <span class="string">'chessboard'</span>
+        <span class="comment">% https://docs.opencv.org/3.3.1/pattern.png</span>
+        bsz = [9 6];
+    <span class="keyword">case</span> <span class="string">'acircles'</span>
+        <span class="comment">% https://docs.opencv.org/3.3.1/acircles_pattern.png</span>
+        <span class="comment">% or https://nerian.com/support/resources/patterns/</span>
+        bsz = [4 11];
+    <span class="keyword">case</span> <span class="string">'circles'</span>
+        bsz = [7 6];
+<span class="keyword">end</span></pre><p>open webcam</p><pre class="codeinput">cap = createVideoCapture([], <span class="string">'chess'</span>);
+assert(cap.isOpened(), <span class="string">'Failed to initialize camera capture'</span>);
+img = cap.read();
+sz = size(img);</pre><p>prepare plot</p><pre class="codeinput">hImg = imshow(img);
+hFig = ancestor(hImg, <span class="string">'figure'</span>);
+set(gcf, <span class="string">'KeyPressFcn'</span>,@(o,e) setappdata(o,<span class="string">'flag'</span>,true));
+setappdata(hFig, <span class="string">'flag'</span>,false);
+disp(<span class="string">'Press any key to take snapshot, close figure when done.'</span>)</pre><pre class="codeoutput">Press any key to take snapshot, close figure when done.
+</pre><img src="calibration_capture_demo_01.png"><p>main loop</p><pre class="codeinput">imgs = {};
+<span class="keyword">while</span> ishghandle(hImg)
+    <span class="comment">% new frame</span>
+    img = cap.read();
+    <span class="keyword">if</span> isempty(img), <span class="keyword">break</span>; <span class="keyword">end</span>
+
+    <span class="comment">% detect grid</span>
+    <span class="keyword">switch</span> pattern
+        <span class="keyword">case</span> <span class="string">'chessboard'</span>
+            [pts, found] = cv.findChessboardCorners(img, bsz);
+            <span class="keyword">if</span> found
+                gray = cv.cvtColor(img, <span class="string">'RGB2GRAY'</span>);
+                pts = cv.cornerSubPix(gray, pts, <span class="string">'WinSize'</span>,[11 11]);
+            <span class="keyword">end</span>
+        <span class="keyword">case</span> <span class="string">'acircles'</span>
+            [pts, found] = cv.findCirclesGrid(img, bsz, <span class="string">'SymmetricGrid'</span>,false);
+        <span class="keyword">case</span> <span class="string">'circles'</span>
+            [pts, found] = cv.findCirclesGrid(img, bsz, <span class="string">'SymmetricGrid'</span>,true);
+    <span class="keyword">end</span>
+
+    <span class="comment">% show result</span>
+    out = img;
+    <span class="keyword">if</span> found
+        out = cv.drawChessboardCorners(img, bsz, pts, <span class="string">'PatternWasFound'</span>,found);
+    <span class="keyword">end</span>
+    set(hImg, <span class="string">'CData'</span>,out);
+
+    <span class="comment">% check for keypress</span>
+    flag = getappdata(hFig, <span class="string">'flag'</span>);
+    <span class="keyword">if</span> flag
+        <span class="comment">% store frame</span>
+        setappdata(hFig, <span class="string">'flag'</span>,false);
+        imgs{end+1} = img;
+
+        <span class="comment">% blink to indicate a snapshot was taken</span>
+        out = cv.bitwise_not(out);
+        set(hImg, <span class="string">'CData'</span>,out);
+    <span class="keyword">end</span>
+    drawnow
+<span class="keyword">end</span>
+cap.release();  <span class="comment">% close webcam feed</span></pre><p>export captured images along with calibration board info</p><pre class="codeinput">fprintf(<span class="string">'%d captured images\n'</span>, numel(imgs));
+fprintf(<span class="string">'image size = %dx%d\n'</span>, size(img,2), size(img,1));
+fprintf(<span class="string">'board size = %dx%d\n'</span>, bsz(1), bsz(2));
+<span class="keyword">if</span> ~isempty(imgs)
+    save(fullfile(tempdir(), [pattern <span class="string">'.mat'</span>]), <span class="string">'imgs'</span>, <span class="string">'bsz'</span>);
+    <span class="keyword">for</span> i=1:numel(imgs)
+        fname = fullfile(tempdir(), sprintf(<span class="string">'%s%d.jpg'</span>, pattern, i));
+        cv.imwrite(fname, imgs{i});
+    <span class="keyword">end</span>
+<span class="keyword">end</span></pre><pre class="codeoutput">3 captured images
+image size = 512x512
+board size = 9x6
+</pre><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div><script type="text/x-mathjax-config">
+  // https://stackoverflow.com/a/14631703/97160
+  MathJax.Extension.myImg2jax = {
+    version: "1.0",
+    PreProcess: function (element) {
+      var images = element.getElementsByTagName("img");
+      for (var i = images.length - 1; i >= 0; i--) {
+        var img = images[i];
+        if (img.className === "equation") {
+          var match = img.alt.match(/^(\$\$?)([\s\S]*)\1$/m);
+          if (!match) continue;
+          var script = document.createElement("script");
+          script.type = "math/tex";
+          if (match[1] === "$$") {script.type += ";mode=display"}
+          MathJax.HTML.setScript(script, match[2]);
+          img.parentNode.replaceChild(script, img);
+        }
+      }
+    }
+  };
+  MathJax.Hub.Register.PreProcessor(["PreProcess", MathJax.Extension.myImg2jax]);
+  </script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML"></script>
+      <!--
+##### SOURCE BEGIN #####
+%% Collect Calibration Pattern Images
+%
+% This sample is used to take snapshots of a calibration pattern from live
+% webcam. These images can be later used for camera calibration.
+%
+
+%% Camera Calibration and 3D Reconstruction
+%
+% The functions in the _calib3d_ module use a so-called pinhole camera model.
+% In this model, a scene view is formed by projecting 3D points into the image
+% plane using a perspective transformation.
+%
+% $$s \; m' = A [R|t] M'$$
+%
+% or
+%
+% $$ s \left[ {\matrix{ u \cr v \cr 1 }} \right] =
+%      \left[ {\matrix{ f_x & 0 & c_x \cr
+%                       0 & f_y & c_y \cr
+%                       0 & 0 & 1 }} \right]
+%      \left[ {\matrix{ r_{11} & r_{12} & r_{13} & t_1 \cr
+%                       r_{21} & r_{22} & r_{23} & t_2 \cr
+%                       r_{31} & r_{32} & r_{33} & t_3 }} \right]
+%      \left[ {\matrix{ X \cr Y \cr Z \cr 1 }} \right]$$
+%
+% where:
+%
+% * $(X,Y,Z)$ are the coordinates of a 3D point in the world coordinate space
+% * $(u,v)$ are the coordinates of the projection point in pixels
+% * $A$ is a camera matrix, or a matrix of intrinsic parameters
+% * $(cx,cy)$ is a principal point that is usually at the image center
+% * $fx, fy$ are the focal lengths expressed in pixel units
+%
+% Thus, if an image from the camera is scaled by a factor, all of these
+% parameters should be scaled (multiplied/divided, respectively) by the same
+% factor. The matrix of intrinsic parameters does not depend on the scene
+% viewed. So once estimated, it can be re-used as long as the focal length is
+% fixed (in case of zoom lens). The joint rotation-translation matrix $[R|t]$
+% is called a matrix of extrinsic parameters. It is used to describe the
+% camera motion around a static scene, or vice versa, rigid motion of an
+% object in front of a still camera. That is, $[R|t]$ translates coordinates
+% of a point $(X, Y, Z)$ to a coordinate system, fixed with respect to the
+% camera. The transformation above is equivalent to the following
+% (when $z \ne 0$):
+%
+% $$\begin{array}{l}
+% \left[ {\matrix{ x \cr y \cr z }} \right] =
+%     R \left[ {\matrix{ X \cr Y \cr Z }} \right] + t \\
+% x' = x/z \\
+% y' = y/z \\
+% u = f_x*x' + c_x \\
+% v = f_y*y' + c_y
+% \end{array}$$
+%
+% The following figure illustrates the pinhole camera model.
+%
+% <<https://docs.opencv.org/3.2.0/pinhole_camera_model.png>>
+%
+% Real lenses usually have some distortion, mostly radial distortion and
+% slight tangential distortion. So, the above model is extended as:
+%
+% $$\begin{array}{l}
+% \left[ {\matrix{ x \cr y \cr z }} \right] =
+%     R \left[ {\matrix{ X \cr Y \cr Z }} \right] + t \\
+% x' = x/z \\
+% y' = y/z \\
+% x'' = x' \frac{1 + k_1 r^2 + k_2 r^4 + k_3 r^6}
+%               {1 + k_4 r^2 + k_5 r^4 + k_6 r^6} +
+%               2 p_1 x' y' + p_2(r^2 + 2 x'^2) + s_1 r^2 + s_2 r^4 \\
+% y'' = y' \frac{1 + k_1 r^2 + k_2 r^4 + k_3 r^6}
+%               {1 + k_4 r^2 + k_5 r^4 + k_6 r^6} +
+%               p_1 (r^2 + 2 y'^2) + 2 p_2 x' y' + s_3 r^2 + s_4 r^4 \\
+% \textrm{where} \quad r^2 = x'^2 + y'^2 \\
+% u = f_x*x'' + c_x \\
+% v = f_y*y'' + c_y
+% \end{array}$$
+%
+% $k_1$, $k_2$, $k_3$, $k_4$, $k_5$, and $k_6$ are radial distortion
+% coefficients. $p_1$ and $p_2$ are tangential distortion coefficients.
+% $s_1$, $s_2$, $s_3$, and $s_4$, are the thin prism distortion coefficients.
+% Higher-order coefficients are not considered in OpenCV.
+%
+% The next figure shows two common types of radial distortion: barrel
+% distortion (typically $k_1 > 0$ and pincushion distortion (typically
+% $k_1 < 0$).
+%
+% <<https://docs.opencv.org/3.2.0/distortion_examples.png>>
+%
+% In some cases the image sensor may be tilted in order to focus an oblique
+% plane in front of the camera (Scheimpfug condition). This can be useful for
+% particle image velocimetry (PIV) or triangulation with a laser fan. The tilt
+% causes a perspective distortion of $x''$ and $y''$. This distortion can be
+% modelled in the following way, see e.g. [Louhichi07].
+%
+% $$\begin{array}{l}
+% s \left[ {\matrix{ x''' \cr y''' \cr 1 }} \right] =
+%   \left[ {\matrix{ R_{33}(\tau_x, \tau_y) & 0 & -R_{13}(\tau_x, \tau_y) \cr
+%                    0 & R_{33}(\tau_x, \tau_y) & -R_{23}(\tau_x, \tau_y) \cr
+%                    0 & 0 & 1 }} \right]
+%   R(\tau_x, \tau_y)
+%   \left[ {\matrix{ x'' \cr y'' \cr 1 }} \right] \\
+% u = f_x*x''' + c_x \\
+% v = f_y*y''' + c_y
+% \end{array}$$
+%
+% where the matrix $R(\tau_x, \tau_y)$ is defined by two rotations with
+% angular parameter $\tau_x$ and $\tau_y$, respectively,
+%
+% $$R(\tau_x, \tau_y) =
+% \left[ {\matrix{
+%   \cos(\tau_y) & 0 & -\sin(\tau_y) \cr
+%   0 & 1 & 0 \cr
+%   \sin(\tau_y) & 0 & \cos(\tau_y)
+% }} \right]
+% \left[ {\matrix{
+%   1 & 0 & 0 \cr
+%   0 & \cos(\tau_x) & \sin(\tau_x) \cr
+%   0 & -\sin(\tau_x) & \cos(\tau_x)
+% }} \right] =
+% \left[ {\matrix{
+%   \cos(\tau_y) & \sin(\tau_y)\sin(\tau_x) & -\sin(\tau_y)\cos(\tau_x) \cr
+%   0 & \cos(\tau_x) & \sin(\tau_x) \cr
+%   \sin(\tau_y) & -\cos(\tau_y)\sin(\tau_x) & \cos(\tau_y)\cos(\tau_x)
+% }} \right]$$
+%
+% In the functions below the coefficients are passed or returned as vector:
+%
+% $$(k_1, k_2, p_1, p_2[, k_3[, k_4, k_5, k_6 [, s_1, s_2, s_3, s_4[, \tau_x, \tau_y]]]])$$
+%
+% That is, if the vector contains four elements, it means that $k_3=0$. The
+% distortion coefficients do not depend on the scene viewed. Thus, they also
+% belong to the intrinsic camera parameters. And they remain the same
+% regardless of the captured image resolution. If, for example, a camera has
+% been calibrated on images of 320x240 resolution, absolutely the same
+% distortion coefficients can be used for 640x480 images from the same camera
+% while $f_x$, $f_y$, $c_x$, and $c_y$ need to be scaled appropriately.
+%
+% The functions in the calib3d module use the above model to do the following:
+%
+% * Project 3D points to the image plane given intrinsic and extrinsic
+%   parameters.
+% * Compute extrinsic parameters given intrinsic parameters, a few 3D points,
+%   and their projections.
+% * Estimate intrinsic and extrinsic camera parameters from several views of a
+%   known calibration pattern (every view is described by several 3D-2D point
+%   correspondences).
+% * Estimate the relative position and orientation of the stereo camera
+%   "heads" and compute the _rectification_ transformation that makes the
+%   camera optical axes parallel.
+%
+
+%% Code
+
+%%
+% specify pattern type and board size
+pattern = 'chessboard';
+switch pattern
+    case 'chessboard'
+        % https://docs.opencv.org/3.3.1/pattern.png
+        bsz = [9 6];
+    case 'acircles'
+        % https://docs.opencv.org/3.3.1/acircles_pattern.png
+        % or https://nerian.com/support/resources/patterns/
+        bsz = [4 11];
+    case 'circles'
+        bsz = [7 6];
+end
+
+%%
+% open webcam
+cap = createVideoCapture([], 'chess');
+assert(cap.isOpened(), 'Failed to initialize camera capture');
+img = cap.read();
+sz = size(img);
+
+%%
+% prepare plot
+hImg = imshow(img);
+hFig = ancestor(hImg, 'figure');
+set(gcf, 'KeyPressFcn',@(o,e) setappdata(o,'flag',true));
+setappdata(hFig, 'flag',false);
+disp('Press any key to take snapshot, close figure when done.')
+
+%%
+% main loop
+imgs = {};
+while ishghandle(hImg)
+    % new frame
+    img = cap.read();
+    if isempty(img), break; end
+
+    % detect grid
+    switch pattern
+        case 'chessboard'
+            [pts, found] = cv.findChessboardCorners(img, bsz);
+            if found
+                gray = cv.cvtColor(img, 'RGB2GRAY');
+                pts = cv.cornerSubPix(gray, pts, 'WinSize',[11 11]);
+            end
+        case 'acircles'
+            [pts, found] = cv.findCirclesGrid(img, bsz, 'SymmetricGrid',false);
+        case 'circles'
+            [pts, found] = cv.findCirclesGrid(img, bsz, 'SymmetricGrid',true);
+    end
+
+    % show result
+    out = img;
+    if found
+        out = cv.drawChessboardCorners(img, bsz, pts, 'PatternWasFound',found);
+    end
+    set(hImg, 'CData',out);
+
+    % check for keypress
+    flag = getappdata(hFig, 'flag');
+    if flag
+        % store frame
+        setappdata(hFig, 'flag',false);
+        imgs{end+1} = img;
+
+        % blink to indicate a snapshot was taken
+        out = cv.bitwise_not(out);
+        set(hImg, 'CData',out);
+    end
+    drawnow
+end
+cap.release();  % close webcam feed
+
+%%
+% export captured images along with calibration board info
+fprintf('%d captured images\n', numel(imgs));
+fprintf('image size = %dx%d\n', size(img,2), size(img,1));
+fprintf('board size = %dx%d\n', bsz(1), bsz(2));
+if ~isempty(imgs)
+    save(fullfile(tempdir(), [pattern '.mat']), 'imgs', 'bsz');
+    for i=1:numel(imgs)
+        fname = fullfile(tempdir(), sprintf('%s%d.jpg', pattern, i));
+        cv.imwrite(fname, imgs{i});
+    end
+end
+
+##### SOURCE END #####
+--></body>
+</html>

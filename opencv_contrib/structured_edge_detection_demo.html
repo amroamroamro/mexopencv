@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Structured Edge Detection demo</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2018-02-20">
+      <meta name="DC.source" content="structured_edge_detection_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Structured Edge Detection demo</h1>
+         <!--introduction-->
+         <p>This sample demonstrates structured forests for fast edge detection, and edgeboxes.</p>
+         <p>The structered edge demo requires you to provide a model. This demo downloads a model from the opencv_extra repository on
+            Github.
+         </p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/ximgproc/samples/structured_edge_detection.cpp">https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/ximgproc/samples/structured_edge_detection.cpp</a></li>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/ximgproc/samples/edgeboxes_demo.cpp">https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/ximgproc/samples/edgeboxes_demo.cpp</a></li>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/ximgproc/samples/edgeboxes_demo.py">https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/ximgproc/samples/edgeboxes_demo.py</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Load image</a></li>
+               <li><a href="#3">Create object</a></li>
+               <li><a href="#4">Detect edges</a></li>
+               <li><a href="#9">Display result</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Load image</h2>
+         <p>read RGB image</p><pre class="codeinput">img = cv.imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'balloon.jpg'</span>), <span class="string">'Color'</span>,true);
+assert(~isempty(img), <span class="string">'Cannot read image file'</span>);
+
+<span class="comment">% convert to floating-point in [0,1] range</span>
+img = single(img) / 255;</pre><h2 id="3">Create object</h2>
+         <p>we load a pre-trained model</p><pre class="codeinput">modelFilename = fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'model.yml.gz'</span>);
+<span class="keyword">if</span> exist(modelFilename, <span class="string">'file'</span>) ~= 2
+    <span class="comment">% download model from GitHub</span>
+    url = <span class="string">'https://cdn.rawgit.com/opencv/opencv_extra/3.3.0/testdata/cv/ximgproc/model.yml.gz'</span>;
+    disp(<span class="string">'Downloading model...'</span>)
+    urlwrite(url, modelFilename);
+<span class="keyword">end</span>
+
+tic
+pDollar = cv.StructuredEdgeDetection(modelFilename);
+toc</pre><pre class="codeoutput">Elapsed time is 1.868493 seconds.
+</pre><h2 id="4">Detect edges</h2><pre class="codeinput">tic
+edges = pDollar.detectEdges(img);
+toc</pre><pre class="codeoutput">Elapsed time is 0.058288 seconds.
+</pre><p>convert grayscale [0,1] float image to 8-bit</p><pre class="codeinput">e8u = uint8(edges * 255);</pre><p>computes orientation from edge map</p><pre class="codeinput">orientation_map = pDollar.computeOrientation(edges);</pre><p>suppress edges</p><pre class="codeinput">edges_nms = pDollar.edgesNms(edges, orientation_map);</pre><p>generate object bounding box proposals using edges</p><pre class="codeinput">ebx = cv.EdgeBoxes(<span class="string">'MaxBoxes'</span>,30);
+boxes = ebx.getBoundingBoxes(edges_nms, orientation_map);
+out = cv.rectangle(img, boxes, <span class="string">'Color'</span>,[0 255 0], <span class="string">'LineType'</span>,<span class="string">'AA'</span>);</pre><h2 id="9">Display result</h2><pre class="codeinput">figure(<span class="string">'Position'</span>,[200 200 800 600])
+subplot(221), imshow(img), title(<span class="string">'image'</span>)
+subplot(222), imshow(e8u), title(<span class="string">'edges'</span>)
+subplot(223), imshow(edges_nms), title(<span class="string">'edges NMS'</span>)
+subplot(224), imshow(out), title(<span class="string">'object proposals'</span>)</pre><img src="structured_edge_detection_demo_01.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Structured Edge Detection demo
+% This sample demonstrates structured forests for fast edge detection, and
+% edgeboxes.
+%
+% The structered edge demo requires you to provide a model.
+% This demo downloads a model from the opencv_extra repository on Github.
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/ximgproc/samples/structured_edge_detection.cpp>
+% * <https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/ximgproc/samples/edgeboxes_demo.cpp>
+% * <https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/ximgproc/samples/edgeboxes_demo.py>
+%
+
+%% Load image
+% read RGB image
+img = cv.imread(fullfile(mexopencv.root(),'test','balloon.jpg'), 'Color',true);
+assert(~isempty(img), 'Cannot read image file');
+
+% convert to floating-point in [0,1] range
+img = single(img) / 255;
+
+%% Create object
+% we load a pre-trained model
+modelFilename = fullfile(mexopencv.root(),'test','model.yml.gz');
+if exist(modelFilename, 'file') ~= 2
+    % download model from GitHub
+    url = 'https://cdn.rawgit.com/opencv/opencv_extra/3.3.0/testdata/cv/ximgproc/model.yml.gz';
+    disp('Downloading model...')
+    urlwrite(url, modelFilename);
+end
+
+tic
+pDollar = cv.StructuredEdgeDetection(modelFilename);
+toc
+
+%% Detect edges
+tic
+edges = pDollar.detectEdges(img);
+toc
+
+%%
+% convert grayscale [0,1] float image to 8-bit
+e8u = uint8(edges * 255);
+
+%%
+% computes orientation from edge map
+orientation_map = pDollar.computeOrientation(edges);
+
+%%
+% suppress edges
+edges_nms = pDollar.edgesNms(edges, orientation_map);
+
+%%
+% generate object bounding box proposals using edges
+ebx = cv.EdgeBoxes('MaxBoxes',30);
+boxes = ebx.getBoundingBoxes(edges_nms, orientation_map);
+out = cv.rectangle(img, boxes, 'Color',[0 255 0], 'LineType','AA');
+
+%% Display result
+figure('Position',[200 200 800 600])
+subplot(221), imshow(img), title('image')
+subplot(222), imshow(e8u), title('edges')
+subplot(223), imshow(edges_nms), title('edges NMS')
+subplot(224), imshow(out), title('object proposals')
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Letter Recognition using kNN</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="knn_ocr_letters_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Letter Recognition using kNN</h1>
+         <!--introduction-->
+         <p>We will use kNN to build a basic OCR application.</p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://docs.opencv.org/3.2.0/d8/d4b/tutorial_py_knn_opencv.html">https://docs.opencv.org/3.2.0/d8/d4b/tutorial_py_knn_opencv.html</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">English Alphabets Dataset</a></li>
+               <li><a href="#5">Train</a></li>
+               <li><a href="#6">Test</a></li>
+               <li><a href="#8">Citations</a></li>
+            </ul>
+         </div>
+         <h2 id="2">English Alphabets Dataset</h2>
+         <p>This example is similar to the digits dataset seen in another demo, but for the English alphabets, there is a slight change
+            in data and feature set. Here, instead of images, OpenCV comes with a data file, <tt>letter-recognition.data</tt>. If you open it, you will see 20000 lines. In each row, first column is an alphabet which is our label. Next 16 numbers following
+            it are its different features. These features are obtained from <i>UCI Machine Learning Repository</i>. You can find the details of these features <a href="http://archive.ics.uci.edu/ml/datasets/Letter+Recognition">here</a>.
+         </p>
+         <p>There are 20000 samples available, so we take first 10000 data as training samples and remaining 10000 as test samples. We
+            also should change the alphabets to ASCII codes as integer class labels.
+         </p>
+         <p>Load dataset</p><pre class="codeinput">fname = fullfile(mexopencv.root(), <span class="string">'test'</span>, <span class="string">'letter-recognition.data'</span>);
+<span class="keyword">if</span> exist(fname, <span class="string">'file'</span>) ~= 2
+    disp(<span class="string">'Downloading dataset...'</span>)
+    url = <span class="string">'https://cdn.rawgit.com/opencv/opencv/3.2.0/samples/data/letter-recognition.data'</span>;
+    urlwrite(url, fname);
+<span class="keyword">end</span>
+<span class="keyword">if</span> ~mexopencv.isOctave()
+    fid = fopen(fname, <span class="string">'rt'</span>);
+    D = textscan(fid, [<span class="string">'%c'</span> repmat(<span class="string">' %d'</span>,1,16)], 20000, <span class="keyword">...</span>
+        <span class="string">'Delimiter'</span>,<span class="string">','</span>, <span class="string">'CollectOutput'</span>,true);
+    fclose(fid);
+<span class="keyword">else</span>
+    <span class="comment">%HACK: textscan failed to read the whole file in Octave!</span>
+    D = cell(1,1+16);
+    [D{:}] = textread(fname, [<span class="string">'%s'</span> repmat(<span class="string">' %d'</span>,1,16)], 20000, <span class="string">'Delimiter'</span>,<span class="string">','</span>);
+    D = {char(D{1}), cat(2, D{2:end})};
+<span class="keyword">end</span></pre><p>Prepare data for classification</p><pre class="codeinput">labels = int32(D{1}) - int32(<span class="string">'A'</span>);
+data = single(D{2});
+whos <span class="string">data</span> <span class="string">labels</span>
+<span class="keyword">if</span> ~mexopencv.isOctave() &amp;&amp; mexopencv.require(<span class="string">'stats'</span>)
+    <span class="comment">%HACK: tabulate in Octave behaves differently</span>
+    tabulate(sort(D{1}))
+<span class="keyword">end</span>
+N = 10000;  <span class="comment">% fix(numel(labels)/2)</span></pre><pre class="codeoutput">  Name            Size              Bytes  Class     Attributes
+
+  data        20000x16            1280000  single              
+  labels      20000x1               80000  int32               
+
+  Value    Count   Percent
+      A      789      3.94%
+      B      766      3.83%
+      C      736      3.68%
+      D      805      4.03%
+      E      768      3.84%
+      F      775      3.88%
+      G      773      3.87%
+      H      734      3.67%
+      I      755      3.77%
+      J      747      3.73%
+      K      739      3.69%
+      L      761      3.81%
+      M      792      3.96%
+      N      783      3.92%
+      O      753      3.77%
+      P      803      4.01%
+      Q      783      3.92%
+      R      758      3.79%
+      S      748      3.74%
+      T      796      3.98%
+      U      813      4.07%
+      V      764      3.82%
+      W      752      3.76%
+      X      787      3.94%
+      Y      786      3.93%
+      Z      734      3.67%
+</pre><h2 id="5">Train</h2><pre class="codeinput">K = 5;
+knn = cv.KNearest();
+knn.DefaultK = K;
+fprintf(<span class="string">'Training... '</span>); tic
+knn.train(data(1:N,:), labels(1:N));
+toc</pre><pre class="codeoutput">Training... Elapsed time is 0.005358 seconds.
+</pre><h2 id="6">Test</h2><pre class="codeinput">fprintf(<span class="string">'Testing... '</span>); tic
+yhat = knn.findNearest(data(N+1:end,:), K);
+toc
+<span class="comment">%TODO: https://savannah.gnu.org/bugs/?50716</span></pre><pre class="codeoutput">Testing... Elapsed time is 0.359780 seconds.
+</pre><p>Performance on test set</p><pre class="codeinput">confmat = accumarray([labels(N+1:end), yhat]+1, 1);
+fprintf(<span class="string">'Accuracy = %d/%d\n'</span>, trace(confmat), sum(confmat(:)));
+<span class="keyword">if</span> mexopencv.isOctave()
+    display(confmat)
+<span class="keyword">else</span>
+    <span class="comment">% Display confusion matrix as a nicley formatted table</span>
+    letters = cellstr(unique(D{1}));  <span class="comment">% num2cell('A':'Z')</span>
+    t = array2table(confmat, <span class="string">'RowNames'</span>,letters, <span class="string">'VariableNames'</span>,letters);
+    display(t)
+
+    <span class="comment">% We can see how most classification errors involve similar looking letters</span>
+    [r,c,v] = find(triu(confmat,1) + tril(confmat,-1).');
+    t = table(letters(r), letters(c), v, <span class="keyword">...</span>
+        <span class="string">'VariableNames'</span>,{<span class="string">'letter1'</span>, <span class="string">'letter2'</span>, <span class="string">'err'</span>});
+    t = sortrows(t, [-3 1 2]);
+    display(t(1:min(end,10),:))
+<span class="keyword">end</span></pre><pre class="codeoutput">Accuracy = 9306/10000
+t =
+  26&times;26 table
+          A      B      C      D      E      F      G      H      I      J      K      L      M      N      O      P      Q      R      S      T      U      V      W      X      Y      Z 
+         ___    ___    ___    ___    ___    ___    ___    ___    ___    ___    ___    ___    ___    ___    ___    ___    ___    ___    ___    ___    ___    ___    ___    ___    ___    ___
+    A    388      1      0      0      0      0      0      0      0      0      0      0      2      0      0      0      0      0      0      0      1      0      0      0      4      0
+    B      0    351      0      1      3      1      0      0      0      0      0      0      2      0      0      0      0     10      1      0      0      2      0      0      0      1
+    C      0      0    336      0      4      0      4      0      0      0      0      0      1      0      8      0      2      0      0      0      2      0      1      0      0      0
+    D      0      1      0    398      1      0      0     14      0      0      0      0      0      1      1      0      0      1      1      0      0      0      0      0      0      0
+    E      0      4      8      0    336      3      7      1      0      0      3      0      0      0      0      0      0      0      0      0      0      0      0      0      0      8
+    F      0      1      0      1      2    356      0      3      2      0      0      0      0      2      0     16      0      0      1     10      0      2      0      0      0      0
+    G      1      5      3      6     14      1    367      1      0      0      1      0      1      0      2      0      1      0      0      0      0      2      1      0      0      0
+    H      0      8      1      9      4      0      5    276      0      0     10      1      1      0      2      0      1      6      0      0      0      0      0      1      1      1
+    I      1      1      0      1      0      7      0      0    354     24      0      0      0      0      0      1      1      0      0      0      0      0      0      1      0      0
+    J      0      0      0      1      2      0      0      1     13    336      0      0      0      0      1      0      0      0      0      0      1      0      0      0      0      0
+    K      0      4      0      3      4      0      0     29      0      0    308      0      0      0      1      0      0     12      0      0      0      0      0      8      0      0
+    L      0      0      1      0      2      0      2      3      0      1      2    372      0      0      0      0      1      1      0      0      0      0      0      1      0      0
+    M      0      2      0      0      0      0      1      0      0      0      0      0    368      5      2      0      0      0      0      0      0      0      4      0      0      0
+    N      0      7      0      5      0      0      0      8      0      0      0      1      3    370      6      0      0      5      0      0      0      4      0      0      0      0
+    O      0      0      1     12      0      0      1      1      0      0      0      0      0      2    350      0      3      0      0      0      1      0      2      0      0      0
+    P      0      3      0      2      1     13      0      4      0      0      0      1      0      0      1    367      1      1      0      0      0      0      0      0      0      0
+    Q      1      1      1      1      2      0      4      0      0      0      0      0      0      0     15      0    386      1      0      0      0      0      0      0      1      0
+    R      0     10      0      4      0      3      0      7      0      0      7      0      0      1      0      0      1    358      1      0      0      2      0      0      0      0
+    S      4      6      0      4      9      1      0      0      0      1      0      1      0      0      0      0      0      1    365      1      0      0      0      0      0      0
+    T      0      2      0      3      0      2      0      0      1      0      1      0      0      0      0      0      1      0      0    351      0      1      0      2      5      0
+    U      1      1      0      0      0      0      0      8      0      0      0      0      1      0      1      0      0      0      0      1    394      0      0      0      0      0
+    V      0      7      1      0      0      1      0      0      0      0      0      0      1      0      1      0      0      0      0      1      1    365      4      0      0      0
+    W      0      0      0      0      0      0      0      1      0      0      0      0      2      0      4      0      0      0      0      0      1      5    385      0      0      0
+    X      2      3      0      1     11      0      0      0      1      1     12      0      0      0      0      0      0      1      0      1      1      0      0    353      0      1
+    Y      0      1      0      1      0      0      0      1      0      0      0      0      0      0      0      2      0      0      0     11      3      1      1      1    356      0
+    Z      0      0      0      1      1      1      0      0      0      3      0      1      0      0      0      0      5      0      2      2      0      0      0      0      0    360
+  10&times;3 table
+    letter1    letter2    err
+    _______    _______    ___
+    'H'        'K'        39 
+    'I'        'J'        37 
+    'F'        'P'        29 
+    'D'        'H'        23 
+    'E'        'G'        21 
+    'B'        'R'        20 
+    'K'        'X'        20 
+    'K'        'R'        19 
+    'O'        'Q'        18 
+    'T'        'Y'        16 
+</pre><h2 id="8">Citations</h2>
+         <div>
+            <ul>
+               <li>P. W. Frey and D. J. Slate. "Letter Recognition Using Holland-style   Adaptive Classifiers". Machine Learning Vol 6 #2, March
+                  91.
+               </li>
+               <li>M. Lichman, "UCI Machine Learning Repository", 2013.   <a href="http://archive.ics.uci.edu/ml">http://archive.ics.uci.edu/ml</a>. University of California, Irvine,   School of Information and Computer Science.
+               </li>
+            </ul>
+         </div>
+         <div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Letter Recognition using kNN
+%
+% We will use kNN to build a basic OCR application.
+%
+% Sources:
+%
+% * <https://docs.opencv.org/3.2.0/d8/d4b/tutorial_py_knn_opencv.html>
+%
+
+%% English Alphabets Dataset
+%
+% This example is similar to the digits dataset seen in another demo, but for
+% the English alphabets, there is a slight change in data and feature set.
+% Here, instead of images, OpenCV comes with a data file,
+% |letter-recognition.data|. If you open it, you will see 20000 lines. In each
+% row, first column is an alphabet which is our label. Next 16 numbers
+% following it are its different features. These features are obtained from
+% _UCI Machine Learning Repository_. You can find the details of these
+% features <http://archive.ics.uci.edu/ml/datasets/Letter+Recognition here>.
+%
+% There are 20000 samples available, so we take first 10000 data as training
+% samples and remaining 10000 as test samples. We also should change the
+% alphabets to ASCII codes as integer class labels.
+%
+
+%%
+% Load dataset
+fname = fullfile(mexopencv.root(), 'test', 'letter-recognition.data');
+if exist(fname, 'file') ~= 2
+    disp('Downloading dataset...')
+    url = 'https://cdn.rawgit.com/opencv/opencv/3.2.0/samples/data/letter-recognition.data';
+    urlwrite(url, fname);
+end
+if ~mexopencv.isOctave()
+    fid = fopen(fname, 'rt');
+    D = textscan(fid, ['%c' repmat(' %d',1,16)], 20000, ...
+        'Delimiter',',', 'CollectOutput',true);
+    fclose(fid);
+else
+    %HACK: textscan failed to read the whole file in Octave!
+    D = cell(1,1+16);
+    [D{:}] = textread(fname, ['%s' repmat(' %d',1,16)], 20000, 'Delimiter',',');
+    D = {char(D{1}), cat(2, D{2:end})};
+end
+
+%%
+% Prepare data for classification
+labels = int32(D{1}) - int32('A');
+data = single(D{2});
+whos data labels
+if ~mexopencv.isOctave() && mexopencv.require('stats')
+    %HACK: tabulate in Octave behaves differently
+    tabulate(sort(D{1}))
+end
+N = 10000;  % fix(numel(labels)/2)
+
+%% Train
+K = 5;
+knn = cv.KNearest();
+knn.DefaultK = K;
+fprintf('Training... '); tic
+knn.train(data(1:N,:), labels(1:N));
+toc
+
+%% Test
+fprintf('Testing... '); tic
+yhat = knn.findNearest(data(N+1:end,:), K);
+toc
+%TODO: https://savannah.gnu.org/bugs/?50716
+
+%%
+% Performance on test set
+confmat = accumarray([labels(N+1:end), yhat]+1, 1);
+fprintf('Accuracy = %d/%d\n', trace(confmat), sum(confmat(:)));
+if mexopencv.isOctave()
+    display(confmat)
+else
+    % Display confusion matrix as a nicley formatted table
+    letters = cellstr(unique(D{1}));  % num2cell('A':'Z')
+    t = array2table(confmat, 'RowNames',letters, 'VariableNames',letters);
+    display(t)
+
+    % We can see how most classification errors involve similar looking letters
+    [r,c,v] = find(triu(confmat,1) + tril(confmat,-1).');
+    t = table(letters(r), letters(c), v, ...
+        'VariableNames',{'letter1', 'letter2', 'err'});
+    t = sortrows(t, [-3 1 2]);
+    display(t(1:min(end,10),:))
+end
+
+%% Citations
+%
+% * P. W. Frey and D. J. Slate. "Letter Recognition Using Holland-style
+%   Adaptive Classifiers". Machine Learning Vol 6 #2, March 91.
+% * M. Lichman, "UCI Machine Learning Repository", 2013.
+%   <http://archive.ics.uci.edu/ml>. University of California, Irvine,
+%   School of Information and Computer Science.
+%
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

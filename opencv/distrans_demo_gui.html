@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Distance Transform</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="distrans_demo_gui.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Distance Transform</h1>
+         <p>Program to demonstrate the use of the distance transform function between edge images.</p>
+         <p>Distance types:</p>
+         <div>
+            <ul>
+               <li><tt>L1</tt>: use L1 metric
+               </li>
+               <li><tt>L2</tt>: use L2 metric
+               </li>
+               <li><tt>C</tt>: use C/Inf metric
+               </li>
+            </ul>
+         </div>
+         <p>Mask sizes:</p>
+         <div>
+            <ul>
+               <li><tt>3</tt>: use 3x3 mask
+               </li>
+               <li><tt>5</tt>: use 5x5 mask
+               </li>
+               <li><tt>0</tt>: use precise distance transform
+               </li>
+            </ul>
+         </div>
+         <p>Label types:</p>
+         <div>
+            <ul>
+               <li><tt>None</tt>: no labels
+               </li>
+               <li><tt>CComp</tt>: switch to Voronoi diagram mode.
+               </li>
+               <li><tt>Pixel</tt>: switch to pixel-based Voronoi diagram mode.
+               </li>
+            </ul>
+         </div>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/distrans.cpp">https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/distrans.cpp</a></li>
+               <li><a href="https://github.com/opencv/opencv/blob/3.2.0/samples/python/distrans.py">https://github.com/opencv/opencv/blob/3.2.0/samples/python/distrans.py</a></li>
+            </ul>
+         </div><pre class="codeinput"><span class="keyword">function</span> varargout = distrans_demo_gui(im)
+    <span class="comment">% load source image</span>
+    <span class="keyword">if</span> nargin &lt; 1
+        src = imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'stuff.jpg'</span>));
+    <span class="keyword">elseif</span> ischar(im)
+        src = cv.imread(im, <span class="string">'Grayscale'</span>,true);
+    <span class="keyword">else</span>
+        src = im;
+    <span class="keyword">end</span>
+    <span class="comment">% we expect a grayscale image</span>
+    <span class="keyword">if</span> size(src,3) == 3, src = cv.cvtColor(src, <span class="string">'RGB2GRAY'</span>); <span class="keyword">end</span>
+
+    <span class="comment">% create the UI</span>
+    h = buildGUI(src);
+    <span class="keyword">if</span> nargout &gt; 0, varargout{1} = h; <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> onChange(o,~,h)
+    <span class="comment">%ONCHANGE  Event handler for UI controls</span>
+
+    <span class="comment">% options (distance types, mask sizes, and voronoi label types)</span>
+    dists = {<span class="string">'L1'</span>, <span class="string">'L2'</span>, <span class="string">'C'</span>};
+    masks = {<span class="string">'3'</span>, <span class="string">'5'</span>, <span class="string">'Precise'</span>};
+    labels = {<span class="string">''</span>, <span class="string">'CComp'</span>, <span class="string">'Pixel'</span>};
+
+    <span class="comment">% retrieve current values from UI controls</span>
+    distType = get(h.pop(1), <span class="string">'Value'</span>);
+    maskSize = get(h.pop(2), <span class="string">'Value'</span>);
+    voronoiType = get(h.pop(3), <span class="string">'Value'</span>);
+    thresh = round(get(h.slid, <span class="string">'Value'</span>));
+    <span class="keyword">if</span> o == h.slid
+        set(h.txt, <span class="string">'String'</span>,sprintf(<span class="string">'Threshold: %3d'</span>,thresh));
+    <span class="keyword">end</span>
+    <span class="keyword">if</span> distType ~= 2 &amp;&amp; o == h.pop(1)
+        <span class="comment">% for L1 or C distance, mask forced to 3x3</span>
+        maskSize = 1;
+        set(h.pop(2), <span class="string">'Value'</span>,maskSize);
+    <span class="keyword">end</span>
+    <span class="keyword">if</span> voronoiType ~= 1
+        <span class="keyword">if</span> o == h.pop(1) || o == h.pop(2)
+            <span class="comment">% if distance/mask changed, revert back to no labels mode</span>
+            voronoiType = 1;
+            set(h.pop(3), <span class="string">'Value'</span>,voronoiType);
+        <span class="keyword">elseif</span> o == h.pop(3)
+            <span class="comment">% if voronoi mode was enabled, fix distance to L2 and mask to 5x5</span>
+            distType = 2;
+            maskSize = 2;
+            set(h.pop(1), <span class="string">'Value'</span>,distType);
+            set(h.pop(2), <span class="string">'Value'</span>,maskSize);
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    <span class="comment">% threshold image</span>
+    <span class="keyword">if</span> true
+        bw = uint8(h.src &gt;= thresh) * 255;
+    <span class="keyword">else</span>
+        bw = cv.Canny(h.src, [1 3]*thresh);
+        bw = cv.bitwise_not(bw);
+    <span class="keyword">end</span>
+
+    <span class="comment">% compute distance map</span>
+    <span class="keyword">if</span> voronoiType == 1
+        D = cv.distanceTransform(bw, <span class="keyword">...</span>
+            <span class="string">'DistanceType'</span>,dists{distType}, <span class="string">'MaskSize'</span>,masks{maskSize});
+    <span class="keyword">else</span>
+        [D, labels] = cv.distanceTransform(bw, <span class="keyword">...</span>
+            <span class="string">'DistanceType'</span>,dists{distType}, <span class="string">'MaskSize'</span>,masks{maskSize}, <span class="keyword">...</span>
+            <span class="string">'LabelType'</span>,labels{voronoiType});
+    <span class="keyword">end</span>
+
+    <span class="comment">% build output image</span>
+    <span class="keyword">if</span> true
+        <span class="keyword">if</span> voronoiType == 1
+            <span class="comment">% begin "painting" the distance transform result</span>
+            D = abs(D*5000) .^ 0.5;
+            D32s = bitand(int32(D + 0.5), 255);
+            D8u1 = uint8(D32s);
+            D8u2 = uint8((D32s * -1) + 255);
+            D8u = cat(3, D8u2, D8u2, D8u1);
+        <span class="keyword">else</span>
+            <span class="keyword">if</span> true
+                clrs = single(lines(7) * 255);
+            <span class="keyword">else</span>
+                clrs = [0 0 0; 0 0 255; 0 128 255; 0 255 255;
+                    0 255 0; 255 128 0; 255 255 0; 255 0 0; 255 0 255];
+            <span class="keyword">end</span>
+            idx = mod(labels - 1, size(clrs,1)-1) + 1;
+            idx(labels == 0 | D == 0) = 0;
+            scale = 1 ./ (1 + D.*D * 0.0004);
+            D8u = reshape(clrs(idx+1,:), [size(labels) 3]);
+            D8u = uint8(bsxfun(@times, D8u, scale));
+        <span class="keyword">end</span>
+    <span class="keyword">else</span>
+        <span class="keyword">if</span> voronoiType == 1
+            N = 256;
+            D8u = uint8(mod(D*2, N));
+        <span class="keyword">else</span>
+            N = max(labels(:));
+            N = min(double(N), 256);
+            D8u = uint8(mod(labels, N));
+        <span class="keyword">end</span>
+        D8u = ind2rgb(D8u, jet(N));
+        D8u(repmat(bw == 0, [1 1 3])) = 255;
+    <span class="keyword">end</span>
+
+    <span class="comment">% show result</span>
+    set(h.img, <span class="string">'CData'</span>,D8u);
+    drawnow;
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> h = buildGUI(img)
+    <span class="comment">%BUILDGUI  Creates the UI</span>
+
+    <span class="comment">% parameters</span>
+    distType = 2;     <span class="comment">% L2</span>
+    maskSize = 1;     <span class="comment">% 3x3</span>
+    voronoiType = 1;  <span class="comment">% None</span>
+    thresh = 100;     <span class="comment">% brightness threshold</span>
+    max_thresh = 255;
+    sz = size(img);
+    sz(2) = max(sz(2), 350);  <span class="comment">% minimum figure width</span>
+
+    <span class="comment">% build the user interface (no resizing to keep it simple)</span>
+    h = struct();
+    h.src = img;
+    h.fig = figure(<span class="string">'Name'</span>,<span class="string">'Distance Map'</span>, <span class="keyword">...</span>
+        <span class="string">'NumberTitle'</span>,<span class="string">'off'</span>, <span class="string">'Menubar'</span>,<span class="string">'none'</span>, <span class="string">'Resize'</span>,<span class="string">'off'</span>, <span class="keyword">...</span>
+        <span class="string">'Position'</span>,[200 200 sz(2) sz(1)+29]);
+    <span class="keyword">if</span> ~mexopencv.isOctave()
+        <span class="comment">%HACK: not implemented in Octave</span>
+        movegui(h.fig, <span class="string">'center'</span>);
+    <span class="keyword">end</span>
+    h.ax = axes(<span class="string">'Parent'</span>,h.fig, <span class="string">'Units'</span>,<span class="string">'pixels'</span>, <span class="string">'Position'</span>,[1 30 sz(2) sz(1)]);
+    <span class="keyword">if</span> ~mexopencv.isOctave()
+        h.img = imshow(img, <span class="string">'Parent'</span>,h.ax);
+    <span class="keyword">else</span>
+        <span class="comment">%HACK: https://savannah.gnu.org/bugs/index.php?45473</span>
+        axes(h.ax);
+        h.img = imshow(img);
+    <span class="keyword">end</span>
+    h.pop(1) = uicontrol(<span class="string">'Parent'</span>,h.fig, <span class="string">'Style'</span>,<span class="string">'popupmenu'</span>, <span class="keyword">...</span>
+       <span class="string">'Position'</span>,[5 5 70 20], <span class="string">'TooltipString'</span>,<span class="string">'Distance Type'</span>, <span class="keyword">...</span>
+       <span class="string">'String'</span>, {<span class="string">'L1'</span>,<span class="string">'L2'</span>,<span class="string">'C'</span>}, <span class="string">'Value'</span>,distType);
+    h.pop(2) = uicontrol(<span class="string">'Parent'</span>,h.fig, <span class="string">'Style'</span>,<span class="string">'popupmenu'</span>, <span class="keyword">...</span>
+       <span class="string">'Position'</span>,[75 5 70 20], <span class="string">'TooltipString'</span>,<span class="string">'Mask Size'</span>, <span class="keyword">...</span>
+       <span class="string">'String'</span>,{<span class="string">'3x3'</span>,<span class="string">'5x5'</span>,<span class="string">'Precise'</span>}, <span class="string">'Value'</span>,maskSize);
+    h.pop(3) = uicontrol(<span class="string">'Parent'</span>,h.fig, <span class="string">'Style'</span>,<span class="string">'popupmenu'</span>, <span class="keyword">...</span>
+       <span class="string">'Position'</span>,[145 5 70 20], <span class="string">'TooltipString'</span>,<span class="string">'Label Type'</span>, <span class="keyword">...</span>
+       <span class="string">'String'</span>,{<span class="string">'-None-'</span>,<span class="string">'CComp'</span>,<span class="string">'Pixel'</span>}, <span class="string">'Value'</span>,voronoiType);
+    h.txt = uicontrol(<span class="string">'Parent'</span>,h.fig, <span class="string">'Style'</span>,<span class="string">'text'</span>, <span class="string">'FontSize'</span>,11, <span class="keyword">...</span>
+        <span class="string">'Position'</span>,[220 5 100 20], <span class="string">'String'</span>,sprintf(<span class="string">'Threshold: %3d'</span>,thresh));
+    h.slid = uicontrol(<span class="string">'Parent'</span>,h.fig, <span class="string">'Style'</span>,<span class="string">'slider'</span>, <span class="string">'Value'</span>,thresh, <span class="keyword">...</span>
+        <span class="string">'Min'</span>,0, <span class="string">'Max'</span>,max_thresh, <span class="string">'SliderStep'</span>,[1 10]./(max_thresh-0), <span class="keyword">...</span>
+        <span class="string">'Position'</span>,[325 5 sz(2)-330 20]);
+
+    <span class="comment">% hook event handlers, and trigger default start</span>
+    set([h.slid, h.pop], <span class="string">'Callback'</span>,{@onChange,h}, <span class="keyword">...</span>
+        <span class="string">'Interruptible'</span>,<span class="string">'off'</span>, <span class="string">'BusyAction'</span>,<span class="string">'cancel'</span>);
+    onChange(h.slid,[],h);
+<span class="keyword">end</span></pre><img src="distrans_demo_gui_01.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Distance Transform
+% Program to demonstrate the use of the distance transform function
+% between edge images.
+%
+% Distance types:
+%
+% * |L1|: use L1 metric
+% * |L2|: use L2 metric
+% * |C|: use C/Inf metric
+%
+% Mask sizes:
+%
+% * |3|: use 3x3 mask
+% * |5|: use 5x5 mask
+% * |0|: use precise distance transform
+%
+% Label types:
+%
+% * |None|: no labels
+% * |CComp|: switch to Voronoi diagram mode.
+% * |Pixel|: switch to pixel-based Voronoi diagram mode.
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/distrans.cpp>
+% * <https://github.com/opencv/opencv/blob/3.2.0/samples/python/distrans.py>
+%
+
+function varargout = distrans_demo_gui(im)
+    % load source image
+    if nargin < 1
+        src = imread(fullfile(mexopencv.root(),'test','stuff.jpg'));
+    elseif ischar(im)
+        src = cv.imread(im, 'Grayscale',true);
+    else
+        src = im;
+    end
+    % we expect a grayscale image
+    if size(src,3) == 3, src = cv.cvtColor(src, 'RGB2GRAY'); end
+
+    % create the UI
+    h = buildGUI(src);
+    if nargout > 0, varargout{1} = h; end
+end
+
+function onChange(o,~,h)
+    %ONCHANGE  Event handler for UI controls
+
+    % options (distance types, mask sizes, and voronoi label types)
+    dists = {'L1', 'L2', 'C'};
+    masks = {'3', '5', 'Precise'};
+    labels = {'', 'CComp', 'Pixel'};
+
+    % retrieve current values from UI controls
+    distType = get(h.pop(1), 'Value');
+    maskSize = get(h.pop(2), 'Value');
+    voronoiType = get(h.pop(3), 'Value');
+    thresh = round(get(h.slid, 'Value'));
+    if o == h.slid
+        set(h.txt, 'String',sprintf('Threshold: %3d',thresh));
+    end
+    if distType ~= 2 && o == h.pop(1)
+        % for L1 or C distance, mask forced to 3x3
+        maskSize = 1;
+        set(h.pop(2), 'Value',maskSize);
+    end
+    if voronoiType ~= 1
+        if o == h.pop(1) || o == h.pop(2)
+            % if distance/mask changed, revert back to no labels mode
+            voronoiType = 1;
+            set(h.pop(3), 'Value',voronoiType);
+        elseif o == h.pop(3)
+            % if voronoi mode was enabled, fix distance to L2 and mask to 5x5
+            distType = 2;
+            maskSize = 2;
+            set(h.pop(1), 'Value',distType);
+            set(h.pop(2), 'Value',maskSize);
+        end
+    end
+
+    % threshold image
+    if true
+        bw = uint8(h.src >= thresh) * 255;
+    else
+        bw = cv.Canny(h.src, [1 3]*thresh);
+        bw = cv.bitwise_not(bw);
+    end
+
+    % compute distance map
+    if voronoiType == 1
+        D = cv.distanceTransform(bw, ...
+            'DistanceType',dists{distType}, 'MaskSize',masks{maskSize});
+    else
+        [D, labels] = cv.distanceTransform(bw, ...
+            'DistanceType',dists{distType}, 'MaskSize',masks{maskSize}, ...
+            'LabelType',labels{voronoiType});
+    end
+
+    % build output image
+    if true
+        if voronoiType == 1
+            % begin "painting" the distance transform result
+            D = abs(D*5000) .^ 0.5;
+            D32s = bitand(int32(D + 0.5), 255);
+            D8u1 = uint8(D32s);
+            D8u2 = uint8((D32s * -1) + 255);
+            D8u = cat(3, D8u2, D8u2, D8u1);
+        else
+            if true
+                clrs = single(lines(7) * 255);
+            else
+                clrs = [0 0 0; 0 0 255; 0 128 255; 0 255 255;
+                    0 255 0; 255 128 0; 255 255 0; 255 0 0; 255 0 255];
+            end
+            idx = mod(labels - 1, size(clrs,1)-1) + 1;
+            idx(labels == 0 | D == 0) = 0;
+            scale = 1 ./ (1 + D.*D * 0.0004);
+            D8u = reshape(clrs(idx+1,:), [size(labels) 3]);
+            D8u = uint8(bsxfun(@times, D8u, scale));
+        end
+    else
+        if voronoiType == 1
+            N = 256;
+            D8u = uint8(mod(D*2, N));
+        else
+            N = max(labels(:));
+            N = min(double(N), 256);
+            D8u = uint8(mod(labels, N));
+        end
+        D8u = ind2rgb(D8u, jet(N));
+        D8u(repmat(bw == 0, [1 1 3])) = 255;
+    end
+
+    % show result
+    set(h.img, 'CData',D8u);
+    drawnow;
+end
+
+function h = buildGUI(img)
+    %BUILDGUI  Creates the UI
+
+    % parameters
+    distType = 2;     % L2
+    maskSize = 1;     % 3x3
+    voronoiType = 1;  % None
+    thresh = 100;     % brightness threshold
+    max_thresh = 255;
+    sz = size(img);
+    sz(2) = max(sz(2), 350);  % minimum figure width
+
+    % build the user interface (no resizing to keep it simple)
+    h = struct();
+    h.src = img;
+    h.fig = figure('Name','Distance Map', ...
+        'NumberTitle','off', 'Menubar','none', 'Resize','off', ...
+        'Position',[200 200 sz(2) sz(1)+29]);
+    if ~mexopencv.isOctave()
+        %HACK: not implemented in Octave
+        movegui(h.fig, 'center');
+    end
+    h.ax = axes('Parent',h.fig, 'Units','pixels', 'Position',[1 30 sz(2) sz(1)]);
+    if ~mexopencv.isOctave()
+        h.img = imshow(img, 'Parent',h.ax);
+    else
+        %HACK: https://savannah.gnu.org/bugs/index.php?45473
+        axes(h.ax);
+        h.img = imshow(img);
+    end
+    h.pop(1) = uicontrol('Parent',h.fig, 'Style','popupmenu', ...
+       'Position',[5 5 70 20], 'TooltipString','Distance Type', ...
+       'String', {'L1','L2','C'}, 'Value',distType);
+    h.pop(2) = uicontrol('Parent',h.fig, 'Style','popupmenu', ...
+       'Position',[75 5 70 20], 'TooltipString','Mask Size', ...
+       'String',{'3x3','5x5','Precise'}, 'Value',maskSize);
+    h.pop(3) = uicontrol('Parent',h.fig, 'Style','popupmenu', ...
+       'Position',[145 5 70 20], 'TooltipString','Label Type', ...
+       'String',{'-None-','CComp','Pixel'}, 'Value',voronoiType);
+    h.txt = uicontrol('Parent',h.fig, 'Style','text', 'FontSize',11, ...
+        'Position',[220 5 100 20], 'String',sprintf('Threshold: %3d',thresh));
+    h.slid = uicontrol('Parent',h.fig, 'Style','slider', 'Value',thresh, ...
+        'Min',0, 'Max',max_thresh, 'SliderStep',[1 10]./(max_thresh-0), ...
+        'Position',[325 5 sz(2)-330 20]);
+
+    % hook event handlers, and trigger default start
+    set([h.slid, h.pop], 'Callback',{@onChange,h}, ...
+        'Interruptible','off', 'BusyAction','cancel');
+    onChange(h.slid,[],h);
+end
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

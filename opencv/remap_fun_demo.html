@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Fun with remap</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="remap_fun_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Fun with remap</h1>
+         <!--introduction-->
+         <p>Maps a rectangular image into a circle using cv.remap</p>
+         <p>To build the mapping we do the following simple geometry calculation:</p>
+         <div>
+            <ul>
+               <li>shift the origin (0,0) coordinate to the center of the image</li>
+               <li>convert the cartesian x-y coordinates to polar r-theta form</li>
+               <li>determine the length of the line with the same theta that touches the   border of the rectangle</li>
+               <li>retain the theta, but scale the r value based on how much the line has to   shrink to fit into the circle.</li>
+               <li>convert the modified r-theta values back into x-y coordinates</li>
+            </ul>
+         </div>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="http://sidekick.windforwings.com/2012/12/opencv-fun-with-remap.html">http://sidekick.windforwings.com/2012/12/opencv-fun-with-remap.html</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <p>source image</p><pre class="codeinput">fname = which(<span class="string">'coins.png'</span>);
+<span class="keyword">if</span> isempty(fname)
+    fname = fullfile(mexopencv.root(), <span class="string">'test'</span>, <span class="string">'apple.jpg'</span>);
+<span class="keyword">end</span>
+src = imread(fname);</pre><p>coordinates space, shifted so that origin is at the center of the image</p><pre class="codeinput">[h,w,~] = size(src);
+c = [w,h] / 2;
+[X,Y] = meshgrid(single(1:w)-c(1), single(1:h)-c(2));</pre><p>convert cartesian coordinates to polar form (r,theta)</p><pre class="codeinput">R = hypot(Y,X);
+T = atan(Y./X);  <span class="comment">% NOTE: atan not atan2</span>
+
+<span class="comment">% handle NaN case when atan(0/0) in the center</span>
+T(isnan(T)) = 0;</pre><p>scale R</p><pre class="codeinput">radius = min(h,w) / 2;
+D = min(abs(c(1)./cos(T)), abs(c(2)./sin(T)));
+R = R ./ (radius ./ D);</pre><p>remap points</p><pre class="codeinput">map_X = c(1) + sign(X) .* R .* cos(abs(T));
+map_Y = c(2) + sign(Y) .* R .* sin(abs(T));</pre><p>destination image</p><pre class="codeinput">dst = cv.remap(src, map_X, map_Y);</pre><p>show result</p><pre class="codeinput">subplot(121), imshow(src), title(<span class="string">'image'</span>)
+subplot(122), imshow(dst), title(<span class="string">'remapped'</span>)</pre><img src="remap_fun_demo_01.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Fun with remap
+% Maps a rectangular image into a circle using cv.remap
+%
+% To build the mapping we do the following simple geometry calculation:
+%
+% * shift the origin (0,0) coordinate to the center of the image
+% * convert the cartesian x-y coordinates to polar r-theta form
+% * determine the length of the line with the same theta that touches the
+%   border of the rectangle
+% * retain the theta, but scale the r value based on how much the line has to
+%   shrink to fit into the circle.
+% * convert the modified r-theta values back into x-y coordinates
+%
+% Sources:
+%
+% * <http://sidekick.windforwings.com/2012/12/opencv-fun-with-remap.html>
+%
+
+%%
+% source image
+fname = which('coins.png');
+if isempty(fname)
+    fname = fullfile(mexopencv.root(), 'test', 'apple.jpg');
+end
+src = imread(fname);
+
+%%
+% coordinates space, shifted so that origin is at the center of the image
+[h,w,~] = size(src);
+c = [w,h] / 2;
+[X,Y] = meshgrid(single(1:w)-c(1), single(1:h)-c(2));
+
+%%
+% convert cartesian coordinates to polar form (r,theta)
+R = hypot(Y,X);
+T = atan(Y./X);  % NOTE: atan not atan2
+
+% handle NaN case when atan(0/0) in the center
+T(isnan(T)) = 0;
+
+%%
+% scale R
+radius = min(h,w) / 2;
+D = min(abs(c(1)./cos(T)), abs(c(2)./sin(T)));
+R = R ./ (radius ./ D);
+
+%%
+% remap points
+map_X = c(1) + sign(X) .* R .* cos(abs(T));
+map_Y = c(2) + sign(Y) .* R .* sin(abs(T));
+
+%%
+% destination image
+dst = cv.remap(src, map_X, map_Y);
+
+%%
+% show result
+subplot(121), imshow(src), title('image')
+subplot(122), imshow(dst), title('remapped')
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

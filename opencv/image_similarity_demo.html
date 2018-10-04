@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Similarity measurement (PSNR and SSIM)</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="image_similarity_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Similarity measurement (PSNR and SSIM)</h1>
+         <!--introduction-->
+         <p>Image similarity under lossy compression.</p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://docs.opencv.org/3.2.0/d5/dc4/tutorial_video_input_psnr_ssim.html">https://docs.opencv.org/3.2.0/d5/dc4/tutorial_video_input_psnr_ssim.html</a></li>
+               <li><a href="https://docs.opencv.org/3.2.0/dd/d3d/tutorial_gpu_basics_similarity.html">https://docs.opencv.org/3.2.0/dd/d3d/tutorial_gpu_basics_similarity.html</a></li>
+               <li><a href="https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/tutorial_code/videoio/video-input-psnr-ssim/video-input-psnr-ssim.cpp">https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/tutorial_code/videoio/video-input-psnr-ssim/video-input-psnr-ssim.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">PSNR</a></li>
+               <li><a href="#3">SSIM</a></li>
+               <li><a href="#4">Code</a></li>
+            </ul>
+         </div>
+         <h2 id="2">PSNR</h2>
+         <p>We want to check just how imperceptible our compression operation went, therefore we need a system to check the similarity
+            or differences. The most common algorithm used for this is the PSNR (aka <b>Peak signal-to-noise ratio</b>). The simplest definition of this starts out from the <i>mean squad error</i>. Let there be two images: <img src="image_similarity_demo_eq13245804079927534499.png" alt="$I1$" class="equation" width="14" height="10"> and <img src="image_similarity_demo_eq08960779286078268110.png" alt="$I2$" class="equation" width="14" height="10">; with a two dimensional size <img src="image_similarity_demo_eq05671228016298599287.png" alt="$i$" class="equation" width="5" height="11"> and <img src="image_similarity_demo_eq07225361342133155126.png" alt="$j$" class="equation" width="6" height="13">, composed of <img src="image_similarity_demo_eq08422257486649890878.png" alt="$c$" class="equation" width="6" height="7"> number of channels.
+         </p>
+         <p><img src="image_similarity_demo_eq10865402314669337524.png" alt="$$MSE = \frac{1}{c*i*j} \sum{(I_1-I_2)^2}$$" class="equation" width="191" height="33"></p>
+         <p>Then the PSNR is expressed as:</p>
+         <p><img src="image_similarity_demo_eq07229424449075705409.png" alt="$$PSNR = 10 \cdot \log_{10} \left( \frac{MAX_I^2}{MSE} \right)$$" class="equation" width="191" height="37"></p>
+         <p>Here the <img src="image_similarity_demo_eq12526802583904757389.png" alt="$MAX_I$" class="equation" width="44" height="13"> is the maximum valid value for a pixel. In case of the simple single byte image per pixel per channel this is 255. When two
+            images are the same the MSE will give zero, resulting in an invalid divide by zero operation in the PSNR formula. In this
+            case the PSNR is undefined and as we'll need to handle this case separately. The transition to a logarithmic scale is made
+            because the pixel values have a very wide dynamic range.
+         </p>
+         <p>Typically result values are anywhere between 30 and 50 for compression, where higher is better. If the images significantly
+            differ you'll get much lower ones like 15 and so. This similarity check is easy and fast to calculate, however in practice
+            it may turn out somewhat inconsistent with human eye perception. The <b>structural similarity</b> algorithm aims to correct this.
+         </p>
+         <h2 id="3">SSIM</h2>
+         <p>Describing the methods goes well beyond the purpose of this tutorial. For that I invite you to read the article introducing
+            it. Nevertheless, you can get a good image of it by looking at the implementation below.
+         </p>
+         <p>SSIM is described more in-depth in the following article:</p><pre>Z. Wang, A. C. Bovik, H. R. Sheikh and E. P. Simoncelli,
+"Image quality assessment: From error visibility to structural similarity"
+IEEE Transactions on Image Processing, vol. 13, no. 4, pp. 600-612, Apr. 2004</pre><p>This will return a similarity index averaged over all channels of the image. This value is between zero and one, where one
+            corresponds to perfect fit. Unfortunately, the many Gaussian blurring is quite costly, so while the PSNR may work in a real-time
+            like environment (24 frame per second) this will take significantly more than to accomplish similar performance results.
+         </p>
+         <h2 id="4">Code</h2>
+         <p>Therefore, the source code presented below will perform the PSNR measurement and the SSIM. For visualization purpose we show
+            both images with corresponding PSNR and MSSIM values.
+         </p><pre class="codeinput"><span class="keyword">function</span> image_similarity_demo(fname)
+    <span class="comment">% reference image</span>
+    <span class="keyword">if</span> nargin &lt; 1
+        fname = fullfile(mexopencv.root(), <span class="string">'test'</span>, <span class="string">'test1.png'</span>);
+    <span class="keyword">end</span>
+    A = cv.imread(fname, <span class="string">'ReduceScale'</span>,2);
+
+    figure(<span class="string">'Position'</span>,[100 100 1000 700]);
+    subplot(221), imshow(A), title(<span class="string">'Original'</span>)
+
+    <span class="comment">% compress with decreasing quality</span>
+    qual = 95:-5:5;
+    vals = zeros(numel(qual), 3);
+    <span class="keyword">for</span> i=1:numel(qual)
+        <span class="comment">% lossy compression</span>
+        <span class="keyword">if</span> true
+            buf = cv.imencode(<span class="string">'.jpg'</span>, A, <span class="string">'JpegQuality'</span>,qual(i));
+        <span class="keyword">else</span>
+            buf = cv.imencode(<span class="string">'.webp'</span>, A, <span class="string">'WebpQuality'</span>,qual(i));
+        <span class="keyword">end</span>
+        B = cv.imdecode(buf);
+        vals(i,3) = numel(buf);
+
+        <span class="comment">% compute similarity</span>
+        vals(i,1) = cv_psnr(A, B);
+        [vals(i,2), map] = cv_ssim(A, B);
+
+        <span class="comment">% show result</span>
+        subplot(222), imshow(B)
+        title(sprintf(<span class="string">'Lossy, Quality = %d%%'</span>,qual(i)))
+        subplot(223), imshow(map), title(<span class="string">'SSIM Map'</span>)
+        drawnow;
+    <span class="keyword">end</span>
+
+    <span class="comment">% plot similarities</span>
+    subplot(224)
+    [ax, h1, h2] = plotyy(qual, vals(:,1), qual, vals(:,2));
+    set([h1 h2], <span class="string">'Marker'</span>, <span class="string">'.'</span>)
+    title(<span class="string">'Image Similarity'</span>)
+    xlabel(<span class="string">'JPEG Compression Quality (%)'</span>)
+    ylabel(ax(1), <span class="string">'PSNR (dB)'</span>)
+    ylabel(ax(2), <span class="string">'SSIM Index'</span>)
+    grid <span class="string">on</span>
+
+    <span class="keyword">if</span> ~mexopencv.isOctave()
+        t = array2table([qual(:), vals], <span class="keyword">...</span>
+            <span class="string">'VariableNames'</span>,{<span class="string">'Quality'</span>, <span class="string">'PSNR'</span>, <span class="string">'SSIM'</span>, <span class="string">'Bytes'</span>});
+        disp(t)
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> val = cv_psnr(img1, img2)
+    <span class="comment">%CV_PSNR  Peak Signal-to-Noise Ratio</span>
+    <span class="comment">%</span>
+    <span class="comment">% See also: psnr, cv.PSNR</span>
+    <span class="comment">%</span>
+
+    <span class="comment">% validate arguments</span>
+    assert(isa(img1,<span class="string">'uint8'</span>) &amp;&amp; isa(img2,<span class="string">'uint8'</span>), <span class="string">'images must be 8-bit'</span>);
+    assert(isequal(size(img1), size(img2)), <span class="string">'images must have the same size'</span>);
+
+    <span class="comment">% mean squared error</span>
+    se = double(cv.absdiff(img1, img2)).^2;
+    mse = mean(se(:));
+
+    <span class="comment">% PSNR (in dB)</span>
+    val = 10.0 * log10((255*255) / mse);
+    <span class="keyword">if</span> ~isfinite(val)
+        val = 0;  <span class="comment">% division by zero MSE</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> [val, map] = cv_ssim(img1, img2)
+    <span class="comment">%CV_SSIM  Structural Similarity Index</span>
+    <span class="comment">%</span>
+    <span class="comment">% See also: ssim</span>
+    <span class="comment">%</span>
+
+    <span class="comment">% validate arguments</span>
+    assert(isa(img1,<span class="string">'uint8'</span>) &amp;&amp; isa(img2,<span class="string">'uint8'</span>), <span class="string">'images must be 8-bit'</span>);
+    assert(isequal(size(img1), size(img2)), <span class="string">'images must have the same size'</span>);
+
+    <span class="comment">% constants to stabilize the division with weak denominator</span>
+    k1 = 0.01;
+    k2 = 0.03;
+    L = 2^8 - 1;  <span class="comment">% 8-bit dynamic range of pixel-values</span>
+    C1 = (k1*L)^2;
+    C2 = (k2*L)^2;
+
+    <span class="comment">% filtering options</span>
+    opts = {<span class="string">'KSize'</span>,[11 11], <span class="string">'SigmaX'</span>,1.5, <span class="string">'SigmaY'</span>,1.5};
+
+    <span class="comment">% work in floating-point precision</span>
+    I1 = double(img1);
+    I2 = double(img2);
+
+    <span class="comment">% mean</span>
+    mu1 = cv.GaussianBlur(I1, opts{:});
+    mu2 = cv.GaussianBlur(I2, opts{:});
+
+    <span class="comment">% variance</span>
+    sigma1_2 = cv.GaussianBlur(I1.^2, opts{:}) - mu1.^2;
+    sigma2_2 = cv.GaussianBlur(I2.^2, opts{:}) - mu2.^2;
+
+    <span class="comment">% covariance</span>
+    sigma12 = cv.GaussianBlur(I1.*I2, opts{:}) - mu1.*mu2;
+
+    <span class="comment">% SSIM index</span>
+    map = ((2 * mu1.*mu2 + C1) .* (2 * sigma12 + C2)) ./ <span class="keyword">...</span>
+        ((mu1.^2 + mu2.^2 + C1) .* (sigma1_2 + sigma2_2 + C2));
+    val = mean(map(:));
+<span class="keyword">end</span></pre><pre class="codeoutput">    Quality     PSNR      SSIM      Bytes
+    _______    ______    _______    _____
+    95         39.578    0.96866    39532
+    90         37.469    0.95371    27081
+    85           36.3    0.94262    21329
+    80         35.541     0.9339    18149
+    75         34.956    0.92656    15901
+    70         34.557    0.92153    14450
+    65         34.176    0.91499    13234
+    60         33.855    0.90994    12205
+    55          33.56    0.90393    11374
+    50         33.261    0.89813    10737
+    45          32.97     0.8926    10121
+    40         32.603    0.88531     9377
+    35         32.264    0.87868     8727
+    30         31.802    0.86771     7944
+    25         31.243    0.85372     7127
+    20         30.514    0.83233     6231
+    15         29.542    0.80236     5294
+    10         27.923    0.74988     4191
+     5          24.61     0.6283     3088
+</pre><img src="image_similarity_demo_01.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div><script type="text/x-mathjax-config">
+  // https://stackoverflow.com/a/14631703/97160
+  MathJax.Extension.myImg2jax = {
+    version: "1.0",
+    PreProcess: function (element) {
+      var images = element.getElementsByTagName("img");
+      for (var i = images.length - 1; i >= 0; i--) {
+        var img = images[i];
+        if (img.className === "equation") {
+          var match = img.alt.match(/^(\$\$?)([\s\S]*)\1$/m);
+          if (!match) continue;
+          var script = document.createElement("script");
+          script.type = "math/tex";
+          if (match[1] === "$$") {script.type += ";mode=display"}
+          MathJax.HTML.setScript(script, match[2]);
+          img.parentNode.replaceChild(script, img);
+        }
+      }
+    }
+  };
+  MathJax.Hub.Register.PreProcessor(["PreProcess", MathJax.Extension.myImg2jax]);
+  </script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML"></script>
+      <!--
+##### SOURCE BEGIN #####
+%% Similarity measurement (PSNR and SSIM)
+% Image similarity under lossy compression.
+%
+% Sources:
+%
+% * <https://docs.opencv.org/3.2.0/d5/dc4/tutorial_video_input_psnr_ssim.html>
+% * <https://docs.opencv.org/3.2.0/dd/d3d/tutorial_gpu_basics_similarity.html>
+% * <https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/tutorial_code/videoio/video-input-psnr-ssim/video-input-psnr-ssim.cpp>
+%
+
+%% PSNR
+%
+% We want to check just how imperceptible our compression operation went,
+% therefore we need a system to check the similarity or differences. The most
+% common algorithm used for this is the PSNR
+% (aka *Peak signal-to-noise ratio*). The simplest definition of this starts
+% out from the _mean squad error_. Let there be two images: $I1$ and $I2$;
+% with a two dimensional size $i$ and $j$, composed of $c$ number of channels.
+%
+% $$MSE = \frac{1}{c*i*j} \sum{(I_1-I_2)^2}$$
+%
+% Then the PSNR is expressed as:
+%
+% $$PSNR = 10 \cdot \log_{10} \left( \frac{MAX_I^2}{MSE} \right)$$
+%
+% Here the $MAX_I$ is the maximum valid value for a pixel. In case of the
+% simple single byte image per pixel per channel this is 255. When two images
+% are the same the MSE will give zero, resulting in an invalid divide by zero
+% operation in the PSNR formula. In this case the PSNR is undefined and as
+% we'll need to handle this case separately. The transition to a logarithmic
+% scale is made because the pixel values have a very wide dynamic range.
+%
+% Typically result values are anywhere between 30 and 50 for compression,
+% where higher is better. If the images significantly differ you'll get much
+% lower ones like 15 and so. This similarity check is easy and fast to
+% calculate, however in practice it may turn out somewhat inconsistent with
+% human eye perception. The *structural similarity* algorithm aims to
+% correct this.
+%
+
+%% SSIM
+%
+% Describing the methods goes well beyond the purpose of this tutorial. For
+% that I invite you to read the article introducing it. Nevertheless, you can
+% get a good image of it by looking at the implementation below.
+%
+% SSIM is described more in-depth in the following article:
+%
+%  Z. Wang, A. C. Bovik, H. R. Sheikh and E. P. Simoncelli,
+%  "Image quality assessment: From error visibility to structural similarity"
+%  IEEE Transactions on Image Processing, vol. 13, no. 4, pp. 600-612, Apr. 2004
+%
+% This will return a similarity index averaged over all channels of the image.
+% This value is between zero and one, where one corresponds to perfect fit.
+% Unfortunately, the many Gaussian blurring is quite costly, so while the PSNR
+% may work in a real-time like environment (24 frame per second) this will
+% take significantly more than to accomplish similar performance results.
+%
+
+%% Code
+%
+% Therefore, the source code presented below will perform the PSNR measurement
+% and the SSIM. For visualization purpose we show both images with
+% corresponding PSNR and MSSIM values.
+%
+
+function image_similarity_demo(fname)
+    % reference image
+    if nargin < 1
+        fname = fullfile(mexopencv.root(), 'test', 'test1.png');
+    end
+    A = cv.imread(fname, 'ReduceScale',2);
+
+    figure('Position',[100 100 1000 700]);
+    subplot(221), imshow(A), title('Original')
+
+    % compress with decreasing quality
+    qual = 95:-5:5;
+    vals = zeros(numel(qual), 3);
+    for i=1:numel(qual)
+        % lossy compression
+        if true
+            buf = cv.imencode('.jpg', A, 'JpegQuality',qual(i));
+        else
+            buf = cv.imencode('.webp', A, 'WebpQuality',qual(i));
+        end
+        B = cv.imdecode(buf);
+        vals(i,3) = numel(buf);
+
+        % compute similarity
+        vals(i,1) = cv_psnr(A, B);
+        [vals(i,2), map] = cv_ssim(A, B);
+
+        % show result
+        subplot(222), imshow(B)
+        title(sprintf('Lossy, Quality = %d%%',qual(i)))
+        subplot(223), imshow(map), title('SSIM Map')
+        drawnow;
+    end
+
+    % plot similarities
+    subplot(224)
+    [ax, h1, h2] = plotyy(qual, vals(:,1), qual, vals(:,2));
+    set([h1 h2], 'Marker', '.')
+    title('Image Similarity')
+    xlabel('JPEG Compression Quality (%)')
+    ylabel(ax(1), 'PSNR (dB)')
+    ylabel(ax(2), 'SSIM Index')
+    grid on
+
+    if ~mexopencv.isOctave()
+        t = array2table([qual(:), vals], ...
+            'VariableNames',{'Quality', 'PSNR', 'SSIM', 'Bytes'});
+        disp(t)
+    end
+end
+
+function val = cv_psnr(img1, img2)
+    %CV_PSNR  Peak Signal-to-Noise Ratio
+    %
+    % See also: psnr, cv.PSNR
+    %
+
+    % validate arguments
+    assert(isa(img1,'uint8') && isa(img2,'uint8'), 'images must be 8-bit');
+    assert(isequal(size(img1), size(img2)), 'images must have the same size');
+
+    % mean squared error
+    se = double(cv.absdiff(img1, img2)).^2;
+    mse = mean(se(:));
+
+    % PSNR (in dB)
+    val = 10.0 * log10((255*255) / mse);
+    if ~isfinite(val)
+        val = 0;  % division by zero MSE
+    end
+end
+
+function [val, map] = cv_ssim(img1, img2)
+    %CV_SSIM  Structural Similarity Index
+    %
+    % See also: ssim
+    %
+
+    % validate arguments
+    assert(isa(img1,'uint8') && isa(img2,'uint8'), 'images must be 8-bit');
+    assert(isequal(size(img1), size(img2)), 'images must have the same size');
+
+    % constants to stabilize the division with weak denominator
+    k1 = 0.01;
+    k2 = 0.03;
+    L = 2^8 - 1;  % 8-bit dynamic range of pixel-values
+    C1 = (k1*L)^2;
+    C2 = (k2*L)^2;
+
+    % filtering options
+    opts = {'KSize',[11 11], 'SigmaX',1.5, 'SigmaY',1.5};
+
+    % work in floating-point precision
+    I1 = double(img1);
+    I2 = double(img2);
+
+    % mean
+    mu1 = cv.GaussianBlur(I1, opts{:});
+    mu2 = cv.GaussianBlur(I2, opts{:});
+
+    % variance
+    sigma1_2 = cv.GaussianBlur(I1.^2, opts{:}) - mu1.^2;
+    sigma2_2 = cv.GaussianBlur(I2.^2, opts{:}) - mu2.^2;
+
+    % covariance
+    sigma12 = cv.GaussianBlur(I1.*I2, opts{:}) - mu1.*mu2;
+
+    % SSIM index
+    map = ((2 * mu1.*mu2 + C1) .* (2 * sigma12 + C2)) ./ ...
+        ((mu1.^2 + mu2.^2 + C1) .* (sigma1_2 + sigma2_2 + C2));
+    val = mean(map(:));
+end
+
+##### SOURCE END #####
+--></body>
+</html>

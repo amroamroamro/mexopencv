@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Seamless Cloning</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="cloning_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Seamless Cloning</h1>
+         <!--introduction-->
+         <p>This tutorial demonstrates how to use OpenCV seamless cloning module.</p>
+         <div>
+            <ul>
+               <li>Normal Cloning</li>
+               <li>Mixed Cloning</li>
+               <li>Monochrome Transfer</li>
+               <li>Color Change</li>
+               <li>Illumination change</li>
+               <li>Texture Flattening</li>
+            </ul>
+         </div>
+         <p>The program takes as input a source and a destination image (for first three methods) and outputs the cloned image.</p>
+         <p>Test images are downloaded from <tt>opencv_extra</tt> on Github.
+         </p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/cloning_demo.cpp">https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/cloning_demo.cpp</a></li>
+               <li><a href="https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/cloning_gui.cpp">https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/cloning_gui.cpp</a></li>
+               <li><a href="https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/tutorial_code/photo/seamless_cloning/cloning_demo.cpp">https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/tutorial_code/photo/seamless_cloning/cloning_demo.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Test images</a></li>
+               <li><a href="#4">Normal Cloning</a></li>
+               <li><a href="#5">Mixed Cloning</a></li>
+               <li><a href="#6">Monochrome Transfer</a></li>
+               <li><a href="#7">Color Change</a></li>
+               <li><a href="#8">Illumination change</a></li>
+               <li><a href="#9">Texture Flattening</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Test images</h2>
+         <p>download required test images from Github</p><pre class="codeinput">dirRoot = fullfile(mexopencv.root(), <span class="string">'test'</span>, <span class="string">'cloning'</span>);
+dirs = {
+    <span class="string">'Normal_Cloning'</span>
+    <span class="string">'Mixed_Cloning'</span>
+    <span class="string">'Monochrome_Transfer'</span>
+    <span class="string">'color_change'</span>
+    <span class="string">'Illumination_Change'</span>
+    <span class="string">'Texture_Flattening'</span>
+};
+imgs = {
+    <span class="string">'source1.png'</span>
+    <span class="string">'mask.png'</span>
+    <span class="string">'destination1.png'</span>
+};
+<span class="keyword">if</span> ~isdir(dirRoot)
+    mkdir(dirRoot);
+    disp(<span class="string">'Downloading images...'</span>)
+    baseURL = <span class="string">'https://cdn.rawgit.com/opencv/opencv_extra/3.2.0/testdata/cv/cloning/'</span>;
+    <span class="keyword">for</span> i=1:numel(dirs)
+        d = fullfile(dirRoot, dirs{i});
+        <span class="keyword">if</span> ~isdir(d)
+            mkdir(d);
+            N = numel(imgs);
+            <span class="keyword">if</span> i &gt; 3, N = N - 1; <span class="keyword">end</span>
+            <span class="keyword">for</span> j=1:N
+                f = fullfile(d, imgs{j});
+                <span class="keyword">if</span> exist(f, <span class="string">'file'</span>) ~= 2
+                    url = [baseURL, dirs{i}, <span class="string">'/'</span>, imgs{j}]
+                    urlwrite(url, f);
+                <span class="keyword">end</span>
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span></pre><p>some options</p><pre class="codeinput">opts = {<span class="string">'FlipChannels'</span>,true};
+showPoint = @(I,p) cv.drawMarker(I, p, <span class="string">'Color'</span>,[0 255 0], <span class="keyword">...</span>
+    <span class="string">'MarkerType'</span>,<span class="string">'x'</span>, <span class="string">'MarkerSize'</span>,30, <span class="string">'Thickness'</span>,2, <span class="string">'LineType'</span>,<span class="string">'AA'</span>);</pre><h2 id="4">Normal Cloning</h2><pre class="codeinput">src = imread(fullfile(dirRoot, dirs{1}, imgs{1}));
+dst = imread(fullfile(dirRoot, dirs{1}, imgs{3}));
+mask = imread(fullfile(dirRoot, dirs{1}, imgs{2}));
+
+p = [400 100];
+result = cv.seamlessClone(src, dst, mask, p, <span class="string">'Method'</span>,<span class="string">'NormalClone'</span>, opts{:});
+
+figure(<span class="string">'Name'</span>,<span class="string">'Normal Cloning'</span>)
+subplot(221), imshow(src), title(<span class="string">'source'</span>)
+subplot(222), imshow(showPoint(dst,p)), title(<span class="string">'destination'</span>)
+subplot(223), imshow(mask), title(<span class="string">'mask'</span>)
+subplot(224), imshow(result), title(<span class="string">'cloned'</span>)</pre><img src="cloning_demo_01.png"><h2 id="5">Mixed Cloning</h2><pre class="codeinput">src = imread(fullfile(dirRoot, dirs{2}, imgs{1}));
+dst = imread(fullfile(dirRoot, dirs{2}, imgs{3}));
+mask = imread(fullfile(dirRoot, dirs{2}, imgs{2}));
+
+p = [size(dst,2) size(dst,1)]/2;
+result = cv.seamlessClone(src, dst, mask, p, <span class="string">'Method'</span>,<span class="string">'MixedClone'</span>, opts{:});
+
+figure(<span class="string">'Name'</span>,<span class="string">'Mixed Cloning'</span>)
+subplot(221), imshow(src), title(<span class="string">'source'</span>)
+subplot(222), imshow(showPoint(dst,p)), title(<span class="string">'destination'</span>)
+subplot(223), imshow(mask), title(<span class="string">'mask'</span>)
+subplot(224), imshow(result), title(<span class="string">'cloned'</span>)</pre><img src="cloning_demo_02.png"><h2 id="6">Monochrome Transfer</h2><pre class="codeinput">src = imread(fullfile(dirRoot, dirs{3}, imgs{1}));
+dst = imread(fullfile(dirRoot, dirs{3}, imgs{3}));
+mask = imread(fullfile(dirRoot, dirs{3}, imgs{2}));
+
+p = [size(dst,2) size(dst,1)]/2;
+result = cv.seamlessClone(src, dst, mask, p, <span class="keyword">...</span>
+    <span class="string">'Method'</span>,<span class="string">'MonochromeTransfer'</span>, opts{:});
+
+figure(<span class="string">'Name'</span>,<span class="string">'Monochrome Transfer'</span>)
+subplot(221), imshow(src), title(<span class="string">'source'</span>)
+subplot(222), imshow(showPoint(dst,p)), title(<span class="string">'destination'</span>)
+subplot(223), imshow(mask), title(<span class="string">'mask'</span>)
+subplot(224), imshow(result), title(<span class="string">'cloned'</span>)</pre><img src="cloning_demo_03.png"><h2 id="7">Color Change</h2><pre class="codeinput">src = imread(fullfile(dirRoot, dirs{4}, imgs{1}));
+mask = imread(fullfile(dirRoot, dirs{4}, imgs{2}));
+
+result = cv.colorChange(src, mask, <span class="string">'R'</span>,1.5, <span class="string">'G'</span>,0.5, <span class="string">'B'</span>,0.5, opts{:});
+
+figure(<span class="string">'Name'</span>,<span class="string">'Color Change'</span>)
+subplot(221), imshow(src), title(<span class="string">'source'</span>)
+subplot(223), imshow(mask), title(<span class="string">'mask'</span>)
+subplot(224), imshow(result), title(<span class="string">'cloned'</span>)</pre><img src="cloning_demo_04.png"><h2 id="8">Illumination change</h2><pre class="codeinput">src = imread(fullfile(dirRoot, dirs{5}, imgs{1}));
+mask = imread(fullfile(dirRoot, dirs{5}, imgs{2}));
+
+result = cv.illuminationChange(src, mask, <span class="string">'Alpha'</span>,0.2, <span class="string">'Beta'</span>,0.4, opts{:});
+
+figure(<span class="string">'Name'</span>,<span class="string">'Illumination change'</span>)
+subplot(221), imshow(src), title(<span class="string">'source'</span>)
+subplot(223), imshow(mask), title(<span class="string">'mask'</span>)
+subplot(224), imshow(result), title(<span class="string">'cloned'</span>)</pre><img src="cloning_demo_05.png"><h2 id="9">Texture Flattening</h2><pre class="codeinput">src = imread(fullfile(dirRoot, dirs{6}, imgs{1}));
+mask = imread(fullfile(dirRoot, dirs{6}, imgs{2}));
+
+result = cv.textureFlattening(src, mask, <span class="keyword">...</span>
+    <span class="string">'LowThreshold'</span>,30, <span class="string">'HighThreshold'</span>,45, <span class="string">'KernelSize'</span>,3, opts{:});
+
+figure(<span class="string">'Name'</span>,<span class="string">'Texture Flattening'</span>)
+subplot(221), imshow(src), title(<span class="string">'source'</span>)
+subplot(223), imshow(mask), title(<span class="string">'mask'</span>)
+subplot(224), imshow(result), title(<span class="string">'cloned'</span>)</pre><img src="cloning_demo_06.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Seamless Cloning
+% This tutorial demonstrates how to use OpenCV seamless cloning module.
+%
+% * Normal Cloning
+% * Mixed Cloning
+% * Monochrome Transfer
+% * Color Change
+% * Illumination change
+% * Texture Flattening
+%
+% The program takes as input a source and a destination image (for first
+% three methods) and outputs the cloned image.
+%
+% Test images are downloaded from |opencv_extra| on Github.
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/cloning_demo.cpp>
+% * <https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/cloning_gui.cpp>
+% * <https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/tutorial_code/photo/seamless_cloning/cloning_demo.cpp>
+%
+
+%% Test images
+% download required test images from Github
+dirRoot = fullfile(mexopencv.root(), 'test', 'cloning');
+dirs = {
+    'Normal_Cloning'
+    'Mixed_Cloning'
+    'Monochrome_Transfer'
+    'color_change'
+    'Illumination_Change'
+    'Texture_Flattening'
+};
+imgs = {
+    'source1.png'
+    'mask.png'
+    'destination1.png'
+};
+if ~isdir(dirRoot)
+    mkdir(dirRoot);
+    disp('Downloading images...')
+    baseURL = 'https://cdn.rawgit.com/opencv/opencv_extra/3.2.0/testdata/cv/cloning/';
+    for i=1:numel(dirs)
+        d = fullfile(dirRoot, dirs{i});
+        if ~isdir(d)
+            mkdir(d);
+            N = numel(imgs);
+            if i > 3, N = N - 1; end
+            for j=1:N
+                f = fullfile(d, imgs{j});
+                if exist(f, 'file') ~= 2
+                    url = [baseURL, dirs{i}, '/', imgs{j}]
+                    urlwrite(url, f);
+                end
+            end
+        end
+    end
+end
+
+%%
+% some options
+opts = {'FlipChannels',true};
+showPoint = @(I,p) cv.drawMarker(I, p, 'Color',[0 255 0], ...
+    'MarkerType','x', 'MarkerSize',30, 'Thickness',2, 'LineType','AA');
+
+%% Normal Cloning
+src = imread(fullfile(dirRoot, dirs{1}, imgs{1}));
+dst = imread(fullfile(dirRoot, dirs{1}, imgs{3}));
+mask = imread(fullfile(dirRoot, dirs{1}, imgs{2}));
+
+p = [400 100];
+result = cv.seamlessClone(src, dst, mask, p, 'Method','NormalClone', opts{:});
+
+figure('Name','Normal Cloning')
+subplot(221), imshow(src), title('source')
+subplot(222), imshow(showPoint(dst,p)), title('destination')
+subplot(223), imshow(mask), title('mask')
+subplot(224), imshow(result), title('cloned')
+
+%% Mixed Cloning
+src = imread(fullfile(dirRoot, dirs{2}, imgs{1}));
+dst = imread(fullfile(dirRoot, dirs{2}, imgs{3}));
+mask = imread(fullfile(dirRoot, dirs{2}, imgs{2}));
+
+p = [size(dst,2) size(dst,1)]/2;
+result = cv.seamlessClone(src, dst, mask, p, 'Method','MixedClone', opts{:});
+
+figure('Name','Mixed Cloning')
+subplot(221), imshow(src), title('source')
+subplot(222), imshow(showPoint(dst,p)), title('destination')
+subplot(223), imshow(mask), title('mask')
+subplot(224), imshow(result), title('cloned')
+
+%% Monochrome Transfer
+src = imread(fullfile(dirRoot, dirs{3}, imgs{1}));
+dst = imread(fullfile(dirRoot, dirs{3}, imgs{3}));
+mask = imread(fullfile(dirRoot, dirs{3}, imgs{2}));
+
+p = [size(dst,2) size(dst,1)]/2;
+result = cv.seamlessClone(src, dst, mask, p, ...
+    'Method','MonochromeTransfer', opts{:});
+
+figure('Name','Monochrome Transfer')
+subplot(221), imshow(src), title('source')
+subplot(222), imshow(showPoint(dst,p)), title('destination')
+subplot(223), imshow(mask), title('mask')
+subplot(224), imshow(result), title('cloned')
+
+%% Color Change
+src = imread(fullfile(dirRoot, dirs{4}, imgs{1}));
+mask = imread(fullfile(dirRoot, dirs{4}, imgs{2}));
+
+result = cv.colorChange(src, mask, 'R',1.5, 'G',0.5, 'B',0.5, opts{:});
+
+figure('Name','Color Change')
+subplot(221), imshow(src), title('source')
+subplot(223), imshow(mask), title('mask')
+subplot(224), imshow(result), title('cloned')
+
+%% Illumination change
+src = imread(fullfile(dirRoot, dirs{5}, imgs{1}));
+mask = imread(fullfile(dirRoot, dirs{5}, imgs{2}));
+
+result = cv.illuminationChange(src, mask, 'Alpha',0.2, 'Beta',0.4, opts{:});
+
+figure('Name','Illumination change')
+subplot(221), imshow(src), title('source')
+subplot(223), imshow(mask), title('mask')
+subplot(224), imshow(result), title('cloned')
+
+%% Texture Flattening
+src = imread(fullfile(dirRoot, dirs{6}, imgs{1}));
+mask = imread(fullfile(dirRoot, dirs{6}, imgs{2}));
+
+result = cv.textureFlattening(src, mask, ...
+    'LowThreshold',30, 'HighThreshold',45, 'KernelSize',3, opts{:});
+
+figure('Name','Texture Flattening')
+subplot(221), imshow(src), title('source')
+subplot(223), imshow(mask), title('mask')
+subplot(224), imshow(result), title('cloned')
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

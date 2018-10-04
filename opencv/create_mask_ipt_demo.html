@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Interactive Mask demo</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="create_mask_ipt_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Interactive Mask demo</h1>
+         <p>Interactively create a polygon mask.</p>
+         <p>This demo uses Image Processing Toolbox functions.</p>
+         <p>See also: impoly, getline, roipoly</p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv/blob/3.1.0/samples/cpp/create_mask.cpp">https://github.com/opencv/opencv/blob/3.1.0/samples/cpp/create_mask.cpp</a></li>
+            </ul>
+         </div><pre class="codeinput"><span class="comment">% load an image, and display it</span>
+src = imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'fruits.jpg'</span>));
+imshow(src);
+
+<span class="comment">% interactively create a polygon</span>
+hax = imgca;
+h = impoly(hax, <span class="string">'Closed'</span>,true);
+api = iptgetapi(h);
+fcn = makeConstrainToRectFcn(<span class="string">'impoly'</span>, get(hax,<span class="string">'XLim'</span>), get(hax,<span class="string">'YLim'</span>));
+api.setPositionConstraintFcn(fcn);
+
+<span class="comment">% get 2D points</span>
+pts = wait(h);
+display(pts)
+
+<span class="comment">% create binary mask</span>
+mask = createMask(h);
+
+<span class="comment">% apply mask on image</span>
+out = bsxfun(@times, src, cast(mask,<span class="string">'like'</span>,src));
+
+<span class="comment">% show result</span>
+figure
+subplot(121), imshow(mask), title(<span class="string">'mask'</span>)
+subplot(122), imshow(out), title(<span class="string">'output'</span>)</pre><pre class="codeoutput">pts =
+  161.0000  176.0000
+  230.0000  387.0000
+  480.0000  358.0000
+  378.0000  101.0000
+  301.0000  240.0000
+</pre><img src="create_mask_ipt_demo_01.png"><img src="create_mask_ipt_demo_02.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Interactive Mask demo
+% Interactively create a polygon mask.
+%
+% This demo uses Image Processing Toolbox functions.
+%
+% See also: impoly, getline, roipoly
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv/blob/3.1.0/samples/cpp/create_mask.cpp>
+%
+
+% load an image, and display it
+src = imread(fullfile(mexopencv.root(),'test','fruits.jpg'));
+imshow(src);
+
+% interactively create a polygon
+hax = imgca;
+h = impoly(hax, 'Closed',true);
+api = iptgetapi(h);
+fcn = makeConstrainToRectFcn('impoly', get(hax,'XLim'), get(hax,'YLim'));
+api.setPositionConstraintFcn(fcn);
+
+% get 2D points
+pts = wait(h);
+display(pts)
+
+% create binary mask
+mask = createMask(h);
+
+% apply mask on image
+out = bsxfun(@times, src, cast(mask,'like',src));
+
+% show result
+figure
+subplot(121), imshow(mask), title('mask')
+subplot(122), imshow(out), title('output')
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

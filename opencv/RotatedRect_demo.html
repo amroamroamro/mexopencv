@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Rotated Rectangle</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="RotatedRect_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Rotated Rectangle</h1>
+         <!--introduction-->
+         <p>The sample below demonstrates how to use <tt>cv.RotatedRect</tt></p>
+         <!--/introduction-->
+         <p>A rotated rectangle is specified by the center point (mass center), length of each side, and the rotation angle in degrees.</p><pre class="codeinput">img = zeros([200 200 3], <span class="string">'uint8'</span>);
+rRect = struct(<span class="string">'center'</span>,[100 100], <span class="string">'size'</span>,[100 50], <span class="string">'angle'</span>,30);</pre><p>Draw four connected vertices representing the rotated rectangle</p><pre class="codeinput">vertices = cv.RotatedRect.points(rRect);
+<span class="keyword">for</span> i=1:4
+  img = cv.line(img, vertices(i,:), vertices(mod(i,4)+1,:), <span class="keyword">...</span>
+      <span class="string">'Color'</span>,[0 255 0]);
+<span class="keyword">end</span></pre><p>Draw bounding rectangle containing the rotated rectangle</p><pre class="codeinput">brect = cv.RotatedRect.boundingRect(rRect);
+img = cv.rectangle(img, brect, <span class="string">'Color'</span>,[255 0 0]);</pre><p>Show the result</p><pre class="codeinput">imshow(img); title(<span class="string">'rectangles'</span>)</pre><img src="RotatedRect_demo_01.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Rotated Rectangle
+% The sample below demonstrates how to use |cv.RotatedRect|
+%
+
+%%
+% A rotated rectangle is specified by the center point (mass center),
+% length of each side, and the rotation angle in degrees.
+img = zeros([200 200 3], 'uint8');
+rRect = struct('center',[100 100], 'size',[100 50], 'angle',30);
+
+%%
+% Draw four connected vertices representing the rotated rectangle
+vertices = cv.RotatedRect.points(rRect);
+for i=1:4
+  img = cv.line(img, vertices(i,:), vertices(mod(i,4)+1,:), ...
+      'Color',[0 255 0]);
+end
+
+%%
+% Draw bounding rectangle containing the rotated rectangle
+brect = cv.RotatedRect.boundingRect(rRect);
+img = cv.rectangle(img, brect, 'Color',[255 0 0]);
+
+%%
+% Show the result
+imshow(img); title('rectangles')
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

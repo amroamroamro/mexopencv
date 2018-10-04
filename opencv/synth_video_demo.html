@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Synthetic video demo</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="synth_video_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Synthetic video demo</h1>
+         <!--introduction-->
+         <p>Demonstrates using <tt>VideoSynth</tt> classes as stub for <tt>cv.VideoCapture</tt>. Capture object is created using the helper function <tt>createVideoCapture</tt>.
+         </p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv/blob/3.3.1/samples/python/video.py">https://github.com/opencv/opencv/blob/3.3.1/samples/python/video.py</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <p>create synth video capture object</p><pre class="codeinput"><span class="keyword">if</span> true
+    <span class="comment">%cap = createVideoCapture(0, 'aruco');</span>
+    cap = createVideoCapture([], <span class="string">'chess'</span>);
+<span class="keyword">else</span>
+    cap = createVideoCapture(<span class="string">'synth|class=chess|framecount=500|bg=../../test/lena.jpg|size=320x320|noise=0.1|gridsize=9x6'</span>);
+<span class="keyword">end</span>
+assert(cap.isOpened());</pre><p>set a limit on iterations when we're publising demo</p><pre class="codeinput"><span class="keyword">if</span> isa(cap, <span class="string">'VideoSynthBase'</span>)
+    cap.set(<span class="string">'FrameCount'</span>, 50);
+<span class="keyword">end</span></pre><p>prepare plot</p><pre class="codeinput">img = cap.read();
+assert(~isempty(img));
+hImg = imshow(img, <span class="string">'InitialMagnification'</span>,100, <span class="string">'Border'</span>,<span class="string">'tight'</span>);
+hTxt = text(10, 15, <span class="string">'FPS = 0'</span>, <span class="string">'FontSize'</span>,8, <span class="string">'Color'</span>,<span class="string">'y'</span>);</pre><img src="synth_video_demo_01.png"><p>main loop</p><pre class="codeinput">counter = 0;
+tID = tic();
+<span class="keyword">while</span> ishghandle(hImg)
+    <span class="comment">% grab new frame</span>
+    img = cap.read();
+    <span class="keyword">if</span> isempty(img); <span class="keyword">break</span>; <span class="keyword">end</span>
+
+    <span class="comment">% frames-per-second</span>
+    counter = counter + 1;
+    fps = counter / toc(tID);
+
+    <span class="comment">% display</span>
+    set(hTxt, <span class="string">'String'</span>,sprintf(<span class="string">'FPS = %.2f'</span>, fps))
+    set(hImg, <span class="string">'CData'</span>,img)
+    <span class="keyword">if</span> ~mexopencv.isOctave()
+        drawnow <span class="string">limitrate</span>
+    <span class="keyword">else</span>
+        drawnow
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+cap.release();</pre><img src="synth_video_demo_02.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Synthetic video demo
+% Demonstrates using |VideoSynth| classes as stub for |cv.VideoCapture|.
+% Capture object is created using the helper function |createVideoCapture|.
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv/blob/3.3.1/samples/python/video.py>
+%
+
+%%
+% create synth video capture object
+if true
+    %cap = createVideoCapture(0, 'aruco');
+    cap = createVideoCapture([], 'chess');
+else
+    cap = createVideoCapture('synth|class=chess|framecount=500|bg=../../test/lena.jpg|size=320x320|noise=0.1|gridsize=9x6');
+end
+assert(cap.isOpened());
+
+%%
+% set a limit on iterations when we're publising demo
+if isa(cap, 'VideoSynthBase')
+    cap.set('FrameCount', 50);
+end
+
+%%
+% prepare plot
+img = cap.read();
+assert(~isempty(img));
+hImg = imshow(img, 'InitialMagnification',100, 'Border','tight');
+hTxt = text(10, 15, 'FPS = 0', 'FontSize',8, 'Color','y');
+
+%%
+% main loop
+counter = 0;
+tID = tic();
+while ishghandle(hImg)
+    % grab new frame
+    img = cap.read();
+    if isempty(img); break; end
+
+    % frames-per-second
+    counter = counter + 1;
+    fps = counter / toc(tID);
+
+    % display
+    set(hTxt, 'String',sprintf('FPS = %.2f', fps))
+    set(hImg, 'CData',img)
+    if true
+        drawnow limitrate
+    else
+        drawnow
+    end
+end
+cap.release();
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

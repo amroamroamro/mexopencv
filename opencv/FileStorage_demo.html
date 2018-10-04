@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Reading/Writing XML and YAML files</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="FileStorage_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Reading/Writing XML and YAML files</h1>
+         <!--introduction-->
+         <p>Demonstration of reading/writing from/to XML and YAML file storages.</p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://docs.opencv.org/3.1.0/d4/da4/group__core__xml.html">https://docs.opencv.org/3.1.0/d4/da4/group__core__xml.html</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Data</a></li>
+               <li><a href="#4">Save</a></li>
+               <li><a href="#5">XML file</a></li>
+               <li><a href="#6">YML file</a></li>
+               <li><a href="#7">Load</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Data</h2>
+         <p>First we create some different variables to save. We have an integer, a text string (calibration date), 2 matrices, and a
+            custom structure "feature" (struct-array), which includes feature coordinates and LBP (local binary pattern) value.
+         </p><pre class="codeinput">frameCount = int32(5);
+calibrationDate = datestr(now());
+cameraMatrix = [1000, 0, 320; 0, 1000, 240; 0, 0, 1];
+distCoeffs = [0.1; 0.01; -0.001; 0; 0];
+features = struct(<span class="string">'x'</span>,cell(1,3), <span class="string">'y'</span>,cell(1,3), <span class="string">'lbp'</span>,cell(1,3));
+<span class="keyword">for</span> i=1:numel(features)
+    features(i).x = randi(640,<span class="string">'int32'</span>);
+    features(i).y = randi(480,<span class="string">'int32'</span>);
+    features(i).lbp = num2cell(bitget(randi([0 255],<span class="string">'uint8'</span>),1:8));
+<span class="keyword">end</span></pre><p>now we collect the variable inside a structure fields (that way we get a named collection (mapping) of variables)</p><pre class="codeinput">S = struct(<span class="keyword">...</span>
+    <span class="string">'frameCount'</span>,frameCount, <span class="keyword">...</span>
+    <span class="string">'calibrationDate'</span>,calibrationDate, <span class="keyword">...</span>
+    <span class="string">'cameraMatrix'</span>,cameraMatrix, <span class="keyword">...</span>
+    <span class="string">'distCoeffs'</span>, distCoeffs, <span class="keyword">...</span>
+    <span class="string">'features'</span>,features);
+display(S)
+display(S.features)</pre><pre class="codeoutput">S = 
+  struct with fields:
+
+         frameCount: 5
+    calibrationDate: '01-Dec-2017 17:13:58'
+       cameraMatrix: [3&times;3 double]
+         distCoeffs: [5&times;1 double]
+           features: [1&times;3 struct]
+  1&times;3 struct array with fields:
+    x
+    y
+    lbp
+</pre><h2 id="4">Save</h2>
+         <p>next we save them to XML/YML files</p><pre class="codeinput">fname = tempname();
+cv.FileStorage([fname <span class="string">'.xml'</span>], S)
+cv.FileStorage([fname <span class="string">'.yml'</span>], S)</pre><h2 id="5">XML file</h2><pre class="codeinput">type([fname <span class="string">'.xml'</span>])</pre><pre class="codeoutput">
+&lt;?xml version="1.0"?&gt;
+&lt;opencv_storage&gt;
+&lt;frameCount&gt;5&lt;/frameCount&gt;
+&lt;calibrationDate&gt;"01-Dec-2017 17:13:58"&lt;/calibrationDate&gt;
+&lt;cameraMatrix type_id="opencv-matrix"&gt;
+  &lt;rows&gt;3&lt;/rows&gt;
+  &lt;cols&gt;3&lt;/cols&gt;
+  &lt;dt&gt;d&lt;/dt&gt;
+  &lt;data&gt;
+    1000. 0. 320. 0. 1000. 240. 0. 0. 1.&lt;/data&gt;&lt;/cameraMatrix&gt;
+&lt;distCoeffs type_id="opencv-matrix"&gt;
+  &lt;rows&gt;5&lt;/rows&gt;
+  &lt;cols&gt;1&lt;/cols&gt;
+  &lt;dt&gt;d&lt;/dt&gt;
+  &lt;data&gt;
+    1.0000000000000001e-01 1.0000000000000000e-02
+    -1.0000000000000000e-03 0. 0.&lt;/data&gt;&lt;/distCoeffs&gt;
+&lt;features&gt;
+  &lt;_&gt;
+    &lt;x&gt;593&lt;/x&gt;
+    &lt;y&gt;363&lt;/y&gt;
+    &lt;lbp&gt;
+      1 1 0 1 1 0 1 1&lt;/lbp&gt;&lt;/_&gt;
+  &lt;_&gt;
+    &lt;x&gt;386&lt;/x&gt;
+    &lt;y&gt;52&lt;/y&gt;
+    &lt;lbp&gt;
+      0 0 1 0 1 1 1 0&lt;/lbp&gt;&lt;/_&gt;
+  &lt;_&gt;
+    &lt;x&gt;419&lt;/x&gt;
+    &lt;y&gt;28&lt;/y&gt;
+    &lt;lbp&gt;
+      1 0 1 0 0 0 0 0&lt;/lbp&gt;&lt;/_&gt;&lt;/features&gt;
+&lt;/opencv_storage&gt;
+</pre><h2 id="6">YML file</h2><pre class="codeinput">type([fname <span class="string">'.yml'</span>])</pre><pre class="codeoutput">
+%YAML:1.0
+---
+frameCount: 5
+calibrationDate: "01-Dec-2017 17:13:58"
+cameraMatrix: !!opencv-matrix
+   rows: 3
+   cols: 3
+   dt: d
+   data: [ 1000., 0., 320., 0., 1000., 240., 0., 0., 1. ]
+distCoeffs: !!opencv-matrix
+   rows: 5
+   cols: 1
+   dt: d
+   data: [ 1.0000000000000001e-01, 1.0000000000000000e-02,
+       -1.0000000000000000e-03, 0., 0. ]
+features:
+   -
+      x: 593
+      y: 363
+      lbp:
+         - 1
+         - 1
+         - 0
+         - 1
+         - 1
+         - 0
+         - 1
+         - 1
+   -
+      x: 386
+      y: 52
+      lbp:
+         - 0
+         - 0
+         - 1
+         - 0
+         - 1
+         - 1
+         - 1
+         - 0
+   -
+      x: 419
+      y: 28
+      lbp:
+         - 1
+         - 0
+         - 1
+         - 0
+         - 0
+         - 0
+         - 0
+         - 0
+</pre><h2 id="7">Load</h2>
+         <p>we read the files back</p><pre class="codeinput">S_xml = cv.FileStorage([fname <span class="string">'.xml'</span>]);
+S_yml = cv.FileStorage([fname <span class="string">'.yml'</span>]);</pre><p>and show the result</p><pre class="codeinput">display(S_yml)
+display(S_yml.cameraMatrix)
+display(S_yml.distCoeffs)
+celldisp(S_yml.features, <span class="string">'features'</span>)</pre><pre class="codeoutput">S_yml = 
+  struct with fields:
+
+         frameCount: 5
+    calibrationDate: '01-Dec-2017 17:13:58'
+       cameraMatrix: [3&times;3 double]
+         distCoeffs: [5&times;1 double]
+           features: {[1&times;1 struct]  [1&times;1 struct]  [1&times;1 struct]}
+        1000           0         320
+           0        1000         240
+           0           0           1
+    0.1000
+    0.0100
+   -0.0010
+         0
+         0
+features{1} =
+      x: 593
+      y: 363
+    lbp: {[1]  [1]  [0]  [1]  [1]  [0]  [1]  [1]}
+features{2} =
+      x: 386
+      y: 52
+    lbp: {[0]  [0]  [1]  [0]  [1]  [1]  [1]  [0]}
+features{3} =
+      x: 419
+      y: 28
+    lbp: {[1]  [0]  [1]  [0]  [0]  [0]  [0]  [0]}
+</pre><p>finally, we clean up the temporary files</p><pre class="codeinput">delete([fname <span class="string">'.xml'</span>])
+delete([fname <span class="string">'.yml'</span>])</pre><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Reading/Writing XML and YAML files
+% Demonstration of reading/writing from/to XML and YAML file storages.
+%
+% Sources:
+%
+% * <https://docs.opencv.org/3.1.0/d4/da4/group__core__xml.html>
+%
+
+%% Data
+% First we create some different variables to save.
+% We have an integer, a text string (calibration date), 2 matrices,
+% and a custom structure "feature" (struct-array), which includes feature
+% coordinates and LBP (local binary pattern) value.
+frameCount = int32(5);
+calibrationDate = datestr(now());
+cameraMatrix = [1000, 0, 320; 0, 1000, 240; 0, 0, 1];
+distCoeffs = [0.1; 0.01; -0.001; 0; 0];
+features = struct('x',cell(1,3), 'y',cell(1,3), 'lbp',cell(1,3));
+for i=1:numel(features)
+    features(i).x = randi(640,'int32');
+    features(i).y = randi(480,'int32');
+    features(i).lbp = num2cell(bitget(randi([0 255],'uint8'),1:8));
+end
+
+%%
+% now we collect the variable inside a structure fields
+% (that way we get a named collection (mapping) of variables)
+S = struct(...
+    'frameCount',frameCount, ...
+    'calibrationDate',calibrationDate, ...
+    'cameraMatrix',cameraMatrix, ...
+    'distCoeffs', distCoeffs, ...
+    'features',features);
+display(S)
+display(S.features)
+
+%% Save
+% next we save them to XML/YML files
+fname = tempname();
+cv.FileStorage([fname '.xml'], S)
+cv.FileStorage([fname '.yml'], S)
+
+%% XML file
+type([fname '.xml'])
+
+%% YML file
+type([fname '.yml'])
+
+%% Load
+% we read the files back
+S_xml = cv.FileStorage([fname '.xml']);
+S_yml = cv.FileStorage([fname '.yml']);
+
+%%
+% and show the result
+display(S_yml)
+display(S_yml.cameraMatrix)
+display(S_yml.distCoeffs)
+celldisp(S_yml.features, 'features')
+
+%%
+% finally, we clean up the temporary files
+delete([fname '.xml'])
+delete([fname '.yml'])
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Classification demo</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="classification_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Classification demo</h1>
+         <!--introduction-->
+         <p>This demonstrates an example of machine learning algorithms in a simple classification problem. It compares different classifiers
+            using the same data samples.
+         </p>
+         <!--/introduction-->
+         <p>Prepare data: there are two normal distributions</p><pre class="codeinput">X = double([randn(1000,5)+.5; randn(1000,5)-.5]); <span class="comment">% features</span>
+Y =  int32([    ones(1000,1);    -ones(1000,1)]); <span class="comment">% labels</span>
+test_idx = mod(1:numel(Y),3)==0;                  <span class="comment">% train/test split</span></pre><p>try a bunch of classifiers (using their default options)</p><pre class="codeinput">models = { <span class="keyword">...</span>
+    cv.ANN_MLP(), <span class="keyword">...</span>
+    cv.NormalBayesClassifier(), <span class="keyword">...</span>
+    cv.KNearest(), <span class="keyword">...</span>
+    cv.SVM(), <span class="keyword">...</span>
+    cv.SVMSGD(), <span class="keyword">...</span>
+    cv.DTrees(), <span class="keyword">...</span>
+    cv.Boost(), <span class="keyword">...</span>
+    cv.RTrees(), <span class="keyword">...</span>
+    <span class="keyword">...</span><span class="comment"> cv.ERTrees(), ...</span>
+    <span class="keyword">...</span><span class="comment"> cv.GBTrees(), ...</span>
+    cv.LogisticRegression() <span class="keyword">...</span>
+};</pre><p>for each classifier</p><pre class="codeinput"><span class="keyword">for</span> i = 1:numel(models)
+    <span class="keyword">try</span>
+
+        classifier = models{i};
+        fprintf(<span class="string">'=== %s ===\n'</span>, class(classifier));
+
+        Ytrain = Y(~test_idx,:);
+        <span class="keyword">if</span> isa(classifier, <span class="string">'cv.ANN_MLP'</span>)
+            <span class="comment">% ANN_MLP must be initialized properly with non-default values</span>
+            classifier.LayerSizes = [size(X,2), 2];
+            classifier.setActivationFunction(<span class="string">'Sigmoid'</span>, <span class="keyword">...</span>
+                <span class="string">'Param1'</span>,1, <span class="string">'Param2'</span>,1);
+
+            <span class="comment">% Unroll labels to an indicator representation</span>
+            Ytrain = double([Ytrain==1, Ytrain==-1]);
+        <span class="keyword">end</span>
+
+        <span class="comment">% train</span>
+        tic;
+        classifier.train(X(~test_idx,:), Ytrain);
+        fprintf(<span class="string">'Training time %f seconds\n'</span>, toc);
+
+        <span class="comment">% predict</span>
+        tic;
+        Yhat = classifier.predict(X(test_idx,:));
+        fprintf(<span class="string">'Prediction time %f seconds\n'</span>, toc);
+
+        <span class="keyword">if</span> isa(classifier, <span class="string">'cv.ANN_MLP'</span>)
+            <span class="comment">% Get it back to a categorical vector</span>
+            Yhat = (Yhat(:,1) &gt; Yhat(:,2))*2 - 1;
+        <span class="keyword">end</span>
+
+        <span class="comment">% evaluate</span>
+        Yhat = int32(Yhat);
+        accuracy = nnz(Yhat == Y(test_idx)) / nnz(test_idx);
+        fprintf(<span class="string">'Accuracy: %.2f%%\n'</span>, accuracy*100);
+
+    <span class="keyword">catch</span> ME
+        <span class="comment">%disp(ME.getReport())</span>
+        disp(<span class="string">'error!'</span>)
+    <span class="keyword">end</span>
+<span class="keyword">end</span></pre><pre class="codeoutput">=== cv.ANN_MLP ===
+Training time 0.007717 seconds
+Prediction time 0.003091 seconds
+Accuracy: 86.94%
+=== cv.NormalBayesClassifier ===
+Training time 0.006115 seconds
+Prediction time 0.002396 seconds
+Accuracy: 86.49%
+=== cv.KNearest ===
+Training time 0.004083 seconds
+Prediction time 0.004525 seconds
+Accuracy: 83.63%
+=== cv.SVM ===
+Training time 0.022067 seconds
+Prediction time 0.007866 seconds
+Accuracy: 83.03%
+=== cv.SVMSGD ===
+Training time 0.336153 seconds
+Prediction time 0.004351 seconds
+Accuracy: 86.19%
+=== cv.DTrees ===
+Training time 0.008569 seconds
+Prediction time 0.003721 seconds
+Accuracy: 81.23%
+=== cv.Boost ===
+Training time 0.064558 seconds
+Prediction time 0.004667 seconds
+Accuracy: 82.88%
+=== cv.RTrees ===
+Training time 0.084264 seconds
+Prediction time 0.005877 seconds
+Accuracy: 85.14%
+=== cv.LogisticRegression ===
+Training time 0.395183 seconds
+Prediction time 0.011265 seconds
+Accuracy: 86.64%
+</pre><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Classification demo
+% This demonstrates an example of machine learning algorithms in a simple
+% classification problem. It compares different classifiers using the same
+% data samples.
+%
+
+%%
+% Prepare data: there are two normal distributions
+X = double([randn(1000,5)+.5; randn(1000,5)-.5]); % features
+Y =  int32([    ones(1000,1);    -ones(1000,1)]); % labels
+test_idx = mod(1:numel(Y),3)==0;                  % train/test split
+
+%%
+% try a bunch of classifiers (using their default options)
+models = { ...
+    cv.ANN_MLP(), ...
+    cv.NormalBayesClassifier(), ...
+    cv.KNearest(), ...
+    cv.SVM(), ...
+    cv.SVMSGD(), ...
+    cv.DTrees(), ...
+    cv.Boost(), ...
+    cv.RTrees(), ...
+    ... cv.ERTrees(), ...
+    ... cv.GBTrees(), ...
+    cv.LogisticRegression() ...
+};
+
+%%
+% for each classifier
+for i = 1:numel(models)
+    try
+
+        classifier = models{i};
+        fprintf('=== %s ===\n', class(classifier));
+
+        Ytrain = Y(~test_idx,:);
+        if isa(classifier, 'cv.ANN_MLP')
+            % ANN_MLP must be initialized properly with non-default values
+            classifier.LayerSizes = [size(X,2), 2];
+            classifier.setActivationFunction('Sigmoid', ...
+                'Param1',1, 'Param2',1);
+
+            % Unroll labels to an indicator representation
+            Ytrain = double([Ytrain==1, Ytrain==-1]);
+        end
+
+        % train
+        tic;
+        classifier.train(X(~test_idx,:), Ytrain);
+        fprintf('Training time %f seconds\n', toc);
+
+        % predict
+        tic;
+        Yhat = classifier.predict(X(test_idx,:));
+        fprintf('Prediction time %f seconds\n', toc);
+
+        if isa(classifier, 'cv.ANN_MLP')
+            % Get it back to a categorical vector
+            Yhat = (Yhat(:,1) > Yhat(:,2))*2 - 1;
+        end
+
+        % evaluate
+        Yhat = int32(Yhat);
+        accuracy = nnz(Yhat == Y(test_idx)) / nnz(test_idx);
+        fprintf('Accuracy: %.2f%%\n', accuracy*100);
+
+    catch ME
+        %disp(ME.getReport())
+        disp('error!')
+    end
+end
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

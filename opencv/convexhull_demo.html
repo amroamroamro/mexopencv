@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Convex Hull</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="convexhull_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Convex Hull</h1>
+         <!--introduction-->
+         <p>This sample program demonstrates the use of the <tt>cv.convexHull</tt> function.
+         </p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv/blob/3.1.0/samples/cpp/convexhull.cpp">https://github.com/opencv/opencv/blob/3.1.0/samples/cpp/convexhull.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Points</a></li>
+               <li><a href="#3">Convex Hull</a></li>
+               <li><a href="#4">Result</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Points</h2><pre class="codeinput"><span class="comment">% create black image</span>
+img = zeros([500 500 3], <span class="string">'uint8'</span>);
+[h,w,~] = size(img);
+
+<span class="comment">% random 2D points</span>
+count = randi([10 100]);
+points = [randi(fix([w w*3]/4), [count 1]) randi(fix([h h*3]/4), [count 1])];</pre><h2 id="3">Convex Hull</h2><pre class="codeinput"><span class="comment">% compute convex hull</span>
+hull = cv.convexHull(points, <span class="string">'ReturnPoints'</span>,false);
+hull = hull + 1;  <span class="comment">% convert 0-based to 1-based indexing</span></pre><h2 id="4">Result</h2><pre class="codeinput"><span class="comment">% draw points</span>
+<span class="keyword">for</span> i=1:count
+    img = cv.circle(img, points(i,:), 3, <span class="keyword">...</span>
+        <span class="string">'Color'</span>,[255 0 0], <span class="string">'Thickness'</span>,<span class="string">'Filled'</span>, <span class="string">'LineType'</span>,<span class="string">'AA'</span>);
+<span class="keyword">end</span>
+
+<span class="comment">% draw convex hull</span>
+<span class="comment">%{
+</span><span class="comment">pts = points(hull([1:end 1]),:);
+</span><span class="comment">img = cv.polylines(img, {pts}, ...
+</span><span class="comment">    'Color',[0 255 0], 'Thickness',1, 'LineType','AA');
+</span><span class="comment">%}
+</span>pt1 = points(hull(end),:);
+<span class="keyword">for</span> i=1:numel(hull)
+    pt2 = points(hull(i),:);
+    img = cv.line(img, pt1, pt2, <span class="keyword">...</span>
+        <span class="string">'Color'</span>,[0 255 0], <span class="string">'Thickness'</span>,1, <span class="string">'LineType'</span>,<span class="string">'AA'</span>);
+    pt1 = pt2;
+<span class="keyword">end</span>
+
+<span class="comment">% show output</span>
+imshow(img), title(<span class="string">'convex hull'</span>)</pre><img src="convexhull_demo_01.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Convex Hull
+% This sample program demonstrates the use of the |cv.convexHull| function.
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv/blob/3.1.0/samples/cpp/convexhull.cpp>
+%
+
+%% Points
+
+% create black image
+img = zeros([500 500 3], 'uint8');
+[h,w,~] = size(img);
+
+% random 2D points
+count = randi([10 100]);
+points = [randi(fix([w w*3]/4), [count 1]) randi(fix([h h*3]/4), [count 1])];
+
+%% Convex Hull
+
+% compute convex hull
+hull = cv.convexHull(points, 'ReturnPoints',false);
+hull = hull + 1;  % convert 0-based to 1-based indexing
+
+%% Result
+
+% draw points
+for i=1:count
+    img = cv.circle(img, points(i,:), 3, ...
+        'Color',[255 0 0], 'Thickness','Filled', 'LineType','AA');
+end
+
+% draw convex hull
+%{
+pts = points(hull([1:end 1]),:);
+img = cv.polylines(img, {pts}, ...
+    'Color',[0 255 0], 'Thickness',1, 'LineType','AA');
+%}
+pt1 = points(hull(end),:);
+for i=1:numel(hull)
+    pt2 = points(hull(i),:);
+    img = cv.line(img, pt1, pt2, ...
+        'Color',[0 255 0], 'Thickness',1, 'LineType','AA');
+    pt1 = pt2;
+end
+
+% show output
+imshow(img), title('convex hull')
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

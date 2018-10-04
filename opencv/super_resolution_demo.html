@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Super Resolution demo</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="super_resolution_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Super Resolution demo</h1>
+         <!--introduction-->
+         <p>This sample demonstrates Super Resolution algorithms for video sequence.</p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv/blob/3.2.0/samples/gpu/super_resolution.cpp">https://github.com/opencv/opencv/blob/3.2.0/samples/gpu/super_resolution.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <p>Super Resolution algorithm (runs on CPU)</p><pre class="codeinput">superRes = cv.SuperResolution(<span class="string">'BTVL1'</span>);
+superRes.Scale = 4;              <span class="comment">% Scale factor</span>
+superRes.Iterations = 10;        <span class="comment">% Iteration count</span>
+superRes.TemporalAreaRadius = 4; <span class="comment">% Radius of the temporal search area</span></pre><p>Optical Flow algorithm (Farneback or TV-L1)</p><pre class="codeinput"><span class="keyword">if</span> true
+    superRes.setOpticalFlow(<span class="string">'FarnebackOpticalFlow'</span>);
+<span class="keyword">else</span>
+    superRes.setOpticalFlow(<span class="string">'DualTVL1OpticalFlow'</span>);
+<span class="keyword">end</span></pre><p>Input video</p><pre class="codeinput">inputVideoName = fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'car.avi'</span>);
+<span class="keyword">if</span> exist(inputVideoName, <span class="string">'file'</span>) ~= 2
+    <span class="comment">% download video from Github</span>
+    url = <span class="string">'https://cdn.rawgit.com/opencv/opencv_extra/3.2.0/testdata/superres/car.avi'</span>;
+    disp(<span class="string">'Downloading video...'</span>)
+    urlwrite(url, inputVideoName);
+<span class="keyword">end</span>
+superRes.setInput(<span class="string">'Video'</span>, inputVideoName);
+
+<span class="comment">% get video info</span>
+cap = cv.VideoCapture(inputVideoName);
+fprintf(<span class="string">'Size = %dx%d\n'</span>, cap.FrameWidth, cap.FrameHeight);
+fprintf(<span class="string">'NumFrames = %d\n'</span>, cap.FrameCount);
+clear <span class="string">cap</span></pre><pre class="codeoutput">Size = 72x121
+NumFrames = 64
+</pre><p>Output video</p><pre class="codeinput">outputVideoName = [tempname() <span class="string">'.avi'</span>];
+writer = cv.VideoWriter();</pre><p>Set up display window, and start loop</p><pre class="codeinput">hFig = figure(<span class="string">'Name'</span>, <span class="string">'Super Resolution'</span>, <span class="string">'NumberTitle'</span>,<span class="string">'off'</span>, <span class="keyword">...</span>
+    <span class="string">'Menubar'</span>,<span class="string">'none'</span>, <span class="string">'KeyPressFcn'</span>,@(o,e)setappdata(o, <span class="string">'flag'</span>,true));
+setappdata(hFig, <span class="string">'flag'</span>,false);
+
+i = 0;
+<span class="keyword">while</span> true
+    <span class="comment">% get next frame</span>
+    i = i + 1;
+    fprintf(<span class="string">'[%3d] : '</span>, i);
+    tic, frame = superRes.nextFrame(<span class="string">'FlipChannels'</span>,true); toc
+    <span class="keyword">if</span> isempty(frame), <span class="keyword">break</span>; <span class="keyword">end</span>
+    sz = size(frame);
+
+    <span class="comment">% write it to output video</span>
+    <span class="keyword">if</span> ~writer.isOpened()
+        writer.open(outputVideoName, [sz(2) sz(1)], <span class="keyword">...</span>
+            <span class="string">'FourCC'</span>,<span class="string">'XVID'</span>, <span class="string">'FPS'</span>,25);
+    <span class="keyword">end</span>
+    writer.write(frame);
+
+    <span class="comment">% display it</span>
+    <span class="keyword">if</span> i == 1
+        set(hFig, <span class="string">'Position'</span>,[200 200 sz(2) sz(1)]);
+        <span class="keyword">if</span> mexopencv.isOctave()
+            <span class="comment">%HACK: not all IMSHOW options are implemented in Octave</span>
+            hImg = imshow(frame);
+        <span class="keyword">else</span>
+            movegui(hFig, <span class="string">'center'</span>);
+            hImg = imshow(frame, <span class="string">'InitialMagnification'</span>,100, <span class="string">'Border'</span>,<span class="string">'tight'</span>);
+        <span class="keyword">end</span>
+    <span class="keyword">else</span>
+        set(hImg, <span class="string">'CData'</span>,frame);
+    <span class="keyword">end</span>
+    <span class="comment">%title(num2str(i))</span>
+
+    <span class="comment">% Terminate if any user input</span>
+    flag = getappdata(hFig, <span class="string">'flag'</span>);
+    <span class="keyword">if</span> isempty(flag)||flag, <span class="keyword">break</span>; <span class="keyword">end</span>
+    drawnow;
+<span class="keyword">end</span></pre><pre class="codeoutput">[  1] : Elapsed time is 2.232655 seconds.
+[  2] : Elapsed time is 0.370143 seconds.
+[  3] : Elapsed time is 0.370444 seconds.
+[  4] : Elapsed time is 0.363539 seconds.
+[  5] : Elapsed time is 0.370904 seconds.
+[  6] : Elapsed time is 0.364186 seconds.
+[  7] : Elapsed time is 0.364317 seconds.
+[  8] : Elapsed time is 0.361977 seconds.
+[  9] : Elapsed time is 0.364746 seconds.
+[ 10] : Elapsed time is 0.364923 seconds.
+[ 11] : Elapsed time is 0.363620 seconds.
+[ 12] : Elapsed time is 0.362444 seconds.
+[ 13] : Elapsed time is 0.364447 seconds.
+[ 14] : Elapsed time is 0.365299 seconds.
+[ 15] : Elapsed time is 0.364396 seconds.
+[ 16] : Elapsed time is 0.365240 seconds.
+[ 17] : Elapsed time is 0.363719 seconds.
+[ 18] : Elapsed time is 0.364684 seconds.
+[ 19] : Elapsed time is 0.365679 seconds.
+[ 20] : Elapsed time is 0.361244 seconds.
+[ 21] : Elapsed time is 0.364105 seconds.
+[ 22] : Elapsed time is 0.365622 seconds.
+[ 23] : Elapsed time is 0.366550 seconds.
+[ 24] : Elapsed time is 0.364822 seconds.
+[ 25] : Elapsed time is 0.368033 seconds.
+[ 26] : Elapsed time is 0.364694 seconds.
+[ 27] : Elapsed time is 0.364989 seconds.
+[ 28] : Elapsed time is 0.361693 seconds.
+[ 29] : Elapsed time is 0.364581 seconds.
+[ 30] : Elapsed time is 0.367004 seconds.
+[ 31] : Elapsed time is 0.367655 seconds.
+[ 32] : Elapsed time is 0.363765 seconds.
+[ 33] : Elapsed time is 0.365305 seconds.
+[ 34] : Elapsed time is 0.363782 seconds.
+[ 35] : Elapsed time is 0.364099 seconds.
+[ 36] : Elapsed time is 0.363278 seconds.
+[ 37] : Elapsed time is 0.363640 seconds.
+[ 38] : Elapsed time is 0.364189 seconds.
+[ 39] : Elapsed time is 0.362557 seconds.
+[ 40] : Elapsed time is 0.362383 seconds.
+[ 41] : Elapsed time is 0.365387 seconds.
+[ 42] : Elapsed time is 0.366201 seconds.
+[ 43] : Elapsed time is 0.361520 seconds.
+[ 44] : Elapsed time is 0.363196 seconds.
+[ 45] : Elapsed time is 0.362618 seconds.
+[ 46] : Elapsed time is 0.362849 seconds.
+[ 47] : Elapsed time is 0.362154 seconds.
+[ 48] : Elapsed time is 0.364958 seconds.
+[ 49] : Elapsed time is 0.364817 seconds.
+[ 50] : Elapsed time is 0.361525 seconds.
+[ 51] : Elapsed time is 0.361425 seconds.
+[ 52] : Elapsed time is 0.362579 seconds.
+[ 53] : Elapsed time is 0.367370 seconds.
+[ 54] : Elapsed time is 0.363292 seconds.
+[ 55] : Elapsed time is 0.364003 seconds.
+[ 56] : Elapsed time is 0.324977 seconds.
+[ 57] : Elapsed time is 0.296477 seconds.
+[ 58] : Elapsed time is 0.267468 seconds.
+[ 59] : Elapsed time is 0.239471 seconds.
+[ 60] : Elapsed time is 0.005846 seconds.
+[ 61] : Elapsed time is 0.005867 seconds.
+[ 62] : Elapsed time is 0.005852 seconds.
+[ 63] : Elapsed time is 0.005849 seconds.
+[ 64] : Elapsed time is 0.005869 seconds.
+[ 65] : Elapsed time is 0.002012 seconds.
+</pre><img src="super_resolution_demo_01.png"><p>release output video, and open it in external player</p><pre class="codeinput">writer.release();
+<span class="keyword">if</span> ispc() &amp;&amp; ~mexopencv.isOctave()
+    <span class="comment">%HACK: WINOPEN not implemented in Octave</span>
+    winopen(outputVideoName)
+<span class="keyword">end</span></pre><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Super Resolution demo
+% This sample demonstrates Super Resolution algorithms for video sequence.
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv/blob/3.2.0/samples/gpu/super_resolution.cpp>
+%
+
+%%
+% Super Resolution algorithm (runs on CPU)
+superRes = cv.SuperResolution('BTVL1');
+superRes.Scale = 4;              % Scale factor
+superRes.Iterations = 10;        % Iteration count
+superRes.TemporalAreaRadius = 4; % Radius of the temporal search area
+
+%%
+% Optical Flow algorithm (Farneback or TV-L1)
+if true
+    superRes.setOpticalFlow('FarnebackOpticalFlow');
+else
+    superRes.setOpticalFlow('DualTVL1OpticalFlow');
+end
+
+%%
+% Input video
+inputVideoName = fullfile(mexopencv.root(),'test','car.avi');
+if exist(inputVideoName, 'file') ~= 2
+    % download video from Github
+    url = 'https://cdn.rawgit.com/opencv/opencv_extra/3.2.0/testdata/superres/car.avi';
+    disp('Downloading video...')
+    urlwrite(url, inputVideoName);
+end
+superRes.setInput('Video', inputVideoName);
+
+% get video info
+cap = cv.VideoCapture(inputVideoName);
+fprintf('Size = %dx%d\n', cap.FrameWidth, cap.FrameHeight);
+fprintf('NumFrames = %d\n', cap.FrameCount);
+clear cap
+
+%%
+% Output video
+outputVideoName = [tempname() '.avi'];
+writer = cv.VideoWriter();
+
+%%
+% Set up display window, and start loop
+hFig = figure('Name', 'Super Resolution', 'NumberTitle','off', ...
+    'Menubar','none', 'KeyPressFcn',@(o,e)setappdata(o, 'flag',true));
+setappdata(hFig, 'flag',false);
+
+i = 0;
+while true
+    % get next frame
+    i = i + 1;
+    fprintf('[%3d] : ', i);
+    tic, frame = superRes.nextFrame('FlipChannels',true); toc
+    if isempty(frame), break; end
+    sz = size(frame);
+
+    % write it to output video
+    if ~writer.isOpened()
+        writer.open(outputVideoName, [sz(2) sz(1)], ...
+            'FourCC','XVID', 'FPS',25);
+    end
+    writer.write(frame);
+
+    % display it
+    if i == 1
+        set(hFig, 'Position',[200 200 sz(2) sz(1)]);
+        if mexopencv.isOctave()
+            %HACK: not all IMSHOW options are implemented in Octave
+            hImg = imshow(frame);
+        else
+            movegui(hFig, 'center');
+            hImg = imshow(frame, 'InitialMagnification',100, 'Border','tight');
+        end
+    else
+        set(hImg, 'CData',frame);
+    end
+    %title(num2str(i))
+
+    % Terminate if any user input
+    flag = getappdata(hFig, 'flag');
+    if isempty(flag)||flag, break; end
+    drawnow;
+end
+
+%%
+% release output video, and open it in external player
+writer.release();
+if ispc() && ~mexopencv.isOctave()
+    %HACK: WINOPEN not implemented in Octave
+    winopen(outputVideoName)
+end
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

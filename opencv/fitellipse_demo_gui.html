@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Fit ellipses demo</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="fitellipse_demo_gui.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Fit ellipses demo</h1>
+         <p>This program is demonstration for ellipse fitting. The program finds contours and approximate them by ellipses using one of
+            three methods:
+         </p>
+         <div>
+            <ol>
+               <li>OpenCV's original method which implements Fitzgibbon 1995 method.</li>
+               <li>The Approximate Mean Square (AMS) method proposed by Taubin 1991.</li>
+               <li>The Direct least square (Direct) method proposed by Fitzgibbon 1999.</li>
+            </ol>
+         </div>
+         <p>Trackbar specify threshold parameter.</p>
+         <p>White lines are contours points. Red lines are fitting ellipses.</p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv/blob/3.3.1/samples/cpp/fitellipse.cpp">https://github.com/opencv/opencv/blob/3.3.1/samples/cpp/fitellipse.cpp</a></li>
+            </ul>
+         </div><pre class="codeinput"><span class="keyword">function</span> varargout = fitellipse_demo_gui(im)
+    <span class="comment">% load source image</span>
+    <span class="keyword">if</span> nargin &lt; 1
+        im = fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'ellipses.jpg'</span>);
+        src = cv.imread(im, <span class="string">'Grayscale'</span>,true);
+    <span class="keyword">elseif</span> ischar(im)
+        src = cv.imread(im, <span class="string">'Grayscale'</span>,true);
+    <span class="keyword">else</span>
+        src = im;
+    <span class="keyword">end</span>
+    <span class="comment">% we expect a grayscale image</span>
+    <span class="keyword">if</span> size(src,3) == 3, src = cv.cvtColor(src, <span class="string">'RGB2GRAY'</span>); <span class="keyword">end</span>
+
+    <span class="comment">% create the UI</span>
+    h = buildGUI(src);
+    <span class="keyword">if</span> nargout &gt; 0, varargout{1} = h; <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> onChange(~,~,h)
+    <span class="comment">%ONCHANGE  Event handler for UI controls</span>
+
+    <span class="comment">% retrieve current values from UI controls</span>
+    algIdx = get(h.pop, <span class="string">'Value'</span>);
+    algs = get(h.pop, <span class="string">'String'</span>);
+    thresh = round(get(h.slid, <span class="string">'Value'</span>));
+    set(h.txt, <span class="string">'String'</span>,sprintf(<span class="string">'Threshold: %3d'</span>,thresh));
+
+    <span class="comment">% threshold image and find contours</span>
+    bimg = uint8(cv.blur(h.src) &gt;= thresh) * 255;
+    contours = cv.findContours(bimg, <span class="string">'Mode'</span>,<span class="string">'List'</span>, <span class="string">'Method'</span>,<span class="string">'None'</span>);
+
+    <span class="comment">% filter out contours that are too simple, probably not an ellipse</span>
+    <span class="comment">% (note: fitEllipse requires at least 5 points)</span>
+    contours(cellfun(@numel, contours) &lt; 50) = [];
+
+    <span class="comment">% {{[x y], [x y], ..}, ..} -&gt; {[x y; x y; ..], ..}</span>
+    contours = cellfun(@(c) cat(1,c{:}), contours, <span class="string">'UniformOutput'</span>,false);
+
+    <span class="comment">% draw all contours points</span>
+    <span class="keyword">if</span> true
+        cimg = cv.cvtColor(h.src * 0.3, <span class="string">'GRAY2RGB'</span>);
+    <span class="keyword">else</span>
+        cimg = zeros([size(bimg) 3], <span class="string">'uint8'</span>);
+    <span class="keyword">end</span>
+    cimg = cv.drawContours(cimg, contours, <span class="string">'Color'</span>,[255 255 255]);
+
+    <span class="comment">% for each contour</span>
+    <span class="keyword">for</span> i=1:numel(contours)
+        <span class="comment">% approximate by an ellipse</span>
+        rrect = cv.fitEllipse(contours{i}, <span class="string">'Method'</span>,algs{algIdx});
+        <span class="keyword">if</span> max(rrect.size) &gt; min(rrect.size)*30
+            <span class="comment">% skip if rectangle is too tall/wide</span>
+            <span class="keyword">continue</span>;
+        <span class="keyword">end</span>
+
+        <span class="comment">% draw ellipse</span>
+        <span class="keyword">if</span> true
+            cimg = cv.ellipse(cimg, rrect, <span class="string">'Color'</span>,[255 0 0], <span class="string">'LineType'</span>,<span class="string">'AA'</span>);
+        <span class="keyword">else</span>
+            cimg = cv.ellipse(cimg, rrect.center, rrect.size*0.5, <span class="keyword">...</span>
+                <span class="string">'Angle'</span>,rrect.angle, <span class="string">'Color'</span>,[255 255 0], <span class="string">'LineType'</span>,<span class="string">'AA'</span>);
+        <span class="keyword">end</span>
+
+        <span class="comment">% draw rotated rectangle of ellipse</span>
+        vtx = cv.RotatedRect.points(rrect);
+        cimg = cv.line(cimg, vtx(1:4,:), vtx([2:4 1],:), <span class="keyword">...</span>
+            <span class="string">'Color'</span>,[0 255 0], <span class="string">'LineType'</span>,<span class="string">'AA'</span>);
+    <span class="keyword">end</span>
+
+    <span class="comment">% show result</span>
+    set(h.img, <span class="string">'CData'</span>,cimg);
+    drawnow;
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> h = buildGUI(img)
+    <span class="comment">%BUILDGUI  Creates the UI</span>
+
+    <span class="comment">% parameters</span>
+    thresh = 70;
+    max_thresh = 255;
+    sz = size(img);
+    sz(2) = max(sz(2), 250);  <span class="comment">% minimum figure width</span>
+
+    <span class="comment">% build the user interface (no resizing to keep it simple)</span>
+    h = struct();
+    h.src = img;
+    h.fig = figure(<span class="string">'Name'</span>,<span class="string">'Ellipse Fit'</span>, <span class="keyword">...</span>
+        <span class="string">'NumberTitle'</span>,<span class="string">'off'</span>, <span class="string">'Menubar'</span>,<span class="string">'none'</span>, <span class="string">'Resize'</span>,<span class="string">'off'</span>, <span class="keyword">...</span>
+        <span class="string">'Position'</span>,[200 200 sz(2) sz(1)+29]);
+    <span class="keyword">if</span> ~mexopencv.isOctave()
+        <span class="comment">%HACK: not implemented in Octave</span>
+        movegui(h.fig, <span class="string">'center'</span>);
+    <span class="keyword">end</span>
+    h.ax = axes(<span class="string">'Parent'</span>,h.fig, <span class="keyword">...</span>
+        <span class="string">'Units'</span>,<span class="string">'pixels'</span>, <span class="string">'Position'</span>,[1 30 sz(2) sz(1)]);
+    <span class="keyword">if</span> ~mexopencv.isOctave()
+        h.img = imshow(img, <span class="string">'Parent'</span>,h.ax);
+    <span class="keyword">else</span>
+        <span class="comment">%HACK: https://savannah.gnu.org/bugs/index.php?45473</span>
+        axes(h.ax);
+        h.img = imshow(img);
+    <span class="keyword">end</span>
+    h.pop = uicontrol(<span class="string">'Parent'</span>,h.fig, <span class="string">'Style'</span>,<span class="string">'popupmenu'</span>, <span class="keyword">...</span>
+       <span class="string">'Position'</span>,[5 5 70 20], <span class="string">'String'</span>,{<span class="string">'Linear'</span>, <span class="string">'Direct'</span>, <span class="string">'AMS'</span>});
+    h.txt = uicontrol(<span class="string">'Parent'</span>,h.fig, <span class="string">'Style'</span>,<span class="string">'text'</span>, <span class="string">'FontSize'</span>,11, <span class="keyword">...</span>
+        <span class="string">'Position'</span>,[75 5 120 20], <span class="string">'String'</span>,sprintf(<span class="string">'Threshold: %3d'</span>,thresh));
+    h.slid = uicontrol(<span class="string">'Parent'</span>,h.fig, <span class="string">'Style'</span>,<span class="string">'slider'</span>, <span class="string">'Value'</span>,thresh, <span class="keyword">...</span>
+        <span class="string">'Min'</span>,1, <span class="string">'Max'</span>,max_thresh, <span class="string">'SliderStep'</span>,[1 10]./(max_thresh-1), <span class="keyword">...</span>
+        <span class="string">'Position'</span>,[200 5 sz(2)-200-5 20]);
+
+    <span class="comment">% hook event handlers, and trigger default start</span>
+    set([h.slid, h.pop], <span class="string">'Callback'</span>,{@onChange,h}, <span class="keyword">...</span>
+        <span class="string">'Interruptible'</span>,<span class="string">'off'</span>, <span class="string">'BusyAction'</span>,<span class="string">'cancel'</span>);
+    onChange([],[],h);
+<span class="keyword">end</span></pre><img src="fitellipse_demo_gui_01.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Fit ellipses demo
+% This program is demonstration for ellipse fitting. The program finds
+% contours and approximate them by ellipses using one of three methods:
+%
+% # OpenCV's original method which implements Fitzgibbon 1995 method.
+% # The Approximate Mean Square (AMS) method proposed by Taubin 1991.
+% # The Direct least square (Direct) method proposed by Fitzgibbon 1999.
+%
+% Trackbar specify threshold parameter.
+%
+% White lines are contours points. Red lines are fitting ellipses.
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv/blob/3.3.1/samples/cpp/fitellipse.cpp>
+%
+
+function varargout = fitellipse_demo_gui(im)
+    % load source image
+    if nargin < 1
+        im = fullfile(mexopencv.root(),'test','ellipses.jpg');
+        src = cv.imread(im, 'Grayscale',true);
+    elseif ischar(im)
+        src = cv.imread(im, 'Grayscale',true);
+    else
+        src = im;
+    end
+    % we expect a grayscale image
+    if size(src,3) == 3, src = cv.cvtColor(src, 'RGB2GRAY'); end
+
+    % create the UI
+    h = buildGUI(src);
+    if nargout > 0, varargout{1} = h; end
+end
+
+function onChange(~,~,h)
+    %ONCHANGE  Event handler for UI controls
+
+    % retrieve current values from UI controls
+    algIdx = get(h.pop, 'Value');
+    algs = get(h.pop, 'String');
+    thresh = round(get(h.slid, 'Value'));
+    set(h.txt, 'String',sprintf('Threshold: %3d',thresh));
+
+    % threshold image and find contours
+    bimg = uint8(cv.blur(h.src) >= thresh) * 255;
+    contours = cv.findContours(bimg, 'Mode','List', 'Method','None');
+
+    % filter out contours that are too simple, probably not an ellipse
+    % (note: fitEllipse requires at least 5 points)
+    contours(cellfun(@numel, contours) < 50) = [];
+
+    % {{[x y], [x y], ..}, ..} -> {[x y; x y; ..], ..}
+    contours = cellfun(@(c) cat(1,c{:}), contours, 'UniformOutput',false);
+
+    % draw all contours points
+    if true
+        cimg = cv.cvtColor(h.src * 0.3, 'GRAY2RGB');
+    else
+        cimg = zeros([size(bimg) 3], 'uint8');
+    end
+    cimg = cv.drawContours(cimg, contours, 'Color',[255 255 255]);
+
+    % for each contour
+    for i=1:numel(contours)
+        % approximate by an ellipse
+        rrect = cv.fitEllipse(contours{i}, 'Method',algs{algIdx});
+        if max(rrect.size) > min(rrect.size)*30
+            % skip if rectangle is too tall/wide
+            continue;
+        end
+
+        % draw ellipse
+        if true
+            cimg = cv.ellipse(cimg, rrect, 'Color',[255 0 0], 'LineType','AA');
+        else
+            cimg = cv.ellipse(cimg, rrect.center, rrect.size*0.5, ...
+                'Angle',rrect.angle, 'Color',[255 255 0], 'LineType','AA');
+        end
+
+        % draw rotated rectangle of ellipse
+        vtx = cv.RotatedRect.points(rrect);
+        cimg = cv.line(cimg, vtx(1:4,:), vtx([2:4 1],:), ...
+            'Color',[0 255 0], 'LineType','AA');
+    end
+
+    % show result
+    set(h.img, 'CData',cimg);
+    drawnow;
+end
+
+function h = buildGUI(img)
+    %BUILDGUI  Creates the UI
+
+    % parameters
+    thresh = 70;
+    max_thresh = 255;
+    sz = size(img);
+    sz(2) = max(sz(2), 250);  % minimum figure width
+
+    % build the user interface (no resizing to keep it simple)
+    h = struct();
+    h.src = img;
+    h.fig = figure('Name','Ellipse Fit', ...
+        'NumberTitle','off', 'Menubar','none', 'Resize','off', ...
+        'Position',[200 200 sz(2) sz(1)+29]);
+    if ~mexopencv.isOctave()
+        %HACK: not implemented in Octave
+        movegui(h.fig, 'center');
+    end
+    h.ax = axes('Parent',h.fig, ...
+        'Units','pixels', 'Position',[1 30 sz(2) sz(1)]);
+    if ~mexopencv.isOctave()
+        h.img = imshow(img, 'Parent',h.ax);
+    else
+        %HACK: https://savannah.gnu.org/bugs/index.php?45473
+        axes(h.ax);
+        h.img = imshow(img);
+    end
+    h.pop = uicontrol('Parent',h.fig, 'Style','popupmenu', ...
+       'Position',[5 5 70 20], 'String',{'Linear', 'Direct', 'AMS'});
+    h.txt = uicontrol('Parent',h.fig, 'Style','text', 'FontSize',11, ...
+        'Position',[75 5 120 20], 'String',sprintf('Threshold: %3d',thresh));
+    h.slid = uicontrol('Parent',h.fig, 'Style','slider', 'Value',thresh, ...
+        'Min',1, 'Max',max_thresh, 'SliderStep',[1 10]./(max_thresh-1), ...
+        'Position',[200 5 sz(2)-200-5 20]);
+
+    % hook event handlers, and trigger default start
+    set([h.slid, h.pop], 'Callback',{@onChange,h}, ...
+        'Interruptible','off', 'BusyAction','cancel');
+    onChange([],[],h);
+end
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

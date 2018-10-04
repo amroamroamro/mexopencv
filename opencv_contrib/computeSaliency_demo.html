@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Saliency algorithms demo</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2018-02-20">
+      <meta name="DC.source" content="computeSaliency_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Saliency algorithms demo</h1>
+         <!--introduction-->
+         <p>This example shows the functionality of "Saliency"</p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/saliency/samples/computeSaliency.cpp">https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/saliency/samples/computeSaliency.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Options</a></li>
+               <li><a href="#3">Prepare video source</a></li>
+               <li><a href="#4">Instantiate the specified Saliency</a></li>
+               <li><a href="#5">Compute saliency</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Options</h2>
+         <p>choose Saliency algorithm</p><pre class="codeinput">alg = <span class="string">'SpectralResidual'</span>;
+alg = validatestring(alg, <span class="keyword">...</span>
+    {<span class="string">'SpectralResidual'</span>, <span class="string">'FineGrained'</span>, <span class="string">'BinWangApr2014'</span>, <span class="string">'BING'</span>});
+
+<span class="comment">% path of input video file to read frames from</span>
+video_name = fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'768x576.avi'</span>);
+start_frame = 0;  <span class="comment">% index of starting frame</span>
+<span class="keyword">if</span> exist(video_name, <span class="string">'file'</span>) ~= 2
+    <span class="comment">% download video from Github</span>
+    disp(<span class="string">'Downloading video...'</span>)
+    url = <span class="string">'https://cdn.rawgit.com/opencv/opencv/3.1.0/samples/data/768x576.avi'</span>;
+    urlwrite(url, video_name);
+<span class="keyword">end</span>
+
+<span class="comment">% path to trained Objectness model (for BING algorithm)</span>
+training_path = fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'ObjectnessTrainedModel'</span>);
+<span class="keyword">if</span> strcmp(alg, <span class="string">'BING'</span>) &amp;&amp; ~isdir(training_path)
+    <span class="comment">% download from GitHub</span>
+    files = {
+        <span class="string">'ObjNessB2W8HSV.idx.yml.gz'</span>
+        <span class="string">'ObjNessB2W8HSV.wS1.yml.gz'</span>
+        <span class="string">'ObjNessB2W8HSV.wS2.yml.gz'</span>
+        <span class="string">'ObjNessB2W8I.idx.yml.gz'</span>
+        <span class="string">'ObjNessB2W8I.wS1.yml.gz'</span>
+        <span class="string">'ObjNessB2W8I.wS2.yml.gz'</span>
+        <span class="string">'ObjNessB2W8MAXBGR.idx.yml.gz'</span>
+        <span class="string">'ObjNessB2W8MAXBGR.wS1.yml.gz'</span>
+        <span class="string">'ObjNessB2W8MAXBGR.wS2.yml.gz'</span>
+    };
+    disp(<span class="string">'Downloading trained models...'</span>);
+    mkdir(training_path);
+    <span class="keyword">for</span> i=1:numel(files)
+        url = <span class="string">'https://cdn.rawgit.com/opencv/opencv_contrib/3.2.0/modules/saliency/samples/ObjectnessTrainedModel/'</span>;
+        urlwrite([url files{i}], fullfile(training_path,files{i}));
+    <span class="keyword">end</span>
+<span class="keyword">end</span></pre><h2 id="3">Prepare video source</h2><pre class="codeinput">cap = cv.VideoCapture(video_name);
+assert(cap.isOpened(), <span class="string">'Could not initialize capturing'</span>);
+cap.PosFrames = start_frame;
+
+frame = cap.read();
+assert(~isempty(frame), <span class="string">'Could not read data from the video source'</span>);</pre><h2 id="4">Instantiate the specified Saliency</h2><pre class="codeinput"><span class="keyword">switch</span> alg
+    <span class="keyword">case</span> <span class="string">'SpectralResidual'</span>
+        saliency = cv.StaticSaliencySpectralResidual();
+    <span class="keyword">case</span> <span class="string">'FineGrained'</span>
+        saliency = cv.StaticSaliencyFineGrained();
+    <span class="keyword">case</span> <span class="string">'BinWangApr2014'</span>
+        saliency = cv.MotionSaliencyBinWangApr2014();
+    <span class="keyword">case</span> <span class="string">'BING'</span>
+        saliency = cv.ObjectnessBING();
+    <span class="keyword">otherwise</span>
+        error(<span class="string">'Unrecognized saliency algorithm'</span>);
+<span class="keyword">end</span>
+disp(saliency)</pre><pre class="codeoutput">  StaticSaliencySpectralResidual with properties:
+
+             id: 2
+     ImageWidth: 64
+    ImageHeight: 64
+</pre><h2 id="5">Compute saliency</h2><pre class="codeinput"><span class="keyword">switch</span> alg
+    <span class="keyword">case</span> {<span class="string">'SpectralResidual'</span>, <span class="string">'FineGrained'</span>}
+        <span class="comment">% compute</span>
+        tic, saliencyMap = saliency.computeSaliency(frame); toc
+        <span class="keyword">if</span> isa(saliencyMap, <span class="string">'uint8'</span>)
+            saliencyMap = single(saliencyMap) / 255;
+        <span class="keyword">end</span>
+        tic, binaryMap = saliency.computeBinaryMap(saliencyMap); toc
+        binaryMap = logical(binaryMap ~= 0);
+
+        <span class="comment">% show</span>
+        subplot(221), imshow(saliencyMap), title(<span class="string">'Saliency Map'</span>)
+        subplot(222), imshow(frame), title(<span class="string">'Original Image'</span>)
+        subplot(223), imshow(binaryMap), title(<span class="string">'Binary Map'</span>)
+
+    <span class="keyword">case</span> <span class="string">'BinWangApr2014'</span>
+        <span class="comment">% initialize</span>
+        sz = size(frame);
+        saliency.setImagesize(sz(2), sz(1));
+        saliency.init();
+
+        <span class="comment">% prepare plots</span>
+        subplot(121); hImg(1) = imshow(frame); title(<span class="string">'img'</span>)
+        subplot(122); hImg(2) = imshow(false(sz(1:2))); title(<span class="string">'saliencyMap'</span>)
+
+        <span class="comment">% loop over frames</span>
+        <span class="keyword">while</span> all(ishghandle(hImg))
+            <span class="comment">% read frame</span>
+            frame = cap.read();
+            <span class="keyword">if</span> isempty(frame), <span class="keyword">break</span>; <span class="keyword">end</span>
+            set(hImg(1), <span class="string">'CData'</span>,frame)
+
+            <span class="comment">% compute motion saliency of current frame</span>
+            fprintf(<span class="string">'frame #%3d: '</span>, cap.PosFrames);
+            frame = cv.cvtColor(frame, <span class="string">'RGB2GRAY'</span>);
+            tic, saliencyMap = saliency.computeSaliency(frame); toc
+            saliencyMap = logical(saliencyMap);
+
+            <span class="comment">% show</span>
+            <span class="comment">%NOTE: for the first dozen frames, saliency is all 1</span>
+            set(hImg(2), <span class="string">'CData'</span>,saliencyMap)
+            drawnow
+        <span class="keyword">end</span>
+
+    <span class="keyword">case</span> <span class="string">'BING'</span>
+        <span class="comment">% initialize</span>
+        assert(~isempty(training_path), <span class="string">'Path of trained files missing'</span>);
+        saliency.setTrainingPath(training_path);
+        saliency.setBBResDir(fullfile(tempdir(),<span class="string">'Results'</span>));
+
+        <span class="comment">% compute</span>
+        tic
+        objectnessBoundingBox = saliency.computeSaliency(frame);
+        objectnessValues = saliency.getObjectnessValues();
+        toc
+        fprintf(<span class="string">'Objectness done. ndet = %d\n'</span>, numel(objectnessBoundingBox));
+        dir(fullfile(tempdir(),<span class="string">'Results'</span>))
+
+        <span class="comment">%TODO: poor bounding boxes, are they ordered correctly?</span>
+        <span class="keyword">if</span> false
+            <span class="comment">% sort by values (ascending or descending ?)</span>
+            [objectnessValues, idx] = sort(objectnessValues, <span class="string">'descend'</span>);
+            objectnessBoundingBox = objectnessBoundingBox(idx);
+        <span class="keyword">end</span>
+
+        <span class="comment">% plot bounding boxes around possible objects</span>
+        <span class="comment">% (results are sorted by objectness, we use the first few boxes here)</span>
+        maxd = 7;
+        clr = round(255 * lines(maxd));
+        <span class="keyword">for</span> i=1:min(maxd, numel(objectnessBoundingBox))
+            bb = objectnessBoundingBox{i};
+            val = objectnessValues(i);
+            <span class="comment">% add jitter to seperate single rects</span>
+            off = rand(1,2) * 2 * 9 - 9;
+            frame = cv.rectangle(frame, bb(1:2)+off, bb(3:4)+off, <span class="keyword">...</span>
+                <span class="string">'Color'</span>,clr(i,:), <span class="string">'Thickness'</span>,2);
+            frame = cv.putText(frame, num2str(val), bb(1:2)+off+[2 -3], <span class="keyword">...</span>
+                <span class="string">'Color'</span>,clr(i,:), <span class="string">'FontScale'</span>,0.5);
+            <span class="comment">% mini temperature scale</span>
+            frame = cv.rectangle(frame, [20 20+(i-1)*10 10 10], <span class="keyword">...</span>
+                <span class="string">'Color'</span>,clr(i,:), <span class="string">'Thickness'</span>,-1);
+        <span class="keyword">end</span>
+        imshow(frame), title(<span class="string">'Objectness'</span>)
+<span class="keyword">end</span></pre><pre class="codeoutput">Elapsed time is 0.008646 seconds.
+Elapsed time is 0.148892 seconds.
+</pre><img src="computeSaliency_demo_01.png"><p>release video source</p><pre class="codeinput">cap.release();</pre><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Saliency algorithms demo
+% This example shows the functionality of "Saliency"
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv_contrib/blob/3.4.0/modules/saliency/samples/computeSaliency.cpp>
+%
+
+%% Options
+% choose Saliency algorithm
+alg = 'SpectralResidual';
+alg = validatestring(alg, ...
+    {'SpectralResidual', 'FineGrained', 'BinWangApr2014', 'BING'});
+
+% path of input video file to read frames from
+video_name = fullfile(mexopencv.root(),'test','768x576.avi');
+start_frame = 0;  % index of starting frame
+if exist(video_name, 'file') ~= 2
+    % download video from Github
+    disp('Downloading video...')
+    url = 'https://cdn.rawgit.com/opencv/opencv/3.1.0/samples/data/768x576.avi';
+    urlwrite(url, video_name);
+end
+
+% path to trained Objectness model (for BING algorithm)
+training_path = fullfile(mexopencv.root(),'test','ObjectnessTrainedModel');
+if strcmp(alg, 'BING') && ~isdir(training_path)
+    % download from GitHub
+    files = {
+        'ObjNessB2W8HSV.idx.yml.gz'
+        'ObjNessB2W8HSV.wS1.yml.gz'
+        'ObjNessB2W8HSV.wS2.yml.gz'
+        'ObjNessB2W8I.idx.yml.gz'
+        'ObjNessB2W8I.wS1.yml.gz'
+        'ObjNessB2W8I.wS2.yml.gz'
+        'ObjNessB2W8MAXBGR.idx.yml.gz'
+        'ObjNessB2W8MAXBGR.wS1.yml.gz'
+        'ObjNessB2W8MAXBGR.wS2.yml.gz'
+    };
+    disp('Downloading trained models...');
+    mkdir(training_path);
+    for i=1:numel(files)
+        url = 'https://cdn.rawgit.com/opencv/opencv_contrib/3.2.0/modules/saliency/samples/ObjectnessTrainedModel/';
+        urlwrite([url files{i}], fullfile(training_path,files{i}));
+    end
+end
+
+%% Prepare video source
+cap = cv.VideoCapture(video_name);
+assert(cap.isOpened(), 'Could not initialize capturing');
+cap.PosFrames = start_frame;
+
+frame = cap.read();
+assert(~isempty(frame), 'Could not read data from the video source');
+
+%% Instantiate the specified Saliency
+switch alg
+    case 'SpectralResidual'
+        saliency = cv.StaticSaliencySpectralResidual();
+    case 'FineGrained'
+        saliency = cv.StaticSaliencyFineGrained();
+    case 'BinWangApr2014'
+        saliency = cv.MotionSaliencyBinWangApr2014();
+    case 'BING'
+        saliency = cv.ObjectnessBING();
+    otherwise
+        error('Unrecognized saliency algorithm');
+end
+disp(saliency)
+
+%% Compute saliency
+switch alg
+    case {'SpectralResidual', 'FineGrained'}
+        % compute
+        tic, saliencyMap = saliency.computeSaliency(frame); toc
+        if isa(saliencyMap, 'uint8')
+            saliencyMap = single(saliencyMap) / 255;
+        end
+        tic, binaryMap = saliency.computeBinaryMap(saliencyMap); toc
+        binaryMap = logical(binaryMap ~= 0);
+
+        % show
+        subplot(221), imshow(saliencyMap), title('Saliency Map')
+        subplot(222), imshow(frame), title('Original Image')
+        subplot(223), imshow(binaryMap), title('Binary Map')
+
+    case 'BinWangApr2014'
+        % initialize
+        sz = size(frame);
+        saliency.setImagesize(sz(2), sz(1));
+        saliency.init();
+
+        % prepare plots
+        subplot(121); hImg(1) = imshow(frame); title('img')
+        subplot(122); hImg(2) = imshow(false(sz(1:2))); title('saliencyMap')
+
+        % loop over frames
+        while all(ishghandle(hImg))
+            % read frame
+            frame = cap.read();
+            if isempty(frame), break; end
+            set(hImg(1), 'CData',frame)
+
+            % compute motion saliency of current frame
+            fprintf('frame #%3d: ', cap.PosFrames);
+            frame = cv.cvtColor(frame, 'RGB2GRAY');
+            tic, saliencyMap = saliency.computeSaliency(frame); toc
+            saliencyMap = logical(saliencyMap);
+
+            % show
+            %NOTE: for the first dozen frames, saliency is all 1
+            set(hImg(2), 'CData',saliencyMap)
+            drawnow
+        end
+
+    case 'BING'
+        % initialize
+        assert(~isempty(training_path), 'Path of trained files missing');
+        saliency.setTrainingPath(training_path);
+        saliency.setBBResDir(fullfile(tempdir(),'Results'));
+
+        % compute
+        tic
+        objectnessBoundingBox = saliency.computeSaliency(frame);
+        objectnessValues = saliency.getObjectnessValues();
+        toc
+        fprintf('Objectness done. ndet = %d\n', numel(objectnessBoundingBox));
+        dir(fullfile(tempdir(),'Results'))
+
+        %TODO: poor bounding boxes, are they ordered correctly?
+        if false
+            % sort by values (ascending or descending ?)
+            [objectnessValues, idx] = sort(objectnessValues, 'descend');
+            objectnessBoundingBox = objectnessBoundingBox(idx);
+        end
+
+        % plot bounding boxes around possible objects
+        % (results are sorted by objectness, we use the first few boxes here)
+        maxd = 7;
+        clr = round(255 * lines(maxd));
+        for i=1:min(maxd, numel(objectnessBoundingBox))
+            bb = objectnessBoundingBox{i};
+            val = objectnessValues(i);
+            % add jitter to seperate single rects
+            off = rand(1,2) * 2 * 9 - 9;
+            frame = cv.rectangle(frame, bb(1:2)+off, bb(3:4)+off, ...
+                'Color',clr(i,:), 'Thickness',2);
+            frame = cv.putText(frame, num2str(val), bb(1:2)+off+[2 -3], ...
+                'Color',clr(i,:), 'FontScale',0.5);
+            % mini temperature scale
+            frame = cv.rectangle(frame, [20 20+(i-1)*10 10 10], ...
+                'Color',clr(i,:), 'Thickness',-1);
+        end
+        imshow(frame), title('Objectness')
+end
+
+%%
+% release video source
+cap.release();
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

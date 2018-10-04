@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Gabor Filter demo</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="gabor_filter_gui.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Gabor Filter demo</h1>
+         <p>A GUI to interact with the 5 different Gabor filter parameters, while visualizing the resulting filter.</p><pre class="codeinput"><span class="keyword">function</span> varargout = gabor_filter_gui(ksize)
+    <span class="comment">% create the UI</span>
+    <span class="keyword">if</span> nargin &lt; 1, ksize = [121 121]; <span class="keyword">end</span>
+    h = buildGUI(ksize);
+    <span class="keyword">if</span> nargout &gt; 0, varargout{1} = h; <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> onChange(~,~,h)
+    <span class="comment">%ONCHANGE  Event handler for UI controls</span>
+
+    <span class="comment">% retrieve current values from UI controls</span>
+    sigma  = get(h.slid(5), <span class="string">'Value'</span>) / 10;
+    theta  = get(h.slid(4), <span class="string">'Value'</span>) * pi/180;
+    lambda = get(h.slid(3), <span class="string">'Value'</span>);
+    gamma  = get(h.slid(2), <span class="string">'Value'</span>) / 100;
+    psi    = get(h.slid(1), <span class="string">'Value'</span>) * pi/180;
+
+    <span class="comment">% create Gabor filter</span>
+    kernel = cv.getGaborKernel(<span class="string">'KSize'</span>,[h.ksize(2) h.ksize(1)], <span class="keyword">...</span>
+        <span class="string">'Sigma'</span>,sigma, <span class="string">'Theta'</span>,theta, <span class="string">'Lambda'</span>,lambda, <span class="keyword">...</span>
+        <span class="string">'Gamma'</span>,gamma, <span class="string">'Psi'</span>,psi);
+
+    <span class="comment">% normalize filter to [0,1] range and resize it</span>
+    kernel = cv.normalize(kernel, <span class="string">'NormType'</span>,<span class="string">'MinMax'</span>);
+    kernel = cv.resize(kernel, [h.sz(2) h.sz(1)]);
+
+    <span class="comment">% show result</span>
+    set(h.img, <span class="string">'CData'</span>,kernel)
+    set(h.txt(5), <span class="string">'String'</span>,sprintf(<span class="string">'Sigma  = %.2f'</span>,sigma))
+    set(h.txt(4), <span class="string">'String'</span>,sprintf(<span class="string">'Theta  = %.2f'</span>,theta))
+    set(h.txt(3), <span class="string">'String'</span>,sprintf(<span class="string">'Lambda = %.2f'</span>,lambda))
+    set(h.txt(2), <span class="string">'String'</span>,sprintf(<span class="string">'Gamma  = %.2f'</span>,gamma))
+    set(h.txt(1), <span class="string">'String'</span>,sprintf(<span class="string">'Psi    = %.2f'</span>,psi))
+    drawnow
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> onType(~,e,h)
+    <span class="comment">%ONTYPE  Event handler for key press on figure</span>
+
+    <span class="comment">% handle keys</span>
+    <span class="keyword">switch</span> e.Key
+        <span class="keyword">case</span> {<span class="string">'q'</span>, <span class="string">'escape'</span>}
+            close(h.fig)
+            <span class="keyword">return</span>
+        <span class="keyword">case</span> <span class="string">'h'</span>
+            onHelp([],[]);
+        <span class="keyword">case</span> <span class="string">'r'</span>
+            onReset([],[],h);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> onReset(~,~,h)
+    set(h.slid(5), <span class="string">'Value'</span>,400);    <span class="comment">% sigma</span>
+    set(h.slid(4), <span class="string">'Value'</span>,0);      <span class="comment">% theta</span>
+    set(h.slid(3), <span class="string">'Value'</span>,11);     <span class="comment">% lambda</span>
+    set(h.slid(2), <span class="string">'Value'</span>,100);    <span class="comment">% gamma</span>
+    set(h.slid(1), <span class="string">'Value'</span>,90);     <span class="comment">% psi</span>
+    onChange([],[],h);
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> onHelp(~,~)
+    <span class="comment">%ONHELP  Display usage help dialog</span>
+
+    helpdlg({
+        <span class="string">'This GUI allows to interact with the 5 different Gabor filter'</span>
+        <span class="string">'parameters, while visualizing the resulting filter.'</span>
+        <span class="string">''</span>
+        <span class="string">'Hot keys:'</span>
+        <span class="string">'ESC, q - quit the program'</span>
+        <span class="string">'r - reset parameters to original values'</span>
+        <span class="string">'h - this help dialog'</span>
+    });
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> h = buildGUI(ksize)
+    <span class="comment">%BUILDGUI  Creates the UI</span>
+
+    <span class="comment">% parameters</span>
+    sigma = 400; sigma_max = 1000;
+    theta = 0;   theta_max = 180;
+    lambda = 11; lambda_max = 100;
+    gamma = 100; gamma_max = 200;
+    psi = 90;    psi_max = 180;
+    sz = [512 512];
+
+    <span class="comment">% build the user interface (no resizing to keep it simple)</span>
+    h = struct();
+    h.ksize = ksize;  <span class="comment">% size of the filter</span>
+    h.sz = sz;        <span class="comment">% size of the image to show</span>
+    h.fig = figure(<span class="string">'Name'</span>,<span class="string">'Gabor Filter Demo'</span>, <span class="keyword">...</span>
+        <span class="string">'NumberTitle'</span>,<span class="string">'off'</span>, <span class="string">'Menubar'</span>,<span class="string">'none'</span>, <span class="string">'Resize'</span>,<span class="string">'off'</span>, <span class="keyword">...</span>
+        <span class="string">'Position'</span>,[200 200 sz(2) sz(1)+129]);
+    <span class="keyword">if</span> ~mexopencv.isOctave()
+        <span class="comment">%HACK: not implemented in Octave</span>
+        movegui(h.fig, <span class="string">'center'</span>);
+    <span class="keyword">end</span>
+    h.ax = axes(<span class="string">'Parent'</span>,h.fig, <span class="string">'Units'</span>,<span class="string">'pixels'</span>, <span class="string">'Position'</span>,[1 130 sz(2) sz(1)]);
+    <span class="keyword">if</span> ~mexopencv.isOctave()
+        h.img = imshow(zeros(sz), <span class="string">'Parent'</span>,h.ax);
+    <span class="keyword">else</span>
+        <span class="comment">%HACK: https://savannah.gnu.org/bugs/index.php?45473</span>
+        axes(h.ax);
+        h.img = imshow(zeros(sz));
+    <span class="keyword">end</span>
+    text(5, 5, sprintf(<span class="string">'KSize = %dx%d'</span>, ksize(2), ksize(1)), <span class="keyword">...</span>
+        <span class="string">'Color'</span>,<span class="string">'y'</span>, <span class="string">'VerticalAlignment'</span>,<span class="string">'top'</span>);
+
+    props = {<span class="string">'Parent'</span>,h.fig, <span class="string">'Style'</span>,<span class="string">'text'</span>, <span class="string">'String'</span>,<span class="string">''</span>, <span class="keyword">...</span>
+        <span class="string">'FontSize'</span>,11, <span class="string">'HorizontalAlignment'</span>,<span class="string">'left'</span>};
+    h.txt(5) = uicontrol(props{:}, <span class="string">'Position'</span>,[5   5 120 20]);
+    h.txt(4) = uicontrol(props{:}, <span class="string">'Position'</span>,[5  30 120 20]);
+    h.txt(3) = uicontrol(props{:}, <span class="string">'Position'</span>,[5  55 120 20]);
+    h.txt(2) = uicontrol(props{:}, <span class="string">'Position'</span>,[5  80 120 20]);
+    h.txt(1) = uicontrol(props{:}, <span class="string">'Position'</span>,[5 105 120 20]);
+
+    props = {<span class="string">'Parent'</span>,h.fig, <span class="string">'Style'</span>,<span class="string">'slider'</span>, <span class="string">'Min'</span>,0};
+    h.slid(5) = uicontrol(props{:}, <span class="string">'Position'</span>,[125   5 sz(2)-125-5 20], <span class="keyword">...</span>
+        <span class="string">'Value'</span>,sigma, <span class="string">'Max'</span>,sigma_max, <span class="string">'SliderStep'</span>,[10 100]./(sigma_max-0));
+    h.slid(4) = uicontrol(props{:}, <span class="string">'Position'</span>,[125  30 sz(2)-125-5 20], <span class="keyword">...</span>
+        <span class="string">'Value'</span>,theta, <span class="string">'Max'</span>,theta_max, <span class="string">'SliderStep'</span>,[2 20]./(theta_max-0));
+    h.slid(3) = uicontrol(props{:}, <span class="string">'Position'</span>,[125  55 sz(2)-125-5 20], <span class="keyword">...</span>
+        <span class="string">'Value'</span>,lambda, <span class="string">'Max'</span>,lambda_max, <span class="string">'SliderStep'</span>,[1 10]./(lambda_max-0));
+    h.slid(2) = uicontrol(props{:}, <span class="string">'Position'</span>,[125  80 sz(2)-125-5 20], <span class="keyword">...</span>
+        <span class="string">'Value'</span>,gamma, <span class="string">'Max'</span>,gamma_max, <span class="string">'SliderStep'</span>,[2 20]./(gamma_max-0));
+    h.slid(1) = uicontrol(props{:}, <span class="string">'Position'</span>,[125 105 sz(2)-125-5 20], <span class="keyword">...</span>
+        <span class="string">'Value'</span>,psi, <span class="string">'Max'</span>,psi_max, <span class="string">'SliderStep'</span>,[2 20]./(psi_max-0));
+
+    <span class="comment">% hook event handlers, and trigger default start</span>
+    opts = {<span class="string">'Interruptible'</span>,<span class="string">'off'</span>, <span class="string">'BusyAction'</span>,<span class="string">'cancel'</span>};
+    set(h.slid, <span class="string">'Callback'</span>,{@onChange,h}, opts{:});
+    set(h.fig, <span class="string">'WindowKeyPressFcn'</span>,{@onType,h}, opts{:});
+    onChange([],[],h);
+<span class="keyword">end</span></pre><img src="gabor_filter_gui_01.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Gabor Filter demo
+%
+% A GUI to interact with the 5 different Gabor filter parameters, while
+% visualizing the resulting filter.
+%
+
+function varargout = gabor_filter_gui(ksize)
+    % create the UI
+    if nargin < 1, ksize = [121 121]; end
+    h = buildGUI(ksize);
+    if nargout > 0, varargout{1} = h; end
+end
+
+function onChange(~,~,h)
+    %ONCHANGE  Event handler for UI controls
+
+    % retrieve current values from UI controls
+    sigma  = get(h.slid(5), 'Value') / 10;
+    theta  = get(h.slid(4), 'Value') * pi/180;
+    lambda = get(h.slid(3), 'Value');
+    gamma  = get(h.slid(2), 'Value') / 100;
+    psi    = get(h.slid(1), 'Value') * pi/180;
+
+    % create Gabor filter
+    kernel = cv.getGaborKernel('KSize',[h.ksize(2) h.ksize(1)], ...
+        'Sigma',sigma, 'Theta',theta, 'Lambda',lambda, ...
+        'Gamma',gamma, 'Psi',psi);
+
+    % normalize filter to [0,1] range and resize it
+    kernel = cv.normalize(kernel, 'NormType','MinMax');
+    kernel = cv.resize(kernel, [h.sz(2) h.sz(1)]);
+
+    % show result
+    set(h.img, 'CData',kernel)
+    set(h.txt(5), 'String',sprintf('Sigma  = %.2f',sigma))
+    set(h.txt(4), 'String',sprintf('Theta  = %.2f',theta))
+    set(h.txt(3), 'String',sprintf('Lambda = %.2f',lambda))
+    set(h.txt(2), 'String',sprintf('Gamma  = %.2f',gamma))
+    set(h.txt(1), 'String',sprintf('Psi    = %.2f',psi))
+    drawnow
+end
+
+function onType(~,e,h)
+    %ONTYPE  Event handler for key press on figure
+
+    % handle keys
+    switch e.Key
+        case {'q', 'escape'}
+            close(h.fig)
+            return
+        case 'h'
+            onHelp([],[]);
+        case 'r'
+            onReset([],[],h);
+    end
+end
+
+function onReset(~,~,h)
+    set(h.slid(5), 'Value',400);    % sigma
+    set(h.slid(4), 'Value',0);      % theta
+    set(h.slid(3), 'Value',11);     % lambda
+    set(h.slid(2), 'Value',100);    % gamma
+    set(h.slid(1), 'Value',90);     % psi
+    onChange([],[],h);
+end
+
+function onHelp(~,~)
+    %ONHELP  Display usage help dialog
+
+    helpdlg({
+        'This GUI allows to interact with the 5 different Gabor filter'
+        'parameters, while visualizing the resulting filter.'
+        ''
+        'Hot keys:'
+        'ESC, q - quit the program'
+        'r - reset parameters to original values'
+        'h - this help dialog'
+    });
+end
+
+function h = buildGUI(ksize)
+    %BUILDGUI  Creates the UI
+
+    % parameters
+    sigma = 400; sigma_max = 1000;
+    theta = 0;   theta_max = 180;
+    lambda = 11; lambda_max = 100;
+    gamma = 100; gamma_max = 200;
+    psi = 90;    psi_max = 180;
+    sz = [512 512];
+
+    % build the user interface (no resizing to keep it simple)
+    h = struct();
+    h.ksize = ksize;  % size of the filter
+    h.sz = sz;        % size of the image to show
+    h.fig = figure('Name','Gabor Filter Demo', ...
+        'NumberTitle','off', 'Menubar','none', 'Resize','off', ...
+        'Position',[200 200 sz(2) sz(1)+129]);
+    if ~mexopencv.isOctave()
+        %HACK: not implemented in Octave
+        movegui(h.fig, 'center');
+    end
+    h.ax = axes('Parent',h.fig, 'Units','pixels', 'Position',[1 130 sz(2) sz(1)]);
+    if ~mexopencv.isOctave()
+        h.img = imshow(zeros(sz), 'Parent',h.ax);
+    else
+        %HACK: https://savannah.gnu.org/bugs/index.php?45473
+        axes(h.ax);
+        h.img = imshow(zeros(sz));
+    end
+    text(5, 5, sprintf('KSize = %dx%d', ksize(2), ksize(1)), ...
+        'Color','y', 'VerticalAlignment','top');
+
+    props = {'Parent',h.fig, 'Style','text', 'String','', ...
+        'FontSize',11, 'HorizontalAlignment','left'};
+    h.txt(5) = uicontrol(props{:}, 'Position',[5   5 120 20]);
+    h.txt(4) = uicontrol(props{:}, 'Position',[5  30 120 20]);
+    h.txt(3) = uicontrol(props{:}, 'Position',[5  55 120 20]);
+    h.txt(2) = uicontrol(props{:}, 'Position',[5  80 120 20]);
+    h.txt(1) = uicontrol(props{:}, 'Position',[5 105 120 20]);
+
+    props = {'Parent',h.fig, 'Style','slider', 'Min',0};
+    h.slid(5) = uicontrol(props{:}, 'Position',[125   5 sz(2)-125-5 20], ...
+        'Value',sigma, 'Max',sigma_max, 'SliderStep',[10 100]./(sigma_max-0));
+    h.slid(4) = uicontrol(props{:}, 'Position',[125  30 sz(2)-125-5 20], ...
+        'Value',theta, 'Max',theta_max, 'SliderStep',[2 20]./(theta_max-0));
+    h.slid(3) = uicontrol(props{:}, 'Position',[125  55 sz(2)-125-5 20], ...
+        'Value',lambda, 'Max',lambda_max, 'SliderStep',[1 10]./(lambda_max-0));
+    h.slid(2) = uicontrol(props{:}, 'Position',[125  80 sz(2)-125-5 20], ...
+        'Value',gamma, 'Max',gamma_max, 'SliderStep',[2 20]./(gamma_max-0));
+    h.slid(1) = uicontrol(props{:}, 'Position',[125 105 sz(2)-125-5 20], ...
+        'Value',psi, 'Max',psi_max, 'SliderStep',[2 20]./(psi_max-0));
+
+    % hook event handlers, and trigger default start
+    opts = {'Interruptible','off', 'BusyAction','cancel'};
+    set(h.slid, 'Callback',{@onChange,h}, opts{:});
+    set(h.fig, 'WindowKeyPressFcn',{@onType,h}, opts{:});
+    onChange([],[],h);
+end
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

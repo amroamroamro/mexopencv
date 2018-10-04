@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>DNN for image classification</title>
+      <meta name="generator" content="MATLAB 9.4">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2018-10-05">
+      <meta name="DC.source" content="dnn_img_classify_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">DNN for image classification</h1>
+         <!--introduction-->
+         <p>An example of how to use the SqueezeNet model to classify an image.</p>
+         <p>The SqueezeNet model was trained for Image Classification.</p>
+         <div>
+            <ul>
+               <li>This model was trained for 1500000 iterations with a batch size of 16</li>
+               <li>Size of Model: 4.9MB</li>
+               <li>Top-1 Accuracy on ImageNet 2012 DataSet: 56.10%</li>
+               <li>Top-5 Accuracy on ImageNet 2012 DataSet: 79.54%</li>
+               <li>Trained weights can be found   <a href="https://github.com/opencv/opencv_3rdparty/tree/dnn_objdetect_20170827">here</a></li>
+            </ul>
+         </div>
+         <p>For details pertaining to the usage of the model, have a look at <a href="https://github.com/kvmanohar22/caffe">this repository</a>. You can infact train your own object detection models with the loss function which is implemented (in Caffe).
+         </p>
+         <p>The size of the model being <b>4.9MB</b>, just takes a time of 0.136401 seconds to classify an image.
+         </p>
+         <p>Use class labels file <a href="https://github.com/opencv/opencv_contrib/raw/3.4.1/samples/data/dnn/synset_words.txt">synset_words.txt</a> to map the prediction class index to class name.
+         </p>
+         <p>References:</p>
+         <div>
+            <ul>
+               <li><a href="https://arxiv.org/abs/1602.07360">SqueezeNet</a></li>
+            </ul>
+         </div>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.4.1/modules/dnn_objdetect/samples/image_classification.cpp">https://github.com/opencv/opencv_contrib/blob/3.4.1/modules/dnn_objdetect/samples/image_classification.cpp</a></li>
+               <li><a href="https://docs.opencv.org/3.4.1/d2/da2/tutorial_dnn_objdetect.html">https://docs.opencv.org/3.4.1/d2/da2/tutorial_dnn_objdetect.html</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <p>load the network along with its trained weights</p><pre class="codeinput">[net, blobOpts] = SqueezeNet();
+assert(~net.empty(), <span class="string">'Could not load model'</span>);</pre><p>load test image</p><pre class="codeinput">im = fullfile(mexopencv.root(), <span class="string">'test'</span>, <span class="string">'space_shuttle.jpg'</span>);
+img = cv.imread(im, <span class="string">'Color'</span>,true, <span class="string">'FlipChannels'</span>,false);</pre><p>convert the image into blob, and set the input blob</p><pre class="codeinput">blob = cv.Net.blobFromImages(img, blobOpts{:});
+net.setInput(blob);</pre><p>get the output of the "predictions" layer probs is a 4D tensor of shape 1x1000x1x1, the output of softmax activation</p><pre class="codeinput">tic
+probs = net.forward(<span class="string">'predictions'</span>);
+toc</pre><pre class="codeoutput">Elapsed time is 0.364908 seconds.
+</pre><p>max prediction</p><pre class="codeinput">probs = probs(:);  <span class="comment">% 1000x1</span>
+[max_prob, class_idx] = max(probs);
+fprintf(<span class="string">'Best class Index: %d\n'</span>, class_idx);
+fprintf(<span class="string">'Probability: %f\n'</span>, max_prob*100);</pre><pre class="codeoutput">Best class Index: 813
+Probability: 16.019295
+</pre><p>Pretrained models</p><pre class="codeinput"><span class="keyword">function</span> dname = get_dnn_dir(dname)
+    <span class="comment">%GET_DNN_DIR  Path to model files, and show where to get them if missing</span>
+
+    dname = fullfile(mexopencv.root(), <span class="string">'test'</span>, <span class="string">'dnn'</span>, dname);
+    b = isdir(dname);
+    <span class="keyword">if</span> ~b
+        <span class="comment">% display help of calling function</span>
+        <span class="comment">% (assumed to be a local function in current file)</span>
+        st = dbstack(1);
+        help([mfilename() filemarker() st(1).name])
+    <span class="keyword">end</span>
+    assert(b, <span class="string">'Missing model: %s'</span>, dname);
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> [net, blobOpts] = SqueezeNet()
+    <span class="comment">%SQUEEZENET  SqueezeNet model trained on ImageNet 2012 Dataset [Caffe]</span>
+    <span class="comment">%</span>
+    <span class="comment">% homepage = https://github.com/kvmanohar22/caffe</span>
+    <span class="comment">% homepage = https://kvmanohar22.github.io/GSoC/</span>
+    <span class="comment">% homepage = https://github.com/opencv/opencv_3rdparty/tree/dnn_objdetect_20170827</span>
+    <span class="comment">% homepage = https://github.com/opencv/opencv_contrib/tree/3.4.1/modules/dnn_objdetect/samples/data</span>
+    <span class="comment">%</span>
+    <span class="comment">% ## Model</span>
+    <span class="comment">%</span>
+    <span class="comment">% file = test/dnn/SqueezeDet/SqueezeNet_deploy.prototxt</span>
+    <span class="comment">% url  = https://github.com/opencv/opencv_contrib/raw/3.4.1/modules/dnn_objdetect/samples/data/SqueezeNet_deploy.prototxt</span>
+    <span class="comment">% hash = b518ef2a11a72aea6ef1d0170ac7cc239d8a4694</span>
+    <span class="comment">%</span>
+    <span class="comment">% ## Weights</span>
+    <span class="comment">%</span>
+    <span class="comment">% file = test/dnn/SqueezeDet/SqueezeNet.caffemodel</span>
+    <span class="comment">% url  = https://github.com/opencv/opencv_3rdparty/raw/dnn_objdetect_20170827/SqueezeNet.caffemodel</span>
+    <span class="comment">% hash = 507d7975c86591361a30efffb1b31270cf8fa650</span>
+    <span class="comment">% size = 4.77 MB</span>
+    <span class="comment">%</span>
+
+    dname = get_dnn_dir(<span class="string">'SqueezeDet'</span>);
+    net = cv.Net(<span class="string">'Caffe'</span>, <span class="keyword">...</span>
+        fullfile(dname, <span class="string">'SqueezeNet_deploy.prototxt'</span>), <span class="keyword">...</span>
+        fullfile(dname, <span class="string">'SqueezeNet.caffemodel'</span>));
+    blobOpts = {<span class="string">'SwapRB'</span>,false, <span class="string">'Crop'</span>,false, <span class="string">'Size'</span>,[416 416], <span class="string">'Mean'</span>,[104 117 123]};
+<span class="keyword">end</span></pre><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2018a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% DNN for image classification
+%
+% An example of how to use the SqueezeNet model to classify an image.
+%
+% The SqueezeNet model was trained for Image Classification.
+%
+% * This model was trained for 1500000 iterations with a batch size of 16
+% * Size of Model: 4.9MB
+% * Top-1 Accuracy on ImageNet 2012 DataSet: 56.10%
+% * Top-5 Accuracy on ImageNet 2012 DataSet: 79.54%
+% * Trained weights can be found
+%   <https://github.com/opencv/opencv_3rdparty/tree/dnn_objdetect_20170827 here>
+%
+% For details pertaining to the usage of the model, have a look at
+% <https://github.com/kvmanohar22/caffe this repository>.
+% You can infact train your own object detection models with the loss function
+% which is implemented (in Caffe).
+%
+% The size of the model being *4.9MB*, just takes a time of 0.136401 seconds
+% to classify an image.
+%
+% Use class labels file
+% <https://github.com/opencv/opencv_contrib/raw/3.4.1/samples/data/dnn/synset_words.txt synset_words.txt>
+% to map the prediction class index to class name.
+%
+% References:
+%
+% * <https://arxiv.org/abs/1602.07360 SqueezeNet>
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv_contrib/blob/3.4.1/modules/dnn_objdetect/samples/image_classification.cpp>
+% * <https://docs.opencv.org/3.4.1/d2/da2/tutorial_dnn_objdetect.html>
+%
+
+%%
+% load the network along with its trained weights
+[net, blobOpts] = SqueezeNet();
+assert(~net.empty(), 'Could not load model');
+
+%%
+% load test image
+im = fullfile(mexopencv.root(), 'test', 'space_shuttle.jpg');
+img = cv.imread(im, 'Color',true, 'FlipChannels',false);
+
+%%
+% convert the image into blob, and set the input blob
+blob = cv.Net.blobFromImages(img, blobOpts{:});
+net.setInput(blob);
+
+%%
+% get the output of the "predictions" layer
+% probs is a 4D tensor of shape 1x1000x1x1, the output of softmax activation
+tic
+probs = net.forward('predictions');
+toc
+
+%%
+% max prediction
+probs = probs(:);  % 1000x1
+[max_prob, class_idx] = max(probs);
+fprintf('Best class Index: %d\n', class_idx);
+fprintf('Probability: %f\n', max_prob*100);
+
+%%
+% Pretrained models
+
+function dname = get_dnn_dir(dname)
+    %GET_DNN_DIR  Path to model files, and show where to get them if missing
+
+    dname = fullfile(mexopencv.root(), 'test', 'dnn', dname);
+    b = isdir(dname);
+    if ~b
+        % display help of calling function
+        % (assumed to be a local function in current file)
+        st = dbstack(1);
+        help([mfilename() filemarker() st(1).name])
+    end
+    assert(b, 'Missing model: %s', dname);
+end
+
+function [net, blobOpts] = SqueezeNet()
+    %SQUEEZENET  SqueezeNet model trained on ImageNet 2012 Dataset [Caffe]
+    %
+    % homepage = https://github.com/kvmanohar22/caffe
+    % homepage = https://kvmanohar22.github.io/GSoC/
+    % homepage = https://github.com/opencv/opencv_3rdparty/tree/dnn_objdetect_20170827
+    % homepage = https://github.com/opencv/opencv_contrib/tree/3.4.1/modules/dnn_objdetect/samples/data
+    %
+    % ## Model
+    %
+    % file = test/dnn/SqueezeDet/SqueezeNet_deploy.prototxt
+    % url  = https://github.com/opencv/opencv_contrib/raw/3.4.1/modules/dnn_objdetect/samples/data/SqueezeNet_deploy.prototxt
+    % hash = b518ef2a11a72aea6ef1d0170ac7cc239d8a4694
+    %
+    % ## Weights
+    %
+    % file = test/dnn/SqueezeDet/SqueezeNet.caffemodel
+    % url  = https://github.com/opencv/opencv_3rdparty/raw/dnn_objdetect_20170827/SqueezeNet.caffemodel
+    % hash = 507d7975c86591361a30efffb1b31270cf8fa650
+    % size = 4.77 MB
+    %
+
+    dname = get_dnn_dir('SqueezeDet');
+    net = cv.Net('Caffe', ...
+        fullfile(dname, 'SqueezeNet_deploy.prototxt'), ...
+        fullfile(dname, 'SqueezeNet.caffemodel'));
+    blobOpts = {'SwapRB',false, 'Crop',false, 'Size',[416 416], 'Mean',[104 117 123]};
+end
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Points Inside Convex Polygon</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="points_polygon_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Points Inside Convex Polygon</h1>
+         <!--introduction-->
+         <p>We define a pentagon and a set of points. Then, determine which points lie inside, outside, or on the edge of the pentagon.</p>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Data</a></li>
+               <li><a href="#4">OpenCV</a></li>
+               <li><a href="#5">MATLAB</a></li>
+               <li><a href="#6">Results</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Data</h2>
+         <p>Create polygon vertices that form a pentagon</p><pre class="codeinput">t = linspace(0, 2*pi, 6).';
+ct = [cos(t) sin(t)];</pre><p>Create 250 random query points</p><pre class="codeinput">pt = randn(250,2);
+pt = [pt; ct];  <span class="comment">% add points on edge, to ensure all cases are represented</span></pre><h2 id="4">OpenCV</h2>
+         <p>Determine whether each point lies inside, outside, or on the edge of polygon</p><pre class="codeinput">tic
+<span class="keyword">if</span> false
+    loc = zeros(size(pt,1),1);
+    <span class="keyword">for</span> i=1:size(pt,1)
+        loc(i) = cv.pointPolygonTest(ct, pt(i,:));
+    <span class="keyword">end</span>
+<span class="keyword">else</span>
+    <span class="comment">% vectorized call</span>
+    loc = cv.pointPolygonTest(ct, pt);
+<span class="keyword">end</span>
+toc</pre><pre class="codeoutput">Elapsed time is 0.022040 seconds.
+</pre><h2 id="5">MATLAB</h2>
+         <p>Same using MATLAB function</p><pre class="codeinput">tic
+[in, on] = inpolygon(pt(:,1), pt(:,2), ct(:,1), ct(:,2));
+loc2 = zeros(size(in));
+loc2(~in) = -1;      <span class="comment">% outside</span>
+loc2(in &amp; ~on) = 1;  <span class="comment">% inside</span>
+loc2(on) = 0;        <span class="comment">% on edge</span>
+toc</pre><pre class="codeoutput">Elapsed time is 0.154738 seconds.
+</pre><h2 id="6">Results</h2>
+         <p>Compare results, and show the number of points of each case</p><pre class="codeinput">assert(isequal(loc(:), loc2(:)))
+fprintf(<span class="string">'%d inside, %d outside, %d on edge\n'</span>, <span class="keyword">...</span>
+    nnz(loc&gt;0), nnz(loc&lt;0), nnz(loc==0));</pre><pre class="codeoutput">80 inside, 170 outside, 6 on edge
+</pre><p>Plot the polygon and the query points</p><pre class="codeinput">clr = eye(3) * 0.8;
+figure
+plot(ct(:,1), ct(:,2), <span class="string">'g'</span>, <span class="string">'LineWidth'</span>,2), hold <span class="string">on</span>
+<span class="keyword">if</span> ~mexopencv.isOctave() &amp;&amp; mexopencv.require(<span class="string">'stats'</span>)
+    gscatter(pt(:,1), pt(:,2), loc, clr)
+<span class="keyword">else</span>
+    <span class="comment">%HACK: GSCATTER not implemented in Octave</span>
+    scatter(pt(:,1), pt(:,2), [], clr(loc+2,:), <span class="string">'filled'</span>)
+<span class="keyword">end</span>
+hold <span class="string">off</span>, axis <span class="string">equal</span>
+xlabel(<span class="string">'X'</span>), ylabel(<span class="string">'Y'</span>), title(<span class="string">'pointPolygonTest'</span>)</pre><img src="points_polygon_demo_01.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Points Inside Convex Polygon
+% We define a pentagon and a set of points. Then, determine which points lie
+% inside, outside, or on the edge of the pentagon.
+%
+
+%% Data
+% Create polygon vertices that form a pentagon
+t = linspace(0, 2*pi, 6).';
+ct = [cos(t) sin(t)];
+
+%%
+% Create 250 random query points
+pt = randn(250,2);
+pt = [pt; ct];  % add points on edge, to ensure all cases are represented
+
+%% OpenCV
+% Determine whether each point lies inside, outside, or on the edge of polygon
+tic
+if false
+    loc = zeros(size(pt,1),1);
+    for i=1:size(pt,1)
+        loc(i) = cv.pointPolygonTest(ct, pt(i,:));
+    end
+else
+    % vectorized call
+    loc = cv.pointPolygonTest(ct, pt);
+end
+toc
+
+%% MATLAB
+% Same using MATLAB function
+tic
+[in, on] = inpolygon(pt(:,1), pt(:,2), ct(:,1), ct(:,2));
+loc2 = zeros(size(in));
+loc2(~in) = -1;      % outside
+loc2(in & ~on) = 1;  % inside
+loc2(on) = 0;        % on edge
+toc
+
+%% Results
+% Compare results, and show the number of points of each case
+assert(isequal(loc(:), loc2(:)))
+fprintf('%d inside, %d outside, %d on edge\n', ...
+    nnz(loc>0), nnz(loc<0), nnz(loc==0));
+
+%%
+% Plot the polygon and the query points
+clr = eye(3) * 0.8;
+figure
+plot(ct(:,1), ct(:,2), 'g', 'LineWidth',2), hold on
+if ~mexopencv.isOctave() && mexopencv.require('stats')
+    gscatter(pt(:,1), pt(:,2), loc, clr)
+else
+    %HACK: GSCATTER not implemented in Octave
+    scatter(pt(:,1), pt(:,2), [], clr(loc+2,:), 'filled')
+end
+hold off, axis equal
+xlabel('X'), ylabel('Y'), title('pointPolygonTest')
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

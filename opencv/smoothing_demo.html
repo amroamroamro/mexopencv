@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Smoothing Demo</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="smoothing_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Smoothing Demo</h1>
+         <!--introduction-->
+         <p>Sample code for simple filters</p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv/blob/3.1.0/samples/cpp/tutorial_code/ImgProc/Smoothing.cpp">https://github.com/opencv/opencv/blob/3.1.0/samples/cpp/tutorial_code/ImgProc/Smoothing.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#3">Source Image</a></li>
+               <li><a href="#4">Homogeneous blur</a></li>
+               <li><a href="#5">Gaussian blur</a></li>
+               <li><a href="#6">Median blur</a></li>
+               <li><a href="#7">Bilateral Filter</a></li>
+            </ul>
+         </div>
+         <p>Global Variables</p><pre class="codeinput">DELAY_CAPTION = 0.1;
+DELAY_BLUR = 0.01;
+MAX_KERNEL_LENGTH = 31;</pre><h2 id="3">Source Image</h2>
+         <p>Load the source image</p><pre class="codeinput">src = imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'lena.jpg'</span>));
+src = cv.resize(src, 2/3, 2/3);
+imshow(src), title(<span class="string">'Original Image'</span>)
+pause(DELAY_CAPTION)
+
+<span class="comment">%dst = cv.putText(src, 'Original Image', [size(src,2) size(src,1)]./4, ...</span>
+<span class="comment">%    'FontFace','HersheyComplex', 'FontScale',1, 'Color',[255 255 255]);</span></pre><img src="smoothing_demo_01.png"><h2 id="4">Homogeneous blur</h2><pre class="codeinput"><span class="keyword">for</span> i=1:2:MAX_KERNEL_LENGTH
+    dst = cv.blur(src, <span class="string">'KSize'</span>,[i i], <span class="string">'Anchor'</span>,[-1,-1]);
+    imshow(dst), title(sprintf(<span class="string">'Homogeneous Blur %d'</span>,i))
+    pause(DELAY_BLUR)
+<span class="keyword">end</span></pre><img src="smoothing_demo_02.png"><h2 id="5">Gaussian blur</h2><pre class="codeinput"><span class="keyword">for</span> i=1:2:MAX_KERNEL_LENGTH
+    dst = cv.GaussianBlur(src, <span class="string">'KSize'</span>,[i i]);
+    imshow(dst), title(sprintf(<span class="string">'Gaussian Blur %d'</span>,i))
+    pause(DELAY_BLUR)
+<span class="keyword">end</span></pre><img src="smoothing_demo_03.png"><h2 id="6">Median blur</h2><pre class="codeinput"><span class="keyword">for</span> i=1:2:MAX_KERNEL_LENGTH
+    dst = cv.medianBlur(src, <span class="string">'KSize'</span>,i);
+    imshow(dst), title(sprintf(<span class="string">'Median Blur %d'</span>,i))
+    pause(DELAY_BLUR)
+<span class="keyword">end</span></pre><img src="smoothing_demo_04.png"><h2 id="7">Bilateral Filter</h2><pre class="codeinput"><span class="keyword">for</span> i=1:2:MAX_KERNEL_LENGTH
+    dst = cv.bilateralFilter(src, <span class="string">'Diameter'</span>,i, <span class="keyword">...</span>
+        <span class="string">'SigmaColor'</span>,i*2, <span class="string">'SigmaSpace'</span>,fix(i/2));
+    imshow(dst), title(sprintf(<span class="string">'Bilateral Blur %d'</span>,i))
+    pause(DELAY_BLUR)
+<span class="keyword">end</span></pre><img src="smoothing_demo_05.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Smoothing Demo
+% Sample code for simple filters
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv/blob/3.1.0/samples/cpp/tutorial_code/ImgProc/Smoothing.cpp>
+%
+
+%%
+% Global Variables
+DELAY_CAPTION = 0.1;
+DELAY_BLUR = 0.01;
+MAX_KERNEL_LENGTH = 31;
+
+%% Source Image
+% Load the source image
+src = imread(fullfile(mexopencv.root(),'test','lena.jpg'));
+src = cv.resize(src, 2/3, 2/3);
+imshow(src), title('Original Image')
+pause(DELAY_CAPTION)
+
+%dst = cv.putText(src, 'Original Image', [size(src,2) size(src,1)]./4, ...
+%    'FontFace','HersheyComplex', 'FontScale',1, 'Color',[255 255 255]);
+
+%% Homogeneous blur
+for i=1:2:MAX_KERNEL_LENGTH
+    dst = cv.blur(src, 'KSize',[i i], 'Anchor',[-1,-1]);
+    imshow(dst), title(sprintf('Homogeneous Blur %d',i))
+    pause(DELAY_BLUR)
+end
+
+%% Gaussian blur
+for i=1:2:MAX_KERNEL_LENGTH
+    dst = cv.GaussianBlur(src, 'KSize',[i i]);
+    imshow(dst), title(sprintf('Gaussian Blur %d',i))
+    pause(DELAY_BLUR)
+end
+
+%% Median blur
+for i=1:2:MAX_KERNEL_LENGTH
+    dst = cv.medianBlur(src, 'KSize',i);
+    imshow(dst), title(sprintf('Median Blur %d',i))
+    pause(DELAY_BLUR)
+end
+
+%% Bilateral Filter
+for i=1:2:MAX_KERNEL_LENGTH
+    dst = cv.bilateralFilter(src, 'Diameter',i, ...
+        'SigmaColor',i*2, 'SigmaSpace',fix(i/2));
+    imshow(dst), title(sprintf('Bilateral Blur %d',i))
+    pause(DELAY_BLUR)
+end
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>gaussian_mix_demo</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="gaussian_mix_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#1">Gaussian Mixture Model (GMM)</a></li>
+               <li><a href="#2">Data</a></li>
+               <li><a href="#4">EM</a></li>
+               <li><a href="#6">Kmeans</a></li>
+               <li><a href="#9">Helper functions</a></li>
+            </ul>
+         </div>
+         <h2 id="1">Gaussian Mixture Model (GMM)</h2>
+         <p>Demonstrates EM clustering, and also compares againt K-means clustering.</p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv/blob/3.2.0/samples/python/gaussian_mix.py">https://github.com/opencv/opencv/blob/3.2.0/samples/python/gaussian_mix.py</a></li>
+               <li><a href="https://github.com/opencv/opencv/blob/3.2.0/samples/python/kmeans.py">https://github.com/opencv/opencv/blob/3.2.0/samples/python/kmeans.py</a></li>
+            </ul>
+         </div><pre class="codeinput"><span class="keyword">function</span> gaussian_mix_demo()</pre><h2 id="2">Data</h2>
+         <p>sample 2D points from a mixture distribution of K bivariate Gaussians</p><pre class="codeinput">    K = 5;
+    sz = 512;
+    [pts, labels, mus, sigmas] = make_gaussian_mixture(K, sz);
+    whos <span class="string">pts</span> <span class="string">labels</span> <span class="string">mus</span> <span class="string">sigmas</span></pre><p>draw points (color-coded) with the ground-truth mixtures</p><pre class="codeinput">    clr = uint8(hsv(K) * 255);
+    clr(:,4) = 0;
+    img = zeros([sz sz 3], <span class="string">'uint8'</span>);
+    img0 = cv.circle(img, pts, 1, <span class="string">'Colors'</span>,clr(labels,:), <span class="string">'Thickness'</span>,<span class="string">'Filled'</span>);
+    <span class="keyword">for</span> k=1:K
+        img0 = draw_gaussian(img0, mus(k,:), sigmas{k}, [0 255 255]);
+    <span class="keyword">end</span>
+    imshow(img0), title(sprintf(<span class="string">'%d Samples, K=%d'</span>, numel(labels), K))</pre><img src="gaussian_mix_demo_01.png"><h2 id="4">EM</h2>
+         <p>cluster using EM by fitting a Gaussian mixture model</p><pre class="codeinput">    em = cv.EM();
+    em.ClustersNumber = K;
+    em.CovarianceMatrixType = <span class="string">'Generic'</span>;
+    tic
+    [~,L] = em.trainEM(pts);
+    toc</pre><pre class="codeoutput">Elapsed time is 4.042468 seconds.
+</pre><p>draw clustered points along with the estimated mixture model</p><pre class="codeinput">    means = em.getMeans();
+    covs = em.getCovs();
+    img1 = cv.circle(img, pts, 1, <span class="string">'Colors'</span>,clr(L+1,:), <span class="string">'Thickness'</span>,<span class="string">'Filled'</span>);
+    <span class="keyword">for</span> k=1:K
+        img1 = draw_gaussian(img1, means(k,:), covs{k}, [0 255 255]);
+    <span class="keyword">end</span>
+    figure, imshow(img1), title(<span class="string">'Gaussian Mixtures'</span>)</pre><img src="gaussian_mix_demo_02.png"><h2 id="6">Kmeans</h2>
+         <p>cluster using Kmeans</p><pre class="codeinput">    crit = struct(<span class="string">'type'</span>,<span class="string">'Count+EPS'</span>, <span class="string">'maxCount'</span>,30, <span class="string">'epsilon'</span>,0.1);
+    L = cv.kmeans(pts, K, <span class="string">'Criteria'</span>,crit, <span class="string">'Attempts'</span>,10);</pre><p>draw points color-coded by assigned label</p><pre class="codeinput">    img2 = cv.circle(img, pts, 1, <span class="string">'Colors'</span>,clr(L+1,:), <span class="string">'Thickness'</span>,<span class="string">'Filled'</span>);
+    figure, imshow(img2), title(<span class="string">'Kmeans'</span>)</pre><img src="gaussian_mix_demo_03.png"><pre class="codeinput"><span class="keyword">end</span></pre><h2 id="9">Helper functions</h2><pre class="codeinput"><span class="keyword">function</span> [pts, labels, mus, sigmas] = make_gaussian_mixture(K, sz)
+    <span class="comment">%MAKE_GAUSSIAN_MIXTURE  Random points from Gaussian mixture distribution</span>
+    <span class="comment">%</span>
+    <span class="comment">%     [pts, labels, mus, sigmas] = make_gaussian_mixture(K, sz)</span>
+    <span class="comment">%</span>
+    <span class="comment">% ## Input</span>
+    <span class="comment">% * __K__ number of components</span>
+    <span class="comment">% * __sz__ image size, determines 2D points domain</span>
+    <span class="comment">%</span>
+    <span class="comment">% ## Output</span>
+    <span class="comment">% * __pts__ matrix of 2D points</span>
+    <span class="comment">% * __labels__ vector of corresponding component indices</span>
+    <span class="comment">% * __mus__ K-by-2 mean of each component</span>
+    <span class="comment">% * __sigmas__ cell array of length K, covariance of each component</span>
+    <span class="comment">%</span>
+    <span class="comment">% See also: gmdistribution.random</span>
+    <span class="comment">%</span>
+
+    mus = zeros(K,2);
+    sigmas = cell(K,1);
+    pts = cell(K,1);
+    labels = cell(K,1);
+    <span class="keyword">for</span> k=1:K
+        mus(k,:) = (rand(1,2)*0.8 + 0.1) * sz;
+        a = (rand(2,2) - 0.5) * sz * 0.1;
+        sigmas{k} = (a.' * a) + sz*0.05*eye(2);
+        n = 100 + randi([0 900]);
+        pts{k} = my_mvnrnd(mus(k,:), sigmas{k}, n);
+        labels{k} = k * ones(size(pts{k},1),1);
+    <span class="keyword">end</span>
+    pts = single(cat(1, pts{:}));
+    labels = int32(cat(1, labels{:}));
+<span class="keyword">end</span></pre><pre class="codeinput"><span class="keyword">function</span> X = my_mvnrnd(mu, sigma, num)
+    <span class="comment">%MY_MVNRND  Random points from Gaussian distribution</span>
+    <span class="comment">%</span>
+    <span class="comment">%     X = my_mvnrnd(mu, sigma, num)</span>
+    <span class="comment">%</span>
+    <span class="comment">% ## Input</span>
+    <span class="comment">% * __mu__ 1x2 mean vector</span>
+    <span class="comment">% * __sigma__ 2x2 covariance matrix</span>
+    <span class="comment">% * __num__ number of points to generate</span>
+    <span class="comment">%</span>
+    <span class="comment">% ## Output</span>
+    <span class="comment">% * __X__ matrix of 2D points, num-by-2</span>
+    <span class="comment">%</span>
+    <span class="comment">% See also: mvnrnd, randn</span>
+    <span class="comment">%</span>
+
+    <span class="keyword">if</span> mexopencv.require(<span class="string">'stats'</span>)
+        X = mvnrnd(mu, sigma, num);
+    <span class="keyword">else</span>
+        X = bsxfun(@plus, randn(num,numel(mu)) * cholcov(sigma), mu);
+    <span class="keyword">end</span>
+<span class="keyword">end</span></pre><pre class="codeoutput">  Name           Size            Bytes  Class     Attributes
+
+  labels      2664x1             10656  int32               
+  mus            5x2                80  double              
+  pts         2664x2             21312  single              
+  sigmas         5x1               720  cell                
+
+</pre><pre class="codeinput"><span class="keyword">function</span> img = draw_gaussian(img, mu, sigma, clr)
+    <span class="comment">%DRAW_GAUSSIAN  Draw a bivariate Gaussian</span>
+    <span class="comment">%</span>
+    <span class="comment">%     img = draw_gaussian(img, mu, sigma, clr)</span>
+    <span class="comment">%</span>
+    <span class="comment">% ## Input</span>
+    <span class="comment">% * __img__ input image on which to draw</span>
+    <span class="comment">% * __mu__ 1x2 mean vector</span>
+    <span class="comment">% * __sigma__ 2x2 covariance matrix</span>
+    <span class="comment">% * __clr__ color</span>
+    <span class="comment">%</span>
+    <span class="comment">% ## Output</span>
+    <span class="comment">% * __img__ output image</span>
+    <span class="comment">%</span>
+    <span class="comment">% Represent a 2D Gaussian with an ellipse where:</span>
+    <span class="comment">%</span>
+    <span class="comment">% * its mean is the center of the ellipse</span>
+    <span class="comment">% * its covariance matrix eigenvector corresponding to largest eigenvalue</span>
+    <span class="comment">%   is the direction of the ellipse</span>
+    <span class="comment">% * its (scaled) eigenvalues are the major/minor axis lengths of the</span>
+    <span class="comment">%   ellipse</span>
+    <span class="comment">%</span>
+
+    [w,u,~] = cv.SVD.Compute(sigma);
+    ang = atan2(u(2,1), u(1,1)) * (180/pi);
+    s = sqrt(w)*3;
+    img = cv.ellipse(img, mu, s, <span class="string">'Angle'</span>,ang, <span class="string">'Color'</span>,clr, <span class="string">'LineType'</span>,<span class="string">'AA'</span>);
+<span class="keyword">end</span></pre><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Gaussian Mixture Model (GMM)
+%
+% Demonstrates EM clustering, and also compares againt K-means clustering.
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv/blob/3.2.0/samples/python/gaussian_mix.py>
+% * <https://github.com/opencv/opencv/blob/3.2.0/samples/python/kmeans.py>
+%
+
+function gaussian_mix_demo()
+    %% Data
+    % sample 2D points from a mixture distribution of K bivariate Gaussians
+    K = 5;
+    sz = 512;
+    [pts, labels, mus, sigmas] = make_gaussian_mixture(K, sz);
+    whos pts labels mus sigmas
+
+    %%
+    % draw points (color-coded) with the ground-truth mixtures
+    clr = uint8(hsv(K) * 255);
+    clr(:,4) = 0;
+    img = zeros([sz sz 3], 'uint8');
+    img0 = cv.circle(img, pts, 1, 'Colors',clr(labels,:), 'Thickness','Filled');
+    for k=1:K
+        img0 = draw_gaussian(img0, mus(k,:), sigmas{k}, [0 255 255]);
+    end
+    imshow(img0), title(sprintf('%d Samples, K=%d', numel(labels), K))
+
+    %% EM
+    % cluster using EM by fitting a Gaussian mixture model
+    em = cv.EM();
+    em.ClustersNumber = K;
+    em.CovarianceMatrixType = 'Generic';
+    tic
+    [~,L] = em.trainEM(pts);
+    toc
+
+    %%
+    % draw clustered points along with the estimated mixture model
+    means = em.getMeans();
+    covs = em.getCovs();
+    img1 = cv.circle(img, pts, 1, 'Colors',clr(L+1,:), 'Thickness','Filled');
+    for k=1:K
+        img1 = draw_gaussian(img1, means(k,:), covs{k}, [0 255 255]);
+    end
+    figure, imshow(img1), title('Gaussian Mixtures')
+
+    %% Kmeans
+    % cluster using Kmeans
+    crit = struct('type','Count+EPS', 'maxCount',30, 'epsilon',0.1);
+    L = cv.kmeans(pts, K, 'Criteria',crit, 'Attempts',10);
+
+    %%
+    % draw points color-coded by assigned label
+    img2 = cv.circle(img, pts, 1, 'Colors',clr(L+1,:), 'Thickness','Filled');
+    figure, imshow(img2), title('Kmeans')
+end
+
+%% Helper functions
+
+function [pts, labels, mus, sigmas] = make_gaussian_mixture(K, sz)
+    %MAKE_GAUSSIAN_MIXTURE  Random points from Gaussian mixture distribution
+    %
+    %     [pts, labels, mus, sigmas] = make_gaussian_mixture(K, sz)
+    %
+    % ## Input
+    % * __K__ number of components
+    % * __sz__ image size, determines 2D points domain
+    %
+    % ## Output
+    % * __pts__ matrix of 2D points
+    % * __labels__ vector of corresponding component indices
+    % * __mus__ K-by-2 mean of each component
+    % * __sigmas__ cell array of length K, covariance of each component
+    %
+    % See also: gmdistribution.random
+    %
+
+    mus = zeros(K,2);
+    sigmas = cell(K,1);
+    pts = cell(K,1);
+    labels = cell(K,1);
+    for k=1:K
+        mus(k,:) = (rand(1,2)*0.8 + 0.1) * sz;
+        a = (rand(2,2) - 0.5) * sz * 0.1;
+        sigmas{k} = (a.' * a) + sz*0.05*eye(2);
+        n = 100 + randi([0 900]);
+        pts{k} = my_mvnrnd(mus(k,:), sigmas{k}, n);
+        labels{k} = k * ones(size(pts{k},1),1);
+    end
+    pts = single(cat(1, pts{:}));
+    labels = int32(cat(1, labels{:}));
+end
+
+%%
+
+function X = my_mvnrnd(mu, sigma, num)
+    %MY_MVNRND  Random points from Gaussian distribution
+    %
+    %     X = my_mvnrnd(mu, sigma, num)
+    %
+    % ## Input
+    % * __mu__ 1x2 mean vector
+    % * __sigma__ 2x2 covariance matrix
+    % * __num__ number of points to generate
+    %
+    % ## Output
+    % * __X__ matrix of 2D points, num-by-2
+    %
+    % See also: mvnrnd, randn
+    %
+
+    if mexopencv.require('stats')
+        X = mvnrnd(mu, sigma, num);
+    else
+        X = bsxfun(@plus, randn(num,numel(mu)) * cholcov(sigma), mu);
+    end
+end
+
+%%
+
+function img = draw_gaussian(img, mu, sigma, clr)
+    %DRAW_GAUSSIAN  Draw a bivariate Gaussian
+    %
+    %     img = draw_gaussian(img, mu, sigma, clr)
+    %
+    % ## Input
+    % * __img__ input image on which to draw
+    % * __mu__ 1x2 mean vector
+    % * __sigma__ 2x2 covariance matrix
+    % * __clr__ color
+    %
+    % ## Output
+    % * __img__ output image
+    %
+    % Represent a 2D Gaussian with an ellipse where:
+    %
+    % * its mean is the center of the ellipse
+    % * its covariance matrix eigenvector corresponding to largest eigenvalue
+    %   is the direction of the ellipse
+    % * its (scaled) eigenvalues are the major/minor axis lengths of the
+    %   ellipse
+    %
+
+    [w,u,~] = cv.SVD.Compute(sigma);
+    ang = atan2(u(2,1), u(1,1)) * (180/pi);
+    s = sqrt(w)*3;
+    img = cv.ellipse(img, mu, s, 'Angle',ang, 'Color',clr, 'LineType','AA');
+end
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

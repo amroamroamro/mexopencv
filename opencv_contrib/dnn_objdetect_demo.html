@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Object Detection using Convolutional Neural Networks</title>
+      <meta name="generator" content="MATLAB 9.4">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2018-10-05">
+      <meta name="DC.source" content="dnn_objdetect_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Object Detection using Convolutional Neural Networks</h1>
+         <!--introduction-->
+         <p>An example of how to use the SqueezeDet model to predict object bounding boxes.</p>
+         <p>The SqueezeDet model was trained for Object Detection.</p>
+         <div>
+            <ul>
+               <li>This model was trained for 180000 iterations with a batch size of 16</li>
+               <li>Size of the Model: 14.2MB</li>
+               <li>Trained weights can be found   <a href="https://github.com/opencv/opencv_3rdparty/tree/dnn_objdetect_20170827">here</a></li>
+            </ul>
+         </div>
+         <p>For details pertaining to the usage of the model, have a look at <a href="https://github.com/kvmanohar22/caffe">this repository</a>. You can infact train your own object detection models with the loss function which is implemented (in Caffe).
+         </p>
+         <p>By default this model thresholds the detections at confidence of <tt>0.7</tt>. While filtering there are number of bounding boxes which are predicted, you can manually control what gets thresholded by
+            passing the value of optional arguement <tt>Threshold</tt>.
+         </p>
+         <p>The model is incredibly fast taking just 0.172091 seconds on average to predict multiple bounding boxes.</p>
+         <p>References:</p>
+         <div>
+            <ul>
+               <li><a href="https://arxiv.org/abs/1612.01051">SqueezeDet</a></li>
+            </ul>
+         </div>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.4.1/modules/dnn_objdetect/samples/obj_detect.cpp">https://github.com/opencv/opencv_contrib/blob/3.4.1/modules/dnn_objdetect/samples/obj_detect.cpp</a></li>
+               <li><a href="https://docs.opencv.org/3.4.1/d2/da2/tutorial_dnn_objdetect.html">https://docs.opencv.org/3.4.1/d2/da2/tutorial_dnn_objdetect.html</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <p>load the network along with its trained weights</p><pre class="codeinput">[net, blobOpts] = SqueezeDet();
+assert(~net.empty(), <span class="string">'Could not load model'</span>);</pre><p>load test image</p><pre class="codeinput">im = fullfile(mexopencv.root(), <span class="string">'test'</span>, <span class="string">'rgb.jpg'</span>);
+img = cv.imread(im, <span class="string">'Color'</span>,true, <span class="string">'FlipChannels'</span>,false);</pre><p>convert the image into blob</p><pre class="codeinput">blob = cv.Net.blobFromImages(img, blobOpts{:});</pre><p>forward through the network and collect output blobs</p><pre class="codeinput">tic
+net.setInput(blob);
+out = net.forwardAndRetrieve(<span class="string">'slice'</span>);
+delta_bboxs = out{3};   <span class="comment">% 1x23x23x36</span>
+net.setInput(blob);
+out = net.forward({<span class="string">'softmax'</span>, <span class="string">'sigmoid'</span>});
+class_scores = out{1};  <span class="comment">% 1x4761x20x1</span>
+conf_scores = out{2};   <span class="comment">% 1x23x23x9</span>
+toc</pre><pre class="codeoutput">Elapsed time is 0.978069 seconds.
+</pre><p>reshape blobs</p><pre class="codeinput"><span class="keyword">if</span> true
+    delta_bboxs = reshape(delta_bboxs, [23 23 36]);
+    class_scores = reshape(class_scores, [4761 20]);
+    conf_scores = reshape(conf_scores, [23 23 9]);
+<span class="keyword">else</span>
+    <span class="comment">% NHWC -&gt; HWCN</span>
+    delta_bboxs = permute(delta_bboxs, [2 3 4 1]);
+    class_scores = permute(class_scores, [2 3 4 1]);
+    conf_scores = permute(conf_scores, [2 3 4 1]);
+<span class="keyword">end</span></pre><p>the three blobs are post-processed to get the bounding boxes predicted</p><pre class="codeinput">dets = cv.InferBbox(delta_bboxs, class_scores, conf_scores, <span class="string">'Threshold'</span>,0.7);</pre><p>show detections</p><pre class="codeinput">xy_ratio = [size(img,2), size(img,1)] ./ [416 416];  <span class="comment">% blobOpts.Size</span>
+out = flip(img, 3);
+<span class="keyword">for</span> i=1:numel(dets)
+    <span class="comment">% adjust coordinates to original image size</span>
+    dets(i).bbox = round(double(dets(i).bbox) .* [xy_ratio xy_ratio]);
+
+    fprintf(<span class="string">'#%d\n'</span>, i);
+    fprintf(<span class="string">'       Class: %s\n'</span>, dets(i).label_name);
+    fprintf(<span class="string">' Probability: %f\n'</span>, dets(i).class_prob);
+    fprintf(<span class="string">' Coordinates: [%d %d %d %d]\n'</span>, dets(i).bbox);
+
+    <span class="comment">% draw the corresponding bounding box</span>
+    out = cv.rectangle(out, dets(i).bbox(1:2), dets(i).bbox(3:4), <span class="keyword">...</span>
+        <span class="string">'Color'</span>,[0 0 255], <span class="string">'Thickness'</span>,2);
+    out = cv.putText(out, dets(i).label_name, dets(i).bbox(1:2), <span class="keyword">...</span>
+        <span class="string">'FontScale'</span>,0.7, <span class="string">'Color'</span>,[0 0 255]);
+<span class="keyword">end</span>
+imshow(out), title(<span class="string">'Final Detections'</span>)</pre><pre class="codeoutput">#1
+       Class: person
+ Probability: 0.916116
+ Coordinates: [142 153 280 294]
+#2
+       Class: person
+ Probability: 0.843427
+ Coordinates: [53 0 216 190]
+</pre><img src="dnn_objdetect_demo_01.png"><p>Pretrained models</p><pre class="codeinput"><span class="keyword">function</span> dname = get_dnn_dir(dname)
+    <span class="comment">%GET_DNN_DIR  Path to model files, and show where to get them if missing</span>
+
+    dname = fullfile(mexopencv.root(), <span class="string">'test'</span>, <span class="string">'dnn'</span>, dname);
+    b = isdir(dname);
+    <span class="keyword">if</span> ~b
+        <span class="comment">% display help of calling function</span>
+        <span class="comment">% (assumed to be a local function in current file)</span>
+        st = dbstack(1);
+        help([mfilename() filemarker() st(1).name])
+    <span class="keyword">end</span>
+    assert(b, <span class="string">'Missing model: %s'</span>, dname);
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> [net, blobOpts] = SqueezeDet()
+    <span class="comment">%SQUEEZEDET  SqueezeDet model trained on PASCAL VOC Dataset [Caffe]</span>
+    <span class="comment">%</span>
+    <span class="comment">% homepage = https://github.com/kvmanohar22/caffe</span>
+    <span class="comment">% homepage = https://kvmanohar22.github.io/GSoC/</span>
+    <span class="comment">% homepage = https://github.com/opencv/opencv_3rdparty/tree/dnn_objdetect_20170827</span>
+    <span class="comment">% homepage = https://github.com/opencv/opencv_contrib/tree/3.4.1/modules/dnn_objdetect/samples/data</span>
+    <span class="comment">%</span>
+    <span class="comment">% ## Model</span>
+    <span class="comment">%</span>
+    <span class="comment">% file = test/dnn/SqueezeDet/SqueezeDet_deploy.prototxt</span>
+    <span class="comment">% url  = https://github.com/opencv/opencv_contrib/raw/3.4.1/modules/dnn_objdetect/samples/data/SqueezeDet_deploy.prototxt</span>
+    <span class="comment">% hash = 797d33d3acc0935618da0f594b6019d09b1b36b9</span>
+    <span class="comment">%</span>
+    <span class="comment">% ## Weights</span>
+    <span class="comment">%</span>
+    <span class="comment">% file = test/dnn/SqueezeDet/SqueezeDet.caffemodel</span>
+    <span class="comment">% url  = https://github.com/opencv/opencv_3rdparty/raw/dnn_objdetect_20170827/SqueezeDet.caffemodel</span>
+    <span class="comment">% hash = 378ab040bc717f2b7fc57f9254892bdd2d597476</span>
+    <span class="comment">% size = 14.1 MB</span>
+    <span class="comment">%</span>
+
+    dname = get_dnn_dir(<span class="string">'SqueezeDet'</span>);
+    net = cv.Net(<span class="string">'Caffe'</span>, <span class="keyword">...</span>
+        fullfile(dname, <span class="string">'SqueezeDet_deploy.prototxt'</span>), <span class="keyword">...</span>
+        fullfile(dname, <span class="string">'SqueezeDet.caffemodel'</span>));
+    blobOpts = {<span class="string">'SwapRB'</span>,false, <span class="string">'Crop'</span>,false, <span class="string">'Size'</span>,[416 416], <span class="string">'Mean'</span>,[104 117 123]};
+<span class="keyword">end</span></pre><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2018a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Object Detection using Convolutional Neural Networks
+%
+% An example of how to use the SqueezeDet model to predict object bounding
+% boxes.
+%
+% The SqueezeDet model was trained for Object Detection.
+%
+% * This model was trained for 180000 iterations with a batch size of 16
+% * Size of the Model: 14.2MB
+% * Trained weights can be found
+%   <https://github.com/opencv/opencv_3rdparty/tree/dnn_objdetect_20170827 here>
+%
+% For details pertaining to the usage of the model, have a look at
+% <https://github.com/kvmanohar22/caffe this repository>.
+% You can infact train your own object detection models with the loss function
+% which is implemented (in Caffe).
+%
+% By default this model thresholds the detections at confidence of |0.7|.
+% While filtering there are number of bounding boxes which are predicted, you
+% can manually control what gets thresholded by passing the value of optional
+% arguement |Threshold|.
+%
+% The model is incredibly fast taking just 0.172091 seconds on average to
+% predict multiple bounding boxes.
+%
+% References:
+%
+% * <https://arxiv.org/abs/1612.01051 SqueezeDet>
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv_contrib/blob/3.4.1/modules/dnn_objdetect/samples/obj_detect.cpp>
+% * <https://docs.opencv.org/3.4.1/d2/da2/tutorial_dnn_objdetect.html>
+%
+
+%%
+% load the network along with its trained weights
+[net, blobOpts] = SqueezeDet();
+assert(~net.empty(), 'Could not load model');
+
+%%
+% load test image
+im = fullfile(mexopencv.root(), 'test', 'rgb.jpg');
+img = cv.imread(im, 'Color',true, 'FlipChannels',false);
+
+%%
+% convert the image into blob
+blob = cv.Net.blobFromImages(img, blobOpts{:});
+
+%%
+% forward through the network and collect output blobs
+tic
+net.setInput(blob);
+out = net.forwardAndRetrieve('slice');
+delta_bboxs = out{3};   % 1x23x23x36
+net.setInput(blob);
+out = net.forward({'softmax', 'sigmoid'});
+class_scores = out{1};  % 1x4761x20x1
+conf_scores = out{2};   % 1x23x23x9
+toc
+
+%%
+% reshape blobs
+if true
+    delta_bboxs = reshape(delta_bboxs, [23 23 36]);
+    class_scores = reshape(class_scores, [4761 20]);
+    conf_scores = reshape(conf_scores, [23 23 9]);
+else
+    % NHWC -> HWCN
+    delta_bboxs = permute(delta_bboxs, [2 3 4 1]);
+    class_scores = permute(class_scores, [2 3 4 1]);
+    conf_scores = permute(conf_scores, [2 3 4 1]);
+end
+
+%%
+% the three blobs are post-processed to get the bounding boxes predicted
+dets = cv.InferBbox(delta_bboxs, class_scores, conf_scores, 'Threshold',0.7);
+
+%%
+% show detections
+xy_ratio = [size(img,2), size(img,1)] ./ [416 416];  % blobOpts.Size
+out = flip(img, 3);
+for i=1:numel(dets)
+    % adjust coordinates to original image size
+    dets(i).bbox = round(double(dets(i).bbox) .* [xy_ratio xy_ratio]);
+
+    fprintf('#%d\n', i);
+    fprintf('       Class: %s\n', dets(i).label_name);
+    fprintf(' Probability: %f\n', dets(i).class_prob);
+    fprintf(' Coordinates: [%d %d %d %d]\n', dets(i).bbox);
+
+    % draw the corresponding bounding box
+    out = cv.rectangle(out, dets(i).bbox(1:2), dets(i).bbox(3:4), ...
+        'Color',[0 0 255], 'Thickness',2);
+    out = cv.putText(out, dets(i).label_name, dets(i).bbox(1:2), ...
+        'FontScale',0.7, 'Color',[0 0 255]);
+end
+imshow(out), title('Final Detections')
+
+%%
+% Pretrained models
+
+function dname = get_dnn_dir(dname)
+    %GET_DNN_DIR  Path to model files, and show where to get them if missing
+
+    dname = fullfile(mexopencv.root(), 'test', 'dnn', dname);
+    b = isdir(dname);
+    if ~b
+        % display help of calling function
+        % (assumed to be a local function in current file)
+        st = dbstack(1);
+        help([mfilename() filemarker() st(1).name])
+    end
+    assert(b, 'Missing model: %s', dname);
+end
+
+function [net, blobOpts] = SqueezeDet()
+    %SQUEEZEDET  SqueezeDet model trained on PASCAL VOC Dataset [Caffe]
+    %
+    % homepage = https://github.com/kvmanohar22/caffe
+    % homepage = https://kvmanohar22.github.io/GSoC/
+    % homepage = https://github.com/opencv/opencv_3rdparty/tree/dnn_objdetect_20170827
+    % homepage = https://github.com/opencv/opencv_contrib/tree/3.4.1/modules/dnn_objdetect/samples/data
+    %
+    % ## Model
+    %
+    % file = test/dnn/SqueezeDet/SqueezeDet_deploy.prototxt
+    % url  = https://github.com/opencv/opencv_contrib/raw/3.4.1/modules/dnn_objdetect/samples/data/SqueezeDet_deploy.prototxt
+    % hash = 797d33d3acc0935618da0f594b6019d09b1b36b9
+    %
+    % ## Weights
+    %
+    % file = test/dnn/SqueezeDet/SqueezeDet.caffemodel
+    % url  = https://github.com/opencv/opencv_3rdparty/raw/dnn_objdetect_20170827/SqueezeDet.caffemodel
+    % hash = 378ab040bc717f2b7fc57f9254892bdd2d597476
+    % size = 14.1 MB
+    %
+
+    dname = get_dnn_dir('SqueezeDet');
+    net = cv.Net('Caffe', ...
+        fullfile(dname, 'SqueezeDet_deploy.prototxt'), ...
+        fullfile(dname, 'SqueezeDet.caffemodel'));
+    blobOpts = {'SwapRB',false, 'Crop',false, 'Size',[416 416], 'Mean',[104 117 123]};
+end
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

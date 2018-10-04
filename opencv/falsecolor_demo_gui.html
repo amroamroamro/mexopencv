@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Colormap Demo</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2018-02-20">
+      <meta name="DC.source" content="falsecolor_demo_gui.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Colormap Demo</h1>
+         <p>Sample shows how to apply false color on a grayscale image.</p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv/blob/3.4.0/samples/cpp/falsecolor.cpp">https://github.com/opencv/opencv/blob/3.4.0/samples/cpp/falsecolor.cpp</a></li>
+            </ul>
+         </div><pre class="codeinput"><span class="keyword">function</span> varargout = falsecolor_demo_gui(im)
+    <span class="comment">% load source image</span>
+    <span class="keyword">if</span> nargin &lt; 1
+<span class="comment">        %{
+</span><span class="comment">        if ~mexopencv.isOctave()
+</span><span class="comment">            S = load(which('penny.mat'));
+</span><span class="comment">            img = cv.resize(uint8(S.P), 4, 4);
+</span><span class="comment">        elseif true
+</span><span class="comment">            img = cv.normalize(peaks(500), ...
+</span><span class="comment">                'Alpha',0, 'Beta',255, 'NormType','MinMax', 'DType','uint8');
+</span><span class="comment">        else
+</span><span class="comment">            im = fullfile(mexopencv.root(), 'test', 'HappyFish.jpg');
+</span><span class="comment">            img = cv.imread(im, 'Grayscale',true);
+</span><span class="comment">        end
+</span><span class="comment">        %}
+</span>        img = createRandomImage();
+    <span class="keyword">elseif</span> ischar(im)
+        img = cv.imread(im, <span class="string">'Grayscale'</span>,true);
+    <span class="keyword">else</span>
+        img = im;
+    <span class="keyword">end</span>
+
+    <span class="comment">% create the UI</span>
+    h = buildGUI(img);
+    <span class="keyword">if</span> nargout &gt; 0, varargout{1} = h; <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> img = createRandomImage(thick, num)
+    <span class="comment">%CREATERANDOMIMAGE  Creates image with random shapes</span>
+
+    <span class="keyword">if</span> nargin &lt; 1, thick = 2; <span class="keyword">end</span>
+    <span class="keyword">if</span> nargin &lt; 2, num = 256; <span class="keyword">end</span>
+
+    offsetx = 50;
+    offsety = 25;
+    lineLength = 50;
+
+    img = zeros(500, 256*thick+100, <span class="string">'uint8'</span>);
+
+    <span class="comment">% random shapes</span>
+    <span class="keyword">for</span> i=1:num
+        center = [randi([offsetx, size(img,2) - offsetx]), <span class="keyword">...</span>
+            randi([offsety*2 + lineLength, size(img,1) - offsety])];
+        sz = randi([1, min(offsetx, offsety)], [1 2]);
+        opts = {<span class="string">'Color'</span>,mod(i,255)+1, <span class="string">'Thickness'</span>,<span class="string">'Filled'</span>};
+        <span class="keyword">switch</span> randi(3)
+            <span class="keyword">case</span> 1
+                radius = sz(1);
+                img = cv.circle(img, center, radius, opts{:});
+            <span class="keyword">case</span> 2
+                rc = cv.Rect.from2points(center - sz/2, center + sz/2);
+                img = cv.rectangle(img, rc, opts{:});
+            <span class="keyword">case</span> 3
+                ang = randi([0 180]);
+                img = cv.ellipse(img, center, sz/2, <span class="string">'Angle'</span>,ang, opts{:});
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    <span class="comment">% colorbar</span>
+    <span class="keyword">for</span> i=0:255
+        img = cv.line(img, [thick*i + offsetx, offsety], <span class="keyword">...</span>
+            [thick*i + offsetx, offsety + lineLength], <span class="keyword">...</span>
+            <span class="string">'Color'</span>,i, <span class="string">'Thickness'</span>,thick);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> showColormaps(~,~,h)
+    <span class="comment">%SHOWCOLORMAPS  Show all colormaps in one image</span>
+
+    cmaps = get(h.pop, <span class="string">'String'</span>);
+    N = numel(cmaps);
+
+    gray = repmat(uint8(0:255), 20, 1);
+    out = cell(N,1);
+    <span class="keyword">for</span> i=1:N
+        <span class="keyword">if</span> strcmp(cmaps{i}, <span class="string">'Gray'</span>)
+            out{i} = cv.cvtColor(gray, <span class="string">'GRAY2RGB'</span>);
+        <span class="keyword">elseif</span> strcmp(cmaps{i}, <span class="string">'Random'</span>)
+            out{i} = cv.applyColorMap(gray, h.user);
+        <span class="keyword">else</span>
+            out{i} = cv.applyColorMap(gray, cmaps{i});
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    out = cat(1, out{:});
+    figure, image(out)
+    set(gca, <span class="string">'YTick'</span>,(10:20:size(out,1))+0.5, <span class="string">'YTickLabel'</span>,cmaps)
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> onChange(~,~,h)
+    <span class="comment">%ONCHANGE  Event handler for UI controls</span>
+
+    <span class="comment">% apply colormap</span>
+    cmaps = get(h.pop, <span class="string">'String'</span>);
+    idx = get(h.pop, <span class="string">'Value'</span>);
+    <span class="keyword">if</span> strcmp(cmaps{idx}, <span class="string">'Gray'</span>)
+        out = cv.cvtColor(h.gray, <span class="string">'GRAY2RGB'</span>);
+    <span class="keyword">elseif</span> strcmp(cmaps{idx}, <span class="string">'Random'</span>)
+        out = cv.applyColorMap(h.gray, h.user);
+    <span class="keyword">else</span>
+        out = cv.applyColorMap(h.gray, cmaps{idx});
+    <span class="keyword">end</span>
+
+    <span class="comment">% show result</span>
+    set(h.img, <span class="string">'CData'</span>,out);
+    drawnow;
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> h = buildGUI(img)
+    <span class="comment">%BUILDGUI  Creates the UI</span>
+
+    <span class="comment">% params</span>
+    cmaps = {<span class="string">'Gray'</span>, <span class="string">'Autumn'</span>, <span class="string">'Bone'</span>, <span class="string">'Cool'</span>, <span class="string">'Hot'</span>, <span class="string">'Ocean'</span>, <span class="string">'Parula'</span>, <span class="keyword">...</span>
+        <span class="string">'Pink'</span>, <span class="string">'Spring'</span>, <span class="string">'Summer'</span>, <span class="string">'Winter'</span>, <span class="string">'Jet'</span>, <span class="string">'Rainbow'</span>, <span class="string">'HSV'</span>, <span class="keyword">...</span>
+        <span class="string">'Random'</span>};
+    sz = size(img);
+
+    <span class="comment">% build the user interface (no resizing to keep it simple)</span>
+    h = struct();
+    h.gray = img;
+    h.user = randi(255, [256 1 3], <span class="string">'uint8'</span>);  <span class="comment">% user-defined random colormap</span>
+    h.fig = figure(<span class="string">'Name'</span>,<span class="string">'Colormap Demo'</span>, <span class="keyword">...</span>
+        <span class="string">'NumberTitle'</span>,<span class="string">'off'</span>, <span class="string">'Menubar'</span>,<span class="string">'none'</span>, <span class="string">'Resize'</span>,<span class="string">'off'</span>, <span class="keyword">...</span>
+        <span class="string">'Position'</span>,[200 200 sz(2) sz(1)+29]);
+    <span class="keyword">if</span> ~mexopencv.isOctave()
+        <span class="comment">%HACK: not implemented in Octave</span>
+        movegui(h.fig, <span class="string">'center'</span>);
+    <span class="keyword">end</span>
+    h.ax = axes(<span class="string">'Parent'</span>,h.fig, <span class="string">'Units'</span>,<span class="string">'pixels'</span>, <span class="string">'Position'</span>,[1 30 sz(2) sz(1)]);
+    <span class="keyword">if</span> ~mexopencv.isOctave()
+        h.img = imshow(img, <span class="string">'Parent'</span>,h.ax);
+    <span class="keyword">else</span>
+        <span class="comment">%HACK: https://savannah.gnu.org/bugs/index.php?45473</span>
+        axes(h.ax);
+        h.img = imshow(img);
+    <span class="keyword">end</span>
+    uicontrol(<span class="string">'Parent'</span>,h.fig, <span class="string">'Style'</span>,<span class="string">'text'</span>, <span class="string">'FontSize'</span>,11, <span class="keyword">...</span>
+        <span class="string">'Position'</span>,[5 5 100 20], <span class="string">'String'</span>,<span class="string">'Colormap:'</span>);
+    h.pop = uicontrol(<span class="string">'Parent'</span>,h.fig, <span class="string">'Style'</span>,<span class="string">'popupmenu'</span>, <span class="keyword">...</span>
+        <span class="string">'Position'</span>,[105 5 120 20], <span class="string">'String'</span>,cmaps);
+    h.btn = uicontrol(<span class="string">'Parent'</span>,h.fig, <span class="string">'Style'</span>,<span class="string">'pushbutton'</span>, <span class="keyword">...</span>
+        <span class="string">'Position'</span>,[230 5 80 20], <span class="string">'String'</span>,<span class="string">'Colormaps'</span>);
+
+    <span class="comment">% hook event handlers</span>
+    opts = {<span class="string">'Interruptible'</span>,<span class="string">'off'</span>, <span class="string">'BusyAction'</span>,<span class="string">'cancel'</span>};
+    set(h.btn, <span class="string">'Callback'</span>,{@showColormaps,h}, opts{:});
+    set(h.pop, <span class="string">'Callback'</span>,{@onChange,h}, opts{:});
+<span class="keyword">end</span></pre><img src="falsecolor_demo_gui_01.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Colormap Demo
+%
+% Sample shows how to apply false color on a grayscale image.
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv/blob/3.4.0/samples/cpp/falsecolor.cpp>
+%
+
+function varargout = falsecolor_demo_gui(im)
+    % load source image
+    if nargin < 1
+        %{
+        if ~mexopencv.isOctave()
+            S = load(which('penny.mat'));
+            img = cv.resize(uint8(S.P), 4, 4);
+        elseif true
+            img = cv.normalize(peaks(500), ...
+                'Alpha',0, 'Beta',255, 'NormType','MinMax', 'DType','uint8');
+        else
+            im = fullfile(mexopencv.root(), 'test', 'HappyFish.jpg');
+            img = cv.imread(im, 'Grayscale',true);
+        end
+        %}
+        img = createRandomImage();
+    elseif ischar(im)
+        img = cv.imread(im, 'Grayscale',true);
+    else
+        img = im;
+    end
+
+    % create the UI
+    h = buildGUI(img);
+    if nargout > 0, varargout{1} = h; end
+end
+
+function img = createRandomImage(thick, num)
+    %CREATERANDOMIMAGE  Creates image with random shapes
+
+    if nargin < 1, thick = 2; end
+    if nargin < 2, num = 256; end
+
+    offsetx = 50;
+    offsety = 25;
+    lineLength = 50;
+
+    img = zeros(500, 256*thick+100, 'uint8');
+
+    % random shapes
+    for i=1:num
+        center = [randi([offsetx, size(img,2) - offsetx]), ...
+            randi([offsety*2 + lineLength, size(img,1) - offsety])];
+        sz = randi([1, min(offsetx, offsety)], [1 2]);
+        opts = {'Color',mod(i,255)+1, 'Thickness','Filled'};
+        switch randi(3)
+            case 1
+                radius = sz(1);
+                img = cv.circle(img, center, radius, opts{:});
+            case 2
+                rc = cv.Rect.from2points(center - sz/2, center + sz/2);
+                img = cv.rectangle(img, rc, opts{:});
+            case 3
+                ang = randi([0 180]);
+                img = cv.ellipse(img, center, sz/2, 'Angle',ang, opts{:});
+        end
+    end
+
+    % colorbar
+    for i=0:255
+        img = cv.line(img, [thick*i + offsetx, offsety], ...
+            [thick*i + offsetx, offsety + lineLength], ...
+            'Color',i, 'Thickness',thick);
+    end
+end
+
+function showColormaps(~,~,h)
+    %SHOWCOLORMAPS  Show all colormaps in one image
+
+    cmaps = get(h.pop, 'String');
+    N = numel(cmaps);
+
+    gray = repmat(uint8(0:255), 20, 1);
+    out = cell(N,1);
+    for i=1:N
+        if strcmp(cmaps{i}, 'Gray')
+            out{i} = cv.cvtColor(gray, 'GRAY2RGB');
+        elseif strcmp(cmaps{i}, 'Random')
+            out{i} = cv.applyColorMap(gray, h.user);
+        else
+            out{i} = cv.applyColorMap(gray, cmaps{i});
+        end
+    end
+
+    out = cat(1, out{:});
+    figure, image(out)
+    set(gca, 'YTick',(10:20:size(out,1))+0.5, 'YTickLabel',cmaps)
+end
+
+function onChange(~,~,h)
+    %ONCHANGE  Event handler for UI controls
+
+    % apply colormap
+    cmaps = get(h.pop, 'String');
+    idx = get(h.pop, 'Value');
+    if strcmp(cmaps{idx}, 'Gray')
+        out = cv.cvtColor(h.gray, 'GRAY2RGB');
+    elseif strcmp(cmaps{idx}, 'Random')
+        out = cv.applyColorMap(h.gray, h.user);
+    else
+        out = cv.applyColorMap(h.gray, cmaps{idx});
+    end
+
+    % show result
+    set(h.img, 'CData',out);
+    drawnow;
+end
+
+function h = buildGUI(img)
+    %BUILDGUI  Creates the UI
+
+    % params
+    cmaps = {'Gray', 'Autumn', 'Bone', 'Cool', 'Hot', 'Ocean', 'Parula', ...
+        'Pink', 'Spring', 'Summer', 'Winter', 'Jet', 'Rainbow', 'HSV', ...
+        'Random'};
+    sz = size(img);
+
+    % build the user interface (no resizing to keep it simple)
+    h = struct();
+    h.gray = img;
+    h.user = randi(255, [256 1 3], 'uint8');  % user-defined random colormap
+    h.fig = figure('Name','Colormap Demo', ...
+        'NumberTitle','off', 'Menubar','none', 'Resize','off', ...
+        'Position',[200 200 sz(2) sz(1)+29]);
+    if ~mexopencv.isOctave()
+        %HACK: not implemented in Octave
+        movegui(h.fig, 'center');
+    end
+    h.ax = axes('Parent',h.fig, 'Units','pixels', 'Position',[1 30 sz(2) sz(1)]);
+    if ~mexopencv.isOctave()
+        h.img = imshow(img, 'Parent',h.ax);
+    else
+        %HACK: https://savannah.gnu.org/bugs/index.php?45473
+        axes(h.ax);
+        h.img = imshow(img);
+    end
+    uicontrol('Parent',h.fig, 'Style','text', 'FontSize',11, ...
+        'Position',[5 5 100 20], 'String','Colormap:');
+    h.pop = uicontrol('Parent',h.fig, 'Style','popupmenu', ...
+        'Position',[105 5 120 20], 'String',cmaps);
+    h.btn = uicontrol('Parent',h.fig, 'Style','pushbutton', ...
+        'Position',[230 5 80 20], 'String','Colormaps');
+
+    % hook event handlers
+    opts = {'Interruptible','off', 'BusyAction','cancel'};
+    set(h.btn, 'Callback',{@showColormaps,h}, opts{:});
+    set(h.pop, 'Callback',{@onChange,h}, opts{:});
+end
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

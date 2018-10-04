@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>The MNIST dataset of handwritten digits</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="dataset_mnist_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">The MNIST dataset of handwritten digits</h1>
+         <!--introduction-->
+         <p>Demonstrates loading the <a href="http://yann.lecun.com/exdb/mnist/">MNIST dataset</a>.
+         </p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/datasets/samples/or_mnist.cpp">https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/datasets/samples/or_mnist.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">MNIST dataset</a></li>
+               <li><a href="#3">Load dataset from disk</a></li>
+               <li><a href="#4">Data</a></li>
+               <li><a href="#5">Display</a></li>
+               <li><a href="#6">Display</a></li>
+            </ul>
+         </div>
+         <h2 id="2">MNIST dataset</h2>
+         <p>download/extract files if needed</p><pre class="codeinput">dirMNIST = fullfile(mexopencv.root(), <span class="string">'test'</span>, <span class="string">'mnist'</span>);
+<span class="keyword">if</span> ~isdir(dirMNIST)
+    <span class="comment">% download</span>
+    baseURL = <span class="string">'http://yann.lecun.com/exdb/mnist/'</span>;
+    files = {
+        <span class="string">'train-images-idx3-ubyte.gz'</span>
+        <span class="string">'train-labels-idx1-ubyte.gz'</span>
+        <span class="string">'t10k-images-idx3-ubyte.gz'</span>
+        <span class="string">'t10k-labels-idx1-ubyte.gz'</span>
+    };
+    disp(<span class="string">'Downloading MNIST database, and extracting files...'</span>);
+    mkdir(dirMNIST);
+    <span class="keyword">for</span> i=1:numel(files)
+        gzFile = fullfile(dirMNIST, files{i});
+        <span class="keyword">if</span> exist(gzFile, <span class="string">'file'</span>) ~= 2
+            url = [baseURL, files{i}];
+            urlwrite(url, gzFile);
+        <span class="keyword">end</span>
+        <span class="comment">%HACK: unfortunately MATLAB's gunzip (with Java's GZIPInputStream)</span>
+        <span class="comment">% ignore the stored filename when extracting a GZ file, instead they</span>
+        <span class="comment">% simply remove the .gz extension! So we use Apache Commons to get the</span>
+        <span class="comment">% original filename (a Java library that ships with MATLAB).</span>
+        <span class="comment">% Alternatively we could use system tools like GNU gunzip or 7zip.</span>
+        <span class="keyword">if</span> false
+            gunzip(gzFile, dirMNIST);
+        <span class="keyword">elseif</span> false
+            system([<span class="string">'gunzip --keep --name '</span> gzFile]);
+        <span class="keyword">else</span>
+            <span class="comment">% adapted from gunzip.m</span>
+            in = org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream(<span class="keyword">...</span>
+                java.io.FileInputStream(java.io.File(gzFile)));
+            fname = char(in.getMetaData().getFilename());
+            <span class="keyword">if</span> isempty(fname)
+                [~,fname,~] = fileparts(gzFile);
+            <span class="keyword">end</span>
+            out = java.io.FileOutputStream(java.io.File(fullfile(dirMNIST, fname)));
+            <span class="comment">%org.apache.commons.io.IOUtils.copy(in, out);</span>
+            streamCopier = com.mathworks.mlwidgets.io.InterruptibleStreamCopier.getInterruptibleStreamCopier();
+            streamCopier.copyStream(in, out);
+            in.close();
+            out.close();
+            clear <span class="string">in</span> <span class="string">out</span> <span class="string">streamCopier</span> <span class="string">fname</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span></pre><h2 id="3">Load dataset from disk</h2>
+         <p>we give the path to the extracted files to the load method</p><pre class="codeinput">tic
+ds = cv.Dataset(<span class="string">'OR_mnist'</span>);
+ds.load(fullfile(dirMNIST,<span class="string">'/'</span>));  <span class="comment">%HACK: path must end with a slash!</span>
+toc</pre><pre class="codeoutput">Elapsed time is 0.431709 seconds.
+</pre><h2 id="4">Data</h2>
+         <p>dataset contains for each object its image and label as a structure array of images (8-bit 28x28 grayscale) and corresponding
+            labels (0..9)
+         </p><pre class="codeinput">fprintf(<span class="string">'NumSplits = %d\n'</span>, ds.getNumSplits());
+dtrain = ds.getTrain()
+dtest = ds.getTest()
+whos <span class="string">dtrain</span> <span class="string">dtest</span></pre><pre class="codeoutput">NumSplits = 1
+dtrain = 
+  1&times;60000 struct array with fields:
+    label
+    image
+dtest = 
+  1&times;10000 struct array with fields:
+    label
+    image
+  Name        Size                  Bytes  Class     Attributes
+
+  dtest       1x10000            10160128  struct              
+  dtrain      1x60000            60960128  struct              
+
+</pre><h2 id="5">Display</h2>
+         <p>show one instance from each train/test sets</p><pre class="codeinput">subplot(121), imshow(dtrain(1).image)
+title(sprintf(<span class="string">'label = %d'</span>,dtrain(1).label))
+subplot(122), imshow(dtest(1).image)
+title(sprintf(<span class="string">'label = %d'</span>,dtest(1).label))</pre><img src="dataset_mnist_demo_01.png"><h2 id="6">Display</h2>
+         <p>show a sample of the first 100 train images corresponding to digit 8</p><pre class="codeinput"><span class="keyword">if</span> mexopencv.require(<span class="string">'images'</span>)
+    idx = find([dtrain.label] == 8);
+    idx(101:end) = [];
+    figure, montage(cat(4, dtrain(idx).image))
+<span class="keyword">end</span></pre><img src="dataset_mnist_demo_02.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% The MNIST dataset of handwritten digits
+% Demonstrates loading the <http://yann.lecun.com/exdb/mnist/ MNIST dataset>.
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/datasets/samples/or_mnist.cpp>
+%
+
+%% MNIST dataset
+% download/extract files if needed
+dirMNIST = fullfile(mexopencv.root(), 'test', 'mnist');
+if ~isdir(dirMNIST)
+    % download
+    baseURL = 'http://yann.lecun.com/exdb/mnist/';
+    files = {
+        'train-images-idx3-ubyte.gz'
+        'train-labels-idx1-ubyte.gz'
+        't10k-images-idx3-ubyte.gz'
+        't10k-labels-idx1-ubyte.gz'
+    };
+    disp('Downloading MNIST database, and extracting files...');
+    mkdir(dirMNIST);
+    for i=1:numel(files)
+        gzFile = fullfile(dirMNIST, files{i});
+        if exist(gzFile, 'file') ~= 2
+            url = [baseURL, files{i}];
+            urlwrite(url, gzFile);
+        end
+        %HACK: unfortunately MATLAB's gunzip (with Java's GZIPInputStream)
+        % ignore the stored filename when extracting a GZ file, instead they
+        % simply remove the .gz extension! So we use Apache Commons to get the
+        % original filename (a Java library that ships with MATLAB).
+        % Alternatively we could use system tools like GNU gunzip or 7zip.
+        if false
+            gunzip(gzFile, dirMNIST);
+        elseif false
+            system(['gunzip REPLACE_WITH_DASH_DASHkeep REPLACE_WITH_DASH_DASHname ' gzFile]);
+        else
+            % adapted from gunzip.m
+            in = org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream(...
+                java.io.FileInputStream(java.io.File(gzFile)));
+            fname = char(in.getMetaData().getFilename());
+            if isempty(fname)
+                [~,fname,~] = fileparts(gzFile);
+            end
+            out = java.io.FileOutputStream(java.io.File(fullfile(dirMNIST, fname)));
+            %org.apache.commons.io.IOUtils.copy(in, out);
+            streamCopier = com.mathworks.mlwidgets.io.InterruptibleStreamCopier.getInterruptibleStreamCopier();
+            streamCopier.copyStream(in, out);
+            in.close();
+            out.close();
+            clear in out streamCopier fname
+        end
+    end
+end
+
+%% Load dataset from disk
+% we give the path to the extracted files to the load method
+tic
+ds = cv.Dataset('OR_mnist');
+ds.load(fullfile(dirMNIST,'/'));  %HACK: path must end with a slash!
+toc
+
+%% Data
+% dataset contains for each object its image and label as a structure array
+% of images (8-bit 28x28 grayscale) and corresponding labels (0..9)
+fprintf('NumSplits = %d\n', ds.getNumSplits());
+dtrain = ds.getTrain()
+dtest = ds.getTest()
+whos dtrain dtest
+
+%% Display
+% show one instance from each train/test sets
+subplot(121), imshow(dtrain(1).image)
+title(sprintf('label = %d',dtrain(1).label))
+subplot(122), imshow(dtest(1).image)
+title(sprintf('label = %d',dtest(1).label))
+
+%% Display
+% show a sample of the first 100 train images corresponding to digit 8
+if mexopencv.require('images')
+    idx = find([dtrain.label] == 8);
+    idx(101:end) = [];
+    figure, montage(cat(4, dtrain(idx).image))
+end
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

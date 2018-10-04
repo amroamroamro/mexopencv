@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Feature Matching</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="SURF_descriptor.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Feature Matching</h1>
+         <!--introduction-->
+         <p>SURF detector + descriptor + BruteForce/FLANN Matcher + drawing matches with OpenCV functions</p>
+         <p>In this sample you will learn how to use the <tt>cv.DescriptorExtractor</tt> interface in order to find the feature vector correspondent to the keypoints. Specifically:
+         </p>
+         <div>
+            <ul>
+               <li>Use <a href="matlab:doc('cv.SURF')">cv.SURF</a> and its function cv.SURF.compute to   perform the required calculations.
+               </li>
+               <li>Use either the <tt>BFMatcher</tt> to match the features vector, or the   <tt>FlannBasedMatcher</tt> in order to perform a quick and efficient matching by   using the Clustering and Search in Multi-Dimensional Spaces FLANN
+                  module.
+               </li>
+               <li>Use the function <a href="matlab:doc('cv.drawMatches')">cv.drawMatches</a> to draw the   detected matches.
+               </li>
+            </ul>
+         </div>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://docs.opencv.org/3.2.0/d5/dde/tutorial_feature_description.html">https://docs.opencv.org/3.2.0/d5/dde/tutorial_feature_description.html</a></li>
+               <li><a href="https://docs.opencv.org/3.2.0/d5/d6f/tutorial_feature_flann_matcher.html">https://docs.opencv.org/3.2.0/d5/d6f/tutorial_feature_flann_matcher.html</a></li>
+               <li><a href="https://docs.opencv.org/3.2.0/dc/dc3/tutorial_py_matcher.html">https://docs.opencv.org/3.2.0/dc/dc3/tutorial_py_matcher.html</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Brute-Force Matcher</a></li>
+               <li><a href="#3">FLANN based Matcher</a></li>
+               <li><a href="#4">Options</a></li>
+               <li><a href="#5">Images</a></li>
+               <li><a href="#6">Detect</a></li>
+               <li><a href="#13">Compute</a></li>
+               <li><a href="#14">Match</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Brute-Force Matcher</h2>
+         <p>Brute-Force matcher is simple. It takes the descriptor of one feature in first set and is matched with all other features
+            in second set using some distance calculation. And the closest one is returned.
+         </p>
+         <p>For BF matcher, first we have to create the <tt>cv.DescriptorMatcher</tt> object with <tt>BFMatcher</tt> as type. It takes two optional params. First one is <tt>NormType</tt>. It specifies the distance measurement to be used. By default, it is <tt>L2</tt>. It is good for SIFT, SURF, etc. (<tt>L1</tt> is also there). For binary string-based descriptors like ORB, BRIEF, BRISK, etc., <tt>Hamming</tt> should be used, which uses Hamming distance as measurement. If ORB is using <tt>WTA_K</tt> of 3 or 4, <tt>Hamming2</tt> should be used.
+         </p>
+         <p>Second param is boolean variable, <tt>CrossCheck</tt> which is false by default. If it is true, Matcher returns only those matches with value (i,j) such that i-th descriptor in
+            set A has j-th descriptor in set B as the best match and vice-versa. That is, the two features in both sets should match each
+            other. It provides consistant result, and is a good alternative to ratio test proposed by D.Lowe in SIFT paper.
+         </p>
+         <p>Once it is created, two important methods are <tt>cv.DescriptorMatcher.match</tt> and <tt>cv.DescriptorMatcher.knnMatch</tt>. First one returns the best match. Second method returns k best matches where k is specified by the user. It may be useful
+            when we need to do additional work on that.
+         </p>
+         <p>Like we used <tt>cv.drawKeypoints</tt> to draw keypoints, <tt>cv.drawMatches</tt> helps us to draw the matches. It stacks two images horizontally and draw lines from first image to second image showing best
+            matches.
+         </p>
+         <h2 id="3">FLANN based Matcher</h2>
+         <p>FLANN stands for Fast Library for Approximate Nearest Neighbors. It contains a collection of algorithms optimized for fast
+            nearest neighbor search in large datasets and for high dimensional features. It works faster than <tt>BFMatcher</tt> for large datasets. We will see the second example with FLANN based matcher.
+         </p>
+         <p>For <tt>FlannBasedMatcher</tt>, it accepts two sets of options which specifies the algorithm to be used, its related parameters etc. First one is <tt>Index</tt>. For various algorithms, the information to be passed is explained in FLANN docs. As a summary, for algorithms like SIFT,
+            SURF etc. you can create the matcher as follows:
+         </p><pre class="code-matlab">matcher = cv.DescriptorMatcher(<span class="string">'FlannBasedMatcher'</span>, <span class="keyword">...</span>
+    <span class="string">'Index'</span>,{<span class="string">'KDTree'</span>, <span class="string">'Trees'</span>,5})</pre><p>While using ORB, you can pass the following. The commented values are recommended as per the docs, but it didn't provide required
+            results in some cases. Other values worked fine:
+         </p><pre class="code-matlab"><span class="comment">%{'LSH', 'TableNumber',12, 'KeySize',20, 'MultiProbeLevel',2}</span>
+matcher = cv.DescriptorMatcher(<span class="string">'FlannBasedMatcher'</span>, <span class="keyword">...</span>
+    <span class="string">'Index'</span>,{<span class="string">'LSH'</span>, <span class="string">'TableNumber'</span>,6, <span class="string">'KeySize'</span>,12, <span class="string">'MultiProbeLevel'</span>,1})</pre><p>Second option is <tt>Search</tt>. It specifies the number of times the trees in the index should be recursively traversed. Higher values gives better precision,
+            but also takes more time. If you want to change the value, pass:
+         </p><pre class="code-matlab">matcher = cv.DescriptorMatcher(<span class="string">'FlannBasedMatcher'</span>, <span class="string">'Search'</span>,{<span class="string">'Checks'</span>,10})</pre><h2 id="4">Options</h2>
+         <p>some parameters</p><pre class="codeinput">do_filtering = true;
+minHessian = 400;</pre><h2 id="5">Images</h2>
+         <p>Prepare a pair of images</p><pre class="codeinput">im1 = imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'box.png'</span>));
+im2 = imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'box_in_scene.png'</span>));
+subplot(121), imshow(im1), title(<span class="string">'box'</span>)
+subplot(122), imshow(im2), title(<span class="string">'box-in-scene'</span>)</pre><img src="SURF_descriptor_01.png"><h2 id="6">Detect</h2>
+         <p>Detect keypoints using SURF Detector</p><pre class="codeinput">detector = cv.FeatureDetector(<span class="string">'SURF'</span>, <span class="string">'HessianThreshold'</span>,minHessian);
+keypoints1 = detector.detect(im1);
+keypoints2 = detector.detect(im2);
+whos <span class="string">keypoints1</span> <span class="string">keypoints2</span>
+disp(keypoints1(1))</pre><pre class="codeoutput">  Name            Size               Bytes  Class     Attributes
+
+  keypoints1      1x786             572592  struct              
+  keypoints2      1x1040            757504  struct              
+
+          pt: [68.9577 79.3293]
+        size: 20
+       angle: 104.5331
+    response: 1.5550e+04
+      octave: 0
+    class_id: -1
+</pre><p>specify a mask where to look for keypoints</p><pre class="codeinput"><span class="keyword">if</span> false
+    mask = false(size(im2));
+    mask(100:350,100:350) = true;
+    keypoints2 = detector.detect(im2, <span class="string">'Mask'</span>,mask);
+<span class="keyword">end</span></pre><p>Show distribution of keypoint sizes</p><pre class="codeinput"><span class="keyword">if</span> ~mexopencv.isOctave()
+    <span class="comment">%HACK: HISTOGRAM not implemented in Octave</span>
+    figure
+    histogram([keypoints1.size]), hold <span class="string">on</span>
+    histogram([keypoints2.size])
+    xlabel(<span class="string">'Keypoint sizes'</span>), ylabel(<span class="string">'Count'</span>)
+    legend(<span class="string">'keypoints1'</span>, <span class="string">'keypoints2'</span>)
+    hold <span class="string">off</span>
+<span class="keyword">end</span></pre><img src="SURF_descriptor_02.png"><p>Filter keypoints by size</p><pre class="codeinput"><span class="keyword">if</span> do_filtering
+    keypoints1 = cv.KeyPointsFilter.runByKeypointSize(keypoints1, 0, 50);
+    keypoints2 = cv.KeyPointsFilter.runByKeypointSize(keypoints2, 0, 50);
+<span class="keyword">end</span></pre><p>Show distribution of keypoint responses</p><pre class="codeinput"><span class="keyword">if</span> ~mexopencv.isOctave()
+    <span class="comment">%HACK: HISTOGRAM not implemented in Octave</span>
+    histogram([keypoints1.response]), hold <span class="string">on</span>
+    histogram([keypoints2.response])
+    xlabel(<span class="string">'Keypoint responses'</span>), ylabel(<span class="string">'Count'</span>)
+    legend(<span class="string">'keypoints1'</span>, <span class="string">'keypoints2'</span>)
+    hold <span class="string">off</span>
+<span class="keyword">end</span></pre><img src="SURF_descriptor_03.png"><p>Filter keypoints by responses</p><pre class="codeinput"><span class="keyword">if</span> do_filtering
+    keypoints1 = cv.KeyPointsFilter.retainBest(keypoints1, 500);
+    keypoints2 = cv.KeyPointsFilter.retainBest(keypoints2, 500);
+<span class="keyword">end</span></pre><p>Draw filtered keypoints</p><pre class="codeinput">figure
+subplot(121), imshow(cv.drawKeypoints(im1, keypoints1))
+subplot(122), imshow(cv.drawKeypoints(im2, keypoints2))</pre><img src="SURF_descriptor_04.png"><h2 id="13">Compute</h2>
+         <p>Calculate descriptors (feature vectors) using SURF</p><pre class="codeinput">extractor = cv.DescriptorExtractor(<span class="string">'SURF'</span>);
+descriptors1 = extractor.compute(im1, keypoints1);
+descriptors2 = extractor.compute(im2, keypoints2);
+whos <span class="string">descriptors1</span> <span class="string">descriptors2</span></pre><pre class="codeoutput">  Name                Size             Bytes  Class     Attributes
+
+  descriptors1      500x64            128000  single              
+  descriptors2      500x64            128000  single              
+
+</pre><h2 id="14">Match</h2><pre class="codeinput"><span class="keyword">if</span> true
+    <span class="comment">% Match descriptor vectors with a brute force matcher</span>
+    <span class="comment">%matcher = cv.DescriptorMatcher('BFMatcher', 'NormType','L2');</span>
+    <span class="comment">%matcher = cv.DescriptorMatcher('BFMatcher', 'CrossCheck',true);</span>
+    matcher = cv.DescriptorMatcher(<span class="string">'BruteForce'</span>);
+    matches = matcher.match(descriptors1, descriptors2);
+<span class="keyword">elseif</span> true
+    <span class="comment">% Brute-Force kNN Matching with Ratio Test as per Lowe's paper</span>
+    matcher = cv.DescriptorMatcher(<span class="string">'BruteForce'</span>);
+    matches = matcher.knnMatch(descriptors1, descriptors2, 2);
+
+    idx = cellfun(@(m) m(1).distance &lt; 0.75 * m(2).distance, matches);
+    matches = cellfun(@(m) m(1), matches(idx));
+<span class="keyword">else</span>
+    <span class="comment">% Match descriptor vectors using FLANN matcher</span>
+    matcher = cv.DescriptorMatcher(<span class="string">'FlannBased'</span>);
+    matches = matcher.radiusMatch(descriptors1, descriptors2, 0.22);
+    matches = [matches{:}];
+<span class="keyword">end</span>
+whos <span class="string">matches</span>
+disp(matches(1))</pre><pre class="codeoutput">  Name         Size              Bytes  Class     Attributes
+
+  matches      1x500            240256  struct              
+
+    queryIdx: 0
+    trainIdx: 438
+      imgIdx: 0
+    distance: 0.3544
+</pre><p>Show distribution of match distances</p><pre class="codeinput"><span class="keyword">if</span> ~mexopencv.isOctave()
+    <span class="comment">%HACK: HISTOGRAM not implemented in Octave</span>
+    figure
+    histogram([matches.distance])
+    xlabel(<span class="string">'Match distances'</span>), ylabel(<span class="string">'Count'</span>)
+<span class="keyword">end</span></pre><img src="SURF_descriptor_05.png"><p>Filter matches by distance ("good" matches)</p><pre class="codeinput"><span class="keyword">if</span> do_filtering
+    <span class="keyword">if</span> true
+        [~,idx] = sort([matches.distance]);
+        idx = idx(1:min(50,end));
+        matches = matches(idx);
+    <span class="keyword">else</span>
+        min_dist = min([matches.distance]);
+        matches = matches([matches.distance] &lt;= max(3*min_dist, 0.22));
+    <span class="keyword">end</span>
+<span class="keyword">end</span></pre><p>Draw matches</p><pre class="codeinput">out = cv.drawMatches(im1, keypoints1, im2, keypoints2, matches);
+figure, imshow(out);</pre><img src="SURF_descriptor_06.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Feature Matching
+% SURF detector + descriptor + BruteForce/FLANN Matcher + drawing matches with
+% OpenCV functions
+%
+% In this sample you will learn how to use the |cv.DescriptorExtractor|
+% interface in order to find the feature vector correspondent to the
+% keypoints. Specifically:
+%
+% * Use <matlab:doc('cv.SURF') cv.SURF> and its function cv.SURF.compute to
+%   perform the required calculations.
+% * Use either the |BFMatcher| to match the features vector, or the
+%   |FlannBasedMatcher| in order to perform a quick and efficient matching by
+%   using the Clustering and Search in Multi-Dimensional Spaces FLANN module.
+% * Use the function <matlab:doc('cv.drawMatches') cv.drawMatches> to draw the
+%   detected matches.
+%
+% Sources:
+%
+% * <https://docs.opencv.org/3.2.0/d5/dde/tutorial_feature_description.html>
+% * <https://docs.opencv.org/3.2.0/d5/d6f/tutorial_feature_flann_matcher.html>
+% * <https://docs.opencv.org/3.2.0/dc/dc3/tutorial_py_matcher.html>
+%
+
+%% Brute-Force Matcher
+%
+% Brute-Force matcher is simple. It takes the descriptor of one feature in
+% first set and is matched with all other features in second set using some
+% distance calculation. And the closest one is returned.
+%
+% For BF matcher, first we have to create the |cv.DescriptorMatcher| object
+% with |BFMatcher| as type. It takes two optional params. First one is
+% |NormType|. It specifies the distance measurement to be used. By default, it
+% is |L2|. It is good for SIFT, SURF, etc. (|L1| is also there). For binary
+% string-based descriptors like ORB, BRIEF, BRISK, etc., |Hamming| should be
+% used, which uses Hamming distance as measurement. If ORB is using |WTA_K| of
+% 3 or 4, |Hamming2| should be used.
+%
+% Second param is boolean variable, |CrossCheck| which is false by default. If
+% it is true, Matcher returns only those matches with value (i,j) such that
+% i-th descriptor in set A has j-th descriptor in set B as the best match and
+% vice-versa. That is, the two features in both sets should match each other.
+% It provides consistant result, and is a good alternative to ratio test
+% proposed by D.Lowe in SIFT paper.
+%
+% Once it is created, two important methods are |cv.DescriptorMatcher.match|
+% and |cv.DescriptorMatcher.knnMatch|. First one returns the best match.
+% Second method returns k best matches where k is specified by the user. It
+% may be useful when we need to do additional work on that.
+%
+% Like we used |cv.drawKeypoints| to draw keypoints, |cv.drawMatches| helps us
+% to draw the matches. It stacks two images horizontally and draw lines from
+% first image to second image showing best matches.
+%
+
+%% FLANN based Matcher
+%
+% FLANN stands for Fast Library for Approximate Nearest Neighbors. It contains
+% a collection of algorithms optimized for fast nearest neighbor search in
+% large datasets and for high dimensional features. It works faster than
+% |BFMatcher| for large datasets. We will see the second example with FLANN
+% based matcher.
+%
+% For |FlannBasedMatcher|, it accepts two sets of options which specifies
+% the algorithm to be used, its related parameters etc. First one is |Index|.
+% For various algorithms, the information to be passed is explained in FLANN
+% docs. As a summary, for algorithms like SIFT, SURF etc. you can create the
+% matcher as follows:
+%
+%   matcher = cv.DescriptorMatcher('FlannBasedMatcher', ...
+%       'Index',{'KDTree', 'Trees',5})
+%
+% While using ORB, you can pass the following. The commented values are
+% recommended as per the docs, but it didn't provide required results in some
+% cases. Other values worked fine:
+%
+%   %{'LSH', 'TableNumber',12, 'KeySize',20, 'MultiProbeLevel',2}
+%   matcher = cv.DescriptorMatcher('FlannBasedMatcher', ...
+%       'Index',{'LSH', 'TableNumber',6, 'KeySize',12, 'MultiProbeLevel',1})
+%
+% Second option is |Search|. It specifies the number of times the trees in the
+% index should be recursively traversed. Higher values gives better precision,
+% but also takes more time. If you want to change the value, pass:
+%
+%   matcher = cv.DescriptorMatcher('FlannBasedMatcher', 'Search',{'Checks',10})
+%
+
+%% Options
+% some parameters
+do_filtering = true;
+minHessian = 400;
+
+%% Images
+% Prepare a pair of images
+im1 = imread(fullfile(mexopencv.root(),'test','box.png'));
+im2 = imread(fullfile(mexopencv.root(),'test','box_in_scene.png'));
+subplot(121), imshow(im1), title('box')
+subplot(122), imshow(im2), title('box-in-scene')
+
+%% Detect
+% Detect keypoints using SURF Detector
+detector = cv.FeatureDetector('SURF', 'HessianThreshold',minHessian);
+keypoints1 = detector.detect(im1);
+keypoints2 = detector.detect(im2);
+whos keypoints1 keypoints2
+disp(keypoints1(1))
+
+%%
+% specify a mask where to look for keypoints
+if false
+    mask = false(size(im2));
+    mask(100:350,100:350) = true;
+    keypoints2 = detector.detect(im2, 'Mask',mask);
+end
+
+%%
+% Show distribution of keypoint sizes
+if ~mexopencv.isOctave()
+    %HACK: HISTOGRAM not implemented in Octave
+    figure
+    histogram([keypoints1.size]), hold on
+    histogram([keypoints2.size])
+    xlabel('Keypoint sizes'), ylabel('Count')
+    legend('keypoints1', 'keypoints2')
+    hold off
+end
+
+%%
+% Filter keypoints by size
+if do_filtering
+    keypoints1 = cv.KeyPointsFilter.runByKeypointSize(keypoints1, 0, 50);
+    keypoints2 = cv.KeyPointsFilter.runByKeypointSize(keypoints2, 0, 50);
+end
+
+%%
+% Show distribution of keypoint responses
+if ~mexopencv.isOctave()
+    %HACK: HISTOGRAM not implemented in Octave
+    histogram([keypoints1.response]), hold on
+    histogram([keypoints2.response])
+    xlabel('Keypoint responses'), ylabel('Count')
+    legend('keypoints1', 'keypoints2')
+    hold off
+end
+
+%%
+% Filter keypoints by responses
+if do_filtering
+    keypoints1 = cv.KeyPointsFilter.retainBest(keypoints1, 500);
+    keypoints2 = cv.KeyPointsFilter.retainBest(keypoints2, 500);
+end
+
+%%
+% Draw filtered keypoints
+figure
+subplot(121), imshow(cv.drawKeypoints(im1, keypoints1))
+subplot(122), imshow(cv.drawKeypoints(im2, keypoints2))
+
+%% Compute
+% Calculate descriptors (feature vectors) using SURF
+extractor = cv.DescriptorExtractor('SURF');
+descriptors1 = extractor.compute(im1, keypoints1);
+descriptors2 = extractor.compute(im2, keypoints2);
+whos descriptors1 descriptors2
+
+%% Match
+if true
+    % Match descriptor vectors with a brute force matcher
+    %matcher = cv.DescriptorMatcher('BFMatcher', 'NormType','L2');
+    %matcher = cv.DescriptorMatcher('BFMatcher', 'CrossCheck',true);
+    matcher = cv.DescriptorMatcher('BruteForce');
+    matches = matcher.match(descriptors1, descriptors2);
+elseif true
+    % Brute-Force kNN Matching with Ratio Test as per Lowe's paper
+    matcher = cv.DescriptorMatcher('BruteForce');
+    matches = matcher.knnMatch(descriptors1, descriptors2, 2);
+
+    idx = cellfun(@(m) m(1).distance < 0.75 * m(2).distance, matches);
+    matches = cellfun(@(m) m(1), matches(idx));
+else
+    % Match descriptor vectors using FLANN matcher
+    matcher = cv.DescriptorMatcher('FlannBased');
+    matches = matcher.radiusMatch(descriptors1, descriptors2, 0.22);
+    matches = [matches{:}];
+end
+whos matches
+disp(matches(1))
+
+%%
+% Show distribution of match distances
+if ~mexopencv.isOctave()
+    %HACK: HISTOGRAM not implemented in Octave
+    figure
+    histogram([matches.distance])
+    xlabel('Match distances'), ylabel('Count')
+end
+
+%%
+% Filter matches by distance ("good" matches)
+if do_filtering
+    if true
+        [~,idx] = sort([matches.distance]);
+        idx = idx(1:min(50,end));
+        matches = matches(idx);
+    else
+        min_dist = min([matches.distance]);
+        matches = matches([matches.distance] <= max(3*min_dist, 0.22));
+    end
+end
+
+%%
+% Draw matches
+out = cv.drawMatches(im1, keypoints1, im2, keypoints2, matches);
+figure, imshow(out);
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

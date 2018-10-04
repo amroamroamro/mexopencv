@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Optical Flow Estimation using Dual TV-L1 method</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="tvl1_optical_flow_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Optical Flow Estimation using Dual TV-L1 method</h1>
+         <!--introduction-->
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/tvl1_optical_flow.cpp">https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/tvl1_optical_flow.cpp</a></li>
+               <li><a href="https://github.com/opencv/opencv/blob/3.2.0/samples/gpu/optical_flow.cpp">https://github.com/opencv/opencv/blob/3.2.0/samples/gpu/optical_flow.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Load a pair of images</a></li>
+               <li><a href="#3">Compute optical flow</a></li>
+               <li><a href="#4">Draw optical flow</a></li>
+               <li><a href="#5">Draw velocities vector field</a></li>
+               <li><a href="#6">Write optical flow to file</a></li>
+               <li><a href="#7">Helper functions</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Load a pair of images</h2><pre class="codeinput">frame0 = cv.imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'basketball1.png'</span>), <span class="string">'Grayscale'</span>,true);
+frame1 = cv.imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'basketball2.png'</span>), <span class="string">'Grayscale'</span>,true);
+assert(isequal(size(frame0), size(frame1)), <span class="string">'Images should be of equal sizes'</span>);
+
+<span class="keyword">if</span> ~mexopencv.isOctave() &amp;&amp; mexopencv.require(<span class="string">'images'</span>)
+    <span class="comment">%HACK: IMPLAY not implemented in Octave</span>
+    implay(cat(4,frame0,frame1), 5);
+<span class="keyword">end</span></pre><img src="tvl1_optical_flow_demo_01.png"><h2 id="3">Compute optical flow</h2><pre class="codeinput">tvl1 = cv.DualTVL1OpticalFlow();
+tic
+flow = tvl1.calc(frame0, frame1);
+toc</pre><pre class="codeoutput">Elapsed time is 2.466695 seconds.
+</pre><h2 id="4">Draw optical flow</h2><pre class="codeinput">out = drawOpticalFlow(flow);
+figure(1), imshow(out), title(<span class="string">'Flow'</span>)</pre><img src="tvl1_optical_flow_demo_02.png"><h2 id="5">Draw velocities vector field</h2><pre class="codeinput">[X,Y,U,V] = drawVelocities(flow);
+figure(2)
+<span class="keyword">if</span> ~mexopencv.isOctave() &amp;&amp; mexopencv.require(<span class="string">'images'</span>)
+    imshowpair(frame0, frame1)
+    <span class="comment">%imshowpair(flow(:,:,1), flow(:,:,2))</span>
+<span class="keyword">else</span>
+    imshow(cat(3, frame1, frame0, frame1))
+<span class="keyword">end</span>
+hold <span class="string">on</span>
+quiver(X(:), Y(:), U(:), V(:));
+hold <span class="string">off</span></pre><img src="tvl1_optical_flow_demo_03.png"><h2 id="6">Write optical flow to file</h2>
+         <p>.flo is a binary file format for flow data specified here: <a href="http://vision.middlebury.edu/flow/data/">http://vision.middlebury.edu/flow/data/</a></p><pre class="codeinput">fileName = fullfile(tempdir(), <span class="string">'flow.flo'</span>)
+writeOpticalFlowToFile(flow, fileName);</pre><pre class="codeoutput">fileName =
+    'C:\Users\Amro\AppData\Local\Temp\flow.flo'
+</pre><h2 id="7">Helper functions</h2><pre class="codeinput"><span class="keyword">function</span> [X,Y,U,V] = drawVelocities(flow, steps)
+    <span class="keyword">if</span> nargin &lt; 2
+        <span class="comment">% subsample in x/y directions for less dense output</span>
+        steps = [10 10];
+    <span class="keyword">end</span>
+    [rows,cols,~] = size(flow);
+    R = 1:steps(2):rows;
+    C = 1:steps(1):cols;
+    [X,Y] = meshgrid(C,R);
+    U = flow(R,C,1);
+    V = flow(R,C,2);
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> out = drawOpticalFlow(flow, maxrad)
+    <span class="comment">% mask of finite values</span>
+    isFlowCorrect = all(~isnan(flow) &amp; abs(flow)&lt;1e9, 3);
+
+    <span class="comment">% determine motion range</span>
+    <span class="keyword">if</span> nargin &lt; 2
+        rad = hypot(flow(:,:,1), flow(:,:,2));
+        maxrad = max(rad(isFlowCorrect));
+        <span class="keyword">if</span> isempty(maxrad), maxrad = 1; <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    flow = flow ./ maxrad;
+
+    <span class="comment">% compute color</span>
+    cmap = colorWheel();
+    NCOLS = size(cmap,1);
+
+    rad = hypot(flow(:,:,1), flow(:,:,2));
+    a = atan2(-flow(:,:,2), -flow(:,:,1)) / pi;  <span class="comment">% [-pi,pi] -&gt; [-1,1]</span>
+
+    fk = (a + 1) / 2 * (NCOLS - 1);              <span class="comment">% [-1,1] -&gt; [0,NCOLS]</span>
+    k0 = int32(fk);                              <span class="comment">% [0,NCOLS] -&gt; 0:NCOLS</span>
+    k1 = rem(k0 + 1, NCOLS);                     <span class="comment">% 0:NCOLS</span>
+    f = fk - single(k0);                         <span class="comment">% [-0.5,0.5]</span>
+
+    col0 = reshape(permute(single(cmap(k0+1,:))/255, [1 3 2]), [size(k0) 3]);
+    col1 = reshape(permute(single(cmap(k1+1,:))/255, [1 3 2]), [size(k1) 3]);
+
+    col = bsxfun(@times, 1-f, col0) + bsxfun(@times, f, col1);
+    <span class="keyword">if</span> true
+        mask = repmat(rad &lt;= 1, [1 1 3]);
+        tmp = 1 - bsxfun(@times, rad, 1 - col);
+        col(mask) = tmp(mask);           <span class="comment">% increase saturation with radius</span>
+        col(~mask) = col(~mask) * 0.75;  <span class="comment">% out of range</span>
+    <span class="keyword">end</span>
+
+    out = uint8(255*col);
+    <span class="comment">%out = flip(out,3);</span>
+    out(~repmat(isFlowCorrect,[1 1 3])) = 0;
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> cmap = colorWheel()
+    <span class="keyword">if</span> false
+        <span class="comment">% relative lengths of color transitions. These are chosen based on</span>
+        <span class="comment">% perceptual similarity (e.g. one can distinguish more shades between</span>
+        <span class="comment">% red and yellow than between yellow and green)</span>
+        steps = [15 6 4 11 13 6];
+        cmap = zeros(0,3,<span class="string">'uint8'</span>);
+        <span class="keyword">for</span> i=1:numel(steps)
+            c = zeros(steps(i),3);
+            <span class="keyword">switch</span> i
+                <span class="keyword">case</span> 1
+                    c(:,1) = 255;
+                    c(:,2) = fix(255*(0:steps(i)-1)/steps(i));
+                    c(:,3) = 0;
+                <span class="keyword">case</span> 2
+                    c(:,1) = 255 - fix(255*(0:steps(i)-1)/steps(i));
+                    c(:,2) = 255;
+                    c(:,3) = 0;
+                <span class="keyword">case</span> 3
+                    c(:,1) = 0;
+                    c(:,2) = 255;
+                    c(:,3) = fix(255*(0:steps(i)-1)/steps(i));
+                <span class="keyword">case</span> 4
+                    c(:,1) = 0;
+                    c(:,2) = 255 - fix(255*(0:steps(i)-1)/steps(i));
+                    c(:,3) = 255;
+                <span class="keyword">case</span> 5
+                    c(:,1) = fix(255*(0:steps(i)-1)/steps(i));
+                    c(:,2) = 0;
+                    c(:,3) = 255;
+                <span class="keyword">case</span> 6
+                    c(:,1) = 255;
+                    c(:,2) = 0;
+                    c(:,3) = 255 - fix(255*(0:steps(i)-1)/steps(i));
+            <span class="keyword">end</span>
+            cmap = [cmap; uint8(c)];
+        <span class="keyword">end</span>
+    <span class="keyword">elseif</span> false
+        <span class="comment">% similar thing, vectorized implementation</span>
+        steps = [15 6 4 11 13 6];
+        stops = [
+            1 1 0 0 0 1 1; <span class="keyword">...</span><span class="comment"> % R</span>
+            0 1 1 1 0 0 0; <span class="keyword">...</span><span class="comment"> % G</span>
+            0 0 0 1 1 1 0      <span class="comment">% B</span>
+        ];
+        cmap = zeros(0,3,<span class="string">'uint8'</span>);
+        <span class="keyword">for</span> i=1:size(stops,2)-1
+            c = interp1([0 1], stops(:,i:i+1).', linspace(0,1,steps(i)+1));
+            cmap = [cmap; uint8(255 * c(1:end-1,:))];
+        <span class="keyword">end</span>
+    <span class="keyword">else</span>
+        <span class="comment">% a fast approximation using builtin colormap</span>
+        cmap = uint8(255 * hsv(55));
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> writeOpticalFlowToFile(flow, fileName)
+    assert(isa(flow,<span class="string">'single'</span>) &amp;&amp; size(flow,3)==2);
+    <span class="keyword">if</span> false
+        <span class="comment">% requires opencv_contrib "optflow"</span>
+        cv.writeOpticalFlow(fileName, flow);
+    <span class="keyword">else</span>
+        <span class="comment">% manually write .flo format</span>
+        fid = fopen(fileName, <span class="string">'wb'</span>, <span class="string">'l'</span>);                  <span class="comment">% binary, little-endian</span>
+        fwrite(fid, <span class="string">'PIEH'</span>);                               <span class="comment">% signature</span>
+        fwrite(fid, [size(flow,2) size(flow,1)], <span class="string">'int32'</span>); <span class="comment">% width, height</span>
+        fwrite(fid, permute(flow,[3 2 1]), <span class="string">'single'</span>);      <span class="comment">% interleaved (u,v) row-major order</span>
+        fclose(fid);
+    <span class="keyword">end</span>
+<span class="keyword">end</span></pre><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Optical Flow Estimation using Dual TV-L1 method
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/tvl1_optical_flow.cpp>
+% * <https://github.com/opencv/opencv/blob/3.2.0/samples/gpu/optical_flow.cpp>
+%
+
+%% Load a pair of images
+frame0 = cv.imread(fullfile(mexopencv.root(),'test','basketball1.png'), 'Grayscale',true);
+frame1 = cv.imread(fullfile(mexopencv.root(),'test','basketball2.png'), 'Grayscale',true);
+assert(isequal(size(frame0), size(frame1)), 'Images should be of equal sizes');
+
+if ~mexopencv.isOctave() && mexopencv.require('images')
+    %HACK: IMPLAY not implemented in Octave
+    implay(cat(4,frame0,frame1), 5);
+end
+
+%% Compute optical flow
+tvl1 = cv.DualTVL1OpticalFlow();
+tic
+flow = tvl1.calc(frame0, frame1);
+toc
+
+%% Draw optical flow
+out = drawOpticalFlow(flow);
+figure(1), imshow(out), title('Flow')
+
+%% Draw velocities vector field
+[X,Y,U,V] = drawVelocities(flow);
+figure(2)
+if ~mexopencv.isOctave() && mexopencv.require('images')
+    imshowpair(frame0, frame1)
+    %imshowpair(flow(:,:,1), flow(:,:,2))
+else
+    imshow(cat(3, frame1, frame0, frame1))
+end
+hold on
+quiver(X(:), Y(:), U(:), V(:));
+hold off
+
+%% Write optical flow to file
+% .flo is a binary file format for flow data specified here:
+% <http://vision.middlebury.edu/flow/data/>
+fileName = fullfile(tempdir(), 'flow.flo')
+writeOpticalFlowToFile(flow, fileName);
+
+%% Helper functions
+function [X,Y,U,V] = drawVelocities(flow, steps)
+    if nargin < 2
+        % subsample in x/y directions for less dense output
+        steps = [10 10];
+    end
+    [rows,cols,~] = size(flow);
+    R = 1:steps(2):rows;
+    C = 1:steps(1):cols;
+    [X,Y] = meshgrid(C,R);
+    U = flow(R,C,1);
+    V = flow(R,C,2);
+end
+
+function out = drawOpticalFlow(flow, maxrad)
+    % mask of finite values
+    isFlowCorrect = all(~isnan(flow) & abs(flow)<1e9, 3);
+
+    % determine motion range
+    if nargin < 2
+        rad = hypot(flow(:,:,1), flow(:,:,2));
+        maxrad = max(rad(isFlowCorrect));
+        if isempty(maxrad), maxrad = 1; end
+    end
+    flow = flow ./ maxrad;
+
+    % compute color
+    cmap = colorWheel();
+    NCOLS = size(cmap,1);
+
+    rad = hypot(flow(:,:,1), flow(:,:,2));
+    a = atan2(-flow(:,:,2), -flow(:,:,1)) / pi;  % [-pi,pi] -> [-1,1]
+
+    fk = (a + 1) / 2 * (NCOLS - 1);              % [-1,1] -> [0,NCOLS]
+    k0 = int32(fk);                              % [0,NCOLS] -> 0:NCOLS
+    k1 = rem(k0 + 1, NCOLS);                     % 0:NCOLS
+    f = fk - single(k0);                         % [-0.5,0.5]
+
+    col0 = reshape(permute(single(cmap(k0+1,:))/255, [1 3 2]), [size(k0) 3]);
+    col1 = reshape(permute(single(cmap(k1+1,:))/255, [1 3 2]), [size(k1) 3]);
+
+    col = bsxfun(@times, 1-f, col0) + bsxfun(@times, f, col1);
+    if true
+        mask = repmat(rad <= 1, [1 1 3]);
+        tmp = 1 - bsxfun(@times, rad, 1 - col);
+        col(mask) = tmp(mask);           % increase saturation with radius
+        col(~mask) = col(~mask) * 0.75;  % out of range
+    end
+
+    out = uint8(255*col);
+    %out = flip(out,3);
+    out(~repmat(isFlowCorrect,[1 1 3])) = 0;
+end
+
+function cmap = colorWheel()
+    if false
+        % relative lengths of color transitions. These are chosen based on
+        % perceptual similarity (e.g. one can distinguish more shades between
+        % red and yellow than between yellow and green)
+        steps = [15 6 4 11 13 6];
+        cmap = zeros(0,3,'uint8');
+        for i=1:numel(steps)
+            c = zeros(steps(i),3);
+            switch i
+                case 1
+                    c(:,1) = 255;
+                    c(:,2) = fix(255*(0:steps(i)-1)/steps(i));
+                    c(:,3) = 0;
+                case 2
+                    c(:,1) = 255 - fix(255*(0:steps(i)-1)/steps(i));
+                    c(:,2) = 255;
+                    c(:,3) = 0;
+                case 3
+                    c(:,1) = 0;
+                    c(:,2) = 255;
+                    c(:,3) = fix(255*(0:steps(i)-1)/steps(i));
+                case 4
+                    c(:,1) = 0;
+                    c(:,2) = 255 - fix(255*(0:steps(i)-1)/steps(i));
+                    c(:,3) = 255;
+                case 5
+                    c(:,1) = fix(255*(0:steps(i)-1)/steps(i));
+                    c(:,2) = 0;
+                    c(:,3) = 255;
+                case 6
+                    c(:,1) = 255;
+                    c(:,2) = 0;
+                    c(:,3) = 255 - fix(255*(0:steps(i)-1)/steps(i));
+            end
+            cmap = [cmap; uint8(c)];
+        end
+    elseif false
+        % similar thing, vectorized implementation
+        steps = [15 6 4 11 13 6];
+        stops = [
+            1 1 0 0 0 1 1; ... % R
+            0 1 1 1 0 0 0; ... % G
+            0 0 0 1 1 1 0      % B
+        ];
+        cmap = zeros(0,3,'uint8');
+        for i=1:size(stops,2)-1
+            c = interp1([0 1], stops(:,i:i+1).', linspace(0,1,steps(i)+1));
+            cmap = [cmap; uint8(255 * c(1:end-1,:))];
+        end
+    else
+        % a fast approximation using builtin colormap
+        cmap = uint8(255 * hsv(55));
+    end
+end
+
+function writeOpticalFlowToFile(flow, fileName)
+    assert(isa(flow,'single') && size(flow,3)==2);
+    if false
+        % requires opencv_contrib "optflow"
+        cv.writeOpticalFlow(fileName, flow);
+    else
+        % manually write .flo format
+        fid = fopen(fileName, 'wb', 'l');                  % binary, little-endian
+        fwrite(fid, 'PIEH');                               % signature
+        fwrite(fid, [size(flow,2) size(flow,1)], 'int32'); % width, height
+        fwrite(fid, permute(flow,[3 2 1]), 'single');      % interleaved (u,v) row-major order
+        fclose(fid);
+    end
+end
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

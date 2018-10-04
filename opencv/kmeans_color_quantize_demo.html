@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>K-Means Color Quantization</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="kmeans_color_quantize_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">K-Means Color Quantization</h1>
+         <!--introduction-->
+         <p>We will learn how to use <tt>cv.kmeans</tt> for data clustering of pixels to perform color quantization.
+         </p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://docs.opencv.org/3.2.0/d1/d5c/tutorial_py_kmeans_opencv.html">https://docs.opencv.org/3.2.0/d1/d5c/tutorial_py_kmeans_opencv.html</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Theory</a></li>
+               <li><a href="#3">Code</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Theory</h2>
+         <p>Color Quantization is the process of reducing number of colors in an image. One reason to do so is to reduce the memory. Sometimes,
+            some devices may have limitation such that it can produce only limited number of colors. In those cases also, color quantization
+            is performed. Here we use k-means clustering for color quantization.
+         </p>
+         <p>A color image has 3 features, R,G,B. So we need to reshape the image to an array of <tt>Mx3</tt> size (<tt>M</tt> is number of pixels in image). And after the clustering, we apply centroid values (it is also R,G,B) to all pixels, such
+            that resulting image will have specified number of colors. And again we need to reshape it back to the shape of original image.
+         </p>
+         <h2 id="3">Code</h2>
+         <p>Load color image</p><pre class="codeinput">img = cv.imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'test1.png'</span>), <span class="keyword">...</span>
+    <span class="string">'Color'</span>,true, <span class="string">'ReduceScale'</span>,2);</pre><p>reshape RGB channels into Mx3 matrix, and convert to floating-point type</p><pre class="codeinput">Z = single(reshape(img, [], 3));
+whos <span class="string">img</span> <span class="string">Z</span></pre><pre class="codeoutput">  Name           Size                 Bytes  Class     Attributes
+
+  Z         106400x3                1276800  single              
+  img          266x400x3             319200  uint8               
+
+</pre><p>define clustering parameters</p><pre class="codeinput">opts = {<span class="string">'Initialization'</span>,<span class="string">'Random'</span>, <span class="string">'Attempts'</span>,10, <span class="keyword">...</span>
+    <span class="string">'Criteria'</span>,struct(<span class="string">'type'</span>,<span class="string">'Count+EPS'</span>, <span class="string">'maxCount'</span>,10, <span class="string">'epsilon'</span>,0.1)};</pre><p>perform clustering with various number of clusters</p><pre class="codeinput">K = [2 4 8];
+<span class="keyword">for</span> i=1:numel(K)
+    <span class="comment">% apply kmeans</span>
+    tic
+    [labels, centers] = cv.kmeans(Z, K(i), opts{:});
+    toc
+    whos <span class="string">centers</span>
+
+    <span class="comment">% Convert centroids back into 8-bit, and rebuild original image</span>
+    <span class="comment">% (note that labels are 0-based indices)</span>
+    centers = uint8(centers);
+    out = reshape(centers(labels(:)+1,:), size(img));
+
+    <span class="comment">% Show quantized result</span>
+    subplot(2,2,i+1), imshow(out), title(sprintf(<span class="string">'K = %d'</span>,K(i)))
+<span class="keyword">end</span>
+subplot(221), imshow(img), title(<span class="string">'Original image'</span>)</pre><pre class="codeoutput">Elapsed time is 0.222953 seconds.
+  Name         Size            Bytes  Class     Attributes
+
+  centers      2x3                24  single              
+
+Elapsed time is 0.245025 seconds.
+  Name         Size            Bytes  Class     Attributes
+
+  centers      4x3                48  single              
+
+Elapsed time is 0.292261 seconds.
+  Name         Size            Bytes  Class     Attributes
+
+  centers      8x3                96  single              
+
+</pre><img src="kmeans_color_quantize_demo_01.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% K-Means Color Quantization
+%
+% We will learn how to use |cv.kmeans| for data clustering of pixels to
+% perform color quantization.
+%
+% Sources:
+%
+% * <https://docs.opencv.org/3.2.0/d1/d5c/tutorial_py_kmeans_opencv.html>
+%
+
+%% Theory
+%
+% Color Quantization is the process of reducing number of colors in an image.
+% One reason to do so is to reduce the memory. Sometimes, some devices may
+% have limitation such that it can produce only limited number of colors. In
+% those cases also, color quantization is performed. Here we use k-means
+% clustering for color quantization.
+%
+% A color image has 3 features, R,G,B. So we need to reshape the image to an
+% array of |Mx3| size (|M| is number of pixels in image). And after the
+% clustering, we apply centroid values (it is also R,G,B) to all pixels, such
+% that resulting image will have specified number of colors. And again we need
+% to reshape it back to the shape of original image.
+
+%% Code
+
+%%
+% Load color image
+img = cv.imread(fullfile(mexopencv.root(),'test','test1.png'), ...
+    'Color',true, 'ReduceScale',2);
+
+%%
+% reshape RGB channels into Mx3 matrix, and convert to floating-point type
+Z = single(reshape(img, [], 3));
+whos img Z
+
+%%
+% define clustering parameters
+opts = {'Initialization','Random', 'Attempts',10, ...
+    'Criteria',struct('type','Count+EPS', 'maxCount',10, 'epsilon',0.1)};
+
+%%
+% perform clustering with various number of clusters
+K = [2 4 8];
+for i=1:numel(K)
+    % apply kmeans
+    tic
+    [labels, centers] = cv.kmeans(Z, K(i), opts{:});
+    toc
+    whos centers
+
+    % Convert centroids back into 8-bit, and rebuild original image
+    % (note that labels are 0-based indices)
+    centers = uint8(centers);
+    out = reshape(centers(labels(:)+1,:), size(img));
+
+    % Show quantized result
+    subplot(2,2,i+1), imshow(out), title(sprintf('K = %d',K(i)))
+end
+subplot(221), imshow(img), title('Original image')
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Graph-Based Image Segmentation demo</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="graphsegmentation_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Graph-Based Image Segmentation demo</h1>
+         <!--introduction-->
+         <p>A program demonstrating the use and capabilities of a particular graph based image segmentation algorithm described in:</p><pre>P. Felzenszwalb, D. Huttenlocher, "Efficient Graph-Based Image Segmentation"
+International Journal of Computer Vision, Vol. 59, No. 2, September 2004</pre><p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/ximgproc/samples/cpp/graphsegmentation_demo.cpp">https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/ximgproc/samples/cpp/graphsegmentation_demo.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Load image</a></li>
+               <li><a href="#3">Create object</a></li>
+               <li><a href="#4">Segment image</a></li>
+               <li><a href="#5">Show result</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Load image</h2><pre class="codeinput">in = imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'fruits.jpg'</span>));
+assert(~isempty(in), <span class="string">'Failed to load input image'</span>);</pre><h2 id="3">Create object</h2><pre class="codeinput">gs = cv.GraphSegmentation();
+gs.Sigma = 0.5;
+gs.K = 300;
+gs.MinSize = 100;</pre><h2 id="4">Segment image</h2><pre class="codeinput">cv.Utils.setUseOptimized(true);
+cv.Utils.setNumThreads(8);
+
+tic
+out = gs.processImage(in);
+toc
+
+nb_segs = numel(unique(out(:)));
+fprintf(<span class="string">'%d segments\n'</span>, nb_segs);</pre><pre class="codeoutput">Elapsed time is 0.157844 seconds.
+116 segments
+</pre><h2 id="5">Show result</h2><pre class="codeinput"><span class="keyword">if</span> false
+    res = zeros([size(out) 3], <span class="string">'double'</span>);
+    res(:,:,1) = mod(double(out) * 0.618033988749895 + 0.24443434, 1.2) * 360;
+    res(:,:,2) = 0.95;
+    res(:,:,3) = 0.80;
+    res = uint8(255 * cv.cvtColor(res, <span class="string">'HSV2RGB'</span>));
+<span class="keyword">else</span>
+    out = double(out) + 1;
+    res = label2rgb(out, jet(nb_segs), <span class="string">'k'</span>, <span class="string">'shuffle'</span>);
+<span class="keyword">end</span>
+imshow(res)</pre><img src="graphsegmentation_demo_01.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Graph-Based Image Segmentation demo
+% A program demonstrating the use and capabilities of a particular graph based
+% image segmentation algorithm described in:
+%
+%  P. Felzenszwalb, D. Huttenlocher, "Efficient Graph-Based Image Segmentation"
+%  International Journal of Computer Vision, Vol. 59, No. 2, September 2004
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/ximgproc/samples/cpp/graphsegmentation_demo.cpp>
+%
+
+%% Load image
+in = imread(fullfile(mexopencv.root(),'test','fruits.jpg'));
+assert(~isempty(in), 'Failed to load input image');
+
+%% Create object
+gs = cv.GraphSegmentation();
+gs.Sigma = 0.5;
+gs.K = 300;
+gs.MinSize = 100;
+
+%% Segment image
+cv.Utils.setUseOptimized(true);
+cv.Utils.setNumThreads(8);
+
+tic
+out = gs.processImage(in);
+toc
+
+nb_segs = numel(unique(out(:)));
+fprintf('%d segments\n', nb_segs);
+
+%% Show result
+if false
+    res = zeros([size(out) 3], 'double');
+    res(:,:,1) = mod(double(out) * 0.618033988749895 + 0.24443434, 1.2) * 360;
+    res(:,:,2) = 0.95;
+    res(:,:,3) = 0.80;
+    res = uint8(255 * cv.cvtColor(res, 'HSV2RGB'));
+else
+    out = double(out) + 1;
+    res = label2rgb(out, jet(nb_segs), 'k', 'shuffle');
+end
+imshow(res)
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

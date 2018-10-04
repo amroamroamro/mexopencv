@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Image Remapping</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="remap_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Image Remapping</h1>
+         <!--introduction-->
+         <p>In this demo, we show how to use the OpenCV function <tt>cv.remap</tt> to implement simple remapping routines.
+         </p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://docs.opencv.org/3.2.0/d1/da0/tutorial_remap.html">https://docs.opencv.org/3.2.0/d1/da0/tutorial_remap.html</a></li>
+               <li><a href="https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/tutorial_code/ImgTrans/Remap_Demo.cpp">https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/tutorial_code/ImgTrans/Remap_Demo.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Theory</a></li>
+               <li><a href="#3">Code</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Theory</h2>
+         <p>Remapping is the process of taking pixels from one place in the image and locating them in another position in a new image.</p>
+         <p>To accomplish the mapping process, it might be necessary to do some interpolation for non-integer pixel locations, since there
+            will not always be a one-to-one-pixel correspondence between source and destination images.
+         </p>
+         <p>We can express the remap for every pixel location <img src="remap_demo_eq18047527249248817779.png" alt="$(x,y)$" class="equation" width="32" height="15"> as:
+         </p>
+         <p><img src="remap_demo_eq02251949560647716294.png" alt="$$g(x,y) = f ( h(x,y) )$$" class="equation" width="123" height="15"></p>
+         <p>where <img src="remap_demo_eq07125573534594243024.png" alt="$g()$" class="equation" width="18" height="15"> is the remapped image, <img src="remap_demo_eq12779500023441233247.png" alt="$f()$" class="equation" width="19" height="15"> the source image and <img src="remap_demo_eq01612823812532016342.png" alt="$h(x,y)$" class="equation" width="41" height="15"> is the mapping function that operates on <img src="remap_demo_eq18047527249248817779.png" alt="$(x,y)$" class="equation" width="32" height="15">.
+         </p>
+         <p>Let's think in a quick example. Imagine that we have an image <img src="remap_demo_eq17419315245227113761.png" alt="$I$" class="equation" width="7" height="10"> and, say we want to do a remap such that:
+         </p>
+         <p><img src="remap_demo_eq07476501335245358855.png" alt="$$h(x,y) = (I.cols - x, y )$$" class="equation" width="149" height="15"></p>
+         <p>What would happen? It is easily seen that the image would flip in the <img src="remap_demo_eq12428413953531653171.png" alt="$x$" class="equation" width="8" height="7"> direction. For instance, consider the input image:
+         </p>
+         <p><img src="https://docs.opencv.org/3.2.0/Remap_Tutorial_Theory_0.jpg"></p>
+         <p>observe how the red circle changes positions with respect to x (considering <img src="remap_demo_eq12428413953531653171.png" alt="$x$" class="equation" width="8" height="7"> the horizontal direction):
+         </p>
+         <p><img src="https://docs.opencv.org/3.2.0/Remap_Tutorial_Theory_1.jpg"></p>
+         <p>In OpenCV, the function <tt>cv.remap</tt> offers a simple remapping implementation.
+         </p>
+         <h2 id="3">Code</h2>
+         <p>This program:</p>
+         <div>
+            <ul>
+               <li>Loads an image</li>
+               <li>Apply 1 of 4 different remapping processes to the image and display them   in a window.</li>
+            </ul>
+         </div>
+         <p>load input image</p><pre class="codeinput">src = imread(fullfile(mexopencv.root(), <span class="string">'test'</span>, <span class="string">'tsukuba.png'</span>));
+imshow(src), title(<span class="string">'Source'</span>)</pre><img src="remap_demo_01.png"><p>prepare for building mapping matrices (for x and y coordinates), we are going to perform 4 different mappings</p><pre class="codeinput">[rows,cols,~] = size(src);
+[X,Y] = meshgrid((1:cols)-1, (1:rows)-1);  <span class="comment">% 0-based indices</span>
+map = struct(<span class="string">'x'</span>,[], <span class="string">'y'</span>,[]);</pre><p>1) reduce the picture to half its size and center it in the middle</p><pre class="codeinput">map(1).x = zeros(rows,cols);
+map(1).y = zeros(rows,cols);
+idx = (X &gt; cols*0.25 &amp; X &lt; cols*0.75 &amp; Y &gt; rows*0.25 &amp; Y &lt; rows*0.75);
+map(1).x(idx) = 2*(X(idx) - cols*0.25) + 0.5;
+map(1).y(idx) = 2*(Y(idx) - rows*0.25) + 0.5;</pre><p>2) turn the image upside down (flip-y)</p><pre class="codeinput">map(2).x = X;
+map(2).y = rows - Y;</pre><p>3) reflect the image from left to right (flip-x)</p><pre class="codeinput">map(3).x = cols - X;
+map(3).y = Y;</pre><p>4) combination of 3 and 4 (flip-xy)</p><pre class="codeinput">map(4).x = cols - X;
+map(4).y = rows - Y;</pre><p>apply mapping matrices to source image, and show results</p><pre class="codeinput">pos = get(0, <span class="string">'DefaultFigurePosition'</span>);
+figure(<span class="string">'Position'</span>,pos.*[0.5 0.5 1.3 1.3])
+<span class="keyword">for</span> k=1:4
+    dst = cv.remap(src, map(k).x, map(k).y);
+    subplot(2,2,k), imshow(dst), title(sprintf(<span class="string">'map(%d)'</span>,k))
+<span class="keyword">end</span></pre><img src="remap_demo_02.png"><p>show mapping matrices</p><pre class="codeinput">figure(<span class="string">'Position'</span>,pos.*[0.5 1 2 1])
+<span class="keyword">for</span> k=1:4
+    subplot(2,4,k), imshow(map(k).x, []), title(sprintf(<span class="string">'map(%d).X'</span>,k))
+    subplot(2,4,k+4), imshow(map(k).y, []), title(sprintf(<span class="string">'map(%d).Y'</span>,k))
+<span class="keyword">end</span></pre><img src="remap_demo_03.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div><script type="text/x-mathjax-config">
+  // https://stackoverflow.com/a/14631703/97160
+  MathJax.Extension.myImg2jax = {
+    version: "1.0",
+    PreProcess: function (element) {
+      var images = element.getElementsByTagName("img");
+      for (var i = images.length - 1; i >= 0; i--) {
+        var img = images[i];
+        if (img.className === "equation") {
+          var match = img.alt.match(/^(\$\$?)([\s\S]*)\1$/m);
+          if (!match) continue;
+          var script = document.createElement("script");
+          script.type = "math/tex";
+          if (match[1] === "$$") {script.type += ";mode=display"}
+          MathJax.HTML.setScript(script, match[2]);
+          img.parentNode.replaceChild(script, img);
+        }
+      }
+    }
+  };
+  MathJax.Hub.Register.PreProcessor(["PreProcess", MathJax.Extension.myImg2jax]);
+  </script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML"></script>
+      <!--
+##### SOURCE BEGIN #####
+%% Image Remapping
+%
+% In this demo, we show how to use the OpenCV function |cv.remap| to implement
+% simple remapping routines.
+%
+% Sources:
+%
+% * <https://docs.opencv.org/3.2.0/d1/da0/tutorial_remap.html>
+% * <https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/tutorial_code/ImgTrans/Remap_Demo.cpp>
+%
+
+%% Theory
+%
+% Remapping is the process of taking pixels from one place in the image and
+% locating them in another position in a new image.
+%
+% To accomplish the mapping process, it might be necessary to do some
+% interpolation for non-integer pixel locations, since there will not always
+% be a one-to-one-pixel correspondence between source and destination images.
+%
+% We can express the remap for every pixel location $(x,y)$ as:
+%
+% $$g(x,y) = f ( h(x,y) )$$
+%
+% where $g()$ is the remapped image, $f()$ the source image and $h(x,y)$ is
+% the mapping function that operates on $(x,y)$.
+%
+% Let's think in a quick example. Imagine that we have an image $I$ and, say
+% we want to do a remap such that:
+%
+% $$h(x,y) = (I.cols - x, y )$$
+%
+% What would happen? It is easily seen that the image would flip in the $x$
+% direction. For instance, consider the input image:
+%
+% <<https://docs.opencv.org/3.2.0/Remap_Tutorial_Theory_0.jpg>>
+%
+% observe how the red circle changes positions with respect to x (considering
+% $x$ the horizontal direction):
+%
+% <<https://docs.opencv.org/3.2.0/Remap_Tutorial_Theory_1.jpg>>
+%
+% In OpenCV, the function |cv.remap| offers a simple remapping implementation.
+%
+
+%% Code
+%
+% This program:
+%
+% * Loads an image
+% * Apply 1 of 4 different remapping processes to the image and display them
+%   in a window.
+%
+
+%%
+% load input image
+src = imread(fullfile(mexopencv.root(), 'test', 'tsukuba.png'));
+imshow(src), title('Source')
+
+%%
+% prepare for building mapping matrices (for x and y coordinates),
+% we are going to perform 4 different mappings
+[rows,cols,~] = size(src);
+[X,Y] = meshgrid((1:cols)-1, (1:rows)-1);  % 0-based indices
+map = struct('x',[], 'y',[]);
+
+%%
+% 1) reduce the picture to half its size and center it in the middle
+map(1).x = zeros(rows,cols);
+map(1).y = zeros(rows,cols);
+idx = (X > cols*0.25 & X < cols*0.75 & Y > rows*0.25 & Y < rows*0.75);
+map(1).x(idx) = 2*(X(idx) - cols*0.25) + 0.5;
+map(1).y(idx) = 2*(Y(idx) - rows*0.25) + 0.5;
+
+%%
+% 2) turn the image upside down (flip-y)
+map(2).x = X;
+map(2).y = rows - Y;
+
+%%
+% 3) reflect the image from left to right (flip-x)
+map(3).x = cols - X;
+map(3).y = Y;
+
+%%
+% 4) combination of 3 and 4 (flip-xy)
+map(4).x = cols - X;
+map(4).y = rows - Y;
+
+%%
+% apply mapping matrices to source image, and show results
+pos = get(0, 'DefaultFigurePosition');
+figure('Position',pos.*[0.5 0.5 1.3 1.3])
+for k=1:4
+    dst = cv.remap(src, map(k).x, map(k).y);
+    subplot(2,2,k), imshow(dst), title(sprintf('map(%d)',k))
+end
+
+%%
+% show mapping matrices
+figure('Position',pos.*[0.5 1 2 1])
+for k=1:4
+    subplot(2,4,k), imshow(map(k).x, []), title(sprintf('map(%d).X',k))
+    subplot(2,4,k+4), imshow(map(k).y, []), title(sprintf('map(%d).Y',k))
+end
+
+##### SOURCE END #####
+--></body>
+</html>

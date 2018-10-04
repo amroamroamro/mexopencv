@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Extracting horizontal and vertical lines using morphology</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="morphology_demo_3.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Extracting horizontal and vertical lines using morphology</h1>
+         <!--introduction-->
+         <p>Use morphology transformations for extracting horizontal and vertical lines sample code</p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://docs.opencv.org/3.1.0/d1/dee/tutorial_moprh_lines_detection.html">https://docs.opencv.org/3.1.0/d1/dee/tutorial_moprh_lines_detection.html</a></li>
+               <li><a href="https://github.com/opencv/opencv/blob/3.1.0/samples/cpp/tutorial_code/ImgProc/Morphology_3.cpp">https://github.com/opencv/opencv/blob/3.1.0/samples/cpp/tutorial_code/ImgProc/Morphology_3.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Music Sheet image</a></li>
+               <li><a href="#6">Horizontal Lines</a></li>
+               <li><a href="#7">Vertical Lines</a></li>
+               <li><a href="#9">Smooth</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Music Sheet image</h2>
+         <p>Load the source image</p><pre class="codeinput">src = imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'notes.png'</span>));
+imshow(src), title(<span class="string">'source'</span>)</pre><img src="morphology_demo_3_01.png"><p>Transform source image to gray if it is not</p><pre class="codeinput"><span class="keyword">if</span> size(src,3) == 3
+    gray = cv.cvtColor(src, <span class="string">'RGB2GRAY'</span>);
+<span class="keyword">else</span>
+    gray = src;
+<span class="keyword">end</span></pre><p>Transform grayscale image to binary by applying adaptiveThreshold on the bitwise_not of gray</p><pre class="codeinput">assert(isinteger(gray), <span class="string">'Must be integer type for BITCMP to work'</span>);
+bw = cv.adaptiveThreshold(bitcmp(gray), <span class="string">'MaxValue'</span>,255, <span class="keyword">...</span>
+    <span class="string">'Method'</span>,<span class="string">'Mean'</span>, <span class="string">'Type'</span>,<span class="string">'Binary'</span>, <span class="string">'BlockSize'</span>,15, <span class="string">'C'</span>,-2);
+imshow(bw), title(<span class="string">'binray'</span>)</pre><img src="morphology_demo_3_02.png"><p>Create the images that will use to extract the horizontal and vertical lines</p><pre class="codeinput">horizontal = bw;
+vertical = bw;</pre><h2 id="6">Horizontal Lines</h2><pre class="codeinput"><span class="comment">% Specify size on horizontal axis</span>
+horizontalsize = fix(size(horizontal,2) / 30);
+
+<span class="comment">% Create structure element for extracting horizontal lines through morphology</span>
+<span class="comment">% operations</span>
+horizontalStructure = cv.getStructuringElement(<span class="keyword">...</span>
+    <span class="string">'Shape'</span>,<span class="string">'Rect'</span>, <span class="string">'KSize'</span>,[horizontalsize,1]);
+
+<span class="comment">% Apply morphology operations</span>
+horizontal = cv.erode(horizontal, <span class="string">'Element'</span>,horizontalStructure);
+horizontal = cv.dilate(horizontal, <span class="string">'Element'</span>,horizontalStructure);
+
+<span class="comment">% Show extracted horizontal lines</span>
+imshow(horizontal), title(<span class="string">'horizontal'</span>)</pre><img src="morphology_demo_3_03.png"><h2 id="7">Vertical Lines</h2><pre class="codeinput"><span class="comment">% Specify size on vertical axis</span>
+verticalsize = fix(size(horizontal,1) / 30);
+
+<span class="comment">% Create structure element for extracting vertical lines through morphology</span>
+<span class="comment">% operations</span>
+verticalStructure = cv.getStructuringElement(<span class="keyword">...</span>
+    <span class="string">'Shape'</span>,<span class="string">'Rect'</span>, <span class="string">'KSize'</span>,[1,verticalsize]);
+
+<span class="comment">% Apply morphology operations</span>
+vertical = cv.erode(vertical, <span class="string">'Element'</span>,verticalStructure);
+vertical = cv.dilate(vertical, <span class="string">'Element'</span>,verticalStructure);
+
+<span class="comment">% Show extracted vertical lines</span>
+imshow(vertical), title(<span class="string">'vertical'</span>)</pre><img src="morphology_demo_3_04.png"><p>Inverse vertical image</p><pre class="codeinput">vertical = bitcmp(vertical);
+<span class="comment">%imshow(vertical), title('vertical_bit', 'Interpreter','none')</span></pre><h2 id="9">Smooth</h2>
+         <p>Extract edges and smooth image according to the logic:</p>
+         <div>
+            <ol>
+               <li>extract edges</li>
+               <li>dilate(edges)</li>
+               <li>src.copyTo(smooth)</li>
+               <li>blur smooth img</li>
+               <li>smooth.copyTo(src, edges)</li>
+            </ol>
+         </div><pre class="codeinput"><span class="comment">% step 1</span>
+edges = cv.adaptiveThreshold(vertical, <span class="string">'MaxValue'</span>,255, <span class="keyword">...</span>
+    <span class="string">'Method'</span>,<span class="string">'Mean'</span>, <span class="string">'Type'</span>,<span class="string">'Binary'</span>, <span class="string">'BlockSize'</span>,3, <span class="string">'C'</span>,-2);
+
+<span class="comment">% step 2</span>
+kernel = ones(2,2,<span class="string">'uint8'</span>);
+edges = cv.dilate(edges, <span class="string">'Element'</span>,kernel);
+
+<span class="comment">% step 3</span>
+smooth = vertical;
+
+<span class="comment">% step 4</span>
+smooth = cv.blur(smooth, <span class="string">'KSize'</span>,[2 2]);
+
+<span class="comment">% step 5</span>
+vertical(edges~=0) = smooth(edges~=0);</pre><p>Show final result</p><pre class="codeinput">imshow(vertical), title(<span class="string">'smooth'</span>)</pre><img src="morphology_demo_3_05.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Extracting horizontal and vertical lines using morphology
+% Use morphology transformations for extracting horizontal and vertical lines
+% sample code
+%
+% Sources:
+%
+% * <https://docs.opencv.org/3.1.0/d1/dee/tutorial_moprh_lines_detection.html>
+% * <https://github.com/opencv/opencv/blob/3.1.0/samples/cpp/tutorial_code/ImgProc/Morphology_3.cpp>
+%
+
+%% Music Sheet image
+% Load the source image
+src = imread(fullfile(mexopencv.root(),'test','notes.png'));
+imshow(src), title('source')
+
+%%
+% Transform source image to gray if it is not
+if size(src,3) == 3
+    gray = cv.cvtColor(src, 'RGB2GRAY');
+else
+    gray = src;
+end
+
+%%
+% Transform grayscale image to binary by applying adaptiveThreshold on
+% the bitwise_not of gray
+assert(isinteger(gray), 'Must be integer type for BITCMP to work');
+bw = cv.adaptiveThreshold(bitcmp(gray), 'MaxValue',255, ...
+    'Method','Mean', 'Type','Binary', 'BlockSize',15, 'C',-2);
+imshow(bw), title('binray')
+
+%%
+% Create the images that will use to extract the horizontal and vertical lines
+horizontal = bw;
+vertical = bw;
+
+%% Horizontal Lines
+
+% Specify size on horizontal axis
+horizontalsize = fix(size(horizontal,2) / 30);
+
+% Create structure element for extracting horizontal lines through morphology
+% operations
+horizontalStructure = cv.getStructuringElement(...
+    'Shape','Rect', 'KSize',[horizontalsize,1]);
+
+% Apply morphology operations
+horizontal = cv.erode(horizontal, 'Element',horizontalStructure);
+horizontal = cv.dilate(horizontal, 'Element',horizontalStructure);
+
+% Show extracted horizontal lines
+imshow(horizontal), title('horizontal')
+
+%% Vertical Lines
+
+% Specify size on vertical axis
+verticalsize = fix(size(horizontal,1) / 30);
+
+% Create structure element for extracting vertical lines through morphology
+% operations
+verticalStructure = cv.getStructuringElement(...
+    'Shape','Rect', 'KSize',[1,verticalsize]);
+
+% Apply morphology operations
+vertical = cv.erode(vertical, 'Element',verticalStructure);
+vertical = cv.dilate(vertical, 'Element',verticalStructure);
+
+% Show extracted vertical lines
+imshow(vertical), title('vertical')
+
+%%
+% Inverse vertical image
+vertical = bitcmp(vertical);
+%imshow(vertical), title('vertical_bit', 'Interpreter','none')
+
+%% Smooth
+% Extract edges and smooth image according to the logic:
+%
+% # extract edges
+% # dilate(edges)
+% # src.copyTo(smooth)
+% # blur smooth img
+% # smooth.copyTo(src, edges)
+
+% step 1
+edges = cv.adaptiveThreshold(vertical, 'MaxValue',255, ...
+    'Method','Mean', 'Type','Binary', 'BlockSize',3, 'C',-2);
+
+% step 2
+kernel = ones(2,2,'uint8');
+edges = cv.dilate(edges, 'Element',kernel);
+
+% step 3
+smooth = vertical;
+
+% step 4
+smooth = cv.blur(smooth, 'KSize',[2 2]);
+
+% step 5
+vertical(edges~=0) = smooth(edges~=0);
+
+%%
+% Show final result
+imshow(vertical), title('smooth')
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

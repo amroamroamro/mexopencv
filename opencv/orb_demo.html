@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>ORB (Oriented FAST and Rotated BRIEF)</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="orb_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">ORB (Oriented FAST and Rotated BRIEF)</h1>
+         <!--introduction-->
+         <p>In this demo, we will see the basics of ORB.</p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://docs.opencv.org/3.2.0/d1/d89/tutorial_py_orb.html">https://docs.opencv.org/3.2.0/d1/d89/tutorial_py_orb.html</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Theory</a></li>
+               <li><a href="#3">ORB in OpenCV</a></li>
+               <li><a href="#8">Additional Resources</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Theory</h2>
+         <p>As an OpenCV enthusiast, the most important thing about the ORB is that it came from "OpenCV Labs". This algorithm was brought
+            up by Ethan Rublee, Vincent Rabaud, Kurt Konolige and Gary R. Bradski in their paper <b>ORB: An efficient alternative to SIFT or SURF</b> in 2011. As the title says, it is a good alternative to SIFT and SURF in computation cost, matching performance and mainly
+            the patents. Yes, SIFT and SURF are patented and you are supposed to pay them for its use. But ORB is not!
+         </p>
+         <p>ORB is basically a fusion of FAST keypoint detector and BRIEF descriptor with many modifications to enhance the performance.
+            First it use FAST to find keypoints, then apply Harris corner measure to find top N points among them. It also use pyramid
+            to produce multiscale-features. But one problem is that, FAST doesn't compute the orientation. So what about rotation invariance?
+            Authors came up with following modification.
+         </p>
+         <p>It computes the intensity weighted centroid of the patch with located corner at center. The direction of the vector from this
+            corner point to centroid gives the orientation. To improve the rotation invariance, moments are computed with x and y which
+            should be in a circular region of radius <img src="orb_demo_eq04958265083611378313.png" alt="$r$" class="equation" width="7" height="7">, where <img src="orb_demo_eq04958265083611378313.png" alt="$r$" class="equation" width="7" height="7"> is the size of the patch.
+         </p>
+         <p>Now for descriptors, ORB use BRIEF descriptors. But we have already seen that BRIEF performs poorly with rotation. So what
+            ORB does is to "steer" BRIEF according to the orientation of keypoints. For any feature set of <img src="orb_demo_eq08984225997457563733.png" alt="$n$" class="equation" width="9" height="7"> binary tests at location <img src="orb_demo_eq01142016630197873102.png" alt="$(x_i, y_i)$" class="equation" width="40" height="15">, define a <img src="orb_demo_eq10534733596555019829.png" alt="$2 \times n$" class="equation" width="33" height="11"> matrix, <img src="orb_demo_eq14663648698641962978.png" alt="$S$" class="equation" width="9" height="11"> which contains the coordinates of these pixels. Then using the orientation of patch, <img src="orb_demo_eq08288499342375314727.png" alt="$\theta$" class="equation" width="7" height="11">, its rotation matrix is found and rotates the <img src="orb_demo_eq14663648698641962978.png" alt="$S$" class="equation" width="9" height="11"> to get steered (rotated) version <img src="orb_demo_eq13967928138998142327.png" alt="$S_\theta$" class="equation" width="14" height="13">.
+         </p>
+         <p>ORB discretize the angle to increments of <img src="orb_demo_eq08959927304559719515.png" alt="$2 \pi /30$" class="equation" width="38" height="15"> (12 degrees), and construct a lookup table of precomputed BRIEF patterns. As long as the keypoint orientation <img src="orb_demo_eq08288499342375314727.png" alt="$\theta$" class="equation" width="7" height="11"> is consistent across views, the correct set of points <img src="orb_demo_eq13967928138998142327.png" alt="$S_\theta$" class="equation" width="14" height="13"> will be used to compute its descriptor.
+         </p>
+         <p>BRIEF has an important property that each bit feature has a large variance and a mean near 0.5. But once it is oriented along
+            keypoint direction, it loses this property and become more distributed. High variance makes a feature more discriminative,
+            since it responds differentially to inputs. Another desirable property is to have the tests uncorrelated, since then each
+            test will contribute to the result. To resolve all these, ORB runs a greedy search among all possible binary tests to find
+            the ones that have both high variance and means close to 0.5, as well as being uncorrelated. The result is called <b>rBRIEF</b>.
+         </p>
+         <p>For descriptor matching, multi-probe LSH which improves on the traditional LSH, is used. The paper says ORB is much faster
+            than SURF and SIFT and ORB descriptor works better than SURF. ORB is a good choice in low-power devices for panorama stitching
+            etc.
+         </p>
+         <h2 id="3">ORB in OpenCV</h2>
+         <p>As usual, we have to create an ORB object with the function <tt>cv.ORB</tt>, or using feature2d common interface. It has a number of optional parameters. Most useful ones are <tt>MaxFeatures</tt> which denotes maximum number of features to be retained (by default 500), <tt>ScoreType</tt> which denotes whether Harris score or FAST score to rank the features (by default, Harris score) etc. Another parameter,
+            <tt>WTA_K</tt> decides number of points that produce each element of the oriented BRIEF descriptor. By default it is two, i.e selects two
+            points at a time. In that case, for matching, <tt>Hamming</tt> distance is used. If <tt>WTA_K</tt> is 3 or 4, which takes 3 or 4 points to produce BRIEF descriptor, then matching distance is defined by <tt>Hamming2</tt>.
+         </p>
+         <p>load source image</p><pre class="codeinput">img = cv.imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'butterfly.jpg'</span>), <span class="keyword">...</span>
+    <span class="string">'Grayscale'</span>,true);</pre><p>detect keypoints</p><pre class="codeinput">orb = cv.ORB();
+keypoints = orb.detect(img);
+whos <span class="string">keypoints</span></pre><pre class="codeoutput">  Name           Size              Bytes  Class     Attributes
+
+  keypoints      1x500            364384  struct              
+
+</pre><p>compute the descriptors</p><pre class="codeinput">descriptors = orb.compute(img, keypoints);
+whos <span class="string">descriptors</span></pre><pre class="codeoutput">  Name               Size            Bytes  Class    Attributes
+
+  descriptors      500x32            16000  uint8              
+
+</pre><p>draw keypoints (only location, not size and orientation)</p><pre class="codeinput">out = cv.drawKeypoints(img, keypoints, <span class="string">'Color'</span>,[255 0 0]);
+imshow(out), title(<span class="string">'ORB'</span>)</pre><img src="orb_demo_01.png"><h2 id="8">Additional Resources</h2>
+         <div>
+            <ul>
+               <li>Ethan Rublee, Vincent Rabaud, Kurt Konolige, Gary R. Bradski.   "ORB: An efficient alternative to SIFT or SURF". ICCV 2011:
+                  2564-2571.
+               </li>
+            </ul>
+         </div>
+         <div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div><script type="text/x-mathjax-config">
+  // https://stackoverflow.com/a/14631703/97160
+  MathJax.Extension.myImg2jax = {
+    version: "1.0",
+    PreProcess: function (element) {
+      var images = element.getElementsByTagName("img");
+      for (var i = images.length - 1; i >= 0; i--) {
+        var img = images[i];
+        if (img.className === "equation") {
+          var match = img.alt.match(/^(\$\$?)([\s\S]*)\1$/m);
+          if (!match) continue;
+          var script = document.createElement("script");
+          script.type = "math/tex";
+          if (match[1] === "$$") {script.type += ";mode=display"}
+          MathJax.HTML.setScript(script, match[2]);
+          img.parentNode.replaceChild(script, img);
+        }
+      }
+    }
+  };
+  MathJax.Hub.Register.PreProcessor(["PreProcess", MathJax.Extension.myImg2jax]);
+  </script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML"></script>
+      <!--
+##### SOURCE BEGIN #####
+%% ORB (Oriented FAST and Rotated BRIEF)
+%
+% In this demo, we will see the basics of ORB.
+%
+% Sources:
+%
+% * <https://docs.opencv.org/3.2.0/d1/d89/tutorial_py_orb.html>
+%
+
+%% Theory
+%
+% As an OpenCV enthusiast, the most important thing about the ORB is that it
+% came from "OpenCV Labs". This algorithm was brought up by Ethan Rublee,
+% Vincent Rabaud, Kurt Konolige and Gary R. Bradski in their paper
+% *ORB: An efficient alternative to SIFT or SURF* in 2011. As the title says,
+% it is a good alternative to SIFT and SURF in computation cost, matching
+% performance and mainly the patents. Yes, SIFT and SURF are patented and you
+% are supposed to pay them for its use. But ORB is not!
+%
+% ORB is basically a fusion of FAST keypoint detector and BRIEF descriptor
+% with many modifications to enhance the performance. First it use FAST to
+% find keypoints, then apply Harris corner measure to find top N points among
+% them. It also use pyramid to produce multiscale-features. But one problem
+% is that, FAST doesn't compute the orientation. So what about rotation
+% invariance? Authors came up with following modification.
+%
+% It computes the intensity weighted centroid of the patch with located corner
+% at center. The direction of the vector from this corner point to centroid
+% gives the orientation. To improve the rotation invariance, moments are
+% computed with x and y which should be in a circular region of radius $r$,
+% where $r$ is the size of the patch.
+%
+% Now for descriptors, ORB use BRIEF descriptors. But we have already seen
+% that BRIEF performs poorly with rotation. So what ORB does is to "steer"
+% BRIEF according to the orientation of keypoints. For any feature set of
+% $n$ binary tests at location $(x_i, y_i)$, define a $2 \times n$ matrix,
+% $S$ which contains the coordinates of these pixels. Then using the
+% orientation of patch, $\theta$, its rotation matrix is found and rotates
+% the $S$ to get steered (rotated) version $S_\theta$.
+%
+% ORB discretize the angle to increments of $2 \pi /30$ (12 degrees), and
+% construct a lookup table of precomputed BRIEF patterns. As long as the
+% keypoint orientation $\theta$ is consistent across views, the correct set of
+% points $S_\theta$ will be used to compute its descriptor.
+%
+% BRIEF has an important property that each bit feature has a large variance
+% and a mean near 0.5. But once it is oriented along keypoint direction, it
+% loses this property and become more distributed. High variance makes a
+% feature more discriminative, since it responds differentially to inputs.
+% Another desirable property is to have the tests uncorrelated, since then
+% each test will contribute to the result. To resolve all these, ORB runs a
+% greedy search among all possible binary tests to find the ones that have
+% both high variance and means close to 0.5, as well as being uncorrelated.
+% The result is called *rBRIEF*.
+%
+% For descriptor matching, multi-probe LSH which improves on the traditional
+% LSH, is used. The paper says ORB is much faster than SURF and SIFT and ORB
+% descriptor works better than SURF. ORB is a good choice in low-power devices
+% for panorama stitching etc.
+%
+
+%% ORB in OpenCV
+%
+% As usual, we have to create an ORB object with the function |cv.ORB|, or
+% using feature2d common interface. It has a number of optional parameters.
+% Most useful ones are |MaxFeatures| which denotes maximum number of features
+% to be retained (by default 500), |ScoreType| which denotes whether Harris
+% score or FAST score to rank the features (by default, Harris score) etc.
+% Another parameter, |WTA_K| decides number of points that produce each
+% element of the oriented BRIEF descriptor. By default it is two, i.e selects
+% two points at a time. In that case, for matching, |Hamming| distance is
+% used. If |WTA_K| is 3 or 4, which takes 3 or 4 points to produce BRIEF
+% descriptor, then matching distance is defined by |Hamming2|.
+%
+
+%%
+% load source image
+img = cv.imread(fullfile(mexopencv.root(),'test','butterfly.jpg'), ...
+    'Grayscale',true);
+
+%%
+% detect keypoints
+orb = cv.ORB();
+keypoints = orb.detect(img);
+whos keypoints
+
+%%
+% compute the descriptors
+descriptors = orb.compute(img, keypoints);
+whos descriptors
+
+%%
+% draw keypoints (only location, not size and orientation)
+out = cv.drawKeypoints(img, keypoints, 'Color',[255 0 0]);
+imshow(out), title('ORB')
+
+%% Additional Resources
+%
+% * Ethan Rublee, Vincent Rabaud, Kurt Konolige, Gary R. Bradski.
+%   "ORB: An efficient alternative to SIFT or SURF". ICCV 2011: 2564-2571.
+%
+
+##### SOURCE END #####
+--></body>
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>FAST Algorithm for Corner Detection</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="feature_detector_fast_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">FAST Algorithm for Corner Detection</h1>
+         <!--introduction-->
+         <p>In this demo, we will:</p>
+         <div>
+            <ul>
+               <li>understand the basics of FAST algorithm</li>
+               <li>find corners using OpenCV functionalities for FAST algorithm.</li>
+            </ul>
+         </div>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://docs.opencv.org/3.2.0/df/d0c/tutorial_py_fast.html">https://docs.opencv.org/3.2.0/df/d0c/tutorial_py_fast.html</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Theory</a></li>
+               <li><a href="#3">Feature Detection using FAST</a></li>
+               <li><a href="#4">Machine Learning a Corner Detector</a></li>
+               <li><a href="#5">Non-maximal Suppression</a></li>
+               <li><a href="#6">Summary</a></li>
+               <li><a href="#7">FAST Feature Detector in OpenCV</a></li>
+               <li><a href="#12">Additional Resources</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Theory</h2>
+         <p>We saw several feature detectors and many of them are really good. But when looking from a real-time application point of
+            view, they are not fast enough. One best example would be SLAM (Simultaneous Localization and Mapping) mobile robot which
+            have limited computational resources.
+         </p>
+         <p>As a solution to this, FAST (Features from Accelerated Segment Test) algorithm was proposed by Edward Rosten and Tom Drummond
+            in their paper "Machine learning for high-speed corner detection" in 2006 (later revised it in 2010). A basic summary of the
+            algorithm is presented below. Refer to the original paper for more details (All the images are taken from original paper).
+         </p>
+         <h2 id="3">Feature Detection using FAST</h2>
+         <div>
+            <ul>
+               <li>Select a pixel <img src="feature_detector_fast_demo_eq09941021013676836398.png" alt="$p$" class="equation" width="8" height="10"> in the image which is to be identified as an interest   point or not. Let its intensity be <img src="feature_detector_fast_demo_eq02677760516104285235.png" alt="$I_p$" class="equation" width="12" height="15">.
+               </li>
+               <li>Select appropriate threshold value <img src="feature_detector_fast_demo_eq12656067504604335951.png" alt="$t$" class="equation" width="5" height="10">.
+               </li>
+               <li>Consider a circle of 16 pixels around the pixel under test (See the image   below)</li>
+            </ul>
+         </div>
+         <p><img src="https://docs.opencv.org/3.2.0/fast_speedtest.jpg"></p>
+         <div>
+            <ul>
+               <li>Now the pixel <img src="feature_detector_fast_demo_eq09941021013676836398.png" alt="$p$" class="equation" width="8" height="10"> is a corner if there exists a set of <img src="feature_detector_fast_demo_eq08984225997457563733.png" alt="$n$" class="equation" width="9" height="7"> contiguous   pixels in the circle (of 16 pixels) which are all brighter than <img src="feature_detector_fast_demo_eq15074488308400553913.png" alt="$I_p + t$" class="equation" width="35" height="15">,   or all darker than <img src="feature_detector_fast_demo_eq02438389715371492131.png" alt="$I_p - t$" class="equation" width="35" height="15"> (Shown as white dash lines in the above   image). <img src="feature_detector_fast_demo_eq08984225997457563733.png" alt="$n$" class="equation" width="9" height="7"> was chosen to be 12.
+               </li>
+               <li>A <b>high-speed test</b> was proposed to exclude a large number of non-corners.   This test examines only the four pixels at 1, 9, 5 and 13 (First
+                  1 and 9   are tested if they are too brighter or darker. If so, then checks 5 and   13). If <img src="feature_detector_fast_demo_eq09941021013676836398.png" alt="$p$" class="equation" width="8" height="10"> is a corner, then at least three of these must all be brighter   than <img src="feature_detector_fast_demo_eq15074488308400553913.png" alt="$I_p + t$" class="equation" width="35" height="15"> or darker than <img src="feature_detector_fast_demo_eq02438389715371492131.png" alt="$I_p - t$" class="equation" width="35" height="15">. If neither of these is the case,   then <img src="feature_detector_fast_demo_eq09941021013676836398.png" alt="$p$" class="equation" width="8" height="10"> cannot be a corner. The full segment test criterion can then be   applied to the passed candidates by examining all pixels
+                  in the circle.
+               </li>
+            </ul>
+         </div>
+         <p>This detector in itself exhibits high performance, but there are several weaknesses:</p>
+         <div>
+            <ul>
+               <li>It does not reject as many candidates for <tt>n &lt; 12</tt>.
+               </li>
+               <li>The choice of pixels is not optimal because its efficiency depends on   ordering of the questions and distribution of corner
+                  appearances.
+               </li>
+               <li>Results of high-speed tests are thrown away.</li>
+               <li>Multiple features are detected adjacent to one another.</li>
+            </ul>
+         </div>
+         <p>First 3 points are addressed with a machine learning approach. Last one is addressed using non-maximal suppression.</p>
+         <h2 id="4">Machine Learning a Corner Detector</h2>
+         <div>
+            <ul>
+               <li>Select a set of images for training (preferably from the target   application domain)</li>
+               <li>Run FAST algorithm in every images to find feature points.</li>
+               <li>For every feature point, store the 16 pixels around it as a vector. Do it   for all the images to get feature vector <img src="feature_detector_fast_demo_eq02661806082982697695.png" alt="$P$" class="equation" width="11" height="10">.
+               </li>
+               <li>Each pixel (say <img src="feature_detector_fast_demo_eq12428413953531653171.png" alt="$x$" class="equation" width="8" height="7">) in these 16 pixels can have one of the following   three states:
+               </li>
+            </ul>
+         </div>
+         <p><img src="https://docs.opencv.org/3.2.0/fast_eqns.jpg"></p>
+         <div>
+            <ul>
+               <li>Depending on these states, the feature vector <img src="feature_detector_fast_demo_eq02661806082982697695.png" alt="$P$" class="equation" width="11" height="10"> is subdivided into 3   subsets, <img src="feature_detector_fast_demo_eq05980515847753708441.png" alt="$P_d$" class="equation" width="14" height="13">, <img src="feature_detector_fast_demo_eq12895001106094629224.png" alt="$P_s$" class="equation" width="14" height="13">, <img src="feature_detector_fast_demo_eq17770086855045568559.png" alt="$P_b$" class="equation" width="14" height="13">.
+               </li>
+               <li>Define a new boolean variable, <img src="feature_detector_fast_demo_eq04301653670133881862.png" alt="$K_p$" class="equation" width="18" height="15">, which is true if <img src="feature_detector_fast_demo_eq09941021013676836398.png" alt="$p$" class="equation" width="8" height="10"> is a corner and   false otherwise.
+               </li>
+               <li>Use the ID3 algorithm (decision tree classifier) to query each subset   using the variable <img src="feature_detector_fast_demo_eq04301653670133881862.png" alt="$K_p$" class="equation" width="18" height="15"> for the knowledge about the true class. It   selects the <img src="feature_detector_fast_demo_eq12428413953531653171.png" alt="$x$" class="equation" width="8" height="7"> which yields the most information about whether the   candidate pixel is a corner, measured by the entropy of <img src="feature_detector_fast_demo_eq04301653670133881862.png" alt="$K_p$" class="equation" width="18" height="15">.
+               </li>
+               <li>This is recursively applied to all the subsets until its entropy is zero.</li>
+               <li>The decision tree so created is used for fast detection in other images.</li>
+            </ul>
+         </div>
+         <h2 id="5">Non-maximal Suppression</h2>
+         <p>Detecting multiple interest points in adjacent locations is another problem. It is solved by using Non-maximum Suppression.</p>
+         <div>
+            <ul>
+               <li>Compute a score function, <img src="feature_detector_fast_demo_eq02739270504201626537.png" alt="$V$" class="equation" width="11" height="11"> for all the detected feature points. <img src="feature_detector_fast_demo_eq02739270504201626537.png" alt="$V$" class="equation" width="11" height="11"> is   the sum of absolute difference between <img src="feature_detector_fast_demo_eq09941021013676836398.png" alt="$p$" class="equation" width="8" height="10"> and 16 surrounding pixels   values.
+               </li>
+               <li>Consider two adjacent keypoints and compute their <img src="feature_detector_fast_demo_eq02739270504201626537.png" alt="$V$" class="equation" width="11" height="11"> values.
+               </li>
+               <li>Discard the one with lower <img src="feature_detector_fast_demo_eq02739270504201626537.png" alt="$V$" class="equation" width="11" height="11"> value.
+               </li>
+            </ul>
+         </div>
+         <h2 id="6">Summary</h2>
+         <p>It is several times faster than other existing corner detectors.</p>
+         <p>But it is not robust to high levels of noise. It is dependant on a threshold.</p>
+         <h2 id="7">FAST Feature Detector in OpenCV</h2>
+         <p>It is called as any other feature detector in OpenCV. If you want, you can specify the threshold, whether non-maximum suppression
+            to be applied or not, the neighborhood to be used etc.
+         </p>
+         <p>For the neighborhood, three flags are defined, <tt>TYPE_5_8</tt>, <tt>TYPE_7_12</tt>, and <tt>TYPE_9_16</tt>. Below is a simple code on how to detect and draw the FAST feature points.
+         </p>
+         <p>load source image</p><pre class="codeinput">img = cv.imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'blox.jpg'</span>), <span class="string">'Grayscale'</span>,true);</pre><p>create FAST object with default values, and find keypoints</p><pre class="codeinput">fast = cv.FastFeatureDetector();
+kp1 = fast.detect(img);
+fprintf(<span class="string">'%d keypoints with NonmaxSuppression\n'</span>, numel(kp1));</pre><pre class="codeoutput">431 keypoints with NonmaxSuppression
+</pre><p>disable <tt>NonmaxSuppression</tt> and find keypoints
+         </p><pre class="codeinput">fast.NonmaxSuppression = false;
+kp2 = fast.detect(img);
+fprintf(<span class="string">'%d keypoints without NonmaxSuppression\n'</span>, numel(kp2));</pre><pre class="codeoutput">1575 keypoints without NonmaxSuppression
+</pre><p>draw keypoints from both cases, and show results</p><pre class="codeinput">out1 = cv.drawKeypoints(img, kp1, <span class="string">'Color'</span>,[255 0 0]);
+out2 = cv.drawKeypoints(img, kp2, <span class="string">'Color'</span>,[255 0 0]);
+subplot(121), imshow(out1), title(<span class="string">'FAST w/ NonmaxSuppression'</span>)
+subplot(122), imshow(out2), title(<span class="string">'FAST w/o NonmaxSuppression'</span>)</pre><img src="feature_detector_fast_demo_01.png"><h2 id="12">Additional Resources</h2>
+         <div>
+            <ul>
+               <li>Edward Rosten and Tom Drummond, "Machine learning for high speed corner   detection" in 9th European Conference on Computer
+                  Vision, vol. 1, 2006,   pp. 430-443.
+               </li>
+               <li>Edward Rosten, Reid Porter, and Tom Drummond, "Faster and better: a   machine learning approach to corner detection" in IEEE
+                  Trans. Pattern   Analysis and Machine Intelligence, 2010, vol 32, pp. 105-119.
+               </li>
+            </ul>
+         </div>
+         <div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div><script type="text/x-mathjax-config">
+  // https://stackoverflow.com/a/14631703/97160
+  MathJax.Extension.myImg2jax = {
+    version: "1.0",
+    PreProcess: function (element) {
+      var images = element.getElementsByTagName("img");
+      for (var i = images.length - 1; i >= 0; i--) {
+        var img = images[i];
+        if (img.className === "equation") {
+          var match = img.alt.match(/^(\$\$?)([\s\S]*)\1$/m);
+          if (!match) continue;
+          var script = document.createElement("script");
+          script.type = "math/tex";
+          if (match[1] === "$$") {script.type += ";mode=display"}
+          MathJax.HTML.setScript(script, match[2]);
+          img.parentNode.replaceChild(script, img);
+        }
+      }
+    }
+  };
+  MathJax.Hub.Register.PreProcessor(["PreProcess", MathJax.Extension.myImg2jax]);
+  </script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML"></script>
+      <!--
+##### SOURCE BEGIN #####
+%% FAST Algorithm for Corner Detection
+%
+% In this demo, we will:
+%
+% * understand the basics of FAST algorithm
+% * find corners using OpenCV functionalities for FAST algorithm.
+%
+% Sources:
+%
+% * <https://docs.opencv.org/3.2.0/df/d0c/tutorial_py_fast.html>
+%
+
+%% Theory
+%
+% We saw several feature detectors and many of them are really good. But when
+% looking from a real-time application point of view, they are not fast
+% enough. One best example would be SLAM (Simultaneous Localization and
+% Mapping) mobile robot which have limited computational resources.
+%
+% As a solution to this, FAST (Features from Accelerated Segment Test)
+% algorithm was proposed by Edward Rosten and Tom Drummond in their paper
+% "Machine learning for high-speed corner detection" in 2006 (later revised it
+% in 2010). A basic summary of the algorithm is presented below. Refer to the
+% original paper for more details (All the images are taken from original
+% paper).
+%
+%% Feature Detection using FAST
+%
+% * Select a pixel $p$ in the image which is to be identified as an interest
+%   point or not. Let its intensity be $I_p$.
+% * Select appropriate threshold value $t$.
+% * Consider a circle of 16 pixels around the pixel under test (See the image
+%   below)
+%
+% <<https://docs.opencv.org/3.2.0/fast_speedtest.jpg>>
+%
+% * Now the pixel $p$ is a corner if there exists a set of $n$ contiguous
+%   pixels in the circle (of 16 pixels) which are all brighter than $I_p + t$,
+%   or all darker than $I_p - t$ (Shown as white dash lines in the above
+%   image). $n$ was chosen to be 12.
+% * A *high-speed test* was proposed to exclude a large number of non-corners.
+%   This test examines only the four pixels at 1, 9, 5 and 13 (First 1 and 9
+%   are tested if they are too brighter or darker. If so, then checks 5 and
+%   13). If $p$ is a corner, then at least three of these must all be brighter
+%   than $I_p + t$ or darker than $I_p - t$. If neither of these is the case,
+%   then $p$ cannot be a corner. The full segment test criterion can then be
+%   applied to the passed candidates by examining all pixels in the circle.
+%
+% This detector in itself exhibits high performance, but there are several
+% weaknesses:
+%
+% * It does not reject as many candidates for |n < 12|.
+% * The choice of pixels is not optimal because its efficiency depends on
+%   ordering of the questions and distribution of corner appearances.
+% * Results of high-speed tests are thrown away.
+% * Multiple features are detected adjacent to one another.
+%
+% First 3 points are addressed with a machine learning approach. Last one is
+% addressed using non-maximal suppression.
+%
+%% Machine Learning a Corner Detector
+%
+% * Select a set of images for training (preferably from the target
+%   application domain)
+% * Run FAST algorithm in every images to find feature points.
+% * For every feature point, store the 16 pixels around it as a vector. Do it
+%   for all the images to get feature vector $P$.
+% * Each pixel (say $x$) in these 16 pixels can have one of the following
+%   three states:
+%
+% <<https://docs.opencv.org/3.2.0/fast_eqns.jpg>>
+%
+% * Depending on these states, the feature vector $P$ is subdivided into 3
+%   subsets, $P_d$, $P_s$, $P_b$.
+% * Define a new boolean variable, $K_p$, which is true if $p$ is a corner and
+%   false otherwise.
+% * Use the ID3 algorithm (decision tree classifier) to query each subset
+%   using the variable $K_p$ for the knowledge about the true class. It
+%   selects the $x$ which yields the most information about whether the
+%   candidate pixel is a corner, measured by the entropy of $K_p$.
+% * This is recursively applied to all the subsets until its entropy is zero.
+% * The decision tree so created is used for fast detection in other images.
+%
+%% Non-maximal Suppression
+%
+% Detecting multiple interest points in adjacent locations is another problem.
+% It is solved by using Non-maximum Suppression.
+%
+% * Compute a score function, $V$ for all the detected feature points. $V$ is
+%   the sum of absolute difference between $p$ and 16 surrounding pixels
+%   values.
+% * Consider two adjacent keypoints and compute their $V$ values.
+% * Discard the one with lower $V$ value.
+%
+%% Summary
+%
+% It is several times faster than other existing corner detectors.
+%
+% But it is not robust to high levels of noise. It is dependant on a
+% threshold.
+%
+
+%% FAST Feature Detector in OpenCV
+%
+% It is called as any other feature detector in OpenCV. If you want, you can
+% specify the threshold, whether non-maximum suppression to be applied or not,
+% the neighborhood to be used etc.
+%
+% For the neighborhood, three flags are defined, |TYPE_5_8|, |TYPE_7_12|, and
+% |TYPE_9_16|. Below is a simple code on how to detect and draw the FAST
+% feature points.
+%
+
+%%
+% load source image
+img = cv.imread(fullfile(mexopencv.root(),'test','blox.jpg'), 'Grayscale',true);
+
+%%
+% create FAST object with default values, and find keypoints
+fast = cv.FastFeatureDetector();
+kp1 = fast.detect(img);
+fprintf('%d keypoints with NonmaxSuppression\n', numel(kp1));
+
+%%
+% disable |NonmaxSuppression| and find keypoints
+fast.NonmaxSuppression = false;
+kp2 = fast.detect(img);
+fprintf('%d keypoints without NonmaxSuppression\n', numel(kp2));
+
+%%
+% draw keypoints from both cases, and show results
+out1 = cv.drawKeypoints(img, kp1, 'Color',[255 0 0]);
+out2 = cv.drawKeypoints(img, kp2, 'Color',[255 0 0]);
+subplot(121), imshow(out1), title('FAST w/ NonmaxSuppression')
+subplot(122), imshow(out2), title('FAST w/o NonmaxSuppression')
+
+%% Additional Resources
+%
+% * Edward Rosten and Tom Drummond, "Machine learning for high speed corner
+%   detection" in 9th European Conference on Computer Vision, vol. 1, 2006,
+%   pp. 430-443.
+% * Edward Rosten, Reid Porter, and Tom Drummond, "Faster and better: a
+%   machine learning approach to corner detection" in IEEE Trans. Pattern
+%   Analysis and Machine Intelligence, 2010, vol 32, pp. 105-119.
+%
+
+##### SOURCE END #####
+--></body>
+</html>

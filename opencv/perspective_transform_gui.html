@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Interactive Perspective Transformation</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="perspective_transform_gui.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Interactive Perspective Transformation</h1>
+         <p>This program demonstrates Perspective Transformation.</p>
+         <p>In this sample you will learn how to use the following OpenCV functions:</p>
+         <div>
+            <ul>
+               <li><a href="matlab:doc('cv.getPerspectiveTransform')">cv.getPerspectiveTransform</a></li>
+               <li><a href="matlab:doc('cv.warpPerspective')">cv.warpPerspective</a></li>
+               <li><a href="matlab:doc('cv.perspectiveTransform')">cv.perspectiveTransform</a></li>
+            </ul>
+         </div><pre class="codeinput"><span class="keyword">function</span> varargout = perspective_transform_gui(im)
+    <span class="comment">% load source image</span>
+    <span class="keyword">if</span> nargin &lt; 1
+        img = imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'fruits.jpg'</span>));
+    <span class="keyword">elseif</span> ischar(im)
+        img = imread(im);
+    <span class="keyword">else</span>
+        img = im;
+    <span class="keyword">end</span>
+
+    <span class="comment">% create the UI</span>
+    h = buildGUI(img);
+    <span class="keyword">if</span> nargout &gt; 0, varargout{1} = h; <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> onHelp(~,~)
+    <span class="comment">%ONHELP  Display usage help dialog</span>
+
+    helpdlg({
+        <span class="string">'This program demonstrates Perspective Transformation.'</span>
+        <span class="string">''</span>
+        <span class="string">'Drag the image corners using the mouse: Move the pointer over a'</span>
+        <span class="string">'vertex. The pointer changes to a circle. Click and drag the vertex'</span>
+        <span class="string">'to its new position.'</span>
+        <span class="string">''</span>
+        <span class="string">'You can also drag the image itself: move the pointer inside the'</span>
+        <span class="string">'quadilateral. The pointer changes to a fleur shape. Click and drag'</span>
+        <span class="string">'the mouse to move the image.'</span>
+        <span class="string">''</span>
+        <span class="string">'Note: you must not add or remove points from the polygon.'</span>
+        <span class="string">'The cv.getPerspectiveTransform function requires exactly'</span>
+        <span class="string">'4 points to estimate the homography.'</span>
+        <span class="string">'Also the function works best if no three points are collinear.'</span>
+    });
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> onDrag(newpos, handles)
+    <span class="comment">%ONDRAG  Event handler for impoly</span>
+
+    <span class="comment">% compute the perspective transform matrix from matching corners</span>
+    H = cv.getPerspectiveTransform(handles.pos, newpos);
+
+    <span class="comment">% trigger redraw with the new homography</span>
+    redraw(handles, H);
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> redraw(handles, H)
+    <span class="comment">%REDRAW  Warp and repaint image</span>
+
+    <span class="comment">% apply the perspective transformation on the source image</span>
+    img2 = cv.warpPerspective(handles.img, H);
+
+    <span class="comment">% display warped image and homography matrix</span>
+    set(handles.hImg, <span class="string">'CData'</span>,img2);
+    set(handles.hTxt, <span class="string">'String'</span>,mat2str_latex(H));
+    drawnow <span class="string">limitrate</span>;
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> showModalDialog(~,~,handles)
+    <span class="comment">%SHOWMODELDIALOG  Display dialog to edit matrix</span>
+
+    <span class="comment">% prompt for matrix using a model dialog</span>
+    d = dialog(<span class="string">'Position'</span>,[50 50 280 140], <span class="string">'Resize'</span>,<span class="string">'off'</span>, <span class="string">'Name'</span>,<span class="string">'Homography'</span>);
+    movegui(d, <span class="string">'center'</span>);
+    uicontrol(<span class="string">'Parent'</span>,d, <span class="string">'Style'</span>,<span class="string">'push'</span>, <span class="string">'Position'</span>,[80 10 60 20], <span class="keyword">...</span>
+        <span class="string">'String'</span>,<span class="string">'Ok'</span>, <span class="string">'Callback'</span>,{@onDialogClose,true});
+    uicontrol(<span class="string">'Parent'</span>,d, <span class="string">'Style'</span>,<span class="string">'push'</span>, <span class="string">'Position'</span>,[140 10 60 20], <span class="keyword">...</span>
+        <span class="string">'String'</span>,<span class="string">'Cancel'</span>, <span class="string">'Callback'</span>,{@onDialogClose,false});
+    t = uitable(d, <span class="string">'Position'</span>,[15 40 250 90], <span class="keyword">...</span>
+        <span class="string">'Data'</span>,eye(3), <span class="string">'ColumnWidth'</span>,{70}, <span class="string">'ColumnEditable'</span>,true, <span class="keyword">...</span>
+        <span class="string">'TooltipString'</span>,<span class="string">'fill the 3x3 homography matrix'</span>);
+
+    <span class="comment">% wait for dialog to close before returning</span>
+    uiwait(d);
+
+    <span class="keyword">function</span> onDialogClose(~,~,flag)
+        H = get(t, <span class="string">'Data'</span>);  <span class="comment">% get entered matrix</span>
+        delete(gcf);         <span class="comment">% close dialog</span>
+        <span class="keyword">if</span> flag &amp;&amp; ~any(isnan(H(:)))
+            <span class="comment">% update impoly position</span>
+            newpos = cv.perspectiveTransform(handles.pos, H);
+            setPosition(handles.hPoly, newpos);
+            <span class="comment">% transform image</span>
+            redraw(handles, H);
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> str = mat2str_latex(M)
+    <span class="comment">%MAT2STR_LATEX  Convert numeric matrix to a latex table for display</span>
+
+    <span class="comment">%str = mat2str(M,3);</span>
+    M = round(M, 9);  <span class="comment">% nicely rounded numbers (for stuff like 1e-15)</span>
+    str = [<span class="string">'$$H = \left[\begin{array}{ccc}'</span> <span class="keyword">...</span>
+        sprintf(<span class="string">'%.3g &amp; %.3g &amp; %.3g \\\\ '</span>,M(1,:)) <span class="keyword">...</span>
+        sprintf(<span class="string">'%.3g &amp; %.3g &amp; %.3g \\\\ '</span>,M(2,:)) <span class="keyword">...</span>
+        sprintf(<span class="string">'%.3g &amp; %.3g &amp; %.3g '</span>,M(3,:)) <span class="keyword">...</span>
+        <span class="string">'\end{array}\right]$$'</span>];
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> img = print_instructions(img)
+    <span class="comment">%PRINT_INSTRUCTIONS  Show help text on top of image</span>
+
+    <span class="keyword">if</span> nargin &lt; 1, img = zeros([512 512 3], <span class="string">'uint8'</span>); <span class="keyword">end</span>
+    opts = {<span class="string">'Color'</span>,[255 0 0], <span class="string">'Thickness'</span>,3, <span class="string">'FontScale'</span>,1.7};
+    img = cv.putText(img, <span class="string">'Drag the image'</span>, [50 200], opts{:});
+    img = cv.putText(img, <span class="string">'corners using'</span>, [50 300], opts{:});
+    img = cv.putText(img, <span class="string">'the mouse.'</span>, [50 400], opts{:});
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> handles = buildGUI(img)
+    <span class="comment">%BUILDGUI  Creates the UI</span>
+
+    handles = struct();
+    handles.img = print_instructions(img);
+
+    <span class="comment">% initial quadilateral (image corners), from top-left in clockwise order</span>
+    [h,w,~] = size(handles.img);
+    handles.pos = [1 1; w 1; w h; 1 h];
+
+    <span class="comment">% display image and homography matrix</span>
+    handles.hImg = imshow(handles.img);
+    handles.hTxt = text(10, 10, mat2str_latex(eye(3)), <span class="keyword">...</span>
+        <span class="string">'Interpreter'</span>,<span class="string">'latex'</span>, <span class="string">'FontSize'</span>,20, <span class="string">'Color'</span>,<span class="string">'y'</span>, <span class="keyword">...</span>
+        <span class="string">'HorizontalAlignment'</span>,<span class="string">'left'</span>, <span class="string">'VerticalAlignment'</span>,<span class="string">'top'</span>);
+
+    <span class="comment">% create draggable polygon</span>
+    handles.hPoly = impoly(get(handles.hImg,<span class="string">'Parent'</span>), handles.pos, <span class="string">'Closed'</span>,true);
+    setColor(handles.hPoly, <span class="string">'y'</span>);
+    <span class="keyword">if</span> false
+        <span class="comment">% restrict polygon inside image limits</span>
+        setPositionConstraintFcn(hPoly, <span class="keyword">...</span>
+            makeConstrainToRectFcn(<span class="string">'impozy'</span>,[1 w], [1 h]));
+    <span class="keyword">end</span>
+
+    uicontrol(<span class="string">'Style'</span>,<span class="string">'pushbutton'</span>, <span class="string">'Position'</span>,[20 20 60 20], <span class="string">'String'</span>,<span class="string">'Help'</span>, <span class="keyword">...</span>
+        <span class="string">'Callback'</span>,@onHelp);
+    uicontrol(<span class="string">'Style'</span>,<span class="string">'pushbutton'</span>, <span class="string">'Position'</span>,[80 20 60 20], <span class="string">'String'</span>,<span class="string">'Reset'</span>, <span class="keyword">...</span>
+        <span class="string">'Callback'</span>,@(~,~) setPosition(handles.hPoly, handles.pos));
+    uicontrol(<span class="string">'Style'</span>,<span class="string">'pushbutton'</span>, <span class="string">'Position'</span>,[140 20 60 20], <span class="string">'String'</span>,<span class="string">'Preset 1'</span>, <span class="keyword">...</span>
+        <span class="string">'Callback'</span>,@(~,~) setPosition(handles.hPoly, [100 100; w-100 100; w h; 1 h]));
+    uicontrol(<span class="string">'Style'</span>,<span class="string">'pushbutton'</span>, <span class="string">'Position'</span>,[200 20 60 20], <span class="string">'String'</span>,<span class="string">'Preset 2'</span>, <span class="keyword">...</span>
+        <span class="string">'Callback'</span>,@(~,~) setPosition(handles.hPoly, [w+25 -25; 25 200; 175 h-10; w-100 h-50]));
+    uicontrol(<span class="string">'Style'</span>,<span class="string">'pushbutton'</span>, <span class="string">'Position'</span>,[260 20 60 20], <span class="string">'String'</span>,<span class="string">'Manual'</span>, <span class="keyword">...</span>
+        <span class="string">'Callback'</span>,{@showModalDialog,handles});
+
+    <span class="comment">% set callback when dragging points</span>
+    addNewPositionCallback(handles.hPoly, @(p) onDrag(p, handles));
+<span class="keyword">end</span></pre><img src="perspective_transform_gui_01.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Interactive Perspective Transformation
+% This program demonstrates Perspective Transformation.
+%
+% In this sample you will learn how to use the following OpenCV functions:
+%
+% * <matlab:doc('cv.getPerspectiveTransform') cv.getPerspectiveTransform>
+% * <matlab:doc('cv.warpPerspective') cv.warpPerspective>
+% * <matlab:doc('cv.perspectiveTransform') cv.perspectiveTransform>
+%
+
+function varargout = perspective_transform_gui(im)
+    % load source image
+    if nargin < 1
+        img = imread(fullfile(mexopencv.root(),'test','fruits.jpg'));
+    elseif ischar(im)
+        img = imread(im);
+    else
+        img = im;
+    end
+
+    % create the UI
+    h = buildGUI(img);
+    if nargout > 0, varargout{1} = h; end
+end
+
+function onHelp(~,~)
+    %ONHELP  Display usage help dialog
+
+    helpdlg({
+        'This program demonstrates Perspective Transformation.'
+        ''
+        'Drag the image corners using the mouse: Move the pointer over a'
+        'vertex. The pointer changes to a circle. Click and drag the vertex'
+        'to its new position.'
+        ''
+        'You can also drag the image itself: move the pointer inside the'
+        'quadilateral. The pointer changes to a fleur shape. Click and drag'
+        'the mouse to move the image.'
+        ''
+        'Note: you must not add or remove points from the polygon.'
+        'The cv.getPerspectiveTransform function requires exactly'
+        '4 points to estimate the homography.'
+        'Also the function works best if no three points are collinear.'
+    });
+end
+
+function onDrag(newpos, handles)
+    %ONDRAG  Event handler for impoly
+
+    % compute the perspective transform matrix from matching corners
+    H = cv.getPerspectiveTransform(handles.pos, newpos);
+
+    % trigger redraw with the new homography
+    redraw(handles, H);
+end
+
+function redraw(handles, H)
+    %REDRAW  Warp and repaint image
+
+    % apply the perspective transformation on the source image
+    img2 = cv.warpPerspective(handles.img, H);
+
+    % display warped image and homography matrix
+    set(handles.hImg, 'CData',img2);
+    set(handles.hTxt, 'String',mat2str_latex(H));
+    drawnow limitrate;
+end
+
+function showModalDialog(~,~,handles)
+    %SHOWMODELDIALOG  Display dialog to edit matrix
+
+    % prompt for matrix using a model dialog
+    d = dialog('Position',[50 50 280 140], 'Resize','off', 'Name','Homography');
+    movegui(d, 'center');
+    uicontrol('Parent',d, 'Style','push', 'Position',[80 10 60 20], ...
+        'String','Ok', 'Callback',{@onDialogClose,true});
+    uicontrol('Parent',d, 'Style','push', 'Position',[140 10 60 20], ...
+        'String','Cancel', 'Callback',{@onDialogClose,false});
+    t = uitable(d, 'Position',[15 40 250 90], ...
+        'Data',eye(3), 'ColumnWidth',{70}, 'ColumnEditable',true, ...
+        'TooltipString','fill the 3x3 homography matrix');
+
+    % wait for dialog to close before returning
+    uiwait(d);
+
+    function onDialogClose(~,~,flag)
+        H = get(t, 'Data');  % get entered matrix
+        delete(gcf);         % close dialog
+        if flag && ~any(isnan(H(:)))
+            % update impoly position
+            newpos = cv.perspectiveTransform(handles.pos, H);
+            setPosition(handles.hPoly, newpos);
+            % transform image
+            redraw(handles, H);
+        end
+    end
+end
+
+function str = mat2str_latex(M)
+    %MAT2STR_LATEX  Convert numeric matrix to a latex table for display
+
+    %str = mat2str(M,3);
+    M = round(M, 9);  % nicely rounded numbers (for stuff like 1e-15)
+    str = ['$$H = \left[\begin{array}{ccc}' ...
+        sprintf('%.3g & %.3g & %.3g \\\\ ',M(1,:)) ...
+        sprintf('%.3g & %.3g & %.3g \\\\ ',M(2,:)) ...
+        sprintf('%.3g & %.3g & %.3g ',M(3,:)) ...
+        '\end{array}\right]$$'];
+end
+
+function img = print_instructions(img)
+    %PRINT_INSTRUCTIONS  Show help text on top of image
+
+    if nargin < 1, img = zeros([512 512 3], 'uint8'); end
+    opts = {'Color',[255 0 0], 'Thickness',3, 'FontScale',1.7};
+    img = cv.putText(img, 'Drag the image', [50 200], opts{:});
+    img = cv.putText(img, 'corners using', [50 300], opts{:});
+    img = cv.putText(img, 'the mouse.', [50 400], opts{:});
+end
+
+function handles = buildGUI(img)
+    %BUILDGUI  Creates the UI
+
+    handles = struct();
+    handles.img = print_instructions(img);
+
+    % initial quadilateral (image corners), from top-left in clockwise order
+    [h,w,~] = size(handles.img);
+    handles.pos = [1 1; w 1; w h; 1 h];
+
+    % display image and homography matrix
+    handles.hImg = imshow(handles.img);
+    handles.hTxt = text(10, 10, mat2str_latex(eye(3)), ...
+        'Interpreter','latex', 'FontSize',20, 'Color','y', ...
+        'HorizontalAlignment','left', 'VerticalAlignment','top');
+
+    % create draggable polygon
+    handles.hPoly = impoly(get(handles.hImg,'Parent'), handles.pos, 'Closed',true);
+    setColor(handles.hPoly, 'y');
+    if false
+        % restrict polygon inside image limits
+        setPositionConstraintFcn(hPoly, ...
+            makeConstrainToRectFcn('impozy',[1 w], [1 h]));
+    end
+
+    uicontrol('Style','pushbutton', 'Position',[20 20 60 20], 'String','Help', ...
+        'Callback',@onHelp);
+    uicontrol('Style','pushbutton', 'Position',[80 20 60 20], 'String','Reset', ...
+        'Callback',@(~,~) setPosition(handles.hPoly, handles.pos));
+    uicontrol('Style','pushbutton', 'Position',[140 20 60 20], 'String','Preset 1', ...
+        'Callback',@(~,~) setPosition(handles.hPoly, [100 100; w-100 100; w h; 1 h]));
+    uicontrol('Style','pushbutton', 'Position',[200 20 60 20], 'String','Preset 2', ...
+        'Callback',@(~,~) setPosition(handles.hPoly, [w+25 -25; 25 200; 175 h-10; w-100 h-50]));
+    uicontrol('Style','pushbutton', 'Position',[260 20 60 20], 'String','Manual', ...
+        'Callback',{@showModalDialog,handles});
+
+    % set callback when dragging points
+    addNewPositionCallback(handles.hPoly, @(p) onDrag(p, handles));
+end
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

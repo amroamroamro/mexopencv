@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Machine Learning Demo</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="ml_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Machine Learning Demo</h1>
+         <!--introduction-->
+         <p>Example using different classifiers.</p>
+         <!--/introduction-->
+         <p>K-class classification data of 2D points (training data)</p><pre class="codeinput">K = 3;  <span class="comment">% number of classes (pick a number between 2 and 6)</span>
+[X,Y] = cv.createConcentricSpheresTestSet(200*K, 2, K);
+Y = Y(:);</pre><p>create grid of points to cover domain of data (testing data)</p><pre class="codeinput">mn = min(X);
+mx = max(X);
+N = 100;
+[X1,X2] = meshgrid(linspace(mn(1),mx(1),N), linspace(mn(2),mx(2),N));
+X1X2 = [X1(:) X2(:)];</pre><p>some colors for plots</p><pre class="codeinput"><span class="keyword">if</span> true
+    clrBG = [1.0 0.7 0.7; 0.7 1.0 0.7; 0.7 0.7 1.0; <span class="keyword">...</span>
+            0.7 1.0 1.0; 1.0 0.7 1.0; 1.0 1.0 0.7];
+    clrFG = [1 0 0; 0 1 0; 0 0 1; 0 1 1; 1 0 1; 1 1 0];  <span class="comment">% 'rgbcmy'</span>
+<span class="keyword">else</span>
+    clrBG = brighten(lines(6), 0.7);
+    clrFG = lines(6);
+<span class="keyword">end</span></pre><p>different machine learning models</p><pre class="codeinput">models = {<span class="string">'ANN_MLP'</span>, <span class="string">'DTrees'</span>, <span class="string">'KNearest'</span>, <span class="keyword">...</span>
+    <span class="string">'LogisticRegression'</span>, <span class="string">'NormalBayesClassifier'</span>, <span class="string">'SVM'</span>};
+figure(<span class="string">'Position'</span>,get(0, <span class="string">'DefaultFigurePosition'</span>).*[0.5 0.5 1.8 1.8])
+<span class="keyword">for</span> i=1:numel(models)
+    <span class="comment">% create ML model</span>
+    <span class="keyword">switch</span> models{i}
+        <span class="keyword">case</span> <span class="string">'ANN_MLP'</span>
+            obj = cv.ANN_MLP();
+            obj.LayerSizes = [2 4 4 K];
+            obj.setActivationFunction(<span class="string">'Sigmoid'</span>, <span class="string">'Param1'</span>,1.0, <span class="string">'Param2'</span>,1.0);
+            obj.TermCriteria.maxCount = 2000;
+            obj.TermCriteria.epsilon = 1e-4;
+        <span class="keyword">case</span> <span class="string">'DTrees'</span>
+            obj = cv.DTrees();
+        <span class="keyword">case</span> <span class="string">'KNearest'</span>
+            obj = cv.KNearest();
+        <span class="keyword">case</span> <span class="string">'LogisticRegression'</span>
+            obj = cv.LogisticRegression();
+        <span class="keyword">case</span> <span class="string">'NormalBayesClassifier'</span>
+            obj = cv.NormalBayesClassifier();
+        <span class="keyword">case</span> <span class="string">'SVM'</span>
+            obj = cv.SVM();
+    <span class="keyword">end</span>
+
+    <span class="comment">% train</span>
+    <span class="keyword">if</span> strcmp(models{i}, <span class="string">'ANN_MLP'</span>)
+        <span class="comment">% ANN_MLP doesn't handle categorical data, we use 1-of-N encoding</span>
+        YY = bsxfun(@eq, Y, 0:(K-1));  <span class="comment">% [Y==0 Y==1 .. Y==(K-1)]</span>
+    <span class="keyword">else</span>
+        YY = int32(Y);
+    <span class="keyword">end</span>
+    tic
+    obj.train(X, YY);
+    toc
+
+    <span class="comment">% predict</span>
+    YYhat = obj.predict(X1X2);
+    <span class="keyword">if</span> strcmp(models{i}, <span class="string">'ANN_MLP'</span>)
+        [~,Yhat] = max(YYhat, [], 2);
+    <span class="keyword">else</span>
+        Yhat = int32(YYhat);
+    <span class="keyword">end</span>
+
+    <span class="comment">% plot predictions and actual classes</span>
+    subplot(2,3,i)
+    imagesc(X1(1,:), X2(:,1), reshape(double(Yhat)+1, size(X1)))
+    hold <span class="string">on</span>
+    <span class="keyword">if</span> mexopencv.isOctave()
+        <span class="comment">%HACK: GSCATTER not implemented in Octave</span>
+        scatter(X(:,1), X(:,2), 6, clrFG(double(Y)+1,:), <span class="string">'filled'</span>)
+    <span class="keyword">else</span>
+        gscatter(X(:,1), X(:,2), Y, clrFG, <span class="string">'.'</span>, 6, <span class="string">'off'</span>)
+    <span class="keyword">end</span>
+    hold <span class="string">off</span>
+    colormap(clrBG(1:K,:))
+    axis <span class="string">equal</span>, axis([mn(1) mx(1) mn(2) mx(2)])
+    title(models{i}, <span class="string">'Interpreter'</span>,<span class="string">'none'</span>)
+<span class="keyword">end</span></pre><pre class="codeoutput">Elapsed time is 0.053490 seconds.
+Elapsed time is 0.002736 seconds.
+Elapsed time is 0.001419 seconds.
+Elapsed time is 1.274223 seconds.
+Elapsed time is 0.003751 seconds.
+Elapsed time is 0.007012 seconds.
+</pre><img src="ml_demo_01.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Machine Learning Demo
+% Example using different classifiers.
+%
+
+%%
+% K-class classification data of 2D points (training data)
+K = 3;  % number of classes (pick a number between 2 and 6)
+[X,Y] = cv.createConcentricSpheresTestSet(200*K, 2, K);
+Y = Y(:);
+
+%%
+% create grid of points to cover domain of data (testing data)
+mn = min(X);
+mx = max(X);
+N = 100;
+[X1,X2] = meshgrid(linspace(mn(1),mx(1),N), linspace(mn(2),mx(2),N));
+X1X2 = [X1(:) X2(:)];
+
+%%
+% some colors for plots
+if true
+    clrBG = [1.0 0.7 0.7; 0.7 1.0 0.7; 0.7 0.7 1.0; ...
+            0.7 1.0 1.0; 1.0 0.7 1.0; 1.0 1.0 0.7];
+    clrFG = [1 0 0; 0 1 0; 0 0 1; 0 1 1; 1 0 1; 1 1 0];  % 'rgbcmy'
+else
+    clrBG = brighten(lines(6), 0.7);
+    clrFG = lines(6);
+end
+
+%%
+% different machine learning models
+models = {'ANN_MLP', 'DTrees', 'KNearest', ...
+    'LogisticRegression', 'NormalBayesClassifier', 'SVM'};
+figure('Position',get(0, 'DefaultFigurePosition').*[0.5 0.5 1.8 1.8])
+for i=1:numel(models)
+    % create ML model
+    switch models{i}
+        case 'ANN_MLP'
+            obj = cv.ANN_MLP();
+            obj.LayerSizes = [2 4 4 K];
+            obj.setActivationFunction('Sigmoid', 'Param1',1.0, 'Param2',1.0);
+            obj.TermCriteria.maxCount = 2000;
+            obj.TermCriteria.epsilon = 1e-4;
+        case 'DTrees'
+            obj = cv.DTrees();
+        case 'KNearest'
+            obj = cv.KNearest();
+        case 'LogisticRegression'
+            obj = cv.LogisticRegression();
+        case 'NormalBayesClassifier'
+            obj = cv.NormalBayesClassifier();
+        case 'SVM'
+            obj = cv.SVM();
+    end
+
+    % train
+    if strcmp(models{i}, 'ANN_MLP')
+        % ANN_MLP doesn't handle categorical data, we use 1-of-N encoding
+        YY = bsxfun(@eq, Y, 0:(K-1));  % [Y==0 Y==1 .. Y==(K-1)]
+    else
+        YY = int32(Y);
+    end
+    tic
+    obj.train(X, YY);
+    toc
+
+    % predict
+    YYhat = obj.predict(X1X2);
+    if strcmp(models{i}, 'ANN_MLP')
+        [~,Yhat] = max(YYhat, [], 2);
+    else
+        Yhat = int32(YYhat);
+    end
+
+    % plot predictions and actual classes
+    subplot(2,3,i)
+    imagesc(X1(1,:), X2(:,1), reshape(double(Yhat)+1, size(X1)))
+    hold on
+    if mexopencv.isOctave()
+        %HACK: GSCATTER not implemented in Octave
+        scatter(X(:,1), X(:,2), 6, clrFG(double(Y)+1,:), 'filled')
+    else
+        gscatter(X(:,1), X(:,2), Y, clrFG, '.', 6, 'off')
+    end
+    hold off
+    colormap(clrBG(1:K,:))
+    axis equal, axis([mn(1) mx(1) mn(2) mx(2)])
+    title(models{i}, 'Interpreter','none')
+end
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

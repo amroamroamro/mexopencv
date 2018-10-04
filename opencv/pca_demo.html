@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>PCA for dimensionality reduction</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="pca_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">PCA for dimensionality reduction</h1>
+         <!--introduction-->
+         <p>An example using PCA for dimensionality reduction while maintaining an amount of variance.</p>
+         <p>This program demonstrates how to use OpenCV PCA with a specified amount of variance to retain.</p>
+         <p>The program takes as input a list of images. The author recommends using the first 15 faces of the AT&amp;T face data set: <a href="http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html">http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html</a></p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/pca.cpp">https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/pca.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Input images</a></li>
+               <li><a href="#5">PCA</a></li>
+               <li><a href="#8">Demonstration of the effect of retainedVariance on the first image</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Input images</h2>
+         <p>get the list of images</p><pre class="codeinput">dname = fullfile(mexopencv.root(), <span class="string">'test'</span>, <span class="string">'att_faces'</span>);
+<span class="keyword">if</span> isdir(dname)
+    <span class="comment">% NOTE: run facerec_demo.m to download dataset</span>
+    imgList = arrayfun(@(i) fullfile([<span class="string">'s'</span> int2str(i)], <span class="string">'1.pgm'</span>), 1:15, <span class="keyword">...</span>
+        <span class="string">'UniformOutput'</span>,false);
+<span class="keyword">else</span>
+    dname = fullfile(mexopencv.root(), <span class="string">'test'</span>);
+    imgList = dir(fullfile(dname, <span class="string">'left*.jpg'</span>));
+    imgList = {imgList.name};
+<span class="keyword">end</span>
+imgList = cellfun(@(f) fullfile(dname, f), imgList(:), <span class="string">'UniformOutput'</span>,false);
+display(imgList)</pre><pre class="codeoutput">imgList =
+  15&times;1 cell array
+    'C:\Users\Amro\Desktop\mexopencv\test\att_faces\s1\1.pgm'
+    'C:\Users\Amro\Desktop\mexopencv\test\att_faces\s2\1.pgm'
+    'C:\Users\Amro\Desktop\mexopencv\test\att_faces\s3\1.pgm'
+    'C:\Users\Amro\Desktop\mexopencv\test\att_faces\s4\1.pgm'
+    'C:\Users\Amro\Desktop\mexopencv\test\att_faces\s5\1.pgm'
+    'C:\Users\Amro\Desktop\mexopencv\test\att_faces\s6\1.pgm'
+    'C:\Users\Amro\Desktop\mexopencv\test\att_faces\s7\1.pgm'
+    'C:\Users\Amro\Desktop\mexopencv\test\att_faces\s8\1.pgm'
+    'C:\Users\Amro\Desktop\mexopencv\test\att_faces\s9\1.pgm'
+    'C:\Users\Amro\Desktop\mexopencv\test\att_faces\s10\1.pgm'
+    'C:\Users\Amro\Desktop\mexopencv\test\att_faces\s11\1.pgm'
+    'C:\Users\Amro\Desktop\mexopencv\test\att_faces\s12\1.pgm'
+    'C:\Users\Amro\Desktop\mexopencv\test\att_faces\s13\1.pgm'
+    'C:\Users\Amro\Desktop\mexopencv\test\att_faces\s14\1.pgm'
+    'C:\Users\Amro\Desktop\mexopencv\test\att_faces\s15\1.pgm'
+</pre><p>read in the data</p><pre class="codeinput">images = cellfun(@imread, imgList, <span class="string">'UniformOutput'</span>,false);
+sz = size(images{1});
+assert(numel(images) &gt;= 2, <span class="keyword">...</span>
+    [<span class="string">'This demo needs at least 2 images to work. '</span> <span class="keyword">...</span>
+    <span class="string">'Please add more images to your data set!'</span>]);
+assert(ndims(sz) == 2, <span class="string">'Expects grayscale images'</span>);</pre><p>preview images</p><pre class="codeinput"><span class="keyword">if</span> mexopencv.require(<span class="string">'images'</span>)
+    montage(cat(4, images{:}));
+<span class="keyword">end</span></pre><img src="pca_demo_01.png"><h2 id="5">PCA</h2>
+         <p>Reshape and stack images into a row Matrix</p><pre class="codeinput">data = zeros(numel(images), prod(sz));
+<span class="keyword">for</span> i=1:numel(images)
+    data(i,:) = double(images{i}(:)) / 255;
+<span class="keyword">end</span>
+whos <span class="string">data</span></pre><pre class="codeoutput">  Name       Size                 Bytes  Class     Attributes
+
+  data      15x10304            1236480  double              
+
+</pre><p>perform PCA</p><pre class="codeinput">RET_VAR = 95;
+pca = cv.PCA(data, <span class="string">'DataAs'</span>,<span class="string">'Row'</span>, <span class="string">'RetainedVariance'</span>,RET_VAR/100);
+display(pca)</pre><pre class="codeoutput">pca = 
+  PCA with properties:
+
+              id: 7
+    eigenvectors: [11&times;10304 double]
+     eigenvalues: [11&times;1 double]
+            mean: [1&times;10304 double]
+</pre><p>display the "average image"</p><pre class="codeinput">figure, imshow(reshape(pca.mean, sz), []), title(<span class="string">'mean'</span>)</pre><img src="pca_demo_02.png"><h2 id="8">Demonstration of the effect of retainedVariance on the first image</h2><pre class="codeinput"><span class="comment">% project into the eigenspace, thus the image becomes a "point"</span>
+img1 = data(1,:);
+point = pca.project(img1);
+
+<span class="comment">% re-create the image from the "point"</span>
+img1R = pca.backProject(point);
+
+<span class="comment">% reshape from a row vector into image shape</span>
+img1R = reshape(img1R, sz);
+
+<span class="comment">% re-scale for displaying purposes</span>
+<span class="keyword">if</span> true
+    img1R = cv.normalize(img1R, <span class="keyword">...</span>
+        <span class="string">'NormType'</span>,<span class="string">'MinMax'</span>, <span class="string">'Alpha'</span>,0, <span class="string">'Beta'</span>,255, <span class="string">'DType'</span>,<span class="string">'uint8'</span>);
+<span class="keyword">else</span>
+    img1R = (img1R - min(img1R(:))) ./ (max(img1R(:)) - min(img1R(:)));
+    img1R = uint8(img1R * 255);
+<span class="keyword">end</span>
+
+<span class="comment">% display result</span>
+figure
+subplot(121), imshow(reshape(img1,sz)), title(<span class="string">'Image'</span>)
+subplot(122), imshow(img1R), title(<span class="string">'Reconstruction'</span>)
+xlabel({sprintf(<span class="string">'Retained Variance: %d%%'</span>,RET_VAR);
+    sprintf(<span class="string">'# of PCs: %d'</span>, size(pca.eigenvectors,1))})</pre><img src="pca_demo_03.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% PCA for dimensionality reduction
+% An example using PCA for dimensionality reduction while maintaining an
+% amount of variance.
+%
+% This program demonstrates how to use OpenCV PCA with a
+% specified amount of variance to retain.
+%
+% The program takes as input a list of images.
+% The author recommends using the first 15 faces of the AT&T face data set:
+% <http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html>
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/pca.cpp>
+%
+
+%% Input images
+% get the list of images
+dname = fullfile(mexopencv.root(), 'test', 'att_faces');
+if isdir(dname)
+    % NOTE: run facerec_demo.m to download dataset
+    imgList = arrayfun(@(i) fullfile(['s' int2str(i)], '1.pgm'), 1:15, ...
+        'UniformOutput',false);
+else
+    dname = fullfile(mexopencv.root(), 'test');
+    imgList = dir(fullfile(dname, 'left*.jpg'));
+    imgList = {imgList.name};
+end
+imgList = cellfun(@(f) fullfile(dname, f), imgList(:), 'UniformOutput',false);
+display(imgList)
+
+%%
+% read in the data
+images = cellfun(@imread, imgList, 'UniformOutput',false);
+sz = size(images{1});
+assert(numel(images) >= 2, ...
+    ['This demo needs at least 2 images to work. ' ...
+    'Please add more images to your data set!']);
+assert(ndims(sz) == 2, 'Expects grayscale images');
+
+%%
+% preview images
+if mexopencv.require('images')
+    montage(cat(4, images{:}));
+end
+
+%% PCA
+% Reshape and stack images into a row Matrix
+data = zeros(numel(images), prod(sz));
+for i=1:numel(images)
+    data(i,:) = double(images{i}(:)) / 255;
+end
+whos data
+
+%%
+% perform PCA
+RET_VAR = 95;
+pca = cv.PCA(data, 'DataAs','Row', 'RetainedVariance',RET_VAR/100);
+display(pca)
+
+%%
+% display the "average image"
+figure, imshow(reshape(pca.mean, sz), []), title('mean')
+
+%% Demonstration of the effect of retainedVariance on the first image
+
+% project into the eigenspace, thus the image becomes a "point"
+img1 = data(1,:);
+point = pca.project(img1);
+
+% re-create the image from the "point"
+img1R = pca.backProject(point);
+
+% reshape from a row vector into image shape
+img1R = reshape(img1R, sz);
+
+% re-scale for displaying purposes
+if true
+    img1R = cv.normalize(img1R, ...
+        'NormType','MinMax', 'Alpha',0, 'Beta',255, 'DType','uint8');
+else
+    img1R = (img1R - min(img1R(:))) ./ (max(img1R(:)) - min(img1R(:)));
+    img1R = uint8(img1R * 255);
+end
+
+% display result
+figure
+subplot(121), imshow(reshape(img1,sz)), title('Image')
+subplot(122), imshow(img1R), title('Reconstruction')
+xlabel({sprintf('Retained Variance: %d%%',RET_VAR);
+    sprintf('# of PCs: %d', size(pca.eigenvectors,1))})
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

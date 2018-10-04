@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Scene Text Detection using CNN</title>
+      <meta name="generator" content="MATLAB 9.4">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2018-10-05">
+      <meta name="DC.source" content="textboxes_dnn_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Scene Text Detection using CNN</h1>
+         <!--introduction-->
+         <p>References:</p>
+         <div>
+            <ul>
+               <li>Minghui Liao, Baoguang Shi, Xiang Bai, Xinggang Wang, Wenyu Liu.   "TextBoxes: A Fast Text Detector with a Single Deep Neural
+                  Network",   AAAI 2017. <a href="https://arxiv.org/abs/1611.06779">https://arxiv.org/abs/1611.06779</a></li>
+            </ul>
+         </div>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.4.1/modules/text/samples/textbox_demo.cpp">https://github.com/opencv/opencv_contrib/blob/3.4.1/modules/text/samples/textbox_demo.cpp</a></li>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.4.1/modules/text/samples/deeptextdetection.py">https://github.com/opencv/opencv_contrib/blob/3.4.1/modules/text/samples/deeptextdetection.py</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <p>load model</p><pre class="codeinput">[net, blobOpts] = TextBoxes();</pre><p>detect text</p><pre class="codeinput">im = which(<span class="string">'handicapSign.jpg'</span>);
+assert(~isempty(im), <span class="string">'specify input image'</span>);
+img = cv.imread(im, <span class="string">'Color'</span>,true);
+[bboxes, confs] = detectText(img, net, blobOpts);
+fprintf(<span class="string">'%d text detections\n'</span>, size(bboxes,1));</pre><p>post-processing</p><pre class="codeinput"><span class="keyword">if</span> true
+    <span class="comment">% non-maximum suppression</span>
+    ind = cv.Net.NMSBoxes(bboxes, confs, 0.3, 0.4);
+    ind = ind + 1;  <span class="comment">% zero to one-based indices</span>
+    bboxes = bboxes(ind,:);
+    confs = confs(ind);
+<span class="keyword">else</span>
+    <span class="comment">% confidence thresholding</span>
+    idx = confs &gt; 0.6;
+    bboxes = bboxes(idx,:);
+    confs = confs(idx);
+<span class="keyword">end</span>
+fprintf(<span class="string">'%d text detections after filtering\n'</span>, size(bboxes,1));</pre><pre class="codeoutput">6 text detections after filtering
+</pre><p>show results</p><pre class="codeinput"><span class="keyword">for</span> i=1:size(bboxes,1)
+    img = insertAnnotation(img, bboxes(i,:), sprintf(<span class="string">'%.2f'</span>, confs(i)), <span class="keyword">...</span>
+        <span class="string">'Color'</span>,[255 0 255], <span class="string">'TextColor'</span>,[255 255 255], <span class="string">'Thickness'</span>,2, <span class="string">'FontScale'</span>,0.3);
+    fprintf(<span class="string">'text box: [%3d %3d %3d %3d], confidence: %3.0f%%\n'</span>, <span class="keyword">...</span>
+        bboxes(i,:), confs(i)*100);
+<span class="keyword">end</span>
+imshow(img), title(<span class="string">'TextBox Demo'</span>)</pre><pre class="codeoutput">text box: [403 259 272  44], confidence: 100%
+text box: [401 435 305  43], confidence:  99%
+text box: [452 390 186  40], confidence:  99%
+text box: [385 354 167  38], confidence:  80%
+text box: [466 618 182  37], confidence:  79%
+text box: [466 309 163  39], confidence:  52%
+Warning: Image is too big to fit on screen; displaying at 67% 
+</pre><img src="textboxes_dnn_demo_01.png"><p>Helper functions</p><pre class="codeinput"><span class="keyword">function</span> [rects, confs] = detectText(img, net, blobOpts)
+    <span class="comment">%DETECTTEXT  Detect text on input image</span>
+
+    <span class="comment">% detect text</span>
+    net.setInput(cv.Net.blobFromImages(img, blobOpts{:}));
+    dets = net.forward();
+
+    <span class="comment">% SSD output is 1-by-1-by-ndetections-by-7</span>
+    <span class="comment">% d = [img_id, class_id, confidence, left, top, right, bottom]</span>
+    dets = permute(dets, [3 4 2 1]);
+
+    <span class="comment">% filter</span>
+    dets = dets(dets(:,2) == 1,:);  <span class="comment">% 0: background, 1: text</span>
+
+    <span class="comment">% adjust relative coordinates to image size</span>
+    sz = [size(img,2) size(img,1)];
+    dets(:,4:7) = bsxfun(@times, dets(:,4:7), [sz sz]);
+
+    <span class="comment">% output detections (clamp coords)</span>
+    rects = cv.Rect.from2points(dets(:,4:5), dets(:,6:7));
+    rects = cv.Rect.intersect(rects, [0 0 sz]);
+    rects = round(rects);
+    confs = dets(:,3);
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> img = insertAnnotation(img, rect, str, varargin)
+    <span class="comment">% See also: insertObjectAnnotation, insertShape, insertText</span>
+    p = inputParser();
+    p.addParameter(<span class="string">'Alpha'</span>, 0.6);
+    p.addParameter(<span class="string">'Thickness'</span>, 1);
+    p.addParameter(<span class="string">'Color'</span>, [255 255 0]);
+    p.addParameter(<span class="string">'TextColor'</span>, [0 0 0]);
+    p.addParameter(<span class="string">'FontFace'</span>, <span class="string">'HersheySimplex'</span>);
+    p.addParameter(<span class="string">'FontScale'</span>, 0.4);
+    p.addParameter(<span class="string">'AntiAlias'</span>, true);
+    p.addParameter(<span class="string">'Shape'</span>, <span class="string">'rectangle'</span>);
+    p.parse(varargin{:});
+    opts = p.Results;
+    opts.Shape = validatestring(opts.Shape, {<span class="string">'rectangle'</span>,<span class="string">'circle'</span>});
+    thick = 1;
+
+    [sz,b] = cv.getTextSize(str, <span class="string">'Thickness'</span>,thick, <span class="keyword">...</span>
+        <span class="string">'FontFace'</span>,opts.FontFace, <span class="string">'FontScale'</span>,opts.FontScale);
+    txt_rect = [rect(1), rect(2)-sz(2)-b, sz(1), sz(2)+b];
+    txt_orig = [rect(1), rect(2)-b];
+
+    <span class="keyword">if</span> opts.AntiAlias
+        alias = {<span class="string">'LineType'</span>,<span class="string">'AA'</span>};
+    <span class="keyword">else</span>
+        alias = {<span class="string">'LineType'</span>,8};
+    <span class="keyword">end</span>
+
+    overlay = img;
+    <span class="keyword">if</span> strcmp(opts.Shape, <span class="string">'rectangle'</span>)
+        overlay = cv.rectangle(overlay, rect, <span class="keyword">...</span>
+            <span class="string">'Color'</span>,opts.Color, <span class="string">'Thickness'</span>,opts.Thickness, alias{:});
+    <span class="keyword">else</span>
+        c = rect(1:2) + rect(3:4)/2;
+        r = max(rect(3:4)/2);
+        overlay = cv.circle(overlay, c, r, <span class="keyword">...</span>
+            <span class="string">'Color'</span>,opts.Color, <span class="string">'Thickness'</span>,opts.Thickness, alias{:});
+    <span class="keyword">end</span>
+    overlay = cv.rectangle(overlay, txt_rect, <span class="keyword">...</span>
+        <span class="string">'Color'</span>,opts.Color, <span class="string">'Thickness'</span>,<span class="string">'Filled'</span>, alias{:});
+    <span class="keyword">if</span> opts.Thickness &gt; 1
+        overlay = cv.rectangle(overlay, txt_rect, <span class="keyword">...</span>
+            <span class="string">'Color'</span>,opts.Color, <span class="string">'Thickness'</span>,opts.Thickness, alias{:});
+    <span class="keyword">end</span>
+    overlay = cv.putText(overlay, str, txt_orig, <span class="keyword">...</span>
+        <span class="string">'FontFace'</span>,opts.FontFace, <span class="string">'FontScale'</span>,opts.FontScale, <span class="keyword">...</span>
+        <span class="string">'Color'</span>,opts.TextColor, <span class="string">'Thickness'</span>,thick, alias{:});
+
+    img = cv.addWeighted(img,1-opts.Alpha, overlay,opts.Alpha, 0);
+<span class="keyword">end</span></pre><pre class="codeoutput">70 text detections
+</pre><p>Pretrained models</p><pre class="codeinput"><span class="keyword">function</span> dname = get_dnn_dir(dname)
+    <span class="comment">%GET_DNN_DIR  Path to model files, and show where to get them if missing</span>
+
+    dname = fullfile(mexopencv.root(), <span class="string">'test'</span>, <span class="string">'dnn'</span>, dname);
+    b = isdir(dname);
+    <span class="keyword">if</span> ~b
+        <span class="comment">% display help of calling function</span>
+        <span class="comment">% (assumed to be a local function in current file)</span>
+        st = dbstack(1);
+        help([mfilename() filemarker() st(1).name])
+    <span class="keyword">end</span>
+    assert(b, <span class="string">'Missing model: %s'</span>, dname);
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> [net, blobOpts] = TextBoxes()
+    <span class="comment">%TEXTDETECTOR  Text detector model [Caffe]</span>
+    <span class="comment">%</span>
+    <span class="comment">% homepage = https://github.com/MhLiao/TextBoxes</span>
+    <span class="comment">%</span>
+    <span class="comment">% ## Model</span>
+    <span class="comment">%</span>
+    <span class="comment">% file = test/dnn/TextBoxes/textbox.prototxt</span>
+    <span class="comment">% url  = https://github.com/opencv/opencv_contrib/raw/3.4.1/modules/text/samples/textbox.prototxt</span>
+    <span class="comment">% hash = c294416fe6d156b9383342d62b9158ab707170c0</span>
+    <span class="comment">%</span>
+    <span class="comment">% ## Weights</span>
+    <span class="comment">%</span>
+    <span class="comment">% file = test/dnn/TextBoxes/TextBoxes_icdar13.caffemodel</span>
+    <span class="comment">% url  = https://www.dropbox.com/s/g8pjzv2de9gty8g/TextBoxes_icdar13.caffemodel?dl=0</span>
+    <span class="comment">% hash = e4b32aef3db3d66fec0630c96006e10999f785c4</span>
+    <span class="comment">% size = 90.68 MB</span>
+    <span class="comment">%</span>
+
+    dname = get_dnn_dir(<span class="string">'TextBoxes'</span>);
+    net = cv.Net(<span class="string">'Caffe'</span>, <span class="keyword">...</span>
+        fullfile(dname, <span class="string">'textbox.prototxt'</span>), <span class="keyword">...</span>
+        fullfile(dname, <span class="string">'TextBoxes_icdar13.caffemodel'</span>));
+    blobOpts = {<span class="string">'SwapRB'</span>,true, <span class="string">'Crop'</span>,false, <span class="string">'Size'</span>,[300 300], <span class="string">'Mean'</span>,[104 117 123]};
+<span class="keyword">end</span></pre><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2018a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Scene Text Detection using CNN
+%
+% References:
+%
+% * Minghui Liao, Baoguang Shi, Xiang Bai, Xinggang Wang, Wenyu Liu.
+%   "TextBoxes: A Fast Text Detector with a Single Deep Neural Network",
+%   AAAI 2017. <https://arxiv.org/abs/1611.06779>
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv_contrib/blob/3.4.1/modules/text/samples/textbox_demo.cpp>
+% * <https://github.com/opencv/opencv_contrib/blob/3.4.1/modules/text/samples/deeptextdetection.py>
+%
+
+%%
+% load model
+[net, blobOpts] = TextBoxes();
+
+%%
+% detect text
+im = which('handicapSign.jpg');
+assert(~isempty(im), 'specify input image');
+img = cv.imread(im, 'Color',true);
+[bboxes, confs] = detectText(img, net, blobOpts);
+fprintf('%d text detections\n', size(bboxes,1));
+
+%%
+% post-processing
+if true
+    % non-maximum suppression
+    ind = cv.Net.NMSBoxes(bboxes, confs, 0.3, 0.4);
+    ind = ind + 1;  % zero to one-based indices
+    bboxes = bboxes(ind,:);
+    confs = confs(ind);
+else
+    % confidence thresholding
+    idx = confs > 0.6;
+    bboxes = bboxes(idx,:);
+    confs = confs(idx);
+end
+fprintf('%d text detections after filtering\n', size(bboxes,1));
+
+%%
+% show results
+for i=1:size(bboxes,1)
+    img = insertAnnotation(img, bboxes(i,:), sprintf('%.2f', confs(i)), ...
+        'Color',[255 0 255], 'TextColor',[255 255 255], 'Thickness',2, 'FontScale',0.3);
+    fprintf('text box: [%3d %3d %3d %3d], confidence: %3.0f%%\n', ...
+        bboxes(i,:), confs(i)*100);
+end
+imshow(img), title('TextBox Demo')
+
+%%
+% Helper functions
+
+function [rects, confs] = detectText(img, net, blobOpts)
+    %DETECTTEXT  Detect text on input image
+
+    % detect text
+    net.setInput(cv.Net.blobFromImages(img, blobOpts{:}));
+    dets = net.forward();
+
+    % SSD output is 1-by-1-by-ndetections-by-7
+    % d = [img_id, class_id, confidence, left, top, right, bottom]
+    dets = permute(dets, [3 4 2 1]);
+
+    % filter
+    dets = dets(dets(:,2) == 1,:);  % 0: background, 1: text
+
+    % adjust relative coordinates to image size
+    sz = [size(img,2) size(img,1)];
+    dets(:,4:7) = bsxfun(@times, dets(:,4:7), [sz sz]);
+
+    % output detections (clamp coords)
+    rects = cv.Rect.from2points(dets(:,4:5), dets(:,6:7));
+    rects = cv.Rect.intersect(rects, [0 0 sz]);
+    rects = round(rects);
+    confs = dets(:,3);
+end
+
+function img = insertAnnotation(img, rect, str, varargin)
+    % See also: insertObjectAnnotation, insertShape, insertText
+    p = inputParser();
+    p.addParameter('Alpha', 0.6);
+    p.addParameter('Thickness', 1);
+    p.addParameter('Color', [255 255 0]);
+    p.addParameter('TextColor', [0 0 0]);
+    p.addParameter('FontFace', 'HersheySimplex');
+    p.addParameter('FontScale', 0.4);
+    p.addParameter('AntiAlias', true);
+    p.addParameter('Shape', 'rectangle');
+    p.parse(varargin{:});
+    opts = p.Results;
+    opts.Shape = validatestring(opts.Shape, {'rectangle','circle'});
+    thick = 1;
+
+    [sz,b] = cv.getTextSize(str, 'Thickness',thick, ...
+        'FontFace',opts.FontFace, 'FontScale',opts.FontScale);
+    txt_rect = [rect(1), rect(2)-sz(2)-b, sz(1), sz(2)+b];
+    txt_orig = [rect(1), rect(2)-b];
+
+    if opts.AntiAlias
+        alias = {'LineType','AA'};
+    else
+        alias = {'LineType',8};
+    end
+
+    overlay = img;
+    if strcmp(opts.Shape, 'rectangle')
+        overlay = cv.rectangle(overlay, rect, ...
+            'Color',opts.Color, 'Thickness',opts.Thickness, alias{:});
+    else
+        c = rect(1:2) + rect(3:4)/2;
+        r = max(rect(3:4)/2);
+        overlay = cv.circle(overlay, c, r, ...
+            'Color',opts.Color, 'Thickness',opts.Thickness, alias{:});
+    end
+    overlay = cv.rectangle(overlay, txt_rect, ...
+        'Color',opts.Color, 'Thickness','Filled', alias{:});
+    if opts.Thickness > 1
+        overlay = cv.rectangle(overlay, txt_rect, ...
+            'Color',opts.Color, 'Thickness',opts.Thickness, alias{:});
+    end
+    overlay = cv.putText(overlay, str, txt_orig, ...
+        'FontFace',opts.FontFace, 'FontScale',opts.FontScale, ...
+        'Color',opts.TextColor, 'Thickness',thick, alias{:});
+
+    img = cv.addWeighted(img,1-opts.Alpha, overlay,opts.Alpha, 0);
+end
+
+%%
+% Pretrained models
+
+function dname = get_dnn_dir(dname)
+    %GET_DNN_DIR  Path to model files, and show where to get them if missing
+
+    dname = fullfile(mexopencv.root(), 'test', 'dnn', dname);
+    b = isdir(dname);
+    if ~b
+        % display help of calling function
+        % (assumed to be a local function in current file)
+        st = dbstack(1);
+        help([mfilename() filemarker() st(1).name])
+    end
+    assert(b, 'Missing model: %s', dname);
+end
+
+function [net, blobOpts] = TextBoxes()
+    %TEXTDETECTOR  Text detector model [Caffe]
+    %
+    % homepage = https://github.com/MhLiao/TextBoxes
+    %
+    % ## Model
+    %
+    % file = test/dnn/TextBoxes/textbox.prototxt
+    % url  = https://github.com/opencv/opencv_contrib/raw/3.4.1/modules/text/samples/textbox.prototxt
+    % hash = c294416fe6d156b9383342d62b9158ab707170c0
+    %
+    % ## Weights
+    %
+    % file = test/dnn/TextBoxes/TextBoxes_icdar13.caffemodel
+    % url  = https://www.dropbox.com/s/g8pjzv2de9gty8g/TextBoxes_icdar13.caffemodel?dl=0
+    % hash = e4b32aef3db3d66fec0630c96006e10999f785c4
+    % size = 90.68 MB
+    %
+
+    dname = get_dnn_dir('TextBoxes');
+    net = cv.Net('Caffe', ...
+        fullfile(dname, 'textbox.prototxt'), ...
+        fullfile(dname, 'TextBoxes_icdar13.caffemodel'));
+    blobOpts = {'SwapRB',true, 'Crop',false, 'Size',[300 300], 'Mean',[104 117 123]};
+end
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

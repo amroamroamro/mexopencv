@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Point Polygon Test</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="pointPolygonTest_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Point Polygon Test</h1>
+         <!--introduction-->
+         <p>In this sample you will learn how to use the OpenCV function <a href="matlab:doc('cv.pointPolygonTest')">cv.pointPolygonTest</a>.
+         </p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://docs.opencv.org/3.2.0/dc/d48/tutorial_point_polygon_test.html">https://docs.opencv.org/3.2.0/dc/d48/tutorial_point_polygon_test.html</a></li>
+               <li><a href="https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/tutorial_code/ShapeDescriptors/pointPolygonTest_demo.cpp">https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/tutorial_code/ShapeDescriptors/pointPolygonTest_demo.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <p>create sequence of points to make a contour</p><pre class="codeinput">r = 100;
+vert = r * bsxfun(@rdivide, [3 4; 2 6; 3 8; 5 8; 6 6; 5 4], [2 3]);</pre><p>draw them in an image</p><pre class="codeinput">sz = 4 * [r r];
+src = zeros(sz, <span class="string">'uint8'</span>);
+src = cv.line(src, vert, circshift(vert,-1,1), <span class="string">'Color'</span>,255, <span class="string">'Thickness'</span>,3);</pre><p>get the contours</p><pre class="codeinput">[contours, hierarchy] = cv.findContours(src, <span class="string">'Mode'</span>,<span class="string">'Tree'</span>, <span class="string">'Method'</span>,<span class="string">'Simple'</span>);
+contours = cellfun(@(C) cat(1,C{:}), contours, <span class="string">'Uniform'</span>,false);
+assert(~isempty(contours));</pre><p>calculate the distances to the contour</p><pre class="codeinput">[X,Y] = meshgrid(1:sz(2), 1:sz(1));
+tic
+D = cv.pointPolygonTest(contours{1}, [X(:) Y(:)], <span class="string">'MeasureDist'</span>,true);
+toc
+D = reshape(D, sz);</pre><pre class="codeoutput">Elapsed time is 0.191564 seconds.
+</pre><p>depict the distances graphically</p><pre class="codeinput">R = zeros(sz, <span class="string">'uint8'</span>); G = R; B = R;
+R(D&lt;0) = 255 - abs(D(D&lt;0)*255 / abs(min(D(:))));
+B(D&gt;0) = 255 - D(D&gt;0)*255 / abs(max(D(:)));
+R(D==0) = 255; G(D==0) = 255; B(D==0) = 255;
+out = cat(3, R, G, B);</pre><p>show results</p><pre class="codeinput">subplot(211), imshow(src), title(<span class="string">'polygon'</span>)
+subplot(223), imshow(D,[]), title(<span class="string">'distance map'</span>)
+subplot(224), imshow(out), title(<span class="string">'inside, outside, on-edge'</span>)</pre><img src="pointPolygonTest_demo_01.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Point Polygon Test
+%
+% In this sample you will learn how to use the OpenCV function
+% <matlab:doc('cv.pointPolygonTest') cv.pointPolygonTest>.
+%
+% Sources:
+%
+% * <https://docs.opencv.org/3.2.0/dc/d48/tutorial_point_polygon_test.html>
+% * <https://github.com/opencv/opencv/blob/3.2.0/samples/cpp/tutorial_code/ShapeDescriptors/pointPolygonTest_demo.cpp>
+%
+
+%%
+% create sequence of points to make a contour
+r = 100;
+vert = r * bsxfun(@rdivide, [3 4; 2 6; 3 8; 5 8; 6 6; 5 4], [2 3]);
+
+%%
+% draw them in an image
+sz = 4 * [r r];
+src = zeros(sz, 'uint8');
+src = cv.line(src, vert, circshift(vert,-1,1), 'Color',255, 'Thickness',3);
+
+%%
+% get the contours
+[contours, hierarchy] = cv.findContours(src, 'Mode','Tree', 'Method','Simple');
+contours = cellfun(@(C) cat(1,C{:}), contours, 'Uniform',false);
+assert(~isempty(contours));
+
+%%
+% calculate the distances to the contour
+[X,Y] = meshgrid(1:sz(2), 1:sz(1));
+tic
+D = cv.pointPolygonTest(contours{1}, [X(:) Y(:)], 'MeasureDist',true);
+toc
+D = reshape(D, sz);
+
+%%
+% depict the distances graphically
+R = zeros(sz, 'uint8'); G = R; B = R;
+R(D<0) = 255 - abs(D(D<0)*255 / abs(min(D(:))));
+B(D>0) = 255 - D(D>0)*255 / abs(max(D(:)));
+R(D==0) = 255; G(D==0) = 255; B(D==0) = 255;
+out = cat(3, R, G, B);
+
+%%
+% show results
+subplot(211), imshow(src), title('polygon')
+subplot(223), imshow(D,[]), title('distance map')
+subplot(224), imshow(out), title('inside, outside, on-edge')
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

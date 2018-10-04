@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Video Stabilizer</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="videostab_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Video Stabilizer</h1>
+         <!--introduction-->
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv/blob/3.1.0/samples/cpp/videostab.cpp">https://github.com/opencv/opencv/blob/3.1.0/samples/cpp/videostab.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#3">Options</a></li>
+               <li><a href="#5">One vs. Two pass stabilizer</a></li>
+               <li><a href="#6">source video</a></li>
+               <li><a href="#7">prepare motion estimation builders</a></li>
+               <li><a href="#8">set properties and algorithms of stabilizer</a></li>
+               <li><a href="#9">init motion estimator</a></li>
+               <li><a href="#11">init deblurer</a></li>
+               <li><a href="#12">init inpainter</a></li>
+               <li><a href="#13">run</a></li>
+            </ul>
+         </div>
+         <p>Description of parameters:</p>
+         <div>
+            <ul>
+               <li><b>model</b>=(Translation|TranslationAndScale|Rigid|Similarity|Affine|Homography)   Set motion model. The default is 'Affine'.
+               </li>
+               <li><b>lin_prog_motion_est</b>=(true|false)   Turn on/off LP based motion estimation. Requires CLP library.   The default is false.
+               </li>
+               <li><b>subset</b>=(<a href="int">int</a>|auto)   Number of random samples per one motion hypothesis. The default is 'auto'.
+               </li>
+               <li><b>thresh</b>=(<a href="float">float</a>|auto)   Maximum error to classify match as inlier. The default is 'auto'.
+               </li>
+               <li><b>outlier_ratio</b>=&lt;float&gt;   Motion estimation outlier ratio hypothesis. The default is 0.5.
+               </li>
+               <li><b>min_inlier_ratio</b>=&lt;float&gt;   Minimum inlier ratio to decide if estimated motion is OK.   The default is 0.1.
+               </li>
+               <li><b>nkps</b>=&lt;int&gt;   Number of keypoints to find in each frame. The default is 1000.
+               </li>
+               <li><b>extra_kps</b>=&lt;int&gt;   Default is 0.
+               </li>
+               <li><b>local_outlier_rejection</b>=(true|false)   Perform local outlier rejection. The default is false.
+               </li>
+            </ul>
+         </div>
+         <div>
+            <ul>
+               <li><b>save_motions</b>=&lt;file_path&gt;   Save estimated motions into file. The default is ''.
+               </li>
+               <li><b>load_motions</b>=&lt;file_path&gt;   Load motions from file. The default is ''.
+               </li>
+            </ul>
+         </div>
+         <div>
+            <ul>
+               <li><b>radius</b>=&lt;int&gt;   Set sliding window radius. The default is 15.
+               </li>
+               <li><b>stdev</b>=(<a href="float">float</a>|auto)   Set smoothing weights standard deviation. The default is 'auto'   (i.e. sqrt(radius)).
+               </li>
+               <li><b>lin_prog_stab</b>=(true|false)   Turn on/off linear programming based stabilization method.   Requires CLP library. Default false
+               </li>
+               <li><b>lps_trim_ratio</b>=(<a href="float">float</a>|auto)   Trimming ratio used in linear programming based method.
+               </li>
+               <li><b>lps_w1</b>=&lt;float&gt;   1st derivative weight. The default is 1.
+               </li>
+               <li><b>lps_w2</b>=&lt;float&gt;   2nd derivative weight. The default is 10.
+               </li>
+               <li><b>lps_w3</b>=&lt;float&gt;   3rd derivative weight. The default is 100.
+               </li>
+               <li><b>lps_w4</b>=&lt;float&gt;   Non-translation motion components weight. The default is 100.
+               </li>
+            </ul>
+         </div>
+         <div>
+            <ul>
+               <li><b>deblur</b>=(true|false)   Do deblurring.
+               </li>
+               <li><b>deblur_sens</b>=&lt;float&gt;   Set deblurring sensitivity (from 0 to +inf). The default is 0.1.
+               </li>
+            </ul>
+         </div>
+         <div>
+            <ul>
+               <li><b>trim_ratio</b>=&lt;float&gt;   Set trimming ratio (from 0 to 0.5). The default is 0.1.
+               </li>
+               <li><b>est_trim</b>=(true|false)   Estimate trim ratio automatically. The default is true.
+               </li>
+               <li><b>incl_constr</b>=(true|false)   Ensure the inclusion constraint is always satisfied. The default is false.
+               </li>
+            </ul>
+         </div>
+         <div>
+            <ul>
+               <li><b>border_mode</b>=(Replicate|Reflect|Constant)   Set border extrapolation mode. The default is 'Replicate'.
+               </li>
+            </ul>
+         </div>
+         <div>
+            <ul>
+               <li><b>mosaic</b>=(true|false)   Do consistent mosaicing. The default is false.
+               </li>
+               <li><b>mosaic_stdev</b>=&lt;float&gt;   Consistent mosaicing stdev threshold. The default is 10.0.
+               </li>
+            </ul>
+         </div>
+         <div>
+            <ul>
+               <li><b>motion_inpaint</b>=(true|false)   Do motion inpainting (requires CUDA support). The default is false.
+               </li>
+               <li><b>mi_dist_thresh</b>=&lt;float&gt;   Estimated flow distance threshold for motion inpainting.   The default is 5.0.
+               </li>
+            </ul>
+         </div>
+         <div>
+            <ul>
+               <li><b>color_inpaint</b>=(no|average|ns|telea)   Do color inpainting. The defailt is 'no'.
+               </li>
+               <li><b>ci_radius</b>=&lt;float&gt;   Set color inpainting radius (for 'ns' and 'telea' options only).   The default is 2.0
+               </li>
+            </ul>
+         </div>
+         <div>
+            <ul>
+               <li><b>wobble_suppress</b>=(true|false)   Perform wobble suppression. The default is false.
+               </li>
+               <li><b>ws_lin_prog_motion_est</b>=(true|false)   Turn on/off LP based motion estimation. Requires CLP library.   The default is false.
+               </li>
+               <li><b>ws_period</b>=&lt;int&gt;   Set wobble suppression period. The default is 30.
+               </li>
+               <li><b>ws_model</b>=(Translation|TranslationAndScale|Rigid|Similarity|Affine|Homography)   Set wobble suppression motion model (must have more
+                  DOF than motion   estimation model). The default is 'Homography'.
+               </li>
+               <li><b>ws_subset</b>=(<a href="int">int</a>|auto)   Number of random samples per one motion hypothesis. The default is 'auto'.
+               </li>
+               <li><b>ws_thresh</b>=(<a href="float">float</a>|auto)   Maximum error to classify match as inlier. The default is 'auto'.
+               </li>
+               <li><b>ws_outlier_ratio</b>=&lt;float&gt;   Motion estimation outlier ratio hypothesis. The default is 0.5.
+               </li>
+               <li><b>ws_min_inlier_ratio</b>=&lt;float&gt;   Minimum inlier ratio to decide if estimated motion is OK.   The default is 0.1.
+               </li>
+               <li><b>ws_nkps</b>=&lt;int&gt;   Number of keypoints to find in each frame. The default is 1000.
+               </li>
+               <li><b>ws_extra_kps</b>=&lt;int&gt;   Default is 0.
+               </li>
+               <li><b>ws_local_outlier_rejection</b>=(true|false)   Perform local outlier rejection. The default is false.
+               </li>
+            </ul>
+         </div>
+         <div>
+            <ul>
+               <li><b>save_motions2</b>=&lt;file_path&gt;   Save motions estimated for wobble suppression. The default is ''.
+               </li>
+               <li><b>load_motions2</b>=&lt;file_path&gt;   Load motions for wobble suppression from file. The default is ''.
+               </li>
+            </ul>
+         </div>
+         <div>
+            <ul>
+               <li><b>gpu</b>=(true|false)   Use CUDA optimization whenever possible. The default is false.
+               </li>
+            </ul>
+         </div>
+         <div>
+            <ul>
+               <li><b>output</b>=&lt;file_path&gt;   Set output file path explicitely. The default is 'stabilized.avi'.
+               </li>
+               <li><b>fps</b>=(<a href="float">float</a>|auto)   Set output video FPS explicitely. By default the source FPS is used (auto).
+               </li>
+               <li><b>quiet</b>   Don't show output video frames.
+               </li>
+               <li><b>logger</b>=(LogToMATLAB|NullLog)   Log message to specified sink. Default is 'NullLog'.
+               </li>
+            </ul>
+         </div>
+         <p>Note: some configurations lead to two passes, some to single pass.</p>
+         <h2 id="3">Options</h2>
+         <p>default values</p><pre class="codeinput">opts = struct();
+opts.inputPath = <span class="string">''</span>;
+opts.model = <span class="string">'Affine'</span>;
+opts.lin_prog_motion_est = false;
+ opts.subset = <span class="string">'auto'</span>;
+ opts.thresh = <span class="string">'auto'</span>;
+ opts.outlier_ratio = 0.5;
+ opts.min_inlier_ratio = 0.1;
+ opts.nkps = 1000;
+ opts.extra_kps = 0;
+ opts.local_outlier_rejection = false;
+opts.save_motions = <span class="string">''</span>;
+opts.load_motions = <span class="string">''</span>;
+opts.radius = 15;
+ opts.stdev = <span class="string">'auto'</span>;
+opts.lin_prog_stab = false;
+ opts.lps_trim_ratio = <span class="string">'auto'</span>;
+ opts.lps_w1 = 1;
+ opts.lps_w2 = 10;
+ opts.lps_w3 = 100;
+ opts.lps_w4 = 100;
+ opts.deblur = false;
+ opts.deblur_sens = 0.1;
+opts.est_trim = true;
+opts.trim_ratio = 0.1;
+opts.incl_constr = false;
+opts.border_mode = <span class="string">'Replicate'</span>;
+ opts.mosaic = false;
+opts.mosaic_stdev = 10.0;
+opts.motion_inpaint = false;
+ opts.mi_dist_thresh = 5.0;
+opts.color_inpaint = <span class="string">'no'</span>;
+ opts.ci_radius = 2.0;
+opts.wobble_suppress = false;
+ opts.ws_lin_prog_motion_est = false;
+ opts.ws_period = 30;
+ opts.ws_model = <span class="string">'Homography'</span>;
+ opts.ws_subset = <span class="string">'auto'</span>;
+ opts.ws_thresh = <span class="string">'auto'</span>;
+ opts.ws_outlier_ratio = 0.5;
+ opts.ws_min_inlier_ratio = 0.1;
+ opts.ws_nkps = 1000;
+ opts.ws_extra_kps = 0;
+ opts.ws_local_outlier_rejection = false;
+opts.save_motions2 = <span class="string">''</span>;
+opts.load_motions2 = <span class="string">''</span>;
+opts.gpu = false;
+opts.output = <span class="string">''</span>;
+opts.fps = <span class="string">'auto'</span>;
+opts.quiet = false;
+opts.logger = <span class="string">'NullLog'</span>;</pre><p>override options</p><pre class="codeinput"><span class="keyword">if</span> mexopencv.require(<span class="string">'vision'</span>)
+    opts.inputPath = which(<span class="string">'shaky_car.avi'</span>);
+<span class="keyword">end</span>
+<span class="comment">%opts.model = 'Translation';</span>
+<span class="comment">%opts.min_inlier_ratio = 0.01;</span>
+<span class="comment">%opts.nkps = 500;</span>
+<span class="comment">%opts.local_outlier_rejection = true;</span>
+<span class="comment">%opts.radius = 150;</span>
+<span class="comment">%opts.deblur = true;</span>
+opts.est_trim = false;                    <span class="comment">%HACK: otherwise corrupts frames!</span>
+opts.trim_ratio = 0;                      <span class="comment">%HACK: otherwise corrupts frames!</span>
+<span class="comment">%opts.border_mode = 'Constant';</span>
+<span class="comment">%opts.mosaic = true;</span>
+<span class="comment">%opts.color_inpaint = 'telea';</span>
+<span class="comment">%opts.wobble_suppress = true;</span>
+<span class="comment">%opts.ws_local_outlier_rejection = true;</span>
+opts.output = fullfile(tempdir(), <span class="string">'stabilized.avi'</span>);
+opts.gpu = false;                         <span class="comment">%TODO: not yet implemented</span>
+display(opts)</pre><pre class="codeoutput">opts = 
+  struct with fields:
+
+                     inputPath: 'C:\Program Files\MATLAB\R2017a\toolbox\vision\visiondata\shaky_car.avi'
+                         model: 'Affine'
+           lin_prog_motion_est: 0
+                        subset: 'auto'
+                        thresh: 'auto'
+                 outlier_ratio: 0.5000
+              min_inlier_ratio: 0.1000
+                          nkps: 1000
+                     extra_kps: 0
+       local_outlier_rejection: 0
+                  save_motions: ''
+                  load_motions: ''
+                        radius: 15
+                         stdev: 'auto'
+                 lin_prog_stab: 0
+                lps_trim_ratio: 'auto'
+                        lps_w1: 1
+                        lps_w2: 10
+                        lps_w3: 100
+                        lps_w4: 100
+                        deblur: 0
+                   deblur_sens: 0.1000
+                      est_trim: 0
+                    trim_ratio: 0
+                   incl_constr: 0
+                   border_mode: 'Replicate'
+                        mosaic: 0
+                  mosaic_stdev: 10
+                motion_inpaint: 0
+                mi_dist_thresh: 5
+                 color_inpaint: 'no'
+                     ci_radius: 2
+               wobble_suppress: 0
+        ws_lin_prog_motion_est: 0
+                     ws_period: 30
+                      ws_model: 'Homography'
+                     ws_subset: 'auto'
+                     ws_thresh: 'auto'
+              ws_outlier_ratio: 0.5000
+           ws_min_inlier_ratio: 0.1000
+                       ws_nkps: 1000
+                  ws_extra_kps: 0
+    ws_local_outlier_rejection: 0
+                 save_motions2: ''
+                 load_motions2: ''
+                           gpu: 0
+                        output: 'C:\Users\Amro\AppData\Local\Temp\stabilized.avi'
+                           fps: 'auto'
+                         quiet: 0
+                        logger: 'NullLog'
+</pre><h2 id="5">One vs. Two pass stabilizer</h2>
+         <p>determine whether we must use one pass or two pass stabilizer</p><pre class="codeinput">isTwoPass = opts.est_trim || opts.wobble_suppress || opts.lin_prog_stab;
+<span class="keyword">if</span> isTwoPass
+    stab = cv.TwoPassStabilizer();
+<span class="keyword">else</span>
+    stab = cv.OnePassStabilizer();
+<span class="keyword">end</span>
+display(stab)</pre><pre class="codeoutput">stab = 
+  OnePassStabilizer with properties:
+
+                        id: 1
+                    Radius: 15
+                 TrimRatio: 0
+    CorrectionForInclusion: 0
+                BorderMode: 'Replicate'
+</pre><h2 id="6">source video</h2><pre class="codeinput">assert(exist(opts.inputPath, <span class="string">'file'</span>) == 2, <span class="string">'specify valid video file'</span>);
+stab.setFrameSource(<span class="string">'VideoFileSource'</span>, opts.inputPath);
+vid = stab.getFrameSource();
+fprintf(<span class="string">'Frame Count (rough): %d\n'</span>, vid.Count);
+<span class="keyword">if</span> strcmp(opts.fps, <span class="string">'auto'</span>)
+    outputFps = vid.FPS;
+<span class="keyword">else</span>
+    outputFps = opts.fps;
+<span class="keyword">end</span>
+display(vid)</pre><pre class="codeoutput">Frame Count (rough): 132
+vid = 
+  struct with fields:
+
+    TypeId: 'class cv::videostab::VideoFileSource'
+     Width: 320
+    Height: 240
+       FPS: 30.0000
+     Count: 132
+</pre><h2 id="7">prepare motion estimation builders</h2>
+         <p>for stabilizer (prefix="") and wobble suppressor (prefix="ws_")</p><pre class="codeinput">motionEstBuilder = {};
+wsMotionEstBuilder = {};
+<span class="keyword">for</span> prefix = {<span class="string">''</span>, <span class="string">'ws_'</span>}
+    getopts = @(name) opts.([prefix{1} name]);
+    <span class="keyword">if</span> getopts(<span class="string">'lin_prog_motion_est'</span>)
+        est = {<span class="string">'MotionEstimatorL1'</span>, <span class="string">'MotionModel'</span>,getopts(<span class="string">'model'</span>)};
+    <span class="keyword">else</span>
+        ransac = stab.RansacParamsDefault2dMotion(getopts(<span class="string">'model'</span>));
+        <span class="keyword">if</span> ~strcmp(getopts(<span class="string">'subset'</span>), <span class="string">'auto'</span>)
+            ransac.Size = getopts(<span class="string">'subset'</span>);
+        <span class="keyword">end</span>
+        <span class="keyword">if</span> ~strcmp(getopts(<span class="string">'thresh'</span>), <span class="string">'auto'</span>)
+            ransac.Thresh = getopts(<span class="string">'thresh'</span>);
+        <span class="keyword">end</span>
+        ransac.Eps = getopts(<span class="string">'outlier_ratio'</span>);
+        est = {<span class="string">'MotionEstimatorRansacL2'</span>, <span class="string">'MotionModel'</span>,getopts(<span class="string">'model'</span>), <span class="keyword">...</span>
+            <span class="string">'RansacParams'</span>,ransac, <span class="string">'MinInlierRatio'</span>,getopts(<span class="string">'min_inlier_ratio'</span>)};
+    <span class="keyword">end</span>
+    <span class="keyword">if</span> getopts(<span class="string">'local_outlier_rejection'</span>)
+        ransacParams = stab.RansacParamsDefault2dMotion(<span class="string">'Translation'</span>);
+        <span class="keyword">if</span> ~strcmp(getopts(<span class="string">'thresh'</span>), <span class="string">'auto'</span>)
+            ransacParams.Thresh = getopts(<span class="string">'thresh'</span>);
+        <span class="keyword">end</span>
+        outlierRejector = {<span class="string">'TranslationBasedLocalOutlierRejector'</span>, <span class="keyword">...</span>
+            <span class="string">'RansacParams'</span>,ransacParams};
+    <span class="keyword">else</span>
+        outlierRejector = {<span class="string">'NullOutlierRejector'</span>};
+    <span class="keyword">end</span>
+    <span class="keyword">if</span> opts.gpu
+        kbest = {<span class="string">'KeypointBasedMotionEstimatorGpu'</span>, est, <span class="keyword">...</span>
+            <span class="string">'OutlierRejector'</span>,outlierRejector, <span class="string">'MotionModel'</span>,getopts(<span class="string">'model'</span>)};
+    <span class="keyword">else</span>
+        kbest = {<span class="string">'KeypointBasedMotionEstimator'</span>, est, <span class="keyword">...</span>
+            <span class="string">'Detector'</span>,{<span class="string">'GFTTDetector'</span>, <span class="string">'MaxFeatures'</span>,getopts(<span class="string">'nkps'</span>)}, <span class="keyword">...</span>
+            <span class="string">'OutlierRejector'</span>,outlierRejector, <span class="string">'MotionModel'</span>,getopts(<span class="string">'model'</span>)};
+    <span class="keyword">end</span>
+    <span class="keyword">if</span> isempty(prefix{1})
+        motionEstBuilder = kbest;
+    <span class="keyword">else</span>
+        wsMotionEstBuilder = kbest;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+celldisp(motionEstBuilder)
+celldisp(wsMotionEstBuilder)</pre><pre class="codeoutput">motionEstBuilder{1} =
+KeypointBasedMotionEstimator
+motionEstBuilder{2}{1} =
+MotionEstimatorRansacL2
+motionEstBuilder{2}{2} =
+MotionModel
+motionEstBuilder{2}{3} =
+Affine
+motionEstBuilder{2}{4} =
+RansacParams
+motionEstBuilder{2}{5} =
+      Size: 3
+    Thresh: 0.5000
+       Eps: 0.5000
+      Prob: 0.9900
+motionEstBuilder{2}{6} =
+MinInlierRatio
+motionEstBuilder{2}{7} =
+    0.1000
+motionEstBuilder{3} =
+Detector
+motionEstBuilder{4}{1} =
+GFTTDetector
+motionEstBuilder{4}{2} =
+MaxFeatures
+motionEstBuilder{4}{3} =
+        1000
+motionEstBuilder{5} =
+OutlierRejector
+motionEstBuilder{6}{1} =
+NullOutlierRejector
+motionEstBuilder{7} =
+MotionModel
+motionEstBuilder{8} =
+Affine
+wsMotionEstBuilder{1} =
+KeypointBasedMotionEstimator
+wsMotionEstBuilder{2}{1} =
+MotionEstimatorRansacL2
+wsMotionEstBuilder{2}{2} =
+MotionModel
+wsMotionEstBuilder{2}{3} =
+Homography
+wsMotionEstBuilder{2}{4} =
+RansacParams
+wsMotionEstBuilder{2}{5} =
+      Size: 4
+    Thresh: 0.5000
+       Eps: 0.5000
+      Prob: 0.9900
+wsMotionEstBuilder{2}{6} =
+MinInlierRatio
+wsMotionEstBuilder{2}{7} =
+    0.1000
+wsMotionEstBuilder{3} =
+Detector
+wsMotionEstBuilder{4}{1} =
+GFTTDetector
+wsMotionEstBuilder{4}{2} =
+MaxFeatures
+wsMotionEstBuilder{4}{3} =
+        1000
+wsMotionEstBuilder{5} =
+OutlierRejector
+wsMotionEstBuilder{6}{1} =
+NullOutlierRejector
+wsMotionEstBuilder{7} =
+MotionModel
+wsMotionEstBuilder{8} =
+Homography
+</pre><h2 id="8">set properties and algorithms of stabilizer</h2><pre class="codeinput"><span class="keyword">if</span> isTwoPass
+    <span class="comment">% we must use two pass stabilizer</span>
+
+    stab.EstimateTrimRatio = opts.est_trim;
+
+    <span class="comment">% determine stabilization technique</span>
+    <span class="keyword">if</span> opts.lin_prog_stab
+        <span class="keyword">if</span> strcmp(opts.lps_trim_ratio, <span class="string">'auto'</span>)
+            trimRatio = opts.trim_ratio;
+        <span class="keyword">else</span>
+            trimRatio = opts.lps_trim_ratio;
+        <span class="keyword">end</span>
+        stab.setMotionStabilizer(<span class="string">'LpMotionStabilizer'</span>, <span class="keyword">...</span>
+            <span class="string">'FrameSize'</span>,[vid.Width vid.Height], <span class="string">'TrimRatio'</span>,trimRatio, <span class="keyword">...</span>
+            <span class="string">'Weight1'</span>,opts.lps_w1, <span class="string">'Weight2'</span>,opts.lps_w2, <span class="keyword">...</span>
+            <span class="string">'Weight3'</span>,opts.lps_w3, <span class="string">'Weight4'</span>,opts.lps_w4);
+    <span class="keyword">else</span>
+        <span class="keyword">if</span> strcmp(opts.stdev, <span class="string">'auto'</span>)
+            stdev = -1;
+        <span class="keyword">else</span>
+            stdev = opts.stdev;
+        <span class="keyword">end</span>
+        stab.setMotionStabilizer(<span class="string">'GaussianMotionFilter'</span>, <span class="keyword">...</span>
+            <span class="string">'Radius'</span>,opts.radius, <span class="string">'Stdev'</span>,stdev);
+    <span class="keyword">end</span>
+
+    <span class="comment">% init wobble suppressor if necessary</span>
+    <span class="keyword">if</span> opts.wobble_suppress
+        <span class="keyword">if</span> opts.gpu
+            ws = <span class="string">'MoreAccurateMotionWobbleSuppressorGpu'</span>;
+        <span class="keyword">else</span>
+            ws = <span class="string">'MoreAccurateMotionWobbleSuppressor'</span>;
+        <span class="keyword">end</span>
+        motionEstimator = wsMotionEstBuilder;
+        <span class="keyword">if</span> ~isempty(opts.load_motions2)
+            motionEstimator = {<span class="string">'FromFileMotionReader'</span>, opts.load_motions2, <span class="keyword">...</span>
+                <span class="string">'MotionModel'</span>,opts.ws_model};
+        <span class="keyword">end</span>
+        <span class="keyword">if</span> ~isempty(opts.save_motions2)
+            motionEstimator = {<span class="string">'ToFileMotionWriter'</span>, opts.save_motions2, <span class="keyword">...</span>
+                wsMotionEstBuilder, <span class="string">'MotionModel'</span>,opts.ws_model};
+        <span class="keyword">end</span>
+        stab.setWobbleSuppressor(ws, <span class="string">'Period'</span>,opts.ws_period, <span class="keyword">...</span>
+            <span class="string">'MotionEstimator'</span>,motionEstimator);
+    <span class="keyword">end</span>
+<span class="keyword">else</span>
+    <span class="comment">% we must use one pass stabilizer</span>
+
+    <span class="keyword">if</span> strcmp(opts.stdev, <span class="string">'auto'</span>)
+        stdev = -1;
+    <span class="keyword">else</span>
+        stdev = opts.stdev;
+    <span class="keyword">end</span>
+    stab.setMotionFilter(<span class="string">'GaussianMotionFilter'</span>, <span class="keyword">...</span>
+        <span class="string">'Radius'</span>,opts.radius, <span class="string">'Stdev'</span>,stdev);
+<span class="keyword">end</span></pre><h2 id="9">init motion estimator</h2><pre class="codeinput">motionEstimator = motionEstBuilder;
+<span class="keyword">if</span> ~isempty(opts.load_motions)
+    motionEstimator = {<span class="string">'FromFileMotionReader'</span>, opts.load_motions, <span class="keyword">...</span>
+        <span class="string">'MotionModel'</span>,opts.model};
+<span class="keyword">end</span>
+<span class="keyword">if</span> ~isempty(opts.save_motions)
+    motionEstimator = {<span class="string">'ToFileMotionWriter'</span>, opts.save_motions, <span class="keyword">...</span>
+        motionEstBuilder, <span class="string">'MotionModel'</span>,opts.model};
+<span class="keyword">end</span>
+stab.setMotionEstimator(motionEstimator{:});</pre><pre class="codeinput">stab.Radius = opts.radius;
+
+<span class="comment">% set up trimming parameters</span>
+stab.TrimRatio = opts.trim_ratio;
+stab.CorrectionForInclusion = opts.incl_constr;
+
+<span class="comment">% border extrapolation mode</span>
+stab.BorderMode = opts.border_mode;
+
+<span class="comment">% logger</span>
+stab.setLog(opts.logger);</pre><h2 id="11">init deblurer</h2><pre class="codeinput"><span class="keyword">if</span> opts.deblur
+    stab.setDeblurer(<span class="string">'WeightingDeblurer'</span>, <span class="string">'Radius'</span>,opts.radius, <span class="keyword">...</span>
+        <span class="string">'Sensitivity'</span>,opts.deblur_sens);
+<span class="keyword">end</span></pre><h2 id="12">init inpainter</h2><pre class="codeinput">inpainters = {};
+<span class="keyword">if</span> opts.mosaic
+    inpainters{end+1} = {<span class="string">'ConsistentMosaicInpainter'</span>, <span class="keyword">...</span>
+        <span class="string">'StdevThresh'</span>,opts.mosaic_stdev};
+<span class="keyword">end</span>
+<span class="keyword">if</span> opts.motion_inpaint
+    inpainters{end+1} = {<span class="string">'MotionInpainter'</span>, <span class="keyword">...</span>
+        <span class="string">'DistThreshold'</span>,opts.mi_dist_thresh};
+<span class="keyword">end</span>
+<span class="keyword">if</span> strcmp(opts.color_inpaint, <span class="string">'average'</span>)
+    inpainters{end+1} = {<span class="string">'ColorAverageInpainter'</span>};
+<span class="keyword">elseif</span> strcmp(opts.color_inpaint, <span class="string">'ns'</span>)
+    inpainters{end+1} = {<span class="string">'ColorInpainter'</span>, <span class="string">'Method'</span>,<span class="string">'NS'</span>, <span class="keyword">...</span>
+        <span class="string">'Radius2'</span>,opts.ci_radius};
+<span class="keyword">elseif</span> strcmp(opts.color_inpaint, <span class="string">'telea'</span>)
+    inpainters{end+1} = {<span class="string">'ColorInpainter'</span>, <span class="string">'Method'</span>,<span class="string">'Telea'</span>, <span class="keyword">...</span>
+        <span class="string">'Radius2'</span>,opts.ci_radius};
+<span class="keyword">elseif</span> ~strcmp(opts.color_inpaint, <span class="string">'no'</span>)
+    error(<span class="string">'unknown color inpainting method: %s'</span>, opts.color_inpaint);
+<span class="keyword">end</span>
+<span class="keyword">if</span> ~isempty(inpainters)
+    stab.setInpainter(<span class="string">'InpaintingPipeline'</span>,inpainters, <span class="string">'Radius'</span>,opts.radius);
+<span class="keyword">end</span></pre><h2 id="13">run</h2><pre class="codeinput">writer = cv.VideoWriter();
+nframes = 0;
+<span class="keyword">if</span> ~opts.quiet
+    hImg = imshow(zeros([vid.Height vid.Width 3], <span class="string">'uint8'</span>));
+    title(<span class="string">'stabilizedFrame'</span>)
+<span class="keyword">end</span>
+<span class="keyword">while</span> true
+    <span class="comment">% for each stabilized frame</span>
+    frame = stab.nextFrame(<span class="string">'FlipChannels'</span>,true);
+    <span class="keyword">if</span> isempty(frame), <span class="keyword">break</span>; <span class="keyword">end</span>
+    nframes = nframes + 1;
+
+    <span class="comment">% init writer (once) and save stabilized frame</span>
+    <span class="keyword">if</span> ~isempty(opts.output)
+        <span class="keyword">if</span> ~writer.isOpened()
+            sz = size(frame);
+            writer.open(opts.output, [sz(2) sz(1)], <span class="keyword">...</span>
+                <span class="string">'FourCC'</span>,<span class="string">'XVID'</span>, <span class="string">'FPS'</span>,outputFps);
+        <span class="keyword">end</span>
+        writer.write(frame);
+    <span class="keyword">end</span>
+
+    <span class="comment">% show stabilized frame</span>
+    <span class="keyword">if</span> ~opts.quiet
+        set(hImg, <span class="string">'CData'</span>,frame)
+        drawnow
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> true
+        <span class="comment">%HACK: break early, processing of few last frames is slow!</span>
+        <span class="keyword">if</span> nframes &gt; (vid.Count - ceil(opts.radius))
+            <span class="keyword">break</span>;
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+clear <span class="string">writer</span>
+fprintf(<span class="string">'processed frames: %d\n'</span>, nframes);</pre><pre class="codeoutput">processed frames: 118
+</pre><img src="videostab_demo_01.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Video Stabilizer
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv/blob/3.1.0/samples/cpp/videostab.cpp>
+%
+
+%%
+% Description of parameters:
+%
+% * *model*=(Translation|TranslationAndScale|Rigid|Similarity|Affine|Homography)
+%   Set motion model. The default is 'Affine'.
+% * *lin_prog_motion_est*=(true|false)
+%   Turn on/off LP based motion estimation. Requires CLP library.
+%   The default is false.
+% * *subset*=(<int>|auto)
+%   Number of random samples per one motion hypothesis. The default is 'auto'.
+% * *thresh*=(<float>|auto)
+%   Maximum error to classify match as inlier. The default is 'auto'.
+% * *outlier_ratio*=<float>
+%   Motion estimation outlier ratio hypothesis. The default is 0.5.
+% * *min_inlier_ratio*=<float>
+%   Minimum inlier ratio to decide if estimated motion is OK.
+%   The default is 0.1.
+% * *nkps*=<int>
+%   Number of keypoints to find in each frame. The default is 1000.
+% * *extra_kps*=<int>
+%   Default is 0.
+% * *local_outlier_rejection*=(true|false)
+%   Perform local outlier rejection. The default is false.
+%
+% * *save_motions*=<file_path>
+%   Save estimated motions into file. The default is ''.
+% * *load_motions*=<file_path>
+%   Load motions from file. The default is ''.
+%
+% * *radius*=<int>
+%   Set sliding window radius. The default is 15.
+% * *stdev*=(<float>|auto)
+%   Set smoothing weights standard deviation. The default is 'auto'
+%   (i.e. sqrt(radius)).
+% * *lin_prog_stab*=(true|false)
+%   Turn on/off linear programming based stabilization method.
+%   Requires CLP library. Default false
+% * *lps_trim_ratio*=(<float>|auto)
+%   Trimming ratio used in linear programming based method.
+% * *lps_w1*=<float>
+%   1st derivative weight. The default is 1.
+% * *lps_w2*=<float>
+%   2nd derivative weight. The default is 10.
+% * *lps_w3*=<float>
+%   3rd derivative weight. The default is 100.
+% * *lps_w4*=<float>
+%   Non-translation motion components weight. The default is 100.
+%
+% * *deblur*=(true|false)
+%   Do deblurring.
+% * *deblur_sens*=<float>
+%   Set deblurring sensitivity (from 0 to +inf). The default is 0.1.
+%
+% * *trim_ratio*=<float>
+%   Set trimming ratio (from 0 to 0.5). The default is 0.1.
+% * *est_trim*=(true|false)
+%   Estimate trim ratio automatically. The default is true.
+% * *incl_constr*=(true|false)
+%   Ensure the inclusion constraint is always satisfied. The default is false.
+%
+% * *border_mode*=(Replicate|Reflect|Constant)
+%   Set border extrapolation mode. The default is 'Replicate'.
+%
+% * *mosaic*=(true|false)
+%   Do consistent mosaicing. The default is false.
+% * *mosaic_stdev*=<float>
+%   Consistent mosaicing stdev threshold. The default is 10.0.
+%
+% * *motion_inpaint*=(true|false)
+%   Do motion inpainting (requires CUDA support). The default is false.
+% * *mi_dist_thresh*=<float>
+%   Estimated flow distance threshold for motion inpainting.
+%   The default is 5.0.
+%
+% * *color_inpaint*=(no|average|ns|telea)
+%   Do color inpainting. The defailt is 'no'.
+% * *ci_radius*=<float>
+%   Set color inpainting radius (for 'ns' and 'telea' options only).
+%   The default is 2.0
+%
+% * *wobble_suppress*=(true|false)
+%   Perform wobble suppression. The default is false.
+% * *ws_lin_prog_motion_est*=(true|false)
+%   Turn on/off LP based motion estimation. Requires CLP library.
+%   The default is false.
+% * *ws_period*=<int>
+%   Set wobble suppression period. The default is 30.
+% * *ws_model*=(Translation|TranslationAndScale|Rigid|Similarity|Affine|Homography)
+%   Set wobble suppression motion model (must have more DOF than motion
+%   estimation model). The default is 'Homography'.
+% * *ws_subset*=(<int>|auto)
+%   Number of random samples per one motion hypothesis. The default is 'auto'.
+% * *ws_thresh*=(<float>|auto)
+%   Maximum error to classify match as inlier. The default is 'auto'.
+% * *ws_outlier_ratio*=<float>
+%   Motion estimation outlier ratio hypothesis. The default is 0.5.
+% * *ws_min_inlier_ratio*=<float>
+%   Minimum inlier ratio to decide if estimated motion is OK.
+%   The default is 0.1.
+% * *ws_nkps*=<int>
+%   Number of keypoints to find in each frame. The default is 1000.
+% * *ws_extra_kps*=<int>
+%   Default is 0.
+% * *ws_local_outlier_rejection*=(true|false)
+%   Perform local outlier rejection. The default is false.
+%
+% * *save_motions2*=<file_path>
+%   Save motions estimated for wobble suppression. The default is ''.
+% * *load_motions2*=<file_path>
+%   Load motions for wobble suppression from file. The default is ''.
+%
+% * *gpu*=(true|false)
+%   Use CUDA optimization whenever possible. The default is false.
+%
+% * *output*=<file_path>
+%   Set output file path explicitely. The default is 'stabilized.avi'.
+% * *fps*=(<float>|auto)
+%   Set output video FPS explicitely. By default the source FPS is used (auto).
+% * *quiet*
+%   Don't show output video frames.
+% * *logger*=(LogToMATLAB|NullLog)
+%   Log message to specified sink. Default is 'NullLog'.
+%
+% Note: some configurations lead to two passes, some to single pass.
+%
+
+%% Options
+% default values
+opts = struct();
+opts.inputPath = '';
+opts.model = 'Affine';
+opts.lin_prog_motion_est = false;
+ opts.subset = 'auto';
+ opts.thresh = 'auto';
+ opts.outlier_ratio = 0.5;
+ opts.min_inlier_ratio = 0.1;
+ opts.nkps = 1000;
+ opts.extra_kps = 0;
+ opts.local_outlier_rejection = false;
+opts.save_motions = '';
+opts.load_motions = '';
+opts.radius = 15;
+ opts.stdev = 'auto';
+opts.lin_prog_stab = false;
+ opts.lps_trim_ratio = 'auto';
+ opts.lps_w1 = 1;
+ opts.lps_w2 = 10;
+ opts.lps_w3 = 100;
+ opts.lps_w4 = 100;
+ opts.deblur = false;
+ opts.deblur_sens = 0.1;
+opts.est_trim = true;
+opts.trim_ratio = 0.1;
+opts.incl_constr = false;
+opts.border_mode = 'Replicate';
+ opts.mosaic = false;
+opts.mosaic_stdev = 10.0;
+opts.motion_inpaint = false;
+ opts.mi_dist_thresh = 5.0;
+opts.color_inpaint = 'no';
+ opts.ci_radius = 2.0;
+opts.wobble_suppress = false;
+ opts.ws_lin_prog_motion_est = false;
+ opts.ws_period = 30;
+ opts.ws_model = 'Homography';
+ opts.ws_subset = 'auto';
+ opts.ws_thresh = 'auto';
+ opts.ws_outlier_ratio = 0.5;
+ opts.ws_min_inlier_ratio = 0.1;
+ opts.ws_nkps = 1000;
+ opts.ws_extra_kps = 0;
+ opts.ws_local_outlier_rejection = false;
+opts.save_motions2 = '';
+opts.load_motions2 = '';
+opts.gpu = false;
+opts.output = '';
+opts.fps = 'auto';
+opts.quiet = false;
+opts.logger = 'NullLog';
+
+%%
+% override options
+if mexopencv.require('vision')
+    opts.inputPath = which('shaky_car.avi');
+end
+%opts.model = 'Translation';
+%opts.min_inlier_ratio = 0.01;
+%opts.nkps = 500;
+%opts.local_outlier_rejection = true;
+%opts.radius = 150;
+%opts.deblur = true;
+opts.est_trim = false;                    %HACK: otherwise corrupts frames!
+opts.trim_ratio = 0;                      %HACK: otherwise corrupts frames!
+%opts.border_mode = 'Constant';
+%opts.mosaic = true;
+%opts.color_inpaint = 'telea';
+%opts.wobble_suppress = true;
+%opts.ws_local_outlier_rejection = true;
+opts.output = fullfile(tempdir(), 'stabilized.avi');
+opts.gpu = false;                         %TODO: not yet implemented
+display(opts)
+
+%% One vs. Two pass stabilizer
+% determine whether we must use one pass or two pass stabilizer
+isTwoPass = opts.est_trim || opts.wobble_suppress || opts.lin_prog_stab;
+if isTwoPass
+    stab = cv.TwoPassStabilizer();
+else
+    stab = cv.OnePassStabilizer();
+end
+display(stab)
+
+%% source video
+assert(exist(opts.inputPath, 'file') == 2, 'specify valid video file');
+stab.setFrameSource('VideoFileSource', opts.inputPath);
+vid = stab.getFrameSource();
+fprintf('Frame Count (rough): %d\n', vid.Count);
+if strcmp(opts.fps, 'auto')
+    outputFps = vid.FPS;
+else
+    outputFps = opts.fps;
+end
+display(vid)
+
+%% prepare motion estimation builders
+% for stabilizer (prefix="") and wobble suppressor (prefix="ws_")
+motionEstBuilder = {};
+wsMotionEstBuilder = {};
+for prefix = {'', 'ws_'}
+    getopts = @(name) opts.([prefix{1} name]);
+    if getopts('lin_prog_motion_est')
+        est = {'MotionEstimatorL1', 'MotionModel',getopts('model')};
+    else
+        ransac = stab.RansacParamsDefault2dMotion(getopts('model'));
+        if ~strcmp(getopts('subset'), 'auto')
+            ransac.Size = getopts('subset');
+        end
+        if ~strcmp(getopts('thresh'), 'auto')
+            ransac.Thresh = getopts('thresh');
+        end
+        ransac.Eps = getopts('outlier_ratio');
+        est = {'MotionEstimatorRansacL2', 'MotionModel',getopts('model'), ...
+            'RansacParams',ransac, 'MinInlierRatio',getopts('min_inlier_ratio')};
+    end
+    if getopts('local_outlier_rejection')
+        ransacParams = stab.RansacParamsDefault2dMotion('Translation');
+        if ~strcmp(getopts('thresh'), 'auto')
+            ransacParams.Thresh = getopts('thresh');
+        end
+        outlierRejector = {'TranslationBasedLocalOutlierRejector', ...
+            'RansacParams',ransacParams};
+    else
+        outlierRejector = {'NullOutlierRejector'};
+    end
+    if opts.gpu
+        kbest = {'KeypointBasedMotionEstimatorGpu', est, ...
+            'OutlierRejector',outlierRejector, 'MotionModel',getopts('model')};
+    else
+        kbest = {'KeypointBasedMotionEstimator', est, ...
+            'Detector',{'GFTTDetector', 'MaxFeatures',getopts('nkps')}, ...
+            'OutlierRejector',outlierRejector, 'MotionModel',getopts('model')};
+    end
+    if isempty(prefix{1})
+        motionEstBuilder = kbest;
+    else
+        wsMotionEstBuilder = kbest;
+    end
+end
+celldisp(motionEstBuilder)
+celldisp(wsMotionEstBuilder)
+
+%% set properties and algorithms of stabilizer
+if isTwoPass
+    % we must use two pass stabilizer
+
+    stab.EstimateTrimRatio = opts.est_trim;
+
+    % determine stabilization technique
+    if opts.lin_prog_stab
+        if strcmp(opts.lps_trim_ratio, 'auto')
+            trimRatio = opts.trim_ratio;
+        else
+            trimRatio = opts.lps_trim_ratio;
+        end
+        stab.setMotionStabilizer('LpMotionStabilizer', ...
+            'FrameSize',[vid.Width vid.Height], 'TrimRatio',trimRatio, ...
+            'Weight1',opts.lps_w1, 'Weight2',opts.lps_w2, ...
+            'Weight3',opts.lps_w3, 'Weight4',opts.lps_w4);
+    else
+        if strcmp(opts.stdev, 'auto')
+            stdev = -1;
+        else
+            stdev = opts.stdev;
+        end
+        stab.setMotionStabilizer('GaussianMotionFilter', ...
+            'Radius',opts.radius, 'Stdev',stdev);
+    end
+
+    % init wobble suppressor if necessary
+    if opts.wobble_suppress
+        if opts.gpu
+            ws = 'MoreAccurateMotionWobbleSuppressorGpu';
+        else
+            ws = 'MoreAccurateMotionWobbleSuppressor';
+        end
+        motionEstimator = wsMotionEstBuilder;
+        if ~isempty(opts.load_motions2)
+            motionEstimator = {'FromFileMotionReader', opts.load_motions2, ...
+                'MotionModel',opts.ws_model};
+        end
+        if ~isempty(opts.save_motions2)
+            motionEstimator = {'ToFileMotionWriter', opts.save_motions2, ...
+                wsMotionEstBuilder, 'MotionModel',opts.ws_model};
+        end
+        stab.setWobbleSuppressor(ws, 'Period',opts.ws_period, ...
+            'MotionEstimator',motionEstimator);
+    end
+else
+    % we must use one pass stabilizer
+
+    if strcmp(opts.stdev, 'auto')
+        stdev = -1;
+    else
+        stdev = opts.stdev;
+    end
+    stab.setMotionFilter('GaussianMotionFilter', ...
+        'Radius',opts.radius, 'Stdev',stdev);
+end
+
+%% init motion estimator
+motionEstimator = motionEstBuilder;
+if ~isempty(opts.load_motions)
+    motionEstimator = {'FromFileMotionReader', opts.load_motions, ...
+        'MotionModel',opts.model};
+end
+if ~isempty(opts.save_motions)
+    motionEstimator = {'ToFileMotionWriter', opts.save_motions, ...
+        motionEstBuilder, 'MotionModel',opts.model};
+end
+stab.setMotionEstimator(motionEstimator{:});
+
+%%
+stab.Radius = opts.radius;
+
+% set up trimming parameters
+stab.TrimRatio = opts.trim_ratio;
+stab.CorrectionForInclusion = opts.incl_constr;
+
+% border extrapolation mode
+stab.BorderMode = opts.border_mode;
+
+% logger
+stab.setLog(opts.logger);
+
+%% init deblurer
+if opts.deblur
+    stab.setDeblurer('WeightingDeblurer', 'Radius',opts.radius, ...
+        'Sensitivity',opts.deblur_sens);
+end
+
+%% init inpainter
+inpainters = {};
+if opts.mosaic
+    inpainters{end+1} = {'ConsistentMosaicInpainter', ...
+        'StdevThresh',opts.mosaic_stdev};
+end
+if opts.motion_inpaint
+    inpainters{end+1} = {'MotionInpainter', ...
+        'DistThreshold',opts.mi_dist_thresh};
+end
+if strcmp(opts.color_inpaint, 'average')
+    inpainters{end+1} = {'ColorAverageInpainter'};
+elseif strcmp(opts.color_inpaint, 'ns')
+    inpainters{end+1} = {'ColorInpainter', 'Method','NS', ...
+        'Radius2',opts.ci_radius};
+elseif strcmp(opts.color_inpaint, 'telea')
+    inpainters{end+1} = {'ColorInpainter', 'Method','Telea', ...
+        'Radius2',opts.ci_radius};
+elseif ~strcmp(opts.color_inpaint, 'no')
+    error('unknown color inpainting method: %s', opts.color_inpaint);
+end
+if ~isempty(inpainters)
+    stab.setInpainter('InpaintingPipeline',inpainters, 'Radius',opts.radius);
+end
+
+%% run
+writer = cv.VideoWriter();
+nframes = 0;
+if ~opts.quiet
+    hImg = imshow(zeros([vid.Height vid.Width 3], 'uint8'));
+    title('stabilizedFrame')
+end
+while true
+    % for each stabilized frame
+    frame = stab.nextFrame('FlipChannels',true);
+    if isempty(frame), break; end
+    nframes = nframes + 1;
+
+    % init writer (once) and save stabilized frame
+    if ~isempty(opts.output)
+        if ~writer.isOpened()
+            sz = size(frame);
+            writer.open(opts.output, [sz(2) sz(1)], ...
+                'FourCC','XVID', 'FPS',outputFps);
+        end
+        writer.write(frame);
+    end
+
+    % show stabilized frame
+    if ~opts.quiet
+        set(hImg, 'CData',frame)
+        drawnow
+    end
+
+    if true
+        %HACK: break early, processing of few last frames is slow!
+        if nframes > (vid.Count - ceil(opts.radius))
+            break;
+        end
+    end
+end
+clear writer
+fprintf('processed frames: %d\n', nframes);
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Global Patch Collider Demo</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="gpc_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Global Patch Collider Demo</h1>
+         <!--introduction-->
+         <p>This sample trains the forest for the Global Patch Collider and stores output to the file "forest.yml.gz".</p>
+         <p>It then finds correspondences between two images using Global Patch Collider and calculates error using provided ground truth
+            flow.
+         </p>
+         <p>It will look for the file named "forest.yml.gz" with a learned forest. You can obtain the "forest.yml.gz" either by manually
+            training it or by downloading one of the files trained on some publicly available dataset from here: <a href="https://drive.google.com/open?id=0B7Hb8cfuzrIIZDFscXVYd0NBNFU">https://drive.google.com/open?id=0B7Hb8cfuzrIIZDFscXVYd0NBNFU</a></p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.2.0/modules/optflow/samples/gpc_train.cpp">https://github.com/opencv/opencv_contrib/blob/3.2.0/modules/optflow/samples/gpc_train.cpp</a></li>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.2.0/modules/optflow/samples/gpc_evaluate.cpp">https://github.com/opencv/opencv_contrib/blob/3.2.0/modules/optflow/samples/gpc_evaluate.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">1) Train</a></li>
+               <li><a href="#6">2) Evaluate</a></li>
+               <li><a href="#13">Helper function</a></li>
+            </ul>
+         </div>
+         <h2 id="2">1) Train</h2>
+         <p>input training images</p><pre class="codeinput">imgs1 = {
+    fullfile(mexopencv.root(), <span class="string">'test'</span>, <span class="string">'RubberWhale1.png'</span>)
+};
+imgs2 = {
+    fullfile(mexopencv.root(), <span class="string">'test'</span>, <span class="string">'RubberWhale2.png'</span>)
+};
+groundTruths = {
+    fullfile(mexopencv.root(), <span class="string">'test'</span>, <span class="string">'RubberWhale.flo'</span>)
+};
+assert(isequal(numel(imgs1), numel(imgs2), numel(groundTruths)));
+
+<span class="keyword">if</span> exist(groundTruths{1}, <span class="string">'file'</span>) ~= 2
+    <span class="comment">% attempt to download ground thruth flow from GitHub</span>
+    disp(<span class="string">'Downloading FLO...'</span>)
+    url = <span class="string">'https://cdn.rawgit.com/opencv/opencv_extra/3.2.0/testdata/cv/optflow/RubberWhale.flo'</span>;
+    urlwrite(url, groundTruths{1});
+<span class="keyword">end</span></pre><p>Global Patch Collider training paramters</p><pre class="codeinput">params = {
+    <span class="string">'MaxTreeDepth'</span>,20, <span class="keyword">...</span><span class="comment">      % Maximum tree depth to stop partitioning</span>
+    <span class="string">'MinNumberOfSamples'</span>,3, <span class="keyword">...</span><span class="comment"> % Minimum number of samples in the node to stop partitioning</span>
+    <span class="string">'DescriptorType'</span>,<span class="string">'DCT'</span>, <span class="keyword">...</span><span class="comment"> % Descriptor type. Set to DCT for quality, WHT for speed</span>
+    <span class="string">'PrintProgress'</span>,false       <span class="comment">% Set to false for quiet mode, set to true to print progress</span>
+};
+forestDumpPath = fullfile(tempdir(), <span class="string">'forest.yml.gz'</span>);</pre><p>train the forest for the Global Patch Collider and save it</p><pre class="codeinput"><span class="keyword">if</span> exist(forestDumpPath, <span class="string">'file'</span>) ~= 2
+    gpc = cv.GPCForest();
+    tic
+    gpc.train(imgs1, imgs2, groundTruths);
+    toc
+    gpc.save(forestDumpPath);
+<span class="keyword">end</span></pre><h2 id="6">2) Evaluate</h2>
+         <p>test images</p><pre class="codeinput">fromPath = imgs1{1};
+toPath = imgs2{1};
+gtPath = groundTruths{1};
+
+from = imread(fromPath);
+to = imread(toPath);
+flo = cv.readOpticalFlow(gtPath);</pre><p>load pretrained forest</p><pre class="codeinput">forest = cv.GPCForest();
+assert(exist(forestDumpPath,<span class="string">'file'</span>) == 2, <span class="string">'No file with a trained model'</span>);
+forest.load(forestDumpPath);</pre><p>find correspondences between two the images using GPC</p><pre class="codeinput">tic
+corresp = forest.findCorrespondences(from, to, <span class="string">'UseOpenCL'</span>,false);
+toc
+fprintf(<span class="string">'Found %d matches\n'</span>, numel(corresp));</pre><pre class="codeoutput">Elapsed time is 4.856060 seconds.
+Found 20848 matches
+</pre><p>calculate error using provided ground truth flow</p><pre class="codeinput">gtU = flo(:,:,1);
+gtV = flo(:,:,2);
+a = cat(1, corresp.first);
+b = cat(1, corresp.second);
+ind = sub2ind(size(gtU), a(:,2), a(:,1));
+gtDisplacement = [gtU(ind) gtV(ind)];
+c = a + gtDisplacement;
+
+<span class="comment">% check for correct flow vector</span>
+mask = all(isfinite(gtDisplacement) &amp; (gtDisplacement &lt; 1e9), 2);
+a = a(mask,:);
+b = b(mask,:);
+c = c(mask,:);
+
+err = mean(sqrt(sum((b - c).^2, 2)));
+fprintf(<span class="string">'Average endpoint error = %f px.\n'</span>, err);</pre><pre class="codeoutput">Average endpoint error = 0.929796 px.
+</pre><p>display flows as color images</p><pre class="codeinput">clr = getFlowColor(b - a);
+dispOut = zeros(size(from), <span class="string">'single'</span>);
+dispOut(:,:,3) = 1;
+dispOut = cv.circle(dispOut, a, 3, <span class="string">'Colors'</span>,clr, <span class="string">'Thickness'</span>,<span class="string">'Filled'</span>);
+dispOut = cv.cvtColor(dispOut, <span class="string">'HSV2RGB'</span>);
+
+clr = getFlowColor(b - c, false, 32);
+dispErr = zeros(size(from), <span class="string">'single'</span>);
+dispErr(:,:,3) = 1;
+dispErr = cv.circle(dispErr, a, 3, <span class="string">'Colors'</span>,clr, <span class="string">'Thickness'</span>,<span class="string">'Filled'</span>);
+dispErr = cv.cvtColor(dispErr, <span class="string">'HSV2RGB'</span>);
+
+dispGT = getFlowColor([gtU(:) gtV(:)]);
+dispGT = reshape(dispGT(:,1:3), [size(gtU) 3]);
+dispGT = cv.cvtColor(dispGT, <span class="string">'HSV2RGB'</span>);</pre><p>show results</p><pre class="codeinput">opts = {<span class="string">'FontScale'</span>,0.8, <span class="string">'Color'</span>,<span class="string">'k'</span>, <span class="string">'LineType'</span>,<span class="string">'AA'</span>};
+str = <span class="string">'Sparse matching: Global Patch Collider'</span>;
+dispOut = cv.putText(dispOut, str, [20 40], opts{:});
+str = sprintf(<span class="string">'Average EPE: %.2f'</span>, err);
+dispOut = cv.putText(dispOut, str, [20 80], opts{:});
+str = sprintf(<span class="string">'Number of matches: %d'</span>, nnz(mask));
+dispOut = cv.putText(dispOut, str, [20 120], opts{:});
+
+figure(1), imshow(dispOut), title(<span class="string">'Correspondences'</span>)
+figure(2), imshow(dispErr), title(<span class="string">'Error'</span>)
+figure(3), imshow(dispGT), title(<span class="string">'Ground Truth'</span>)</pre><img src="gpc_demo_01.png"><img src="gpc_demo_02.png"><img src="gpc_demo_03.png"><h2 id="13">Helper function</h2><pre class="codeinput"><span class="keyword">function</span> clr = getFlowColor(UV, logScale, scaleDown)
+    <span class="keyword">if</span> nargin &lt; 2, logScale = true; <span class="keyword">end</span>
+    <span class="keyword">if</span> nargin &lt; 3, scaleDown = 5; <span class="keyword">end</span>
+
+    angle = (atan2(-UV(:,2), -UV(:,1)) + pi) * 180 / pi;
+    angle(all(UV == 0, 2)) = 0;
+
+    radius = sqrt(sum(UV.^2, 2));
+    <span class="keyword">if</span> logScale
+        radius = log(radius + 1);
+    <span class="keyword">end</span>
+    radius = radius ./ scaleDown;
+    radius = min(radius, 1);
+
+    clr = [angle radius];
+    clr(:,3) = 1;
+    clr(:,4) = 0;
+<span class="keyword">end</span></pre><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Global Patch Collider Demo
+%
+% This sample trains the forest for the Global Patch Collider and stores
+% output to the file "forest.yml.gz".
+%
+% It then finds correspondences between two images using Global Patch Collider
+% and calculates error using provided ground truth flow.
+%
+% It will look for the file named "forest.yml.gz" with a learned forest.
+% You can obtain the "forest.yml.gz" either by manually training it or by
+% downloading one of the files trained on some publicly available dataset from
+% here: <https://drive.google.com/open?id=0B7Hb8cfuzrIIZDFscXVYd0NBNFU>
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv_contrib/blob/3.2.0/modules/optflow/samples/gpc_train.cpp>
+% * <https://github.com/opencv/opencv_contrib/blob/3.2.0/modules/optflow/samples/gpc_evaluate.cpp>
+%
+
+%% 1) Train
+
+%%
+% input training images
+imgs1 = {
+    fullfile(mexopencv.root(), 'test', 'RubberWhale1.png')
+};
+imgs2 = {
+    fullfile(mexopencv.root(), 'test', 'RubberWhale2.png')
+};
+groundTruths = {
+    fullfile(mexopencv.root(), 'test', 'RubberWhale.flo')
+};
+assert(isequal(numel(imgs1), numel(imgs2), numel(groundTruths)));
+
+if exist(groundTruths{1}, 'file') ~= 2
+    % attempt to download ground thruth flow from GitHub
+    disp('Downloading FLO...')
+    url = 'https://cdn.rawgit.com/opencv/opencv_extra/3.2.0/testdata/cv/optflow/RubberWhale.flo';
+    urlwrite(url, groundTruths{1});
+end
+
+%%
+% Global Patch Collider training paramters
+params = {
+    'MaxTreeDepth',20, ...      % Maximum tree depth to stop partitioning
+    'MinNumberOfSamples',3, ... % Minimum number of samples in the node to stop partitioning
+    'DescriptorType','DCT', ... % Descriptor type. Set to DCT for quality, WHT for speed
+    'PrintProgress',false       % Set to false for quiet mode, set to true to print progress
+};
+forestDumpPath = fullfile(tempdir(), 'forest.yml.gz');
+
+%%
+% train the forest for the Global Patch Collider and save it
+if exist(forestDumpPath, 'file') ~= 2
+    gpc = cv.GPCForest();
+    tic
+    gpc.train(imgs1, imgs2, groundTruths);
+    toc
+    gpc.save(forestDumpPath);
+end
+
+%% 2) Evaluate
+
+%%
+% test images
+fromPath = imgs1{1};
+toPath = imgs2{1};
+gtPath = groundTruths{1};
+
+from = imread(fromPath);
+to = imread(toPath);
+flo = cv.readOpticalFlow(gtPath);
+
+%%
+% load pretrained forest
+forest = cv.GPCForest();
+assert(exist(forestDumpPath,'file') == 2, 'No file with a trained model');
+forest.load(forestDumpPath);
+
+%%
+% find correspondences between two the images using GPC
+tic
+corresp = forest.findCorrespondences(from, to, 'UseOpenCL',false);
+toc
+fprintf('Found %d matches\n', numel(corresp));
+
+%%
+% calculate error using provided ground truth flow
+gtU = flo(:,:,1);
+gtV = flo(:,:,2);
+a = cat(1, corresp.first);
+b = cat(1, corresp.second);
+ind = sub2ind(size(gtU), a(:,2), a(:,1));
+gtDisplacement = [gtU(ind) gtV(ind)];
+c = a + gtDisplacement;
+
+% check for correct flow vector
+mask = all(isfinite(gtDisplacement) & (gtDisplacement < 1e9), 2);
+a = a(mask,:);
+b = b(mask,:);
+c = c(mask,:);
+
+err = mean(sqrt(sum((b - c).^2, 2)));
+fprintf('Average endpoint error = %f px.\n', err);
+
+%%
+% display flows as color images
+clr = getFlowColor(b - a);
+dispOut = zeros(size(from), 'single');
+dispOut(:,:,3) = 1;
+dispOut = cv.circle(dispOut, a, 3, 'Colors',clr, 'Thickness','Filled');
+dispOut = cv.cvtColor(dispOut, 'HSV2RGB');
+
+clr = getFlowColor(b - c, false, 32);
+dispErr = zeros(size(from), 'single');
+dispErr(:,:,3) = 1;
+dispErr = cv.circle(dispErr, a, 3, 'Colors',clr, 'Thickness','Filled');
+dispErr = cv.cvtColor(dispErr, 'HSV2RGB');
+
+dispGT = getFlowColor([gtU(:) gtV(:)]);
+dispGT = reshape(dispGT(:,1:3), [size(gtU) 3]);
+dispGT = cv.cvtColor(dispGT, 'HSV2RGB');
+
+%%
+% show results
+opts = {'FontScale',0.8, 'Color','k', 'LineType','AA'};
+str = 'Sparse matching: Global Patch Collider';
+dispOut = cv.putText(dispOut, str, [20 40], opts{:});
+str = sprintf('Average EPE: %.2f', err);
+dispOut = cv.putText(dispOut, str, [20 80], opts{:});
+str = sprintf('Number of matches: %d', nnz(mask));
+dispOut = cv.putText(dispOut, str, [20 120], opts{:});
+
+figure(1), imshow(dispOut), title('Correspondences')
+figure(2), imshow(dispErr), title('Error')
+figure(3), imshow(dispGT), title('Ground Truth')
+
+%% Helper function
+
+function clr = getFlowColor(UV, logScale, scaleDown)
+    if nargin < 2, logScale = true; end
+    if nargin < 3, scaleDown = 5; end
+
+    angle = (atan2(-UV(:,2), -UV(:,1)) + pi) * 180 / pi;
+    angle(all(UV == 0, 2)) = 0;
+
+    radius = sqrt(sum(UV.^2, 2));
+    if logScale
+        radius = log(radius + 1);
+    end
+    radius = radius ./ scaleDown;
+    radius = min(radius, 1);
+
+    clr = [angle radius];
+    clr(:,3) = 1;
+    clr(:,4) = 0;
+end
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

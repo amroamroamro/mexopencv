@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>GMS matching strategy (image)</title>
+      <meta name="generator" content="MATLAB 9.4">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2018-10-05">
+      <meta name="DC.source" content="gms_matcher_img_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">GMS matching strategy (image)</h1>
+         <!--introduction-->
+         <p>This sample demonstrates the GMS matching strategy.</p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="opencv_contrib/modules/xfeatures2d/samples/gms_matcher.cpp">opencv_contrib/modules/xfeatures2d/samples/gms_matcher.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <p>Options</p><pre class="codeinput">opts = struct();
+opts.nfeatures = 10000;
+opts.fastThreshold = 20;
+opts.drawSimple = true;
+opts.withRotation = false;
+opts.withScale = false;
+
+<span class="comment">% helper function</span>
+siz = @(img) [size(img,2), size(img,1)];</pre><p>create feature detector and descriptor matcher objects</p><pre class="codeinput">detector = cv.ORB(<span class="string">'MaxFeatures'</span>,opts.nfeatures, <span class="string">'FastThreshold'</span>,opts.fastThreshold);
+matcher = cv.DescriptorMatcher(<span class="string">'BruteForce-Hamming'</span>);</pre><p>pair of images</p><pre class="codeinput">imgL = imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'left01.jpg'</span>));
+imgR = imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'right01.jpg'</span>));</pre><p>detect keypoints and compute and match descriptors</p><pre class="codeinput">[kpRef, descRef] = detector.detectAndCompute(imgL);
+[kpCur, descCur] = detector.detectAndCompute(imgR);
+matchesAll = matcher.match(descRef, descCur);
+fprintf(<span class="string">'matches: %d\n'</span>, numel(matchesAll));</pre><pre class="codeoutput">matches: 5330
+</pre><p>GMS matching</p><pre class="codeinput">tic
+matchesGMS = cv.matchGMS(siz(imgL), kpRef, siz(imgR), kpCur, matchesAll, <span class="keyword">...</span>
+	<span class="string">'WithRotation'</span>,opts.withRotation, <span class="string">'WithScale'</span>,opts.withScale);
+toc
+fprintf(<span class="string">'matchesGMS: %d\n'</span>, numel(matchesGMS));</pre><pre class="codeoutput">Elapsed time is 0.036273 seconds.
+matchesGMS: 1044
+</pre><p>show results</p><pre class="codeinput">out = cv.drawMatches(imgL, kpRef, imgR, kpCur, matchesGMS, <span class="keyword">...</span>
+	<span class="string">'NotDrawSinglePoints'</span>,opts.drawSimple);
+imshow(out), title(<span class="string">'Matches GMS'</span>)</pre><img src="gms_matcher_img_demo_01.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2018a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% GMS matching strategy (image)
+%
+% This sample demonstrates the GMS matching strategy.
+%
+% Sources:
+%
+% * <opencv_contrib/modules/xfeatures2d/samples/gms_matcher.cpp>
+%
+
+%%
+% Options
+opts = struct();
+opts.nfeatures = 10000;
+opts.fastThreshold = 20;
+opts.drawSimple = true;
+opts.withRotation = false;
+opts.withScale = false;
+
+% helper function
+siz = @(img) [size(img,2), size(img,1)];
+
+%%
+% create feature detector and descriptor matcher objects
+detector = cv.ORB('MaxFeatures',opts.nfeatures, 'FastThreshold',opts.fastThreshold);
+matcher = cv.DescriptorMatcher('BruteForce-Hamming');
+
+%%
+% pair of images
+imgL = imread(fullfile(mexopencv.root(),'test','left01.jpg'));
+imgR = imread(fullfile(mexopencv.root(),'test','right01.jpg'));
+
+%%
+% detect keypoints and compute and match descriptors
+[kpRef, descRef] = detector.detectAndCompute(imgL);
+[kpCur, descCur] = detector.detectAndCompute(imgR);
+matchesAll = matcher.match(descRef, descCur);
+fprintf('matches: %d\n', numel(matchesAll));
+
+%%
+% GMS matching
+tic
+matchesGMS = cv.matchGMS(siz(imgL), kpRef, siz(imgR), kpCur, matchesAll, ...
+	'WithRotation',opts.withRotation, 'WithScale',opts.withScale);
+toc
+fprintf('matchesGMS: %d\n', numel(matchesGMS));
+
+%%
+% show results
+out = cv.drawMatches(imgL, kpRef, imgR, kpCur, matchesGMS, ...
+	'NotDrawSinglePoints',opts.drawSimple);
+imshow(out), title('Matches GMS')
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>Bitwise Operations on Images</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="image_bitwise_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">Bitwise Operations on Images</h1>
+         <!--introduction-->
+         <p>In this demo, we show how to perform arithmetic operations on images like addition, subtraction, bitwise operations, etc.</p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://docs.opencv.org/3.2.0/d0/d86/tutorial_py_image_arithmetics.html">https://docs.opencv.org/3.2.0/d0/d86/tutorial_py_image_arithmetics.html</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Theory</a></li>
+               <li><a href="#3">Code</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Theory</h2>
+         <p>You can add two images by OpenCV function, <tt>cv.add</tt> or simply by array addition, <tt>res = img1 + img2</tt>. Both images should be of same depth and type, or second image can just be a scalar value.
+         </p>
+         <p>Bitwise operations inclue bitwise AND, OR, NOT and XOR operations. They will be highly useful while extracting any part of
+            the image, defining and working with non-rectangular ROI etc. Below we will see an example on how to change a particular region
+            of an image.
+         </p>
+         <h2 id="3">Code</h2>
+         <p>We want to put a logo image above an image. If we add two images, it will change color. If we blend it, we get an transparent
+            effect. But we want it to be opaque. If it was a rectangular region, we could use ROI, but the logo is a not a rectangular
+            shape. So we can do it with bitwise operations.
+         </p>
+         <p>Load two images</p><pre class="codeinput">img1 = imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'lena.jpg'</span>));
+img2 = imread(fullfile(mexopencv.root(),<span class="string">'test'</span>,<span class="string">'monster.jpg'</span>));
+img2 = img2(:,1:160,:);  <span class="comment">% crop the part we want</span>
+subplot(121), imshow(img1), title(<span class="string">'image'</span>)
+subplot(122), imshow(img2), title(<span class="string">'logo'</span>)</pre><img src="image_bitwise_demo_01.png"><p>We want to put logo on top-left corner, so we create a ROI</p><pre class="codeinput">img1_roi = img1(1:size(img2,1),1:size(img2,2),:);
+figure, imshow(img1_roi), title(<span class="string">'ROI'</span>)</pre><img src="image_bitwise_demo_02.png"><p>Create a mask of logo and create its inverse mask also</p><pre class="codeinput">img2_gray = cv.cvtColor(img2, <span class="string">'RGB2GRAY'</span>);
+mask = cv.threshold(img2_gray, <span class="string">'Otsu'</span>, <span class="string">'Type'</span>,<span class="string">'BinaryInv'</span>);
+mask_inv = cv.bitwise_not(mask);
+figure
+subplot(121), imshow(mask), title(<span class="string">'mask'</span>)
+subplot(122), imshow(mask_inv), title(<span class="string">'inverse mask'</span>)</pre><img src="image_bitwise_demo_03.png"><p>Now black-out the area of logo in ROI</p><pre class="codeinput">img1_bg = cv.bitwise_and(img1_roi, img1_roi, <span class="string">'Mask'</span>,mask_inv);
+figure, imshow(img1_bg), title(<span class="string">'image background'</span>)</pre><img src="image_bitwise_demo_04.png"><p>Take only region of logo from logo image</p><pre class="codeinput">img2_fg = cv.bitwise_and(img2, img2, <span class="string">'Mask'</span>,mask);
+figure, imshow(img2_fg), title(<span class="string">'logo foreground'</span>)</pre><img src="image_bitwise_demo_05.png"><p>Put logo in ROI</p><pre class="codeinput">img1_roi = cv.add(img1_bg, img2_fg);
+figure, imshow(img1_roi), title(<span class="string">'ROI = BG + FG'</span>)</pre><img src="image_bitwise_demo_06.png"><p>Modify the main image using the updated ROI</p><pre class="codeinput">img1(1:size(img2,1),1:size(img2,2),:) = img1_roi;
+figure, imshow(img1), title(<span class="string">'result'</span>)</pre><img src="image_bitwise_demo_07.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Bitwise Operations on Images
+%
+% In this demo, we show how to perform arithmetic operations on images like
+% addition, subtraction, bitwise operations, etc.
+%
+% Sources:
+%
+% * <https://docs.opencv.org/3.2.0/d0/d86/tutorial_py_image_arithmetics.html>
+%
+
+%% Theory
+%
+% You can add two images by OpenCV function, |cv.add| or simply by array
+% addition, |res = img1 + img2|. Both images should be of same depth and type,
+% or second image can just be a scalar value.
+%
+% Bitwise operations inclue bitwise AND, OR, NOT and XOR operations. They will
+% be highly useful while extracting any part of the image, defining and
+% working with non-rectangular ROI etc. Below we will see an example on how to
+% change a particular region of an image.
+%
+
+%% Code
+%
+% We want to put a logo image above an image. If we add two images, it will
+% change color. If we blend it, we get an transparent effect. But we want it
+% to be opaque. If it was a rectangular region, we could use ROI, but the logo
+% is a not a rectangular shape. So we can do it with bitwise operations.
+%
+
+%%
+% Load two images
+img1 = imread(fullfile(mexopencv.root(),'test','lena.jpg'));
+img2 = imread(fullfile(mexopencv.root(),'test','monster.jpg'));
+img2 = img2(:,1:160,:);  % crop the part we want
+subplot(121), imshow(img1), title('image')
+subplot(122), imshow(img2), title('logo')
+
+%%
+% We want to put logo on top-left corner, so we create a ROI
+img1_roi = img1(1:size(img2,1),1:size(img2,2),:);
+figure, imshow(img1_roi), title('ROI')
+
+%%
+% Create a mask of logo and create its inverse mask also
+img2_gray = cv.cvtColor(img2, 'RGB2GRAY');
+mask = cv.threshold(img2_gray, 'Otsu', 'Type','BinaryInv');
+mask_inv = cv.bitwise_not(mask);
+figure
+subplot(121), imshow(mask), title('mask')
+subplot(122), imshow(mask_inv), title('inverse mask')
+
+%%
+% Now black-out the area of logo in ROI
+img1_bg = cv.bitwise_and(img1_roi, img1_roi, 'Mask',mask_inv);
+figure, imshow(img1_bg), title('image background')
+
+%%
+% Take only region of logo from logo image
+img2_fg = cv.bitwise_and(img2, img2, 'Mask',mask);
+figure, imshow(img2_fg), title('logo foreground')
+
+%%
+% Put logo in ROI
+img1_roi = cv.add(img1_bg, img2_fg);
+figure, imshow(img1_roi), title('ROI = BG + FG')
+
+%%
+% Modify the main image using the updated ROI
+img1(1:size(img2,1),1:size(img2,2),:) = img1_roi;
+figure, imshow(img1), title('result')
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--This HTML was auto-generated from published MATLAB code.-->
+      <title>ChArUco Board Image Demo</title>
+      <meta name="generator" content="MATLAB 9.2">
+      <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+      <meta name="DC.date" content="2017-11-27">
+      <meta name="DC.source" content="aruco_create_board_charuco_demo.m">
+      <link rel="stylesheet" type="text/css" href="publish_custom.css">
+   </head>
+   <body>
+      <div class="content">
+         <h1 id="1">ChArUco Board Image Demo</h1>
+         <!--introduction-->
+         <p>This example shows how to create a ChArUco board image.</p>
+         <p>Sources:</p>
+         <div>
+            <ul>
+               <li><a href="https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/aruco/samples/create_board_charuco.cpp">https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/aruco/samples/create_board_charuco.cpp</a></li>
+            </ul>
+         </div>
+         <!--/introduction-->
+         <h2 id="toc">Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Board</a></li>
+               <li><a href="#3">Display</a></li>
+            </ul>
+         </div>
+         <h2 id="2">Board</h2><pre class="codeinput"><span class="comment">% params</span>
+squaresX = 5;                           <span class="comment">% Number of squares in X direction</span>
+squaresY = 7;                           <span class="comment">% Number of squares in Y direction</span>
+squareLength = 60;                      <span class="comment">% Square side length (in pixels)</span>
+markerLength = 30;                      <span class="comment">% Marker side length (in pixels)</span>
+dictionaryId = <span class="string">'6x6_250'</span>;               <span class="comment">% dictionary id</span>
+margins = squareLength - markerLength;  <span class="comment">% Margins size (in pixels)</span>
+borderBits = 1;                         <span class="comment">% Number of bits in marker borders</span>
+
+imageSize = [squaresY, squaresX] .* squareLength + 2 * margins;
+
+<span class="comment">% create board</span>
+dictionary = {<span class="string">'Predefined'</span>, dictionaryId};
+board = {squaresX, squaresY, squareLength, markerLength, dictionary};</pre><h2 id="3">Display</h2><pre class="codeinput"><span class="comment">% show created board</span>
+boardImage = cv.drawCharucoBoard(board, fliplr(imageSize), <span class="keyword">...</span>
+    <span class="string">'MarginSize'</span>,margins, <span class="string">'BorderBits'</span>,borderBits);
+imshow(boardImage), title(<span class="string">'CharucoBoard'</span>)
+
+<span class="comment">% save image</span>
+imwrite(boardImage, fullfile(tempdir(),<span class="string">'CharucoBoard.png'</span>));</pre><img src="aruco_create_board_charuco_demo_01.png"><div class="footer">
+            <p><a href="https://www.mathworks.com/products/matlab.html">Published with MATLAB&reg; R2017a</a></p>
+         </div>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% ChArUco Board Image Demo
+% This example shows how to create a ChArUco board image.
+%
+% Sources:
+%
+% * <https://github.com/opencv/opencv_contrib/blob/3.1.0/modules/aruco/samples/create_board_charuco.cpp>
+%
+
+%% Board
+
+% params
+squaresX = 5;                           % Number of squares in X direction
+squaresY = 7;                           % Number of squares in Y direction
+squareLength = 60;                      % Square side length (in pixels)
+markerLength = 30;                      % Marker side length (in pixels)
+dictionaryId = '6x6_250';               % dictionary id
+margins = squareLength - markerLength;  % Margins size (in pixels)
+borderBits = 1;                         % Number of bits in marker borders
+
+imageSize = [squaresY, squaresX] .* squareLength + 2 * margins;
+
+% create board
+dictionary = {'Predefined', dictionaryId};
+board = {squaresX, squaresY, squareLength, markerLength, dictionary};
+
+%% Display
+
+% show created board
+boardImage = cv.drawCharucoBoard(board, fliplr(imageSize), ...
+    'MarginSize',margins, 'BorderBits',borderBits);
+imshow(boardImage), title('CharucoBoard')
+
+% save image
+imwrite(boardImage, fullfile(tempdir(),'CharucoBoard.png'));
+
+##### SOURCE END #####
+-->
+   </body>
+</html>
